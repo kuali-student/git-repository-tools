@@ -52,8 +52,10 @@ public class ReadLineData {
 			writer.print("\n"); // unix style end of lines
 		}
 		
-		writer.print(line);
-		writer.print("\n"); // unix style end of lines
+		if (line != null) {
+			writer.print(line);
+			writer.print("\n"); // unix style end of lines
+		}
 	}
 
 	/* (non-Javadoc)

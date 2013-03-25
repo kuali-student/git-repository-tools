@@ -85,27 +85,6 @@ public class SvnDumpFilter {
 
 	}
 
-	public static final String DUMPFILE_MAGIC_HEADER = "SVN-fs-dump-format-version";
-	public static final String DUMPFILE_CONTENT_LENGTH = "Content-length";
-	public static final String DUMPFILE_NODE_ACTION = "Node-action";
-	public static final String DUMPFILE_NODE_COPYFROM_PATH = "Node-copyfrom-path";
-	public static final String DUMPFILE_NODE_COPYFROM_REVISION = "Node-copyfrom-rev";
-	public static final String DUMPFILE_NODE_KIND = "Node-kind";
-	public static final String DUMPFILE_NODE_PATH = "Node-path";
-	public static final String DUMPFILE_PROP_CONTENT_LENGTH = "Prop-content-length";
-	public static final String DUMPFILE_PROP_DELTA = "Prop-delta";
-	public static final String DUMPFILE_REVISION_NUMBER = "Revision-number";
-	public static final String DUMPFILE_TEXT_CONTENT_LENGTH = "Text-content-length";
-	public static final String DUMPFILE_TEXT_DELTA = "Text-delta";
-	public static final String DUMPFILE_UUID = "UUID";
-	public static final String DUMPFILE_TEXT_CONTENT_MD5 = "Text-content-md5";
-	public static final String DUMPFILE_TEXT_CONTENT_SHA1 = "Text-content-sha1";
-	public static final String DUMPFILE_TEXT_COPY_SOURCE_MD5 = "Text-copy-source-md5";
-	public static final String DUMPFILE_TEXT_COPY_SOURCE_SHA1 = "Text-copy-source-sha1";
-	public static final String DUMPFILE_TEXT_DELTA_BASE_MD5 = "Text-delta-base-md5";
-	public static final String DUMPFILE_TEXT_DELTA_BASE_SHA1 = "Text-delta-base-sha1";
-	public static final int DUMPFILE_FORMAT_VERSION = 3;
-
 	private static void exitOnError(String message) {
 		log.error(message);
 		System.exit(-1);
@@ -167,8 +146,13 @@ public class SvnDumpFilter {
 
 				ReadLineData lineData = readTilNonEmptyLine(reader);
 				
-				if (lineData == null)
+				if (lineData.getLine() == null) {
+					
+					lineData.println(writer);
+					
 					break;
+				}
+					
 
 				if (lineData.startsWith("SVN-fs-dump-format-version")) {
 
@@ -245,13 +229,13 @@ public class SvnDumpFilter {
 			
 			if (isRevisionStart(lineData)) {
 				// write the current node
-				writeNode(nodeProperties, writer);
+				writeNode(currentRevision, path, nodeProperties, writer);
 				processRevision(lineData, reader, writer);
 				return;
 			}
 			else if (isNodeStart(lineData)) {
 				// write the current node
-				writeNode(nodeProperties, writer);
+				writeNode(currentRevision, path, nodeProperties, writer);
 				processNode(lineData, reader, writer);
 				return;
 			}
@@ -265,7 +249,7 @@ public class SvnDumpFilter {
 					long contentLength = extractLongValue(lineData);
 					
 					// write the properties and copy the content (this includes both the svn properties and text content)
-					writeNode(nodeProperties, writer);
+					writeNode(currentRevision, path, nodeProperties, writer);
 					transferStreamContent(reader, writer, contentLength);
 					return;
 					
@@ -278,13 +262,37 @@ public class SvnDumpFilter {
 		
 	}
 
-	private static void writeNode(Map<String, String> nodeProperties,
+	private static void writeNode(long currentRevision, String path, Map<String, String> nodeProperties,
 			PrintWriter writer) {
+		
+		/*
+		 * Externalize this as part of the refactor.
+		 */
+		if (SvnDumpFilter.currentRevision == 4) {
+			if (path.equals("external-change-of-copy.c")) {
+				
+				nodeProperties.put("Node-copyfrom-rev", "1");
+				nodeProperties.put("Node-copyfrom-path", "test.c");
+				nodeProperties.put("Text-copy-source-md5", "bfce707a5dde4c3e27f511bdbd8d6503");
+
+			}
+		}
+		
+		
+		
+		String contentLengthValue = nodeProperties.remove("Content-length");
 		
 		for (Map.Entry<String, String> entry : nodeProperties.entrySet()) {
 			
-			writer.println(String.format("%s: %s", entry.getKey(), entry.getValue()));
+			writer.print(String.format("%s: %s\n", entry.getKey(), entry.getValue()));
 		}
+		
+		// ensure that we print out the content-length property last
+		if (contentLengthValue != null)
+			writer.print(String.format("Content-length: %s\n", contentLengthValue));
+		
+		
+		
 		
 	}
 
@@ -371,7 +379,10 @@ public class SvnDumpFilter {
 			return new ReadLineData(line, skippedLines);
 		}
 		
-		return null;
+		if (skippedLines == 0)
+			return null;
+		else
+			return new ReadLineData(null, skippedLines);
 	}
 
 	private static String[] splitLine(String line) {
