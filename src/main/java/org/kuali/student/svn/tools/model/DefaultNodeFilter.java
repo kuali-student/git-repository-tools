@@ -52,6 +52,8 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 	// we assume only one join per target revision is allowed
 	private List<JoinedRevision>joinedRevisionList = new ArrayList<JoinedRevision>();
 	
+	private Map<Long, String>copyFromRevPathPrefixMap = new HashMap<Long, String>();
+	
 	/**
 	 * 
 	 */
@@ -73,6 +75,16 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
 	}
 
+	public String getFullCopyFromPath (long copyFromRevision, String partialPath) {
+		
+		String prefix = copyFromRevPathPrefixMap.get(copyFromRevision);
+		
+		if (prefix == null)
+			return partialPath;
+		
+		return prefix + "/" + partialPath;
+		
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.kuali.student.svn.tools.model.INodeFilter#getRevisionsToBeJoined()
@@ -95,7 +107,12 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 		PathRevisionAndMD5AndSHA1 data = copyFromMap.get(path);
 		
 		if (data == null) {
-			log.warn(String.format("SKIPPING:%d, %s (Data is unexpectantly null)", currentRevision, path));
+			/*
+			 * This can happen because we only want to collect the md5 for the paths involved in the join
+			 * 
+			 * but the v3 dump can have a lot more paths that that.
+			 */
+			log.debug(String.format("SKIPPING:%d, %s (Data is unexpectantly null)", currentRevision, path));
 			return;
 		}
 		
@@ -117,6 +134,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 		
 		Map<Long, Map<String, List<PathRevisionAndMD5AndSHA1>>>duplicateDataMap = new HashMap<Long, Map<String,List<PathRevisionAndMD5AndSHA1>>>();
 		
+		String copyFromPathPrefix = null;
 
 		long targetRevision = -1;
 		long copyFromRevision = -1;
@@ -126,7 +144,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
 		String sha1 = null;
 		String md5 = null;
-
+		
 		int lineCounter = 0;
 
 		String line = null;
@@ -150,7 +168,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
 					targetPath = null;
 					copyFromPath = null;
-
+					
 					sha1 = null;
 					md5 = null;
 
@@ -161,10 +179,19 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 					// read target details
 
 					String parts[] = line.split(FIELD_SEPERATOR);
+					
+					if (parts.length == 1) {
 
-					targetRevision = Long.valueOf(parts[0].trim());
+						copyFromPathPrefix = parts[0];
+						
+					}
+					else {
 
-					targetPath = parts[1].trim();
+						targetRevision = Long.valueOf(parts[0].trim());
+
+						targetPath = parts[1].trim();
+					}
+					
 				} else if (copyFromRevision == -1) {
 					// read the copy from details
 
@@ -223,7 +250,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 						
 						if (copyFromMap == null) {
 							copyFromMap = new HashMap<String, PathRevisionAndMD5AndSHA1>();
-							this.copyFromRevisionToCopyFromPathToDataMap.put(targetRevision, copyFromMap);
+							this.copyFromRevisionToCopyFromPathToDataMap.put(copyFromRevision, copyFromMap);
 						}
 						
 						PathRevisionAndMD5AndSHA1 originalData = copyFromMap.put(copyFromPath, data);
@@ -281,6 +308,8 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 		JoinedRevision jr = new JoinedRevision(targetRevision, copyFromRevision);
 			
 		this.joinedRevisionList.add(jr);
+		
+		copyFromRevPathPrefixMap.put(copyFromRevision, copyFromPathPrefix);
 		
 
 	}

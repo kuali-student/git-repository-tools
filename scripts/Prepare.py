@@ -11,6 +11,7 @@ It will populate it with the different paths specified by the data file.
 
 import subprocess
 import string
+import re
 import sys
 import fileinput
 import os
@@ -30,8 +31,11 @@ svnrdump_command="C:\\Program Files (x86)\\Subversion\\bin\\svnrdump.exe"
 # TODO change to using os.path.join instead of this field
 file_seperator="\\"
 
+svn_repository_url = "http://svn.kuali.org/repos/student"
+
 # Functions 
 
+copyFromRevToPrefix = {}
 
 def executeCommandInWorkingDirectory(command, workingDirectory):
     
@@ -42,13 +46,41 @@ def executeCommandInWorkingDirectory(command, workingDirectory):
     return p
 
 """
-Get the SVN V3 dump file for the single revision in question.
+ Get the incremental dump file on the full repository path.
+ 
+ # svnrdump dump http://svn.kuali.org/repos/student -r XYZ --incremental
+ 
+ This should be used on the target revision (the one that will be rewritten).
+ 
+"""
+def fetchIncrementalDumpfile (path, rev):
+    
+    dumpFile = open ("r{0}.dump".format(rev), "w")
+    
+    # svnrdump dump http://svn.kuali.org/repos/student -r XYZ --incremental
+    command = "{0} dump {1} -r {2} --incremental".format(svnrdump_command, svn_repository_url, rev)
+    
+    print command
+    
+    subprocess.call(command, stdout=dumpFile)
+    
+    dumpFile.close()
+    
+"""
+ Get the complete dump file on a partial repository path.
+ 
+ # svnrdump dump http://svn.kuali.org/repos/student/some/narrower/path -r XYZ 
+ 
+ This should be used on the copyfrom revision (the one that will be provide the md5sum data to be used in the rewrite of the target revision).
+ 
 """
 def fetchDumpFile (path, rev):
     
     dumpFile = open ("r{0}.dump".format(rev), "w")
     
-    command = "{0} dump {1} -r{2}:{3}".format(svnrdump_command, path, rev, rev)
+    command = "{0} dump {1} -r {2} ".format(svnrdump_command, path, rev)
+    
+    print command
     
     subprocess.call(command, stdout=dumpFile)
     
@@ -232,7 +264,9 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
 
             targetMd5 = output.split(" ")[0]
             
-            joinOutput.write ("#{0}\n{1}||{2}\n{3}||{4}\n{5}||{6}\n".format("Unchanged", targetRev, targetPath, copyFromRev, copyFromPath, targetSha1, targetMd5))
+            copyFromPathPrefix = copyFromRevToPrefix[copyFromRev]
+            
+            joinOutput.write ("#{0}\n{1}\n{2}||{3}\n{4}||{5}\n{6}||{7}\n".format("Unchanged", copyFromPathPrefix, targetRev, targetPath, copyFromRev, copyFromPath, targetSha1, targetMd5))
             
     
     # get the copied and changes between the revisions
@@ -314,6 +348,8 @@ gitDirectory = sys.argv[1]
  
 revisionData = sys.argv[2]
 
+
+
 for line in open(revisionData):
     strippedLine = line.strip()
     if len (strippedLine) == 0 or strippedLine[0] == '#':
@@ -323,7 +359,18 @@ for line in open(revisionData):
     
     type = parts[0]
     
-    if type == 'FETCH':
+    if type == 'FETCH-TARGET':
+        
+        path = parts[1]
+    
+        rev = int (parts[2])
+        
+        fetchPath (gitDirectory, path, rev)
+        
+        fetchIncrementalDumpfile(path, rev)
+        
+        
+    elif type == 'FETCH-COPY-FROM':
         path = parts[1]
     
         rev = int (parts[2])
@@ -331,9 +378,16 @@ for line in open(revisionData):
         fetchPath (gitDirectory, path, rev)
         fetchDumpFile (path, rev)
         
+        # compute the top level path
+        indexAfterBaseUrl = len("http://svn.kuali.org/repos/student/")
+    
+        topLevelPath = path[indexAfterBaseUrl:]
+        
+        copyFromRevToPrefix[rev] = topLevelPath
+        
     elif type == 'DIFF':
-        targetRev = parts[1]
-        copyFromRev = parts[2]
+        targetRev = int (parts[1])
+        copyFromRev = int (parts[2])
         computeDiff (gitDirectory, targetRev, copyFromRev)
     else:
         print 'USAGE: %s <git directory> <revision data file>' % sys.argv[0]

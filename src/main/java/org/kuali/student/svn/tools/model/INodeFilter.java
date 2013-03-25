@@ -58,4 +58,6 @@ public interface INodeFilter {
 	
 	public List<JoinedRevision>getRevisionsToBeJoined();
 
+	String getFullCopyFromPath(long copyFromRevision, String partialPath);
+
 }

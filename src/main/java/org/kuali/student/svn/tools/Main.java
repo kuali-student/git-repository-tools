@@ -16,6 +16,8 @@
 package org.kuali.student.svn.tools;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -94,8 +96,11 @@ public class Main {
 						if (md5 == null)
 							md5 = nodeProperties.get("Text-content-md5");
 						
-						if (md5 != null)
-							nodeFilter.storeChecksumData(currentRevision, path, sha1, md5);
+						if (md5 != null) {
+							
+							String fullPath = nodeFilter.getFullCopyFromPath(currentRevision, path);
+							nodeFilter.storeChecksumData(currentRevision, fullPath, sha1, md5);
+						}
 					}
 
 					/* (non-Javadoc)
@@ -109,7 +114,32 @@ public class Main {
 						
 						this.onAfterNode(currentRevision, path, nodeProperties, nodeFilter);
 						
+						try {
+							inputStream.skip(contentLength+1);
+						} catch (IOException e) {
+							
+							throw new RuntimeException(String.format("Failed to skip over content after node(%d:%s)" + currentRevision, path));
+							
+						}
+						
 					}
+
+					/* (non-Javadoc)
+					 * @see org.kuali.student.svn.tools.AbstractParseOptions#onRevisionContentLength(long, long, org.kuali.student.svn.tools.model.ReadLineData)
+					 */
+					@Override
+					public void onRevisionContentLength(long currentRevision,
+							long contentLength, ReadLineData lineData) {
+						try {
+							inputStream.skip(contentLength+1);
+						} catch (IOException e) {
+							throw new RuntimeException("Failed to skip over content at the end of revision: " + currentRevision);
+						}
+					}
+					
+					
+					
+					
 					
 					
 				});
