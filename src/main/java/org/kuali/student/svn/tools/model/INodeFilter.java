@@ -16,6 +16,7 @@
 package org.kuali.student.svn.tools.model;
 
 import java.io.File;
+import java.util.List;
 
 import modifier.PathRevisionAndMD5AndSHA1;
 
@@ -31,10 +32,9 @@ public interface INodeFilter {
 	 * in the case of duplicates log which one copy from path was used and what the other options were.
 	 * 
 	 * @param joinDataFile
-	 * @param skippedJoinDataFile file to hold the data for which join details were skipped.
 	 * @throws Exception 
 	 */
-	void loadFilterData (File joinDataFile, File skippedJoinDataFile) throws Exception;
+	void loadFilterData (File joinDataFile) throws Exception;
 	
 	/**
 	 * Extract the copy from data for the path and revision specified.
@@ -55,5 +55,7 @@ public interface INodeFilter {
 	 * @param md5
 	 */
 	public void storeChecksumData (long currentRevision, String path, String sha1, String md5);
+	
+	public List<JoinedRevision>getRevisionsToBeJoined();
 
 }

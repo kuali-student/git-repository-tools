@@ -57,15 +57,6 @@ public class SvnDumpFilter {
 	@Autowired
 	private INodeFilter nodeFilter;
 
-	private FileInputStream fileInputStream;
-
-	private FileOutputStream fileOutputStream;
-
-	/*
-	 * For version 3 stream's we need to acquire the content hashes from the
-	 */
-	private boolean acquireCopyFromHashes = false;
-
 	/**
 	 * 
 	 */
@@ -73,29 +64,33 @@ public class SvnDumpFilter {
 
 	}
 
-	public void applyFilter(String sourceDumpFile, String targetDumpFile) throws FileNotFoundException,
-			UnsupportedEncodingException {
-
-
-		fileInputStream = new FileInputStream(sourceDumpFile);
-
-		fileOutputStream = new FileOutputStream(targetDumpFile);
+	/**
+	 * Parse the dumpfile given.
+	 * 
+	 * Calls the options interface when 
+	 * @param dumpFile
+	 * @param options
+	 * @throws FileNotFoundException
+	 */
+	public void parseDumpFile(String dumpFile, IParseOptions options) throws FileNotFoundException {
 		
+		FileInputStream fileInputStream = new FileInputStream(dumpFile);
+		
+		options.setFileInputStream(fileInputStream);
 
 		try {
 
-			boolean foundFormat = false;
 
 			while (true) {
 
-				ReadLineData lineData = readTilNonEmptyLine();
+				ReadLineData lineData = readTilNonEmptyLine(fileInputStream);
 
 				if (lineData == null) {
 					break;
 				}
 				else if (lineData.getLine() == null) {
 
-					lineData.println(fileOutputStream);
+					options.onStreamEnd (lineData);
 
 					break;
 				}
@@ -108,22 +103,18 @@ public class SvnDumpFilter {
 						exitOnError("Filter only works on version 3 and below dump streams");
 					}
 
-					if (dumpFormatVersion == 3) {
-						acquireCopyFromHashes = true;
-					}
-					foundFormat = true;
 
-					lineData.println(fileOutputStream);
+					options.onDumpFormatVersion(lineData);
 
 				} else if (lineData.startsWith("UUID")) {
-					lineData.println(fileOutputStream);
+					options.onUUID(lineData);
 				} else if (isRevisionStart(lineData)) {
 
-					processRevision(lineData);
+					processRevision(lineData, options, fileInputStream);
 
 				} else if (isNodeStart(lineData)) {
 
-					processNode(lineData, nodeFilter);
+					processNode(lineData, options, nodeFilter, fileInputStream);
 
 				}
 
@@ -131,7 +122,6 @@ public class SvnDumpFilter {
 
 			try {
 				fileInputStream.close();
-				fileOutputStream.close();
 			} catch (IOException e) {
 				log.warn("Problem closing streams");
 			}
@@ -143,6 +133,132 @@ public class SvnDumpFilter {
 		} catch (IOException e) {
 			log.error("io exception", e);
 		}
+	}
+	
+	
+	public void applyFilter(String sourceDumpFile, String targetDumpFile) throws FileNotFoundException,
+			UnsupportedEncodingException {
+
+
+		final FileOutputStream fileOutputStream = new FileOutputStream(targetDumpFile);
+
+		
+		parseDumpFile(sourceDumpFile, new AbstractParseOptions() {
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onStreamEnd(org.kuali.student.svn.tools.model.ReadLineData)
+			 */
+			@Override
+			public void onStreamEnd(ReadLineData lineData) {
+
+				lineData.println(fileOutputStream);
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onDumpFormatVersion(org.kuali.student.svn.tools.model.ReadLineData)
+			 */
+			@Override
+			public void onDumpFormatVersion(ReadLineData lineData) {
+				lineData.println(fileOutputStream);				
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onUUID(org.kuali.student.svn.tools.model.ReadLineData)
+			 */
+			@Override
+			public void onUUID(ReadLineData lineData) {
+				lineData.println(fileOutputStream);				
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onRevision(long, org.kuali.student.svn.tools.model.ReadLineData)
+			 */
+			@Override
+			public void onRevision(long currentRevision, ReadLineData lineData) {
+
+				lineData.println(fileOutputStream);
+				
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onRevisionPropContentLength(long, org.kuali.student.svn.tools.model.ReadLineData)
+			 */
+			@Override
+			public void onRevisionPropContentLength(long currentRevision, long propContentLength,
+					ReadLineData lineData) {
+
+				lineData.println(fileOutputStream);
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onRevisionContentLength(long, org.kuali.student.svn.tools.model.ReadLineData)
+			 */
+			@Override
+			public void onRevisionContentLength(long currentRevision, long contentLength,
+					ReadLineData lineData) {
+				
+				lineData.println(fileOutputStream);
+				
+				try {
+					transferStreamContent(inputStream, fileOutputStream, contentLength);
+				} catch (IOException e) {
+					throw new RuntimeException(String.format("stream transfer failed for revision(%d) properties.", currentRevision), e);
+				}
+				
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onNode(org.kuali.student.svn.tools.model.ReadLineData, java.lang.String)
+			 */
+			@Override
+			public void onNode(ReadLineData lineData, String path) {
+				lineData.println(fileOutputStream);
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onAfterNode(long, java.lang.String, java.util.Map, org.kuali.student.svn.tools.model.INodeFilter)
+			 */
+			@Override
+			public void onAfterNode(long currentRevision, String path,
+					Map<String, String> nodeProperties, INodeFilter nodeFilter) {
+				
+				writeNode(fileOutputStream, currentRevision, path, nodeProperties, nodeFilter);
+				
+				if (!nodeProperties.containsKey("Content-length")) {
+					throw new RuntimeException(String.format("Node(%d:%s) missing content-length property", currentRevision, path));
+				}
+				
+			}
+
+			/* (non-Javadoc)
+			 * @see org.kuali.student.svn.tools.IParseOptions#onNodeContentLength(long, long, java.util.Map, org.kuali.student.svn.tools.model.INodeFilter)
+			 */
+			@Override
+			public void onNodeContentLength(long currentRevision, String path,
+					long contentLength, Map<String, String> nodeProperties,
+					INodeFilter nodeFilter) {
+				
+				writeNode(fileOutputStream, currentRevision, path, nodeProperties,
+						nodeFilter);
+				
+				try {
+					transferStreamContent(inputStream, fileOutputStream, contentLength);
+				} catch (IOException e) {
+					throw new RuntimeException(String.format("stream transfer failed for node(%d:%s) properties.", currentRevision, path), e);
+				}				
+			}
+			
+			
+			
+		});
+		
+		try {
+			fileOutputStream.close();
+		} catch (IOException e) {
+			log.warn("Exception closing stream", e);
+		}
+
+		
 	}
 
 	private void exitOnError(String message) {
@@ -181,11 +297,11 @@ public class SvnDumpFilter {
 			return false;
 	}
 
-	private void processNode(ReadLineData lineData, INodeFilter nodeFilter) throws IOException {
+	private void processNode(ReadLineData lineData, IParseOptions options, INodeFilter nodeFilter, FileInputStream fileInputStream) throws IOException {
 
 		String path = extractStringValue(lineData);
 
-		lineData.println(fileOutputStream);
+		options.onNode (lineData, path);
 
 		// this map will store the properties in the same order as we found
 		// them.
@@ -195,23 +311,17 @@ public class SvnDumpFilter {
 			// consume properties until wee see the content or someother
 			// node/revision
 
-			lineData = readTilNonEmptyLine();
+			lineData = readTilNonEmptyLine(fileInputStream);
 
 			if (isRevisionStart(lineData)) {
-				// write the current node
-				writeNode(currentRevision, path, nodeProperties, nodeFilter);
-				if (nodeProperties.containsKey("Content-length")) {
-					log.info("");
-				}
-				processRevision(lineData);
+				// mark the end of the node
+				options.onAfterNode(currentRevision, path, nodeProperties, nodeFilter);
+				processRevision(lineData, options, fileInputStream);
 				return;
 			} else if (isNodeStart(lineData)) {
-				// write the current node
-				writeNode(currentRevision, path, nodeProperties, nodeFilter);
-				if (nodeProperties.containsKey("Content-length")) {
-					log.info("");
-				}
-				processNode(lineData, nodeFilter);
+				// mark the end of the node
+				options.onAfterNode(currentRevision, path, nodeProperties, nodeFilter);
+				processNode(lineData, options, nodeFilter, fileInputStream);
 				return;
 			} else {
 				String parts[] = splitLine(lineData.getLine());
@@ -224,9 +334,7 @@ public class SvnDumpFilter {
 
 					// write the properties and copy the content (this includes
 					// both the svn properties and text content)
-					writeNode(currentRevision, path, nodeProperties,
-							nodeFilter);
-					transferStreamContent(contentLength);
+					options.onNodeContentLength(currentRevision, path, contentLength, nodeProperties, nodeFilter);
 					return;
 
 				}
@@ -237,20 +345,11 @@ public class SvnDumpFilter {
 
 	}
 
-	private void writeNode(long currentRevision, String path,
+	private void writeNode(FileOutputStream fileOutputStream, long currentRevision, String path,
 			Map<String, String> nodeProperties, INodeFilter nodeFilter) {
 
 		String action = nodeProperties.get("Node-action");
 		
-		String sha1 = nodeProperties.get("Text-delta-base-sha1");
-		
-		String md5 = nodeProperties.get("Text-delta-base-md5");
-		
-		if (md5 != null) {
-		
-			nodeFilter.storeChecksumData(currentRevision, path, sha1, md5);
-		}
-
 		if (action != null && action.equals("add")) {
 
 			PathRevisionAndMD5AndSHA1 joinHistoryData = nodeFilter.getCopyFromData(
@@ -279,12 +378,17 @@ public class SvnDumpFilter {
 				if (original != null)
 					log.warn("Overriting existing Text-copy-source-md5: " + original);
 				
-				original = nodeProperties.put("Text-copy-source-sha1",
+				String sha1 = joinHistoryData.getSha1();
+				
+				if (sha1 != null) {
+					
+					original = nodeProperties.put("Text-copy-source-sha1",
 						joinHistoryData.getSha1());
 				
-				if (original != null)
-					log.warn("Overriting existing Text-copy-source-sha1: " + original);
+					if (original != null)
+						log.warn("Overriting existing Text-copy-source-sha1: " + original);
 
+					}
 
 			}
 		}
@@ -308,13 +412,13 @@ public class SvnDumpFilter {
 
 	}
 
-	private void processRevision(ReadLineData lineData) throws IOException {
+	private void processRevision(ReadLineData lineData, IParseOptions options, FileInputStream fileInputStream) throws IOException {
 
 		currentRevision = extractLongValue(lineData);
 
-		lineData.println(fileOutputStream);
+		options.onRevision(currentRevision, lineData);
 
-		ReadLineData expectingPropContentLength = readTilNonEmptyLine();
+		ReadLineData expectingPropContentLength = readTilNonEmptyLine(fileInputStream);
 
 		if (!expectingPropContentLength.startsWith("Prop-content-length")) {
 			exitOnError("Expected Prop-content-length: but found: "
@@ -323,9 +427,9 @@ public class SvnDumpFilter {
 
 		long propContentLength = extractLongValue(expectingPropContentLength);
 
-		expectingPropContentLength.println(fileOutputStream);
+		options.onRevisionPropContentLength(currentRevision, propContentLength, expectingPropContentLength);
 
-		ReadLineData expectingContentLength = readTilNonEmptyLine();
+		ReadLineData expectingContentLength = readTilNonEmptyLine(fileInputStream);
 
 		if (!expectingContentLength.startsWith("Content-length:")) {
 			exitOnError("Expected Content-length: but found: "
@@ -334,19 +438,15 @@ public class SvnDumpFilter {
 
 		long contentLength = extractLongValue(expectingContentLength);
 
-		expectingContentLength.println(fileOutputStream);
+		options.onRevisionContentLength(currentRevision, contentLength, expectingContentLength);
 
-		// we need to stream this
-		// divide total bytes by buffer size and then repeat until
-		// all is copied
-
-		transferStreamContent(contentLength);
+		
 
 	}
 
-	private void transferStreamContent(long contentLength) throws IOException {
+	private void transferStreamContent(FileInputStream fileInputStream, FileOutputStream fileOutputStream, long contentLength) throws IOException {
 
-		contentLength+= 1;
+		contentLength += 1; // I believe this is for the null byte in C.  Without this we lose 1 character in the buffer.
 		
 		long copied = IOUtils.copyLarge(fileInputStream, fileOutputStream, 0, contentLength);
 		
@@ -358,7 +458,7 @@ public class SvnDumpFilter {
 
 	}
 
-	private ReadLineData readTilNonEmptyLine()
+	private ReadLineData readTilNonEmptyLine(FileInputStream fileInputStream)
 			throws IOException {
 		String line = org.kuali.student.common.io.IOUtils.readLine(fileInputStream, UTF_8);
 

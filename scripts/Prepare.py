@@ -25,6 +25,9 @@ git_command="C:\\Program Files (x86)\\Git\\bin\\git.exe"
 
 svn_command="C:\\Program Files (x86)\\Subversion\\bin\\svn.exe"
 
+svnrdump_command="C:\\Program Files (x86)\\Subversion\\bin\\svnrdump.exe"
+
+# TODO change to using os.path.join instead of this field
 file_seperator="\\"
 
 # Functions 
@@ -38,13 +41,25 @@ def executeCommandInWorkingDirectory(command, workingDirectory):
     
     return p
 
-
+"""
+Get the SVN V3 dump file for the single revision in question.
+"""
+def fetchDumpFile (path, rev):
+    
+    dumpFile = open ("r{0}.dump".format(rev), "w")
+    
+    command = "{0} dump {1} -r{2}:{3}".format(svnrdump_command, path, rev, rev)
+    
+    subprocess.call(command, stdout=dumpFile)
+    
+    dumpFile.close()
+    
 def fetchPath(gitDirectory, path, rev):
     
     # check if the tag already exists
     tagName = "r{0}".format(rev)
     
-    command = "git --git-dir={0} rev-parse {1}".format(gitDirectory, tagName)
+    command = "{0} --git-dir={1} rev-parse {2}".format(git_command, gitDirectory, tagName)
     
     output = subprocess.check_output(command).strip("\n")
     
@@ -314,6 +329,7 @@ for line in open(revisionData):
         rev = int (parts[2])
         
         fetchPath (gitDirectory, path, rev)
+        fetchDumpFile (path, rev)
         
     elif type == 'DIFF':
         targetRev = parts[1]

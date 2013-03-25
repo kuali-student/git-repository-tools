@@ -49,6 +49,9 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
 	private Map<Long, Map<String,PathRevisionAndMD5AndSHA1>>copyFromRevisionToCopyFromPathToDataMap = new LinkedHashMap<Long, Map<String,PathRevisionAndMD5AndSHA1>>();
 	
+	// we assume only one join per target revision is allowed
+	private List<JoinedRevision>joinedRevisionList = new ArrayList<JoinedRevision>();
+	
 	/**
 	 * 
 	 */
@@ -68,6 +71,14 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 		// that we
 		// can acquire the md5 as the stream is processed.
 
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.kuali.student.svn.tools.model.INodeFilter#getRevisionsToBeJoined()
+	 */
+	public List<JoinedRevision> getRevisionsToBeJoined() {
+		return new ArrayList<JoinedRevision> (this.joinedRevisionList);
 	}
 
 	/* (non-Javadoc)
@@ -100,7 +111,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 	 * org.kuali.student.svn.tools.model.INodeFilter#loadFilterData(java.io.
 	 * File)
 	 */
-	public void loadFilterData(File joinDataFile, File skippedJoinDataFile) throws Exception {
+	public void loadFilterData(File joinDataFile) throws Exception {
 
 		BufferedReader reader = new BufferedReader(new FileReader(joinDataFile));
 		
@@ -221,7 +232,6 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 							log.warn("OVERWRITING original data: " + originalData.toString());
 						}
 						
-						
 					}
 
 				}
@@ -237,7 +247,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 		
 		// now append the duplicate data to the join file
 		
-		PrintWriter pw = new PrintWriter(new FileOutputStream(skippedJoinDataFile, true));
+		PrintWriter pw = new PrintWriter(new FileOutputStream(String.format("r%d-r%d-duplicates.log", targetRevision, copyFromRevision), true));
 		
 		for (Long revision : duplicateDataMap.keySet()) {
 			
@@ -266,6 +276,12 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 		}
 		
 		pw.close();
+		
+		// now record the joining of these two revisions:
+		JoinedRevision jr = new JoinedRevision(targetRevision, copyFromRevision);
+			
+		this.joinedRevisionList.add(jr);
+		
 
 	}
 

@@ -5,3 +5,4 @@ target
 .settings
 .pydevproject
 /do-not-commit
+*.dump
