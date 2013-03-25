@@ -15,11 +15,18 @@
  */
 package org.kuali.student.svn.tools.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import modifier.PathRevisionAndMD5;
+import modifier.PathRevisionAndMD5AndSHA1;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
@@ -28,7 +35,9 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
-	private Map<Long, Map<String, String>>revisionToPathToMD5Map = new LinkedHashMap<Long, Map<String,String>>();
+	private static final Logger log = LoggerFactory.getLogger(DefaultNodeFilter.class);
+	
+	private Map<Long, Map<String, PathRevisionAndMD5AndSHA1>>revisionToPathToDataMap = new LinkedHashMap<Long, Map<String,PathRevisionAndMD5AndSHA1>>();
 	
 	/**
 	 * 
@@ -51,38 +60,115 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.kuali.student.svn.tools.model.INodeFilter#storeMD5(long, java.lang.String, java.lang.String)
-	 */
-	public void storeMD5(long currentRevision, String path, String md5) {
-		
-		Long revision = Long.valueOf(currentRevision);
-		
-		Map<String, String> pathToMD5Map = revisionToPathToMD5Map.get(revision);
-		
-		if (pathToMD5Map == null) // the map needs to be initialized before we get to this point so we know we want this md5.
-			return;
-		else
-			pathToMD5Map.put(path, md5);
 
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.svn.tools.model.INodeFilter#loadFilterData(java.io.File)
+	 */
+	public void loadFilterData(File joinDataFile) throws Exception {
+		
+		BufferedReader reader = new BufferedReader(new FileReader(joinDataFile));
+		
+		long targetRevision = -1;
+		long copyFromRevision = -1;
+		
+		String targetPath = null;
+		String copyFromPath = null;
+		
+		String sha1 = null;
+		String md5 = null;
+		
+		while (true) {
+			String line = reader.readLine();
+			
+			if (line == null)
+				break; // we are at the end of the stream (done)
+			
+			if (line.trim().length() == 0)
+				continue; // skip blank lines
+			
+			if (line.startsWith("#")) {
+				// starting on a new item.
+				targetRevision = -1;
+				copyFromRevision = -1;
+				
+				targetPath = null;
+				copyFromPath = null;
+				
+				sha1 = null;
+				md5 = null;
+				
+				continue;
+			}
+			
+			if (targetRevision == -1) {
+				// read target details
+				
+				String parts[] = line.split("||");
+				
+				targetRevision = Long.valueOf(parts[0]);
+				
+				targetPath = parts[1];
+			}
+			else if (copyFromRevision == -1) {
+				// read the copy from details
+				
+				String parts[] = line.split("||");
+				
+				copyFromRevision = Long.valueOf(parts[0]);
+				
+				copyFromPath = parts[1];
+				
+			}
+			else {
+				// read in the hashes
+				String parts[] = line.split("||");
+				
+				sha1 = parts[0].trim();
+				
+				md5  = parts[1].trim();
+				
+				// now save the revision
+				PathRevisionAndMD5AndSHA1 data = new PathRevisionAndMD5AndSHA1(copyFromPath, copyFromRevision, md5, sha1);
+				
+				Map<String, PathRevisionAndMD5AndSHA1> dataMap = this.revisionToPathToDataMap.get(targetRevision);
+				
+				if (dataMap == null) {
+					dataMap = new HashMap<String, PathRevisionAndMD5AndSHA1>();
+					revisionToPathToDataMap.put(targetRevision, dataMap);
+				}
+				
+				if (dataMap.containsKey(targetPath)) {
+					// skip over the current row
+					log.warn(String.format("path exists %s.  Skipping path details = %s", targetPath, data.toString()));
+				}
+				else {
+					dataMap.put(targetPath, data);
+				}
+				
+			}
+		}
+		
+		reader.close();
+		
 	}
+
 
 	/* (non-Javadoc)
 	 * @see org.kuali.student.svn.tools.model.INodeFilter#getCopyFromData(long, java.lang.String)
 	 */
-	public PathRevisionAndMD5 getCopyFromData(long currentRevision, String path) {
+	public PathRevisionAndMD5AndSHA1 getCopyFromData(long currentRevision, String path) {
 		
 		Long revision = Long.valueOf(currentRevision);
 		
-		Map<String, String> pathToMD5Map = revisionToPathToMD5Map.get(revision);
+		Map<String, PathRevisionAndMD5AndSHA1> pathToDataMap = revisionToPathToDataMap.get(revision);
 		
-		if (pathToMD5Map == null)
+		if (pathToDataMap == null)
 			return null;
 		
-		String md5 = pathToMD5Map.get(path);
+		PathRevisionAndMD5AndSHA1 data = pathToDataMap.get(path);
 		
-		
-		return new PathRevisionAndMD5(path, currentRevision, md5);
+		return data;
 	}
 
 }

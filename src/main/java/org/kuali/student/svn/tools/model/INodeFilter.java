@@ -15,16 +15,31 @@
  */
 package org.kuali.student.svn.tools.model;
 
-import modifier.PathRevisionAndMD5;
+import java.io.File;
+
+import modifier.PathRevisionAndMD5AndSHA1;
 
 /**
  * @author Kuali Student Team
  *
  */
 public interface INodeFilter {
+	
+	/**
+	 * Load the filter data for a specific join file
+	 * @param joinDataFile
+	 * @throws Exception 
+	 */
+	void loadFilterData (File joinDataFile) throws Exception;
+	
+	/**
+	 * Extract the copy from data for the path and revision specified.
+	 * 
+	 * @param currentRevision
+	 * @param path
+	 * @return the copy from details if any that exist for the provided parameters.
+	 */
 
-	void storeMD5(long currentRevision, String path, String md5);
-
-	PathRevisionAndMD5 getCopyFromData(long currentRevision, String path);
+	PathRevisionAndMD5AndSHA1 getCopyFromData(long currentRevision, String path);
 
 }

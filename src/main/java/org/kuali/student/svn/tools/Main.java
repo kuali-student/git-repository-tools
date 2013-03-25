@@ -15,6 +15,9 @@
  */
 package org.kuali.student.svn.tools;
 
+import java.io.File;
+
+import org.kuali.student.svn.tools.model.INodeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -32,8 +35,8 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length != 2) {
-			log.error("USAGE: <source dump file> <target dump file>");
+		if (args.length < 3) {
+			log.error("USAGE: <source dump file> <target dump file> <join data file 1> [ <join data file 2> ... <join data file n>]");
 			System.exit(-1);
 		}
 
@@ -45,6 +48,13 @@ public class Main {
 			ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("svn/applicationContext.xml");
 			
 			applicationContext.registerShutdownHook();
+			
+			INodeFilter nodeFilter = applicationContext.getBean(INodeFilter.class);
+			
+			for(int i = 2; i < args.length; i++) {
+				log.info(String.format ("Loading Join Data from (%s)", args[i]));
+				nodeFilter.loadFilterData(new File (args[i]));
+			}
 			
 			SvnDumpFilter filter = applicationContext.getBean(SvnDumpFilter.class);
 			

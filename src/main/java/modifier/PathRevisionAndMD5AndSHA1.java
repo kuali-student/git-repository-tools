@@ -1,5 +1,17 @@
-/**
+/*
+ * Copyright 2013 The Kuali Foundation
  * 
+ * Licensed under the Educational Community License, Version 1.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/ecl1.php
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package modifier;
 
@@ -7,10 +19,10 @@ package modifier;
  * 
  * Holds a path, revision and the md5 hash of the source file.
  * 
- * @author ocleirig
+ * @author Kuali Student Team
  *
  */
-public class PathRevisionAndMD5 {
+public class PathRevisionAndMD5AndSHA1 {
 
 	private String path;
 	
@@ -18,21 +30,22 @@ public class PathRevisionAndMD5 {
 	
 	private String md5;
 	
-	private boolean supportsDelta = false;
+	private String sha1;
 	
 	/**
 	 * 
 	 */
-	public PathRevisionAndMD5() {
+	public PathRevisionAndMD5AndSHA1() {
 		// TODO Auto-generated constructor stub
 	}
 
 	
-	public PathRevisionAndMD5(String path, long revision, String md5) {
+	public PathRevisionAndMD5AndSHA1(String path, long revision, String md5, String sha1) {
 		super();
 		this.path = path;
 		this.revision = revision;
 		this.md5 = md5;
+		this.sha1 = sha1;
 	}
 
 
@@ -78,19 +91,14 @@ public class PathRevisionAndMD5 {
 		this.md5 = md5;
 	}
 
+	
 	/**
-	 * @return the supportsDelta
+	 * @param sha1 the sha1 to set
 	 */
-	public boolean isSupportsDelta() {
-		return supportsDelta;
+	public void setSha1(String sha1) {
+		this.sha1 = sha1;
 	}
 
-	/**
-	 * @param supportsDelta the supportsDelta to set
-	 */
-	public void setSupportsDelta(boolean supportsDelta) {
-		this.supportsDelta = supportsDelta;
-	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -98,14 +106,14 @@ public class PathRevisionAndMD5 {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("PathRevisionAndMD5 [path=");
+		builder.append("PathRevisionAndMD5AndSHA1 [path=");
 		builder.append(path);
 		builder.append(", revision=");
 		builder.append(revision);
 		builder.append(", md5=");
 		builder.append(md5);
-		builder.append(", supportsDelta=");
-		builder.append(supportsDelta);
+		builder.append(", sha1=");
+		builder.append(sha1);
 		builder.append("]");
 		return builder.toString();
 	}

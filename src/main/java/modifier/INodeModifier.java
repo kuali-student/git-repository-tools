@@ -16,7 +16,7 @@ public interface INodeModifier {
 	 * @param nodePath
 	 * @return
 	 */
-	public PathRevisionAndMD5 getCopyPathAndRevision(long revision, String nodePath);
+	public PathRevisionAndMD5AndSHA1 getCopyPathAndRevision(long revision, String nodePath);
 		
 
 }

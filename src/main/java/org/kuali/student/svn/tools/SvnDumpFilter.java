@@ -27,7 +27,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import modifier.PathRevisionAndMD5;
+import modifier.PathRevisionAndMD5AndSHA1;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ReaderInputStream;
@@ -228,14 +228,11 @@ public class SvnDumpFilter {
 
 		String md5 = nodeProperties.get("Text-content-md5");
 
-		if (md5 != null)
-			nodeFilter.storeMD5(currentRevision, path, md5);
-
 		String action = nodeProperties.get("Node-action");
 
 		if (action != null && action.equals("add")) {
 
-			PathRevisionAndMD5 joinHistoryData = nodeFilter.getCopyFromData(
+			PathRevisionAndMD5AndSHA1 joinHistoryData = nodeFilter.getCopyFromData(
 					currentRevision, path);
 
 			/*
