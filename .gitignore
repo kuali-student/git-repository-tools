@@ -1,6 +1,5 @@
 bin
 target
-*.dat
 .project
 .classpath
 .settings
