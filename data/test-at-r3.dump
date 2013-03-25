@@ -1,0 +1,149 @@
+SVN-fs-dump-format-version: 2
+
+UUID: 1c82120b-6aa4-421f-91c4-64b8f454dd84
+
+Revision-number: 0
+Prop-content-length: 56
+Content-length: 56
+
+K 8
+svn:date
+V 27
+2013-03-04T20:32:39.048666Z
+PROPS-END
+
+Revision-number: 1
+Prop-content-length: 86
+Content-length: 86
+
+K 8
+svn:date
+V 27
+2013-03-04T20:40:08.284550Z
+K 7
+svn:log
+V 12
+first commit
+PROPS-END
+
+Node-path: a
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/b
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/b/c
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/b/c/d
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/b/c/d/e
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/b/c/d/e/f
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: a/b/c/d/e/f/g
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: test.c
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 8
+Text-content-md5: bfce707a5dde4c3e27f511bdbd8d6503
+Text-content-sha1: f92b3776c9cc01a3d28e17f32430cb6a97204cd0
+Content-length: 18
+
+PROPS-END
+test.c
+
+
+Revision-number: 2
+Prop-content-length: 87
+Content-length: 87
+
+K 8
+svn:date
+V 27
+2013-03-04T20:40:35.584282Z
+K 7
+svn:log
+V 13
+copied a file
+PROPS-END
+
+Node-path: copy-of-test.c
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 1
+Node-copyfrom-path: test.c
+Text-copy-source-md5: bfce707a5dde4c3e27f511bdbd8d6503
+Text-copy-source-sha1: f92b3776c9cc01a3d28e17f32430cb6a97204cd0
+
+
+Revision-number: 3
+Prop-content-length: 87
+Content-length: 87
+
+K 8
+svn:date
+V 27
+2013-03-04T20:41:00.048563Z
+K 7
+svn:log
+V 13
+external copy
+PROPS-END
+
+Node-path: external-copy.c
+Node-kind: file
+Node-action: add
+Node-copyfrom-rev: 1
+Node-copyfrom-path: test.c
+Text-copy-source-md5: bfce707a5dde4c3e27f511bdbd8d6503
+Text-copy-source-sha1: f92b3776c9cc01a3d28e17f32430cb6a97204cd0
+

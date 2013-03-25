@@ -27,6 +27,15 @@ public class PathRevisionAndMD5 {
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	public PathRevisionAndMD5(String path, long revision, String md5) {
+		super();
+		this.path = path;
+		this.revision = revision;
+		this.md5 = md5;
+	}
+
+
 	/**
 	 * @return the path
 	 */

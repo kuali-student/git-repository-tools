@@ -1,0 +1,361 @@
+SVN-fs-dump-format-version: 2
+
+UUID: ddb2a93f-66c2-4265-a96e-45b8992c6319
+
+Revision-number: 0
+Prop-content-length: 226
+Content-length: 226
+
+K 8
+svn:date
+V 27
+2008-03-26T14:15:09.642519Z
+K 17
+svn:sync-from-url
+V 35
+https://svn.kuali.org/repos/student
+K 18
+svn:sync-from-uuid
+V 36
+0ac02d80-fb3f-11dc-a574-c57244a850eb
+K 24
+svn:sync-last-merged-rev
+V 5
+44615
+PROPS-END
+
+Revision-number: 1
+Prop-content-length: 101
+Content-length: 101
+
+K 10
+svn:author
+V 7
+sgibson
+K 8
+svn:date
+V 27
+2008-03-26T14:40:00.680311Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 2
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T14:56:59.759581Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc/common
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 3
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T17:18:29.518615Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc/personidentity
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 4
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T17:18:43.223225Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc/poms
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 5
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T17:19:01.537866Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc/common/branches
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 6
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T17:19:08.994740Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc/personidentity/branches
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 7
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T17:19:15.071723Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc/poms/branches
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 8
+Prop-content-length: 118
+Content-length: 118
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T17:23:29.072483Z
+K 7
+svn:log
+V 15
+Initial import.
+PROPS-END
+
+Node-path: poc/common/branches/common-dev
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Revision-number: 9
+Prop-content-length: 102
+Content-length: 102
+
+K 10
+svn:author
+V 8
+depstein
+K 8
+svn:date
+V 27
+2008-03-26T17:25:16.556420Z
+K 7
+svn:log
+V 0
+
+PROPS-END
+
+Node-path: poc/common/branches/common-dev/.classpath
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 697
+Text-content-md5: 91e285bd47dd0b87129f3955b0fc07b3
+Text-content-sha1: 5e8a46f40f081b51985359adcdbbde15556567f1
+Content-length: 707
+
+PROPS-END
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="common-test/target/classes" path="common-test/src/main/java"/>
+	<classpathentry kind="src" output="common-test/target/classes" path="common-test/src/main/resources"/>
+	<classpathentry kind="src" output="common-util/target/classes" path="common-util/src/main/java"/>
+	<classpathentry kind="src" output="common-ws/target/classes" path="common-ws/src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER/modules"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
+
+
+Node-path: poc/common/branches/common-dev/.project
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 560
+Text-content-md5: 1e99777481e0bc0bd4f61fdc16b5c2d6
+Text-content-sha1: 1065c0f70bfc1a2e2ef3d9ec7d8d64f81d1a72fe
+Content-length: 570
+
+PROPS-END
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>common</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.maven.ide.eclipse.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.maven.ide.eclipse.maven2Nature</nature>
+	</natures>
+</projectDescription>
+
+
+Node-path: poc/common/branches/common-dev/common-test
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+Node-path: poc/common/branches/common-dev/common-test/pom.xml
+Node-kind: file
+Node-action: add
+Prop-content-length: 10
+Text-content-length: 547
+Text-content-md5: 3ba25236258ef8798c2b2a27f2524ab2
+Text-content-sha1: ad2e3b06126567d358ef2a456e8ba0bf1251de37
+Content-length: 557
+
+PROPS-END
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.kuali.student.poc.common</groupId>
+	<artifactId>common-test</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<description />
+
+	<parent>
+		<groupId>org.kuali.student.poc.common</groupId>
+		<artifactId>common-pom</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+</project>
+
+Node-path: poc/common/branches/common-dev/common-test/src
+Node-kind: dir
+Node-action: add
+Prop-content-length: 10
+Content-length: 10
+
+PROPS-END
+
+
+
