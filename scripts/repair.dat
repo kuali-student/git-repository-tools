@@ -1,4 +1,5 @@
 # Format
 # TYPE:repo url:repo revision
-TARGET:http://svn.kuali.org/repos/student/enrollment/ks-deployments/trunk:35210
-COPY_FROM:http//svn.kuali.org/repos/student/branches/ks-1.3:35204
+FETCH;http://svn.kuali.org/repos/student/enrollment/ks-deployments/trunk;35210
+FETCH;http://svn.kuali.org/repos/student/branches/ks-1.3;35204
+DIFF;35210;35204
