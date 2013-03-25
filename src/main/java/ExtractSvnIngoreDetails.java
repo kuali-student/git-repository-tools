@@ -18,12 +18,10 @@ import org.tmatesoft.svn.core.wc.SVNPropertyData;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
 
-/**
- * 
- */
+
 
 /**
- * @author ocleirig
+ * @author Kuali Student Team
  * 
  */
 public class ExtractSvnIngoreDetails {
@@ -43,21 +41,17 @@ public class ExtractSvnIngoreDetails {
 	 */
 	public static void main(String[] args) {
 
+		if (args.length != 1) {
+			System.err.println("USAGE: <absolute path to working copy>");
+			System.exit(-1);
+		}
 		try {
-			File diskRepo = new File("/subversion/ks-1.3");
-
-			SVNRepository repository = SVNRepositoryFactory
-					.create(SVNURL
-							.parseURIDecoded("http://svn.kuali.org/repos/student/branches/ks-1.3"));
+			File diskRepo = new File(args[0]);
 
 			SVNClientManager clientManager = SVNClientManager.newInstance();
 
 			SVNWCClient wcClient = clientManager.getWCClient();
 
-			long revision = repository.getLatestRevision();
-
-			SVNRevision rev = SVNRevision.create(revision);
-			
 			Map<String, List<File>>svnIgnoreContentToFileListMap = new HashMap<String, List<File>>();
 
 			Iterator<File> dirIter = FileUtils.iterateFilesAndDirs(diskRepo,
@@ -98,7 +92,7 @@ public class ExtractSvnIngoreDetails {
 				}
 
 				SVNPropertyData prop = wcClient.doGetProperty(file,
-						"svn:ignore", rev, rev);
+						"svn:ignore", SVNRevision.HEAD, SVNRevision.WORKING);
 
 				if (prop != null) {
 					
