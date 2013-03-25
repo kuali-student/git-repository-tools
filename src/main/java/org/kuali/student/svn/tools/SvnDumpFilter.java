@@ -61,6 +61,11 @@ public class SvnDumpFilter {
 
 	private FileOutputStream fileOutputStream;
 
+	/*
+	 * For version 3 stream's we need to acquire the content hashes from the
+	 */
+	private boolean acquireCopyFromHashes = false;
+
 	/**
 	 * 
 	 */
@@ -103,6 +108,9 @@ public class SvnDumpFilter {
 						exitOnError("Filter only works on version 3 and below dump streams");
 					}
 
+					if (dumpFormatVersion == 3) {
+						acquireCopyFromHashes = true;
+					}
 					foundFormat = true;
 
 					lineData.println(fileOutputStream);
@@ -233,6 +241,15 @@ public class SvnDumpFilter {
 			Map<String, String> nodeProperties, INodeFilter nodeFilter) {
 
 		String action = nodeProperties.get("Node-action");
+		
+		String sha1 = nodeProperties.get("Text-delta-base-sha1");
+		
+		String md5 = nodeProperties.get("Text-delta-base-md5");
+		
+		if (md5 != null) {
+		
+			nodeFilter.storeChecksumData(currentRevision, path, sha1, md5);
+		}
 
 		if (action != null && action.equals("add")) {
 

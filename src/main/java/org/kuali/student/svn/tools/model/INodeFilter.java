@@ -45,5 +45,15 @@ public interface INodeFilter {
 	 */
 
 	PathRevisionAndMD5AndSHA1 getCopyFromData(long currentRevision, String path);
+	
+	/**
+	 * For Version 3 dump's we need to acquire the copyfrom hashes from the earlier point in the stream.
+	 * 
+	 * @param currentRevision
+	 * @param path
+	 * @param sha1
+	 * @param md5
+	 */
+	public void storeChecksumData (long currentRevision, String path, String sha1, String md5);
 
 }

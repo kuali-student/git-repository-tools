@@ -22,9 +22,11 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import modifier.PathRevisionAndMD5AndSHA1;
 
@@ -45,6 +47,8 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
 	private Map<Long, Map<String, PathRevisionAndMD5AndSHA1>> revisionToPathToDataMap = new LinkedHashMap<Long, Map<String, PathRevisionAndMD5AndSHA1>>();
 
+	private Map<Long, Map<String,PathRevisionAndMD5AndSHA1>>copyFromRevisionToCopyFromPathToDataMap = new LinkedHashMap<Long, Map<String,PathRevisionAndMD5AndSHA1>>();
+	
 	/**
 	 * 
 	 */
@@ -64,6 +68,29 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 		// that we
 		// can acquire the md5 as the stream is processed.
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.svn.tools.model.INodeFilter#storeChecksumData(long, java.lang.String, java.lang.String, java.lang.String)
+	 */
+	public void storeChecksumData(long currentRevision, String path,
+			String sha1, String md5) {
+		
+		Map<String, PathRevisionAndMD5AndSHA1> copyFromMap = copyFromRevisionToCopyFromPathToDataMap.get(currentRevision);
+		
+		if (copyFromMap == null)
+			return;
+		
+		PathRevisionAndMD5AndSHA1 data = copyFromMap.get(path);
+		
+		if (data == null) {
+			log.warn(String.format("SKIPPING:%d, %s (Data is unexpectantly null)", currentRevision, path));
+			return;
+		}
+		
+		data.setSha1(sha1);
+		data.setMd5(md5);
+		
 	}
 
 	/*
@@ -178,6 +205,23 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 						
 					} else {
 						dataMap.put(targetPath, data);
+						
+						// store the copyFromPath to data now
+						
+						Map<String, PathRevisionAndMD5AndSHA1> copyFromMap = this.copyFromRevisionToCopyFromPathToDataMap.get(targetRevision);
+						
+						if (copyFromMap == null) {
+							copyFromMap = new HashMap<String, PathRevisionAndMD5AndSHA1>();
+							this.copyFromRevisionToCopyFromPathToDataMap.put(targetRevision, copyFromMap);
+						}
+						
+						PathRevisionAndMD5AndSHA1 originalData = copyFromMap.put(copyFromPath, data);
+						
+						if (originalData != null) {
+							log.warn("OVERWRITING original data: " + originalData.toString());
+						}
+						
+						
 					}
 
 				}
