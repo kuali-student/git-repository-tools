@@ -20,6 +20,9 @@ The .git directory needs to be specified in the path.  It needs to already exist
 
 If the tag already exists the svn export of that tree won't occur again.
 
+You need to raise or define in ~/.gitconfig the diff.renamelimit configuration variable this will allow --find-copies-harder to find partial and very changed files.
+
+
 repair.dat Format:
 
 # comment lines
