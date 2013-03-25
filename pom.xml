@@ -67,8 +67,15 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>org.kuali.student.svn.tool.Main</mainClass>
+									<mainClass>org.kuali.student.svn.tools.Main</mainClass>
 								</transformer>
+								<!-- spring schema's and handlers -->
+								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+      								<resource>META-INF/spring.handlers</resource>
+    							</transformer>
+    							<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+      								<resource>META-INF/spring.schemas</resource>
+   							    </transformer>
 							</transformers>
 						</configuration>
 					</execution>

@@ -42,7 +42,7 @@ public class Main {
 		
 		try {
 			
-			ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+			ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
 			
 			applicationContext.registerShutdownHook();
 			
