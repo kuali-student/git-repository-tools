@@ -156,6 +156,20 @@ def fetchPath(gitDirectory, path, rev):
     command = "{0} export {1} -r {2} {3}".format(svn_command, path, rev, topLevelPath)
     
     executeCommandInWorkingDirectory(command, workingCopyDir)
+
+    # add place holder files into any empty directories
+    command = "find . -type d -empty | grep -v .git"
+
+    output = subprocess.check_output(command, shell=True, cwd=workingCopyDir)
+
+    emptyDirs = output.split("\n")
+
+    for ed in emptyDirs:
+
+	if len (ed) == 0:
+            break;
+        
+        executeCommandInWorkingDirectory ("touch {0}/placeholder.txt".format(ed), workingCopyDir)
     
     command = "{0} add *".format(git_command)
     
@@ -280,7 +294,7 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
             
     
     # get the copied and changes between the revisions
-    command = "git --git-dir={0} diff-tree --find-copies-harder --diff-filter=C,R,M -r r{1} r{2}".format(gitDirectory, targetRev, copyFromRev)
+    command = "git --git-dir={0} diff-tree --find-copies-harder --diff-filter=C,R,M -r r{1} r{2} | sort -rk5 ".format(gitDirectory, targetRev, copyFromRev)
     
     print command
     
