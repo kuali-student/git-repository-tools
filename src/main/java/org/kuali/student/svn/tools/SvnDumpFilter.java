@@ -192,11 +192,17 @@ public class SvnDumpFilter {
 			if (isRevisionStart(lineData)) {
 				// write the current node
 				writeNode(currentRevision, path, nodeProperties, nodeFilter);
+				if (nodeProperties.containsKey("Content-length")) {
+					log.info("");
+				}
 				processRevision(lineData);
 				return;
 			} else if (isNodeStart(lineData)) {
 				// write the current node
 				writeNode(currentRevision, path, nodeProperties, nodeFilter);
+				if (nodeProperties.containsKey("Content-length")) {
+					log.info("");
+				}
 				processNode(lineData, nodeFilter);
 				return;
 			} else {
@@ -225,8 +231,6 @@ public class SvnDumpFilter {
 
 	private void writeNode(long currentRevision, String path,
 			Map<String, String> nodeProperties, INodeFilter nodeFilter) {
-
-		String md5 = nodeProperties.get("Text-content-md5");
 
 		String action = nodeProperties.get("Node-action");
 
@@ -257,6 +261,13 @@ public class SvnDumpFilter {
 				
 				if (original != null)
 					log.warn("Overriting existing Text-copy-source-md5: " + original);
+				
+				original = nodeProperties.put("Text-copy-source-sha1",
+						joinHistoryData.getSha1());
+				
+				if (original != null)
+					log.warn("Overriting existing Text-copy-source-sha1: " + original);
+
 
 			}
 		}

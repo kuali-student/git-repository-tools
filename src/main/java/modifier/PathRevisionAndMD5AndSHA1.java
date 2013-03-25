@@ -98,6 +98,16 @@ public class PathRevisionAndMD5AndSHA1 {
 	public void setSha1(String sha1) {
 		this.sha1 = sha1;
 	}
+	
+	
+
+
+	/**
+	 * @return the sha1
+	 */
+	public String getSha1() {
+		return sha1;
+	}
 
 
 	/* (non-Javadoc)
