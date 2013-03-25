@@ -1,5 +1,17 @@
-/**
+/*
+ * Copyright 2013 The Kuali Foundation
  * 
+ * Licensed under the Educational Community License, Version 1.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/ecl1.php
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.kuali.student.common.io;
 
@@ -14,7 +26,9 @@ import java.nio.charset.CharsetDecoder;
 /**
  * @author Kuali Student Team
  * 
- * The code in this class was copied from org.tmatesoft.svn.core.internal.wc.SVNUtil
+ * The code in this class was copied from org.tmatesoft.svn.core.internal.wc.SVNUtil version 1.7.8 and was originally written by: TMate Software Ltd., Peter Skoog
+ * 
+ * it is subject to the <a href="http://svnkit.com/license.html">svnkit.com license</a>.
  * 
  */
 public final class IOUtils {
