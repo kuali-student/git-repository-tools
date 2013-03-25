@@ -20,16 +20,16 @@ import shutil
 # this needs to be changed to md5sum on linux
 # windows needs an absolute path to work.
 # this one assumes you have git for windows installed.
-md5sum_command="C:\\Program Files (x86)\\Git\\bin\\md5sum.exe"
+md5sum_command="/usr/bin/md5sum"
 
-git_command="C:\\Program Files (x86)\\Git\\bin\\git.exe"
+git_command="/usr/bin/git"
 
-svn_command="C:\\Program Files (x86)\\Subversion\\bin\\svn.exe"
+svn_command="/usr/bin/svn"
 
-svnrdump_command="C:\\Program Files (x86)\\Subversion\\bin\\svnrdump.exe"
+svnrdump_command="/usr/bin/svnrdump"
 
 # TODO change to using os.path.join instead of this field
-file_seperator="\\"
+file_seperator="/"
 
 svn_repository_url = "http://svn.kuali.org/repos/student"
 
@@ -38,8 +38,10 @@ svn_repository_url = "http://svn.kuali.org/repos/student"
 copyFromRevToPrefix = {}
 
 def executeCommandInWorkingDirectory(command, workingDirectory):
-    
-    p = subprocess.Popen(command, cwd=workingDirectory)
+   
+    print "command = ", command
+    print "working Directory = ", workingDirectory 
+    p = subprocess.Popen(command, cwd=workingDirectory,shell=1)
     
     p.wait()
     
@@ -62,7 +64,7 @@ def fetchIncrementalDumpfile (path, rev):
     
     print command
     
-    subprocess.call(command, stdout=dumpFile)
+    subprocess.call(command, stdout=dumpFile, shell=1)
     
     dumpFile.close()
     
@@ -82,7 +84,7 @@ def fetchDumpFile (path, rev):
     
     print command
     
-    subprocess.call(command, stdout=dumpFile)
+    subprocess.call(command, stdout=dumpFile, shell=1)
     
     dumpFile.close()
     
@@ -95,7 +97,7 @@ def fetchPath(gitDirectory, path, rev):
     
     try:
         
-        output = subprocess.check_output(command).strip("\n")
+        output = subprocess.check_output(command, shell=1).strip("\n")
     
         if output != tagName:
             print "{0} exists skipping export.".format(tagName)
@@ -112,9 +114,12 @@ def fetchPath(gitDirectory, path, rev):
     # find the top level working copy
     workingCopyDir = os.path.dirname(gitDirectory)
     
+    print workingCopyDir
+ 
     # checkout something with not a lot of data
     command = "{0} checkout master".format(git_command)
-    
+   
+    print command 
     executeCommandInWorkingDirectory(command, workingCopyDir)
     
     # delete the export branch if it exists
@@ -195,7 +200,7 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
     # read in the sha1 -> copy from path details
     copyFromSha1ToPath = {}
     
-    command = "git --git-dir={0} ls-tree -r --full-tree r{1}".format(gitDirectory, copyFromRev)
+    command = "git --git-dir={0} ls-tree -rt --full-tree r{1}".format(gitDirectory, copyFromRev)
     
     #  print command
         
@@ -223,7 +228,7 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
         copyFromSha1ToPath[copyFromSha1] = copyFromPath
         
         
-    command = "git --git-dir={0} ls-tree -r --full-tree r{1}".format(gitDirectory, targetRev)
+    command = "git --git-dir={0} ls-tree -rt --full-tree r{1}".format(gitDirectory, targetRev)
     
     #  print command
         
