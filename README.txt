@@ -23,12 +23,13 @@ If the tag already exists the svn export of that tree won't occur again.
 repair.dat Format:
 
 # comment lines
-FETCH;http://svn.kuali.org/repos/student/somepath1;rX1
-FETCH;http://svn.kuali.org/repos/student/somepath2;rX2
-FETCH;http://svn.kuali.org/repos/student/somepath3;rX3
+FETCH-TARGET;http://svn.kuali.org/repos/student/somepath1;rX1
+FETCH-COPY-FROM;http://svn.kuali.org/repos/student/somepath2;rX2
 DIFF;rX2;rX3
 
-The FETCH lines will svn export the repository path given and commit it into the git repository as a single commit pointed at by the rXN tag.
+The FETCH-TARGET line means that we should get the --incremental dump of that path.  This is the set of files and directories that changed on that revision.
+
+The FETCH-COPY-FROM line means we should get the full dump of that path.  This includes all of the files that existed at that revision even if they were added by previous revisions.
 
 For each DIFF line the copyfrom details will be determined targetting the first tag sourcing from the second tag.
 
@@ -44,9 +45,16 @@ mvn clean install then java -jar target/svn-history-tools-0.0.1-SNAPSHOT-shaded.
 
 Main Class: org.kuali.student.svn.tools.Main
 
-Arguments: <original dump file> <target dump file> <duplicate join options log> <revision joining details>
+Arguments: <svn dump file version: 2 or 3> <revision joining detail n> ... <revision joining details n>
 
-Each is a file.
+If version is 3:
+
+We expect an rXYZ.dump file to exist for both the target and copyfrom revision in the current working directory.
+
+If version is 2:
+
+We expect an rXYZ.dump file to exist for the target revision in the current working directory.
+
 
 multiple revision joining details files can be added.  These are the output files from the Prepare.py program.
 
