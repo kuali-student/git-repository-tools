@@ -16,15 +16,15 @@
 package org.kuali.student.svn.tools;
 
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -64,6 +64,8 @@ public class SvnDumpFilter {
 	@Autowired
 	private INodeFilter nodeFilter;
 
+	private FileOutputStream fileOutputStream;
+
 	/**
 	 * 
 	 */
@@ -79,7 +81,9 @@ public class SvnDumpFilter {
 		reader = new BufferedReader(new InputStreamReader(fileInputStream,
 				"UTF-8"));
 
-		writer = new PrintWriter(new File(targetDumpFile), "UTF-8");
+		fileOutputStream = new FileOutputStream (targetDumpFile, false);
+		
+		writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fileOutputStream, "UTF-8")));
 
 		try {
 
@@ -216,7 +220,7 @@ public class SvnDumpFilter {
 					// both the svn properties and text content)
 					writeNode(currentRevision, path, nodeProperties,
 							nodeFilter, writer);
-					transferStreamContent(reader, writer, contentLength);
+					transferStreamContent(contentLength);
 					return;
 
 				}
@@ -317,14 +321,13 @@ public class SvnDumpFilter {
 		// divide total bytes by buffer size and then repeat until
 		// all is copied
 
-		transferStreamContent(reader, writer, contentLength);
+		transferStreamContent(contentLength);
 
 	}
 
-	private void transferStreamContent(BufferedReader reader,
-			PrintWriter writer, long contentLength) throws IOException {
+	private void transferStreamContent(long contentLength) throws IOException {
 
-		long copied = IOUtils.copyLarge(reader, writer, 0, contentLength);
+		long copied = IOUtils.copyLarge(fileInputStream, fileOutputStream, 0, contentLength);
 		//
 		if (copied != contentLength)
 			exitOnError(String.format(
