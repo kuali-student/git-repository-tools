@@ -13,8 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.svn.tools;
+package org.kuali.student.git.tools;
 
+import java.io.File;
+import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -31,36 +35,52 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		
 		if (args.length != 2) {
-			log.error("USAGE: <source dump file> <target dump file>");
+			log.error("USAGE: <path to git repository> <data file>");
 			System.exit(-1);
 		}
 
-		String sourceDumpFile = args[0];
-		String targetDumpFile = args[1];
+		String pathToGitRepo = args[0];
+		
+		String comparisonTagDataFile = args[1];
+		
+		
 		
 		try {
 			
-			ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("svn/applicationContext.xml");
+			ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("git/applicationContext.xml");
 			
 			applicationContext.registerShutdownHook();
 			
-			SvnDumpFilter filter = applicationContext.getBean(SvnDumpFilter.class);
+			GitExtractor extractor = applicationContext.getBean(GitExtractor.class);
 			
-			log.info(String.format ("Started Filtering (%s) into (%s)", sourceDumpFile, targetDumpFile));
+			extractor.buildRepository(new File (pathToGitRepo));
 			
-			filter.applyFilter(sourceDumpFile, targetDumpFile);
+			List<String> pathsToCompare = FileUtils.readLines(new File (comparisonTagDataFile), "UTF-8");
 			
-			log.info(String.format ("Finished Filtering (%s) into (%s)", sourceDumpFile, targetDumpFile));
+			for (String comparisonPath : pathsToCompare) {
+				
+				if (comparisonPath.trim().length() == 0 || comparisonPath.trim().startsWith("#"))
+					continue; // skip empty lines and comments
+				
+				String parts[] = comparisonPath.split(":");
+				
+				String targetTag = parts[0];
+				String copyFromTag = parts[1];
+				
+				extractor.extractDifference (targetTag, copyFromTag);
+				
+			}
 			
-		} catch (Exception e) {
-			log.error("Processing failed", e);
+			
+			
 		}
+		catch (Exception e) {
+			log.error("Unexpected Exception", e);
+		}
+			
 
-
-		
 	}
-
 
 }
