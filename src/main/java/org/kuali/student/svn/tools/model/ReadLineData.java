@@ -15,6 +15,7 @@
  */
 package org.kuali.student.svn.tools.model;
 
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
 /**
@@ -66,16 +67,20 @@ public class ReadLineData {
 		return this.line.startsWith(prefix);
 	}
 
-	public void println(PrintWriter writer) {
+	public void println(FileOutputStream fileOutputStream) {
+		
+		PrintWriter pw = new PrintWriter(fileOutputStream);
 		
 		for (int i = 0; i < skippedLines; i++) {
-			writer.print("\n"); // unix style end of lines
+			pw.print("\n"); // unix style end of lines
 		}
 		
 		if (line != null) {
-			writer.print(line);
-			writer.print("\n"); // unix style end of lines
+			pw.print(line);
+			pw.print("\n"); // unix style end of lines
 		}
+		
+		pw.flush();
 	}
 
 	/* (non-Javadoc)

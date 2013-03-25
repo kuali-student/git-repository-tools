@@ -16,7 +16,6 @@
 package org.kuali.student.svn.tools;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -31,15 +30,13 @@ import java.util.Map;
 import modifier.PathRevisionAndMD5;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.ReaderInputStream;
+import org.apache.commons.io.output.WriterOutputStream;
 import org.kuali.student.svn.tools.model.INodeFilter;
 import org.kuali.student.svn.tools.model.ReadLineData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-/**
- * 
- */
 
 /**
  * Svn Dump Filter is a way to change the contents of a revision as it is
@@ -50,19 +47,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SvnDumpFilter {
 
+	private static final String UTF_8 = "UTF-8";
+
 	private static final Logger log = LoggerFactory
 			.getLogger(SvnDumpFilter.class);
 
 	private long currentRevision = -1;
 
-	private FileInputStream fileInputStream;
-
-	private BufferedReader reader;
-
-	private PrintWriter writer;
-	
 	@Autowired
 	private INodeFilter nodeFilter;
+
+	private FileInputStream fileInputStream;
 
 	private FileOutputStream fileOutputStream;
 
@@ -76,14 +71,11 @@ public class SvnDumpFilter {
 	public void applyFilter(String sourceDumpFile, String targetDumpFile) throws FileNotFoundException,
 			UnsupportedEncodingException {
 
+
 		fileInputStream = new FileInputStream(sourceDumpFile);
 
-		reader = new BufferedReader(new InputStreamReader(fileInputStream,
-				"UTF-8"));
-
-		fileOutputStream = new FileOutputStream (targetDumpFile, false);
+		fileOutputStream = new FileOutputStream(targetDumpFile);
 		
-		writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(fileOutputStream, "UTF-8")));
 
 		try {
 
@@ -91,11 +83,14 @@ public class SvnDumpFilter {
 
 			while (true) {
 
-				ReadLineData lineData = readTilNonEmptyLine(reader);
+				ReadLineData lineData = readTilNonEmptyLine();
 
-				if (lineData.getLine() == null) {
+				if (lineData == null) {
+					break;
+				}
+				else if (lineData.getLine() == null) {
 
-					lineData.println(writer);
+					lineData.println(fileOutputStream);
 
 					break;
 				}
@@ -110,25 +105,25 @@ public class SvnDumpFilter {
 
 					foundFormat = true;
 
-					lineData.println(writer);
+					lineData.println(fileOutputStream);
 
 				} else if (lineData.startsWith("UUID")) {
-					lineData.println(writer);
+					lineData.println(fileOutputStream);
 				} else if (isRevisionStart(lineData)) {
 
-					processRevision(lineData, reader, writer);
+					processRevision(lineData);
 
 				} else if (isNodeStart(lineData)) {
 
-					processNode(lineData, nodeFilter, reader, writer);
+					processNode(lineData, nodeFilter);
 
 				}
 
 			}
 
 			try {
-				reader.close();
-				writer.close();
+				fileInputStream.close();
+				fileOutputStream.close();
 			} catch (IOException e) {
 				log.warn("Problem closing streams");
 			}
@@ -178,12 +173,11 @@ public class SvnDumpFilter {
 			return false;
 	}
 
-	private void processNode(ReadLineData lineData, INodeFilter nodeFilter,
-			BufferedReader reader, PrintWriter writer) throws IOException {
+	private void processNode(ReadLineData lineData, INodeFilter nodeFilter) throws IOException {
 
 		String path = extractStringValue(lineData);
 
-		lineData.println(writer);
+		lineData.println(fileOutputStream);
 
 		// this map will store the properties in the same order as we found
 		// them.
@@ -193,19 +187,17 @@ public class SvnDumpFilter {
 			// consume properties until wee see the content or someother
 			// node/revision
 
-			lineData = readTilNonEmptyLine(reader);
+			lineData = readTilNonEmptyLine();
 
 			if (isRevisionStart(lineData)) {
 				// write the current node
-				writeNode(currentRevision, path, nodeProperties, nodeFilter,
-						writer);
-				processRevision(lineData, reader, writer);
+				writeNode(currentRevision, path, nodeProperties, nodeFilter);
+				processRevision(lineData);
 				return;
 			} else if (isNodeStart(lineData)) {
 				// write the current node
-				writeNode(currentRevision, path, nodeProperties, nodeFilter,
-						writer);
-				processNode(lineData, nodeFilter, reader, writer);
+				writeNode(currentRevision, path, nodeProperties, nodeFilter);
+				processNode(lineData, nodeFilter);
 				return;
 			} else {
 				String parts[] = splitLine(lineData.getLine());
@@ -219,7 +211,7 @@ public class SvnDumpFilter {
 					// write the properties and copy the content (this includes
 					// both the svn properties and text content)
 					writeNode(currentRevision, path, nodeProperties,
-							nodeFilter, writer);
+							nodeFilter);
 					transferStreamContent(contentLength);
 					return;
 
@@ -232,8 +224,7 @@ public class SvnDumpFilter {
 	}
 
 	private void writeNode(long currentRevision, String path,
-			Map<String, String> nodeProperties, INodeFilter nodeFilter,
-			PrintWriter writer) {
+			Map<String, String> nodeProperties, INodeFilter nodeFilter) {
 
 		String md5 = nodeProperties.get("Text-content-md5");
 
@@ -275,27 +266,30 @@ public class SvnDumpFilter {
 
 		String contentLengthValue = nodeProperties.remove("Content-length");
 
+		PrintWriter pw = new PrintWriter(fileOutputStream);
+		
 		for (Map.Entry<String, String> entry : nodeProperties.entrySet()) {
 
-			writer.print(String.format("%s: %s\n", entry.getKey(),
+			pw.print(String.format("%s: %s\n", entry.getKey(),
 					entry.getValue()));
 		}
 
 		// ensure that we print out the content-length property last
 		if (contentLengthValue != null)
-			writer.print(String.format("Content-length: %s\n",
+			pw.print(String.format("Content-length: %s\n",
 					contentLengthValue));
+		
+		pw.flush();
 
 	}
 
-	private void processRevision(ReadLineData lineData, BufferedReader reader,
-			PrintWriter writer) throws IOException {
+	private void processRevision(ReadLineData lineData) throws IOException {
 
 		currentRevision = extractLongValue(lineData);
 
-		lineData.println(writer);
+		lineData.println(fileOutputStream);
 
-		ReadLineData expectingPropContentLength = readTilNonEmptyLine(reader);
+		ReadLineData expectingPropContentLength = readTilNonEmptyLine();
 
 		if (!expectingPropContentLength.startsWith("Prop-content-length")) {
 			exitOnError("Expected Prop-content-length: but found: "
@@ -304,9 +298,9 @@ public class SvnDumpFilter {
 
 		long propContentLength = extractLongValue(expectingPropContentLength);
 
-		expectingPropContentLength.println(writer);
+		expectingPropContentLength.println(fileOutputStream);
 
-		ReadLineData expectingContentLength = readTilNonEmptyLine(reader);
+		ReadLineData expectingContentLength = readTilNonEmptyLine();
 
 		if (!expectingContentLength.startsWith("Content-length:")) {
 			exitOnError("Expected Content-length: but found: "
@@ -315,7 +309,7 @@ public class SvnDumpFilter {
 
 		long contentLength = extractLongValue(expectingContentLength);
 
-		expectingContentLength.println(writer);
+		expectingContentLength.println(fileOutputStream);
 
 		// we need to stream this
 		// divide total bytes by buffer size and then repeat until
@@ -327,25 +321,28 @@ public class SvnDumpFilter {
 
 	private void transferStreamContent(long contentLength) throws IOException {
 
+		contentLength+= 1;
+		
 		long copied = IOUtils.copyLarge(fileInputStream, fileOutputStream, 0, contentLength);
-		//
+		
 		if (copied != contentLength)
 			exitOnError(String.format(
 					"Transferred (%s) instead of Expected (%s)",
 					String.valueOf(copied), String.valueOf(contentLength)));
+		
 
 	}
 
-	private ReadLineData readTilNonEmptyLine(BufferedReader reader)
+	private ReadLineData readTilNonEmptyLine()
 			throws IOException {
-		String line = reader.readLine();
+		String line = org.kuali.student.common.io.IOUtils.readLine(fileInputStream, UTF_8);
 
 		int skippedLines = 0;
 		while (line != null) {
 
 			if (line.trim().length() == 0) {
 				skippedLines++;
-				line = reader.readLine();
+				line = org.kuali.student.common.io.IOUtils.readLine(fileInputStream, UTF_8);
 				continue; // skip over emtpy lines
 			} else
 				return new ReadLineData(line, skippedLines);
