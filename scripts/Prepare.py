@@ -14,18 +14,105 @@ import string
 import sys
 import fileinput
 import os
+import shutil
 
 # this needs to be changed to md5sum on linux
 # windows needs an absolute path to work.
 # this one assumes you have git for windows installed.
 md5sum_command="C:\\Program Files (x86)\\Git\\bin\\md5sum.exe"
 
+git_command="C:\\Program Files (x86)\\Git\\bin\\git.exe"
+
+svn_command="C:\\Program Files (x86)\\Subversion\\bin\\svn.exe"
+
+file_seperator="\\"
+
 # Functions 
 
-def fetchPath(path, rev):
-    pass
+
+def executeCommandInWorkingDirectory(command, workingDirectory):
+    
+    p = subprocess.Popen(command, cwd=workingDirectory)
+    
+    p.wait()
+    
+    return p
 
 
+def fetchPath(gitDirectory, path, rev):
+    
+    # check if the tag already exists
+    tagName = "r{0}".format(rev)
+    
+    command = "git --git-dir={0} rev-parse {1}".format(gitDirectory, tagName)
+    
+    output = subprocess.check_output(command).strip("\n")
+    
+    if output != tagName:
+        print "{0} exists skipping export.".format(tagName)
+        return
+
+    # compute the top level path
+    indexAfterBaseUrl = len("http://svn.kuali.org/repos/student/")
+    
+    topLevelPath = path[indexAfterBaseUrl:]
+    
+    # find the top level working copy
+    workingCopyDir = os.path.dirname(gitDirectory)
+    
+    # checkout something with not a lot of data
+    command = "{0} checkout master".format(git_command)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
+    # delete the export branch if it exists
+    command = "{0} branch -D svn-export".format(git_command)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
+    # create the new empty revision to hold the export
+    command = "{0} checkout --orphan svn-export".format(git_command)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
+    # remove any files (make sure we always specify the workingCopyDir so that this works.
+    command = "{0} rm -rf *".format(git_command)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
+    # remove any other files from the working copy directory
+
+    for (directory, subDirs, files) in os.walk(workingCopyDir):
+    
+        topLevelDirs = subDirs
+    
+        topLevelDirs.remove('.git')
+        
+        for dirToDelete in topLevelDirs:
+            
+            fullDeletePath = directory + file_seperator + dirToDelete
+            
+            shutil.rmtree(fullDeletePath)
+        
+        break;
+        
+    command = "{0} export {1} -r {2} {3}".format(svn_command, path, rev, topLevelPath)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
+    command = "{0} add *".format(git_command)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
+    command = "{0} commit -m\"{1} {2}\"".format(git_command, path, tagName)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
+    # force tag (this may result in the tag moving) 
+    command = "{0} tag -f {1}".format(git_command, tagName)
+    
+    executeCommandInWorkingDirectory(command, workingCopyDir)
+    
 def verifySameFile(srcPath, dstPath):
 
     srcParts = srcPath.split("/")
@@ -46,6 +133,8 @@ Find the copies and moves.
 def computeDiff(gitDirectory, targetRev, copyFromRev):
     
     joinOutputFile = "r{0}-r{1}-join.dat".format(targetRev, copyFromRev)
+    
+    print "Started on finding join data into: {0}".format(joinOutputFile)
     
     joinOutput = open (joinOutputFile, "w")
     
@@ -130,7 +219,6 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
             
             joinOutput.write ("#{0}\n{1}||{2}\n{3}||{4}\n{5}||{6}\n".format("Unchanged", targetRev, targetPath, copyFromRev, copyFromPath, targetSha1, targetMd5))
             
-            
     
     # get the copied and changes between the revisions
     command = "git --git-dir={0} diff-tree --find-copies-harder --diff-filter=C,R,M -r r{1} r{2}".format(gitDirectory, targetRev, copyFromRev)
@@ -211,10 +299,6 @@ gitDirectory = sys.argv[1]
  
 revisionData = sys.argv[2]
 
-
-
-
-
 for line in open(revisionData):
     strippedLine = line.strip()
     if len (strippedLine) == 0 or strippedLine[0] == '#':
@@ -229,7 +313,7 @@ for line in open(revisionData):
     
         rev = int (parts[2])
         
-        fetchPath (path, rev)
+        fetchPath (gitDirectory, path, rev)
         
     elif type == 'DIFF':
         targetRev = parts[1]

@@ -241,7 +241,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
 		if (pathToDataMap == null)
 			return null;
-
+		
 		PathRevisionAndMD5AndSHA1 data = pathToDataMap.get(path);
 
 		return data;

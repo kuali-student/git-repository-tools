@@ -1,5 +1,6 @@
 # Format
 # TYPE:repo url:repo revision
+# We assume its always http:// and never https://
 FETCH;http://svn.kuali.org/repos/student/enrollment/ks-deployments/trunk;35210
 FETCH;http://svn.kuali.org/repos/student/branches/ks-1.3;35204
 DIFF;35210;35204
