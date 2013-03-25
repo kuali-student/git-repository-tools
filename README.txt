@@ -1,0 +1,120 @@
+README
+
+SVN History Tools provide two core functions:
+
+1. determine the per file linkage between two subersion revisions.  Including where the content is the same (copy/rename) and also where it is different (copy/rename followed by a modification)
+
+2. Apply this linkage data to an SVN repository dump file such that in the exported repository dump file the file history is joined using 'copyfrom' details from phase 1.
+
+NOTE: only v2 svn dump files are supported at the moment.
+
+This is because we store the full file in git so it can't easily compute the md5 hash for the delta version used in the v3 dump.
+
+Running the tools:
+
+scripts/Prepare.py
+
+Program Arguments: </abs/path/to/git/repo/.git dir> <repair.dat>
+
+The .git directory needs to be specified in the path.  It needs to already exist.  The preparation process will be creating tags named rXYZ for each XYZ revision.
+
+If the tag already exists the svn export of that tree won't occur again.
+
+repair.dat Format:
+
+# comment lines
+FETCH;http://svn.kuali.org/repos/student/somepath1;rX1
+FETCH;http://svn.kuali.org/repos/student/somepath2;rX2
+FETCH;http://svn.kuali.org/repos/student/somepath3;rX3
+DIFF;rX2;rX3
+
+The FETCH lines will svn export the repository path given and commit it into the git repository as a single commit pointed at by the rXN tag.
+
+For each DIFF line the copyfrom details will be determined targetting the first tag sourcing from the second tag.
+
+A file will be created for each DIFF line like rX2-rX3-join.dat 
+
+These files can be passed into the SvnDumpFilter and are used to rewrite history 
+
+Svn Dump Filter
+
+The maven shade plugin is used to create an uber jar that contains all of the dependency jars bundled in a single jar.
+
+mvn clean install then java -jar target/svn-history-tools-0.0.1-SNAPSHOT-shaded.jar for the command line options.
+
+Main Class: org.kuali.student.svn.tools.Main
+
+Arguments: <original dump file> <target dump file> <duplicate join options log> <revision joining details>
+
+Each is a file.
+
+multiple revision joining details files can be added.  These are the output files from the Prepare.py program.
+
+once rewritten the target dump file needs to be loaded into a new svn repository and tested out.
+
+svnadmin create test
+
+cat target-dump-file | svnadmin load /abs/path/to/test/repo
+
+wait.
+
+then svn log /abs/path/to/test/repo/path/to/file/of/interest
+
+
+
+
+
+The Java code uses FileInputStream's and FileOutputStream's and some code copied from SVNKit that allows us to stream.readLine() in a way similiar to how a BufferedReader works.
+
+See IOUtils for the usage of the methods.
+
+SVN Kit Licence:
+The TMate Open Source License.
+
+
+This license applies to all portions of TMate SVNKit library, which 
+are not externally-maintained libraries (e.g. Ganymed SSH library).
+
+All the source code and compiled classes in package org.tigris.subversion.javahl
+except SvnClient class are covered by the license in JAVAHL-LICENSE file
+
+Copyright (c) 2004-2012 TMate Software. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice, 
+      this list of conditions and the following disclaimer.
+      
+    * Redistributions in binary form must reproduce the above copyright notice, 
+      this list of conditions and the following disclaimer in the documentation 
+      and/or other materials provided with the distribution.
+      
+    * Redistributions in any form must be accompanied by information on how to 
+      obtain complete source code for the software that uses SVNKit and any 
+      accompanying software that uses the software that uses SVNKit. The source 
+      code must either be included in the distribution or be available for no 
+      more than the cost of distribution plus a nominal fee, and must be freely 
+      redistributable under reasonable conditions. For an executable file, complete 
+      source code means the source code for all modules it contains. It does not 
+      include source code for modules or files that typically accompany the major 
+      components of the operating system on which the executable file runs.
+      
+    * Redistribution in any form without redistributing source code for software 
+      that uses SVNKit is possible only when such redistribution is explictly permitted 
+      by TMate Software. Please, contact TMate Software at support@svnkit.com to 
+      get such permission.
+
+THIS SOFTWARE IS PROVIDED BY TMATE SOFTWARE ``AS IS'' AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT, ARE 
+DISCLAIMED. 
+
+IN NO EVENT SHALL TMATE SOFTWARE BE LIABLE FOR ANY DIRECT, INDIRECT, 
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
