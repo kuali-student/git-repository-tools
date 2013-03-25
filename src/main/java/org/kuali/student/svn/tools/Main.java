@@ -35,13 +35,15 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length < 3) {
-			log.error("USAGE: <source dump file> <target dump file> <join data file 1> [ <join data file 2> ... <join data file n>]");
+		if (args.length < 4) {
+			log.error("USAGE: <source dump file> <target dump file> <duplicate join file log> <join data file 1> [ <join data file 2> ... <join data file n>]");
 			System.exit(-1);
 		}
 
 		String sourceDumpFile = args[0];
 		String targetDumpFile = args[1];
+		
+		String duplicateJoinLogFile = args[2];
 		
 		try {
 			
@@ -51,9 +53,9 @@ public class Main {
 			
 			INodeFilter nodeFilter = applicationContext.getBean(INodeFilter.class);
 			
-			for(int i = 2; i < args.length; i++) {
+			for(int i = 3; i < args.length; i++) {
 				log.info(String.format ("Loading Join Data from (%s)", args[i]));
-				nodeFilter.loadFilterData(new File (args[i]));
+				nodeFilter.loadFilterData(new File (args[i]), new File (duplicateJoinLogFile));
 			}
 			
 			SvnDumpFilter filter = applicationContext.getBean(SvnDumpFilter.class);

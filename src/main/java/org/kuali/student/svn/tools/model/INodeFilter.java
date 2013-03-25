@@ -27,10 +27,14 @@ public interface INodeFilter {
 	
 	/**
 	 * Load the filter data for a specific join file
+	 * 
+	 * in the case of duplicates log which one copy from path was used and what the other options were.
+	 * 
 	 * @param joinDataFile
+	 * @param skippedJoinDataFile file to hold the data for which join details were skipped.
 	 * @throws Exception 
 	 */
-	void loadFilterData (File joinDataFile) throws Exception;
+	void loadFilterData (File joinDataFile, File skippedJoinDataFile) throws Exception;
 	
 	/**
 	 * Extract the copy from data for the path and revision specified.
