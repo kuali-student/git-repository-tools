@@ -337,30 +337,10 @@ public class SvnDumpFilter {
 	private static void transferStreamContent(BufferedReader reader,
 			PrintWriter writer, long contentLength) throws IOException {
 		
-		char[] buffer = new char[COPY_BUFFER_SIZE];
-
-		long totalPages = contentLength / COPY_BUFFER_SIZE;
-
-		if (totalPages > 0 )
-			exitOnError("Implement multiple page stream copying");
-
-		int offset = 0;
-
-		while (offset < contentLength) {
-
-			int totalRead = reader.read(buffer, offset,
-					(int) contentLength);
-
-			writer.write(buffer, offset, (int) contentLength);
-
-			if (writer.checkError()) {
-				exitOnError(String
-						.format("copy data issue. read (%d bytes) failed to write",
-								totalRead));
-			}
-
-			offset += totalRead;
-		}
+		long copied = IOUtils.copyLarge(reader, writer, 0, contentLength);
+//		
+		if (copied != contentLength)
+			exitOnError(String.format("Transferred (%s) instead of Expected (%s)", String.valueOf (copied), String.valueOf (contentLength)));
 		
 	}
 
