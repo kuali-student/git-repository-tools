@@ -93,12 +93,17 @@ def fetchPath(gitDirectory, path, rev):
     
     command = "{0} --git-dir={1} rev-parse {2}".format(git_command, gitDirectory, tagName)
     
-    output = subprocess.check_output(command).strip("\n")
+    try:
+        
+        output = subprocess.check_output(command).strip("\n")
     
-    if output != tagName:
-        print "{0} exists skipping export.".format(tagName)
-        return
+        if output != tagName:
+            print "{0} exists skipping export.".format(tagName)
+            return
 
+    except:
+        
+        pass # this is fine it means the tag does not exist
     # compute the top level path
     indexAfterBaseUrl = len("http://svn.kuali.org/repos/student/")
     
