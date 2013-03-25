@@ -14,6 +14,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 
+import modifier.INodeModifier;
+import modifier.PathRevisionAndMD5;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.ISVNCanceller;
@@ -88,7 +91,7 @@ public class SvnDumpFilter {
 		SvnDumpFilter sdf = new SvnDumpFilter();
 		
 		boolean exclude = true;
-		boolean renumberRevisions = true;
+		boolean renumberRevisions = false;
 		boolean dropEmptyRevisions = false;
 		boolean preserveRevisionProperties = true;
 		Collection prefixes = new HashSet<Object>();
@@ -134,7 +137,25 @@ public class SvnDumpFilter {
         writeDumpData(resultDumpStream, String.format ("%s: %d\n\n", SVNAdminHelper.DUMPFILE_MAGIC_HEADER, SVNAdminHelper.DUMPFILE_FORMAT_VERSION));
 
         SVNAdminEventAdapter myEventHandler;
-        CustomDumpFilter handler = new CustomDumpFilter(resultDumpStream, myEventHandler = new SVNAdminEventAdapter(), exclude, renumberRevisions,
+        CustomDumpFilter handler = new CustomDumpFilter(resultDumpStream, myEventHandler = new SVNAdminEventAdapter(), new INodeModifier() {
+			
+			public PathRevisionAndMD5 getCopyPathAndRevision(long revision,
+					String nodePath) {
+				
+				if (revision == 4 && nodePath.equals("/external-change-of-copy.c")) {
+					
+					PathRevisionAndMD5 copyDetails = new PathRevisionAndMD5();
+					
+					copyDetails.setRevision(1);
+					copyDetails.setPath("test.c");
+					copyDetails.setMd5("bfce707a5dde4c3e27f511bdbd8d6503");
+					
+					return copyDetails;
+				}
+				else 
+					return null;
+			}
+		} , exclude, renumberRevisions,
                 dropEmptyRevisions, preserveRevisionProperties, prefixes, skipMissingMergeSources);
         
         SVNDumpStreamParser parser = new SVNDumpStreamParser(canceller);

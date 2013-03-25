@@ -22,6 +22,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import modifier.INodeModifier;
+import modifier.PathRevisionAndMD5;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.SVNErrorCode;
 import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
@@ -56,6 +61,8 @@ import org.tmatesoft.svn.util.SVNLogType;
  */
 public class CustomDumpFilter implements ISVNLoadHandler {
 
+	private static final Logger log = LoggerFactory.getLogger(CustomDumpFilter.class);
+	
     private boolean myIsDoRenumberRevisions;
     private boolean myIsDoExclude;
     private boolean myIsPreserveRevisionProps;
@@ -70,11 +77,13 @@ public class CustomDumpFilter implements ISVNLoadHandler {
     private RevisionBaton myCurrentRevisionBaton;
     private NodeBaton myCurrentNodeBaton;
     private ISVNAdminEventHandler myEventHandler;
+	private INodeModifier nodeModifier;
     
-    public CustomDumpFilter(OutputStream os, ISVNAdminEventHandler handler, boolean exclude, 
+    public CustomDumpFilter(OutputStream os, ISVNAdminEventHandler handler, INodeModifier nodeModifier, boolean exclude, 
             boolean renumberRevisions, boolean dropEmptyRevisions, boolean preserveRevisionProperties, 
             Collection prefixes, boolean skipMissingMergeSources) {
-        myDroppedRevisionsCount = 0;
+        this.nodeModifier = nodeModifier;
+		myDroppedRevisionsCount = 0;
         myLastLiveRevision = SVNRepository.INVALID_REVISION;
         myOutputStream = os;
         myEventHandler = handler;
@@ -125,11 +134,35 @@ public class CustomDumpFilter implements ISVNLoadHandler {
         myCurrentNodeBaton = new NodeBaton();
         String nodePath = (String) headers.get(SVNAdminHelper.DUMPFILE_NODE_PATH);
         String copyFromPath = (String) headers.get(SVNAdminHelper.DUMPFILE_NODE_COPYFROM_PATH);
+        
         if (!nodePath.startsWith("/")) {
             nodePath = "/" + nodePath;    
         }
         if (copyFromPath != null && !copyFromPath.startsWith("/")) {
             copyFromPath = "/" + copyFromPath;
+        }
+        
+        if (copyFromPath == null) {
+        	// candidate to check for externally specified copy from data.
+
+            long revision = myCurrentRevisionBaton.myActualRevision;
+            
+            
+        	PathRevisionAndMD5 data = nodeModifier.getCopyPathAndRevision(revision, nodePath);
+        	
+        	if (data != null) {
+        		
+        		log.info(String.format("Modifying revision (%d), nodePath(%s) to %s.", revision, nodePath, data.toString()));
+        		
+        		if (!data.isSupportsDelta())
+        			headers.remove(SVNAdminHelper.DUMPFILE_TEXT_DELTA);
+        		
+        		headers.put(SVNAdminHelper.DUMPFILE_NODE_COPYFROM_PATH, data.getPath());
+        		headers.put(SVNAdminHelper.DUMPFILE_NODE_COPYFROM_REVISION, String.valueOf(data.getRevision()));
+        		headers.put(SVNAdminHelper.DUMPFILE_TEXT_COPY_SOURCE_MD5, data.getMd5());
+        	
+        		
+        	}
         }
         
         myCurrentNodeBaton.myIsDoSkip = skipPath(nodePath);
