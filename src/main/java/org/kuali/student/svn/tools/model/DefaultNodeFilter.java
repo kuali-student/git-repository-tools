@@ -246,7 +246,7 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 						
 						// store the copyFromPath to data now
 						
-						Map<String, PathRevisionAndMD5AndSHA1> copyFromMap = this.copyFromRevisionToCopyFromPathToDataMap.get(targetRevision);
+						Map<String, PathRevisionAndMD5AndSHA1> copyFromMap = this.copyFromRevisionToCopyFromPathToDataMap.get(copyFromRevision);
 						
 						if (copyFromMap == null) {
 							copyFromMap = new HashMap<String, PathRevisionAndMD5AndSHA1>();
