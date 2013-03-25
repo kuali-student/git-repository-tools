@@ -1,5 +1,4 @@
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -26,7 +25,6 @@ import org.tmatesoft.svn.core.SVNErrorMessage;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNPropertyValue;
 import org.tmatesoft.svn.core.internal.util.SVNPathUtil;
-import org.tmatesoft.svn.core.internal.wc.DefaultDumpFilterHandler;
 import org.tmatesoft.svn.core.internal.wc.ISVNLoadHandler;
 import org.tmatesoft.svn.core.internal.wc.SVNAdminHelper;
 import org.tmatesoft.svn.core.internal.wc.SVNDumpStreamParser;
@@ -93,14 +91,14 @@ public class SvnDumpFilter {
 		boolean exclude = true;
 		boolean renumberRevisions = false;
 		boolean dropEmptyRevisions = false;
-		boolean preserveRevisionProperties = true;
+		boolean preserveRevisionProperties = false;
 		Collection prefixes = new HashSet<Object>();
 		boolean skipMissingMergeSources = false;
 		
 		try {
-			BufferedInputStream inputStream;
-			BufferedOutputStream outputStream;
-			sdf.doFilter(inputStream = new BufferedInputStream(new FileInputStream(sourceDumpFile), READ_BUF_SIZE), outputStream = new BufferedOutputStream(new FileOutputStream(targetDumpFile, false), READ_BUF_SIZE), exclude, renumberRevisions, dropEmptyRevisions, preserveRevisionProperties, prefixes, skipMissingMergeSources);
+			InputStream inputStream;
+			OutputStream outputStream;
+			sdf.doFilter(inputStream = new FileInputStream(sourceDumpFile), outputStream = new FileOutputStream(targetDumpFile, false), exclude, renumberRevisions, dropEmptyRevisions, preserveRevisionProperties, prefixes, skipMissingMergeSources);
 			
 			try {
 				inputStream.close();

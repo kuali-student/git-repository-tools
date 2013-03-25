@@ -154,8 +154,10 @@ public class CustomDumpFilter implements ISVNLoadHandler {
         		
         		log.info(String.format("Modifying revision (%d), nodePath(%s) to %s.", revision, nodePath, data.toString()));
         		
-        		if (!data.isSupportsDelta())
+        		if (!data.isSupportsDelta()) {
         			headers.remove(SVNAdminHelper.DUMPFILE_TEXT_DELTA);
+        			headers.remove(SVNAdminHelper.DUMPFILE_PROP_DELTA);
+        		}
         		
         		headers.put(SVNAdminHelper.DUMPFILE_NODE_COPYFROM_PATH, data.getPath());
         		headers.put(SVNAdminHelper.DUMPFILE_NODE_COPYFROM_REVISION, String.valueOf(data.getRevision()));
@@ -421,8 +423,9 @@ public class CustomDumpFilter implements ISVNLoadHandler {
             nodeBaton.writeToHeader(SVNAdminHelper.DUMPFILE_TEXT_CONTENT_LENGTH + ": " + 
                     nodeBaton.myTextContentLength + "\n");
         }
-        nodeBaton.writeToHeader(SVNAdminHelper.DUMPFILE_CONTENT_LENGTH + ": " + 
-                (nodeBaton.myPropertiesBuffer.size() + nodeBaton.myTextContentLength) + "\n\n");
+        long contentSize = (nodeBaton.myPropertiesBuffer.size() + nodeBaton.myTextContentLength);
+		nodeBaton.writeToHeader(SVNAdminHelper.DUMPFILE_CONTENT_LENGTH + ": " + 
+                contentSize  + "\n\n");
         writeDumpData(myOutputStream, nodeBaton.myHeaderBuffer.toByteArray());
         writeDumpData(myOutputStream, nodeBaton.myPropertiesBuffer.toByteArray());
     }
