@@ -257,11 +257,14 @@ public class SvnDumpFilter {
 				writeNode(fileOutputStream, currentRevision, path,
 						nodeProperties, nodeFilter);
 
-				if (!nodeProperties.containsKey("Content-length")) {
-					throw new RuntimeException(String.format(
-							"Node(%d:%s) missing content-length property",
-							currentRevision, path));
-				}
+				// seems to be allowed to have files without content
+//				String kind = nodeProperties.get("Node-kind");
+//				
+//				if (kind.equals("file") && !nodeProperties.containsKey("Content-length")) {
+//					throw new RuntimeException(String.format(
+//							"Node(%d:%s) missing content-length property",
+//							currentRevision, path));
+//				}
 
 			}
 
