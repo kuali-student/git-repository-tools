@@ -105,7 +105,9 @@ def fetchPath(gitDirectory, path, rev):
 
     except:
         
-        pass # this is fine it means the tag does not exist
+        # this is fine it means the tag does not exist
+	print "tag {0} does not exist, fetching.".format(tagName)
+
     # compute the top level path
     indexAfterBaseUrl = len("http://svn.kuali.org/repos/student/")
     
@@ -153,15 +155,21 @@ def fetchPath(gitDirectory, path, rev):
         
         break;
         
-    command = "{0} export {1} -r {2} {3}".format(svn_command, path, rev, topLevelPath)
+    command = "{0} export {1}@{2} -r {3} {4}".format(svn_command, path, rev, rev, topLevelPath)
     
     executeCommandInWorkingDirectory(command, workingCopyDir)
 
     # add place holder files into any empty directories
     command = "find . -type d -empty | grep -v .git"
 
-    output = subprocess.check_output(command, shell=True, cwd=workingCopyDir)
+    output = None
 
+    try:
+        output = subprocess.check_output(command, shell=True, cwd=workingCopyDir)
+    except:
+        print "No EmptyDirectories for {0}. Skipping placeholder files.".format(tagName)
+	output = ""
+      	
     emptyDirs = output.split("\n")
 
     for ed in emptyDirs:
