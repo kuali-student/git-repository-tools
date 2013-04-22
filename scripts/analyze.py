@@ -10,11 +10,110 @@ import subprocess;
 import traceback;
 import re;
 import pickle;
+import string;
 
-class AnalyzeDifference:
+class AnalyzeDiff:
 
-	def __init__(self):
-		pass
+	def __init__(self, sourceDir, targetDir):
+		self.sourceDir = sourceDir
+		self.targetDir = targetDir
+
+		self.samePaths = {}
+		self.diffPaths = {}
+
+	def addPath(self, sourceRev, targetRev, path):
+	
+		if sourceRev == targetRev:
+			
+			self.samePaths[path] = [sourceRev, targetRev]
+		else:
+			# different
+			self.diffPaths[path] = [sourceRev, targetRev]
+
+
+	def __computeMinTargetRevision (self):
+		
+		minRev = 9999999
+
+		for [sourceRev, targetRev] in self.samePaths.values():
+
+			if targetRev < minRev:
+				minRev = targetRev
+
+
+		for [sourceRev, targetRev] in self.diffPaths.values():
+
+			if targetRev < minRev:
+				minRev = targetRev
+
+		return minRev
+
+
+
+	def __computeMinSourceRevision (self):
+
+		minRev = 9999999
+
+		for [sourceRev, targetRev] in self.samePaths.values():
+
+			if sourceRev < minRev:
+				minRev = sourceRev
+
+
+		for [sourceRev, targetRev] in self.diffPaths.values():
+
+			if sourceRev < minRev:
+				minRev = sourceRev
+
+		return minRev
+
+	def __str__(self):
+
+		lines = []
+
+		lines.append("# source: {0}".format(self.sourceDir))
+		lines.append("# target: {0}".format(self.targetDir))
+
+		totalSame = len (self.samePaths)
+		totalDiff = len (self.diffPaths)
+
+		totalPaths = totalSame + totalDiff
+
+		lines.append("#\n# Total Paths: {0}".format(totalPaths))
+		lines.append("# Total Same: {0}".format(totalSame))
+		lines.append("# Total Different: {0}".format (totalDiff))
+
+
+		lines.append("#\n# Min Source Revision: {0}".format(self.__computeMinSourceRevision()))
+		lines.append("#\n# Min Target Revision: {0}".format(self.__computeMinTargetRevision()))
+		lines.append("")
+
+		paths = self.samePaths.keys()
+
+		paths.sort()
+
+		for path in paths:
+
+			data = self.samePaths[path]
+
+			ourRev = data[0]
+			theirRev = data[1]
+			
+			lines.append("same:{0}:{1}:{2}".format (path, ourRev, theirRev)				)
+		
+		paths = self.diffPaths.keys()
+		paths.sort()
+
+		for path in paths:
+
+			data = self.diffPaths[path]
+
+			ourRev = data[0]
+			theirRev = data[1]
+
+			lines.append("diff:{0}:{1}:{2}".format (path, ourRev, theirRev)				)
+
+		return string.join (lines, "\n")
 
 class Analyze:
 
@@ -35,14 +134,54 @@ class Analyze:
 
 		self.pathToMinRev = pickle.load (open (pathToMinRevFileName, "rb"))
 
-	def computeDifference(self, otherAnalyze):
+		self.workingCopyDir = workingCopyDir
+
+	def computeMinRevision(self):
+	
+		revs = self.minRevCountMap.keys()
+
+		revs.sort()
+
+		return revs[0]
+
+	"""
+		otherAnalyze - the object that is being compared to us
+	"""
+	def computeDiffs(self, otherAnalyze):
 
 		"""
-		First compute the differences in the count's per rev
+		Find the paths that 
 		"""
 
-		pass	
 		
+		ourPaths = self.pathToMinRev.keys()
+		
+		theirPaths = otherAnalyze.pathToMinRev.keys()
+
+		processedPaths = [] 
+
+		diff = AnalyzeDiff (self.workingCopyDir, otherAnalyze.workingCopyDir)
+
+		for i in range (0, len (ourPaths)):
+
+			path = ourPaths[i]
+
+#			print "path: {0}".format(path)
+
+			ourRev = self.pathToMinRev[path]
+
+			if path in theirPaths:
+
+				theirRev = otherAnalyze.pathToMinRev[path]
+
+				diff.addPath (ourRev, theirRev, path)
+				
+		
+		"""
+		Then compute the differences in the count's per rev
+		"""
+
+		return diff
 
 """
 use svn info workingCopyDir and extract out the revision number
@@ -244,9 +383,10 @@ elif reportMode:
 
 
 	original = Analyze (originalWorkingCopyDir)
-	filtered = Analyze (originalWorkingCopyDir)
+	filtered = Analyze (filteredWorkingCopyDir)
 
-	diffs = original.computeDifferences(filtered)
+	diffs = original.computeDiffs(filtered)
 
+	print diffs
 
 # eof
