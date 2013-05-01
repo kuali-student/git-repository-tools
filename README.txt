@@ -4,11 +4,9 @@ SVN History Tools provide two core functions:
 
 1. determine the per file linkage between two subersion revisions.  Including where the content is the same (copy/rename) and also where it is different (copy/rename followed by a modification)
 
-2. Apply this linkage data to an SVN repository dump file such that in the exported repository dump file the file history is joined using 'copyfrom' details from phase 1.
+2. Apply this linkage data to an SVN repository dump file for the target revision such that in the exported repository dump file the file history is joined using 'copyfrom' details from phase 1.
 
-NOTE: only v2 svn dump files are supported at the moment.
-
-This is because we store the full file in git so it can't easily compute the md5 hash for the delta version used in the v3 dump.
+Note: SVN version 2 and 3 dump's were used when writing this tool but v3 dumps were used for the actual conversion.
 
 Running the tools:
 
@@ -17,6 +15,8 @@ scripts/Prepare.py
 Program Arguments: </abs/path/to/git/repo/.git dir> <repair.dat>
 
 The .git directory needs to be specified in the path.  It needs to already exist.  The preparation process will be creating tags named rXYZ for each XYZ revision.
+
+If the git repository does not exist you should create one (mkdir /some/dir; cd /some/dir; git init)
 
 If the tag already exists the svn export of that tree won't occur again.
 
@@ -50,29 +50,42 @@ Main Class: org.kuali.student.svn.tools.Main
 
 Arguments: <svn dump file version: 2 or 3> <revision joining detail n> ... <revision joining details n>
 
-If version is 3:
-
 We expect an rXYZ.dump file to exist for both the target and copyfrom revision in the current working directory.
-
-If version is 2:
-
-We expect an rXYZ.dump file to exist for the target revision in the current working directory.
-
 
 multiple revision joining details files can be added.  These are the output files from the Prepare.py program.
 
 once rewritten the target dump file needs to be loaded into a new svn repository and tested out.
 
+
 svnadmin create test
 
-cat target-dump-file | svnadmin load /abs/path/to/test/repo
+create a test/hooks/pre-revprop-change file with the following contents:
+#!/bin/bash
 
-wait.
+exit 0
 
-then svn log /abs/path/to/test/repo/path/to/file/of/interest
+chmod +x test/hooks/pre-revprop-change
+
+This tool only rewrites single svn repository revisions so in order to make the change stick you need to load the non rewritten changes before and after the change.
+
+svnrdump --incremental -r 0:XYZ-1 https://path to original repo > r0-XYZ-1.dump
+
+svnrdump --incremental -r XYZ+1:HEAD https://path to original repo > rXYZ+1-HEAD.dump
+
+Then apply the changes like:
+
+svnrdump load file://absolute/path/to/test < r0-XYZ-1.dump
+
+Now apply the modified revision
+
+svnrdump load file://absolute/path/to/test < rXYZ-filtered.dump
+
+Now apply the other repo changes on top
+
+svnrdump load file://absolute/path/to/test < rXYZ+1-HEAD.dump
 
 
-
+Test svn log file://absolute/path/to/test/path/to/file and verify you see history to an earlier point then with the original repository.
 
 
 The Java code uses FileInputStream's and FileOutputStream's and some code copied from SVNKit that allows us to stream.readLine() in a way similiar to how a BufferedReader works.
