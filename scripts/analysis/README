@@ -1,0 +1,6 @@
+These scripts expect that you have checked out an original and a filtered working copy at the same revision.
+
+The tools will then start by extracting the min revision per path in each working copy.
+
+Then the report tool will link these paths and also report on revs where many adds occurred as this can be an indicator of a copy or move scenario.
+
