@@ -400,6 +400,7 @@ public class SvnDumpFilter {
 
 		String action = nodeProperties.get("Node-action");
 
+		
 		if (action != null && action.equals("add")) {
 
 			String nodeType = nodeProperties.get("Node-kind");
@@ -408,9 +409,9 @@ public class SvnDumpFilter {
 					.getCopyFromData(currentRevision, path);
 
 			/*
-			 * For now we will only try to join paths on add.
+			 * For now we will only try to join paths on add that are not already joined.
 			 */
-			if (joinHistoryData != null) {
+			if (nodeProperties.get("Node-copyfrom-rev") == null && joinHistoryData != null) {
 
 				String original = nodeProperties.put("Node-copyfrom-rev",
 						String.valueOf(joinHistoryData.getRevision()));
