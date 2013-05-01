@@ -7,3 +7,7 @@ Then in another mode you can apply the changes into the target repo.
 If there is a problem you will have to clear the lock before proceeding.
 
 svn propdel --revprop -r0 svn:rdump-lock file:///absolute/path/to/target/repo
+
+The fetch and apply scripts will have to be customized for your local repository locations.
+
+
