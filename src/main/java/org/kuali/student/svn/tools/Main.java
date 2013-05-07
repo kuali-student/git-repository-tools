@@ -69,7 +69,6 @@ public class Main {
 			
 			SvnDumpFilter filter = applicationContext.getBean(SvnDumpFilter.class);
 			
-			
 			for (JoinedRevision joinedRevision : joinWork) {
 				
 				String targetDumpFilename = String.format("r%d.dump", joinedRevision.getTargetRevision());
@@ -133,70 +132,13 @@ public class Main {
 									}
 								}
 
-								/*
-								 * (non-Javadoc)
-								 * 
-								 * @see
-								 * org.kuali.student.svn.tools.AbstractParseOptions
-								 * #onNodeContentLength(long, java.lang.String,
-								 * long, java.util.Map,
-								 * org.kuali.student.svn.tools
-								 * .model.INodeFilter)
-								 */
-								@Override
-								public void onNodeContentLength(
-										long currentRevision, String path,
-										long contentLength,
-										Map<String, String> nodeProperties,
-										INodeFilter nodeFilter) {
-
-									this.onAfterNode(currentRevision, path,
-											nodeProperties, nodeFilter);
-
-									try {
-										inputStream.skip(contentLength + 1);
-									} catch (IOException e) {
-
-										throw new RuntimeException(
-												String.format(
-														"Failed to skip over content after node(%d:%s)"
-																+ currentRevision,
-														path));
-
-									}
-
-								}
-
-								/*
-								 * (non-Javadoc)
-								 * 
-								 * @see
-								 * org.kuali.student.svn.tools.AbstractParseOptions
-								 * #onRevisionContentLength(long, long,
-								 * org.kuali
-								 * .student.svn.tools.model.ReadLineData)
-								 */
-								@Override
-								public void onRevisionContentLength(
-										long currentRevision,
-										long contentLength,
-										ReadLineData lineData) {
-									try {
-										inputStream.skip(contentLength + 1);
-									} catch (IOException e) {
-										throw new RuntimeException(
-												"Failed to skip over content at the end of revision: "
-														+ currentRevision);
-									}
-								}
-
-							});
+							}, nodeFilter);
 
 				}
 				
 				log.info(String.format("Started Joining (r%d) into (r%d)", joinedRevision.getTargetRevision(), joinedRevision.getCopyFromRevision()));
 				
-				filter.applyFilter(targetDumpFilename, filteredDumpFilename);
+				filter.applyFilter(targetDumpFilename, filteredDumpFilename, nodeFilter);
 				
 				log.info(String.format("Finished Joining (r%d) into (r%d)", joinedRevision.getTargetRevision(), joinedRevision.getCopyFromRevision()));
 				

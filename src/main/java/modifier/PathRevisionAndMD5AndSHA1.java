@@ -127,6 +127,54 @@ public class PathRevisionAndMD5AndSHA1 {
 		builder.append("]");
 		return builder.toString();
 	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((md5 == null) ? 0 : md5.hashCode());
+		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result + (int) (revision ^ (revision >>> 32));
+		result = prime * result + ((sha1 == null) ? 0 : sha1.hashCode());
+		return result;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PathRevisionAndMD5AndSHA1 other = (PathRevisionAndMD5AndSHA1) obj;
+		if (md5 == null) {
+			if (other.md5 != null)
+				return false;
+		} else if (!md5.equals(other.md5))
+			return false;
+		if (path == null) {
+			if (other.path != null)
+				return false;
+		} else if (!path.equals(other.path))
+			return false;
+		if (revision != other.revision)
+			return false;
+		if (sha1 == null) {
+			if (other.sha1 != null)
+				return false;
+		} else if (!sha1.equals(other.sha1))
+			return false;
+		return true;
+	}
 	
 	
 

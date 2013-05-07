@@ -16,6 +16,7 @@
 package org.kuali.student.svn.tools;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
 
 import org.kuali.student.svn.tools.model.INodeFilter;
@@ -23,6 +24,8 @@ import org.kuali.student.svn.tools.model.ReadLineData;
 
 /**
  * @author Kuali Student Team
+ * 
+ * The default implementation assumes this is a read-only parsing so we should skip over the data content bits in the file.
  *
  */
 public abstract class AbstractParseOptions implements IParseOptions {
@@ -81,14 +84,6 @@ public abstract class AbstractParseOptions implements IParseOptions {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.kuali.student.svn.tools.IParseOptions#onRevisionContentLength(long, long, org.kuali.student.svn.tools.model.ReadLineData)
-	 */
-	public void onRevisionContentLength(long currentRevision,
-			long contentLength, ReadLineData lineData) {
-		
-	}
-
-	/* (non-Javadoc)
 	 * @see org.kuali.student.svn.tools.IParseOptions#onNode(org.kuali.student.svn.tools.model.ReadLineData, java.lang.String)
 	 */
 	public void onNode(ReadLineData lineData, String path) {
@@ -103,14 +98,63 @@ public abstract class AbstractParseOptions implements IParseOptions {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see org.kuali.student.svn.tools.IParseOptions#onNodeContentLength(long, java.lang.String, long, java.util.Map, org.kuali.student.svn.tools.model.INodeFilter)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.svn.tools.AbstractParseOptions
+	 * #onNodeContentLength(long, java.lang.String,
+	 * long, java.util.Map,
+	 * org.kuali.student.svn.tools
+	 * .model.INodeFilter)
 	 */
-	public void onNodeContentLength(long currentRevision, String path,
-			long contentLength, Map<String, String> nodeProperties,
+	@Override
+	public void onNodeContentLength(
+			long currentRevision, String path,
+			long contentLength,
+			Map<String, String> nodeProperties,
 			INodeFilter nodeFilter) {
-		
+
+		this.onAfterNode(currentRevision, path,
+				nodeProperties, nodeFilter);
+
+		try {
+			inputStream.skip(contentLength + 1);
+		} catch (IOException e) {
+
+			throw new RuntimeException(
+					String.format(
+							"Failed to skip over content after node(%d:%s)"
+									+ currentRevision,
+							path));
+
+		}
+
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.svn.tools.AbstractParseOptions
+	 * #onRevisionContentLength(long, long,
+	 * org.kuali
+	 * .student.svn.tools.model.ReadLineData)
+	 */
+	@Override
+	public void onRevisionContentLength(
+			long currentRevision,
+			long contentLength,
+			ReadLineData lineData) {
+		try {
+			inputStream.skip(contentLength + 1);
+		} catch (IOException e) {
+			throw new RuntimeException(
+					"Failed to skip over content at the end of revision: "
+							+ currentRevision);
+		}
+	}
+
 	
 	
 

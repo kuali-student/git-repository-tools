@@ -54,8 +54,6 @@ public class SvnDumpFilter {
 
 	private long currentRevision = -1;
 
-	@Autowired
-	private INodeFilter nodeFilter;
 
 	/**
 	 * 
@@ -71,9 +69,15 @@ public class SvnDumpFilter {
 	 * 
 	 * @param dumpFile
 	 * @param options
+	 * @param nodeFilter 
 	 * @throws FileNotFoundException
 	 */
-	public void parseDumpFile(String dumpFile, IParseOptions options)
+	public void parseDumpFile(String dumpFile,
+			AbstractParseOptions options) throws FileNotFoundException {
+		this.parseDumpFile(dumpFile, options, null);
+	}
+	
+	public void parseDumpFile(String dumpFile, IParseOptions options, INodeFilter nodeFilter)
 			throws FileNotFoundException {
 
 		FileInputStream fileInputStream = new FileInputStream(dumpFile);
@@ -134,7 +138,7 @@ public class SvnDumpFilter {
 		}
 	}
 
-	public void applyFilter(String sourceDumpFile, String targetDumpFile)
+	public void applyFilter(String sourceDumpFile, String targetDumpFile, INodeFilter nodeFilter)
 			throws FileNotFoundException, UnsupportedEncodingException {
 
 		final FileOutputStream fileOutputStream = new FileOutputStream(
@@ -295,7 +299,7 @@ public class SvnDumpFilter {
 				}
 			}
 
-		});
+		}, nodeFilter);
 
 		try {
 			fileOutputStream.close();
@@ -400,8 +404,7 @@ public class SvnDumpFilter {
 
 		String action = nodeProperties.get("Node-action");
 
-		
-		if (action != null && action.equals("add")) {
+		if (nodeFilter != null && action != null && action.equals("add")) {
 
 			String nodeType = nodeProperties.get("Node-kind");
 
@@ -557,5 +560,7 @@ public class SvnDumpFilter {
 		return new String[] { parts[0], parts[1].trim() };
 
 	}
+
+	
 
 }
