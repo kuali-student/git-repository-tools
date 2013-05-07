@@ -55,6 +55,27 @@ public final class BranchUtils {
 			return path;
 		}
 		
+		public boolean isSandbox() {
+			return branchPathContains("sandbox");
+		}
+		
+		public boolean isBranch() {
+			return branchPathContains("branches");
+		}
+		
+		public boolean isTag() {
+			
+			return branchPathContains ("tags");
+		}
+		private boolean branchPathContains(String test) {
+			
+			if (branchPath.contains(test))
+				return true;
+			else
+				return false;
+			
+		}
+		
 		
 	}
 	
@@ -101,7 +122,7 @@ public final class BranchUtils {
 		
 		for (String part : parts) {
 			
-			if (part.toLowerCase().equals("branches")) {
+			if (part.toLowerCase().equals("branches") || part.toLowerCase().equals("tags") || part.toLowerCase().equals("sandbox")) {
 				foundBranch = true;
 				branchPathList.add(part);
 			}
@@ -119,7 +140,13 @@ public final class BranchUtils {
 			
 		}
 		
-		return new BranchData(StringUtils.join(branchPathList, "/"), StringUtils.join(pathList, "/"));
+		// make sure there are path elements
+		if (pathList.size() == 0) {
+			// this is a atypical path with no branches or tags
+			return new BranchData("", StringUtils.join(branchPathList, "/"));
+		}
+		else
+			return new BranchData(StringUtils.join(branchPathList, "/"), StringUtils.join(pathList, "/"));
 	}
 	
 }

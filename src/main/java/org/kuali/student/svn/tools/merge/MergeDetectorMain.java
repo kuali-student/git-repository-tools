@@ -15,13 +15,12 @@
  */
 package org.kuali.student.svn.tools.merge;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import modifier.PathRevisionAndMD5AndSHA1;
-
-import org.eclipse.jgit.api.errors.DetachedHeadException;
 import org.kuali.student.svn.tools.AbstractParseOptions;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.kuali.student.svn.tools.merge.model.MergeDetectorData;
@@ -66,12 +65,18 @@ public class MergeDetectorMain {
 			
 			final PrintWriter pw = new PrintWriter(new FileOutputStream(args[1]));
 			
-			pw.println("#rev:copy from branch:target branch");
+			pw.println("#rev:copyfrom branch:target branch:copyfrom path:target path");
 			
 			final MergeDetectorData detectorData = applicationContext
 					.getBean(MergeDetectorData.class);
 
-			filter.parseDumpFile(args[0], new AbstractParseOptions() {
+			File dumpFile = new File(args[0]);
+			
+			if (!dumpFile.exists())
+				throw new FileNotFoundException(args[0] + " path not found");
+					
+			
+			filter.parseDumpFile(dumpFile.getAbsolutePath(), new AbstractParseOptions() {
 
 
 				private long currentRevision = 0L;

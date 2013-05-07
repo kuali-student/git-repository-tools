@@ -257,13 +257,16 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 				
 				BranchData copyFromData = BranchUtils.parse(copyFromPath);
 				
+				if (targetData.isTag())
+					continue;
+				
 				if (!targetData.getBranchPath().equals(copyFromData.getBranchPath())) {
 					
 					log.info(String.format("merge detected at rev:%d", currentRevision));
 					log.info("copyFromPath : " + copyFromData.getBranchPath());
 					log.info("targetpath: " + targetData.getBranchPath());
 					
-					outputWriter.println(String.format("%d:%s:%s", currentRevision, copyFromData.getBranchPath(), targetData.getBranchPath()));
+					outputWriter.println(String.format("%d:%s:%s:%s:%s", currentRevision, copyFromData.getBranchPath(), targetData.getBranchPath(), copyFromData.getPath(), targetData.getPath()));
 					
 				}
 			}
