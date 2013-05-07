@@ -66,6 +66,8 @@ public class MergeDetectorMain {
 			
 			final PrintWriter pw = new PrintWriter(new FileOutputStream(args[1]));
 			
+			pw.println("#rev:copy from branch:target branch");
+			
 			final MergeDetectorData detectorData = applicationContext
 					.getBean(MergeDetectorData.class);
 

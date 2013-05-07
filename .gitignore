@@ -6,3 +6,4 @@ target
 .pydevproject
 /do-not-commit
 *.dump
+*.patch

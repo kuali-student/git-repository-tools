@@ -19,12 +19,19 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kuali.student.svn.tools.merge.tools.BranchUtils;
+import org.kuali.student.svn.tools.merge.tools.BranchUtils.BranchData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Kuali Student Team
  *
  */
 public class MergeDetectorDataImpl implements MergeDetectorData {
 
+	private static Logger log = LoggerFactory.getLogger(MergeDetectorDataImpl.class);
+	
 	private static class TargetData {
 		
 		private Long revision;
@@ -188,6 +195,19 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 			this.copyFrom = copyFrom;
 			this.targetData = targetData;
 		}
+		/**
+		 * @return the copyFrom
+		 */
+		public SourceData getCopyFrom() {
+			return copyFrom;
+		}
+		/**
+		 * @return the targetData
+		 */
+		public TargetData getTargetData() {
+			return targetData;
+		}
+		
 		
 		
 	}
@@ -225,7 +245,29 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 	public void processRevision(PrintWriter outputWriter, Long currentRevision) {
 
 		//extract the merge path
-		
+		if (revisionMergeDataList.size() > 0) {
+			for (MergeData md : revisionMergeDataList) {
+				
+				String targetPath = md.getTargetData().getPath();
+				String copyFromPath = md.getCopyFrom().getPath();
+				
+//				log.info(String.format("copyFrom = %s, target = %s", copyFromPath, targetPath));
+				
+				BranchData targetData = BranchUtils.parse(targetPath);
+				
+				BranchData copyFromData = BranchUtils.parse(copyFromPath);
+				
+				if (!targetData.getBranchPath().equals(copyFromData.getBranchPath())) {
+					
+					log.info(String.format("merge detected at rev:%d", currentRevision));
+					log.info("copyFromPath : " + copyFromData.getBranchPath());
+					log.info("targetpath: " + targetData.getBranchPath());
+					
+					outputWriter.println(String.format("%d:%s:%s", currentRevision, copyFromData.getBranchPath(), targetData.getBranchPath()));
+					
+				}
+			}
+		}
 		
 		revisionMergeDataList.clear();
 		
