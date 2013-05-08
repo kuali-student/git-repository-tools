@@ -1,8 +1,5 @@
 #!/bin/bash
-#
-# extract-rdumps.sh
-# 
-# Useful when extracting the various svn dump files that are needed to rewrite the repository
+
 usage() {
 
 	echo "USAGE: <mode: FETCH, LINK or APPLY>"
@@ -121,7 +118,9 @@ if [ "$MODE" == "FETCH" ]; then
 
 	echo "REPO = $REPO"
 
-	extract $REPO 0 34770
+	extract $REPO 0 32813
+	# 32814
+	extract $REPO 32815 34770
 	# 34771 
 	extract $REPO 34772 34793
 	# 34794 

@@ -1,0 +1,8 @@
+The MergeDetector (a search of the Svn Dump in Java) produces a file
+that shows the branch level merge information for each file in those branches.
+
+The 'validate-mergeinfo.py' script will make sure that the correct svn:mergeinfo data is present for that merge.
+
+This is an essential step for a future git conversion to have the branch structure to be linked correctly.
+
+So long as the 'pre-revprop-change' hook is enabled we should be able to fix the svn:mergeinfo sections identified without needing to rewrite the dump.  i.e. we should be able to modify the rev props for the revisions missing the data with the data.
