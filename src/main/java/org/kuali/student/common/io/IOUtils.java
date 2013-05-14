@@ -15,20 +15,30 @@
  */
 package org.kuali.student.common.io;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.kuali.student.common.io.exceptions.InvalidKeyLineException;
 
 /**
  * @author Kuali Student Team
  * 
- * The code in this class was copied from org.tmatesoft.svn.core.internal.wc.SVNUtil version 1.7.8 and was originally written by: TMate Software Ltd., Peter Skoog
+ *         The code in this class was copied from
+ *         org.tmatesoft.svn.core.internal.wc.SVNUtil version 1.7.8 and was
+ *         originally written by: TMate Software Ltd., Peter Skoog
  * 
- * it is subject to the <a href="http://svnkit.com/license.html">svnkit.com license</a>.
+ *         it is subject to the <a
+ *         href="http://svnkit.com/license.html">svnkit.com license</a>.
  * 
  */
 public final class IOUtils {
@@ -67,6 +77,82 @@ public final class IOUtils {
 
 		return out;
 
+	}
+
+	/**
+	 * @return true where 'PROPS-END' hasn't been encountered yet
+	 * @throws IOException 
+	 * @throws InvalidKeyLineException
+	 */
+	public static boolean readKeyAndValuePair(FileInputStream inputStream,
+			Map<String, String> nodeProperties) throws InvalidKeyLineException, IOException {
+
+		String key = readKey(inputStream);
+
+		if (key == null) {
+			// end of props section reached
+			return false;
+		}
+
+		String value = readValue(inputStream);
+
+		nodeProperties.put(key, value);
+
+		return true;
+	}
+
+	private static String readValue(FileInputStream inputStream)
+			throws InvalidKeyLineException, IOException {
+
+		String value = readLinePair("V", inputStream);
+
+		if (value == null)
+			throw new InvalidKeyLineException("no value");
+		else
+			return value;
+
+	}
+
+	private static String readKey(FileInputStream inputStream)
+			throws InvalidKeyLineException, IOException {
+		return readLinePair("K", inputStream);
+	}
+
+	private static String readLinePair(String startsWithCharacter,
+			FileInputStream inputStream) throws InvalidKeyLineException,
+			IOException {
+
+		String lengthLine = readLine(inputStream, "UTF-8");
+
+		if (lengthLine != null && lengthLine.equals("PROPS-END")) {
+			// if it looks like there is a line gap between the last property and the end it it really because 
+			// a V 0 is realized as a \n.  e.g. zero length text plus line ending.
+			// reading the V 0 value takes care of the line ending and we just read the PROPS-END.
+			return null;
+		}
+		else if (!lengthLine.startsWith(startsWithCharacter)) {
+			throw new InvalidKeyLineException(lengthLine + " is invalid");
+		}
+
+		String parts[] = lengthLine.trim().split(" ");
+
+		if (parts.length != 2)
+			throw new InvalidKeyLineException(lengthLine
+					+ " does not contain two parts");
+
+		String lengthString = parts[1];
+
+		int length = Integer.parseInt(lengthString);
+
+		// we also need the null byte
+
+		byte[] valueBuffer = new byte[length + 1];
+
+		org.apache.commons.io.IOUtils.readFully(inputStream, valueBuffer);
+
+		String value = new String(valueBuffer).trim();
+
+		return value;
 	}
 
 	private static String decode(CharsetDecoder decoder, byte[] in) {

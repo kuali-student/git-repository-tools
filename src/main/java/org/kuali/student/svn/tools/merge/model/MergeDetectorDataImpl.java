@@ -186,14 +186,17 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 	private static class MergeData {
 		private SourceData copyFrom;
 		private TargetData targetData;
+		private String svnMergeInfo;
 		/**
 		 * @param copyFrom
 		 * @param targetData
+		 * @param svnMergeInfo 
 		 */
-		public MergeData(SourceData copyFrom, TargetData targetData) {
+		public MergeData(SourceData copyFrom, TargetData targetData, String svnMergeInfo) {
 			super();
 			this.copyFrom = copyFrom;
 			this.targetData = targetData;
+			this.svnMergeInfo = svnMergeInfo;
 		}
 		/**
 		 * @return the copyFrom
@@ -206,6 +209,12 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 		 */
 		public TargetData getTargetData() {
 			return targetData;
+		}
+		/**
+		 * @return the svnMergeInfo
+		 */
+		public String getSvnMergeInfo() {
+			return svnMergeInfo;
 		}
 		
 		
@@ -226,13 +235,13 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 	 */
 	@Override
 	public void storePath(Long copyFromRevision, String copyFromPath,
-			String copyFromMD5, Long currentRevision, String currentPath) {
+			String copyFromMD5, Long currentRevision, String currentPath, String svnMergeInfo) {
 
 		SourceData sd = new SourceData(copyFromRevision, copyFromPath, copyFromMD5);
 		
 		TargetData td = new TargetData(currentRevision, currentPath);
 		
-		revisionMergeDataList.add(new MergeData(sd, td));
+		revisionMergeDataList.add(new MergeData(sd, td, svnMergeInfo));
 		
 		
 		
@@ -266,7 +275,16 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 					log.info("copyFromPath : " + copyFromData.getBranchPath());
 					log.info("targetpath: " + targetData.getBranchPath());
 					
-					outputWriter.println(String.format("%d:%d:%s:%s:%s:%s", copyFromData.getRevision(), currentRevision,   copyFromData.getBranchPath(), targetData.getBranchPath(), copyFromData.getPath(), targetData.getPath()));
+					if (md.getSvnMergeInfo() != null)
+						log.info("svn:mergeinfo  = " + md.getSvnMergeInfo());
+					
+					
+					String mergeInfo = md.getSvnMergeInfo();
+					
+					if (mergeInfo == null)
+						mergeInfo = "";
+					
+					outputWriter.println(String.format("%d:%d:%s:%s:%s:%s:%s", copyFromData.getRevision(), currentRevision,   copyFromData.getBranchPath(), targetData.getBranchPath(), copyFromData.getPath(), targetData.getPath(), mergeInfo));
 					
 				}
 			}

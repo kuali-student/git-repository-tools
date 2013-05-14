@@ -18,9 +18,14 @@ package org.kuali.student.svn.tools.merge;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.kuali.student.svn.tools.AbstractParseOptions;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.kuali.student.svn.tools.merge.model.MergeDetectorData;
@@ -103,18 +108,53 @@ public class MergeDetectorMain {
 					
 				}
 
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see org.kuali.student.svn.tools.AbstractParseOptions
-				 * #onAfterNode(long, java.lang.String, java.util.Map,
-				 * org.kuali.student.svn.tools.model .INodeFilter)
+				/* (non-Javadoc)
+				 * @see org.kuali.student.svn.tools.AbstractParseOptions#onNodeContentLength(long, java.lang.String, long, long, java.util.Map, org.kuali.student.svn.tools.model.INodeFilter)
 				 */
 				@Override
-				public void onAfterNode(long currentRevision, String path,
+				public void onNodeContentLength(long currentRevision,
+						String path, long contentLength,
+						long propContentLength,
 						Map<String, String> nodeProperties,
 						INodeFilter nodeFilter) {
+					
+					
+					
+					if (propContentLength != -1) {
+						
+						
+						try {
+							// read any node properties into the node properties
+							
+							String lengthLine = org.kuali.student.common.io.IOUtils.readLine(inputStream, "UTF-8");
+							
+							if (lengthLine.length() > 0) {
+								log.warn("spacer line should be null");
+							}
+							while (org.kuali.student.common.io.IOUtils.readKeyAndValuePair(inputStream, nodeProperties));
+						
+						if (contentLength > propContentLength) {
+								// skip over the remaining data
+							
+								long skippedBytes = contentLength - propContentLength;
+								
+								inputStream.skip(skippedBytes);
+								
+							}
+							
+							
+						} catch (Exception e) {
 
+							throw new RuntimeException(
+									String.format(
+											"Failed to skip over content after node(%d:%s)"
+													+ currentRevision,
+											path));
+
+						}
+						
+					}
+					
 					String copyFromPath = nodeProperties
 							.get("Node-copyfrom-path");
 					
@@ -125,14 +165,23 @@ public class MergeDetectorMain {
 						
 						String copyFromMD5 = nodeProperties.get("Text-copy-source-md5");
 						
-						detectorData.storePath(Long.valueOf(copyFromRev), copyFromPath, copyFromMD5, currentRevision, path);
+						String svnMergeInfo = nodeProperties.get("svn:mergeinfo");
+						
+						detectorData.storePath(Long.valueOf(copyFromRev), copyFromPath, copyFromMD5, currentRevision, path, svnMergeInfo);
 						
 					}
 
 					
+					
+					super.onNodeContentLength(currentRevision, path, contentLength,
+							propContentLength, nodeProperties, nodeFilter);
 				}
+				
+				
 
 			});
+			
+			pw.close();
 
 		} catch (Exception e) {
 			log.error("Processing failed", e);

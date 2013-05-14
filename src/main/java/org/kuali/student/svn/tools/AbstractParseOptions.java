@@ -112,6 +112,7 @@ public abstract class AbstractParseOptions implements IParseOptions {
 	public void onNodeContentLength(
 			long currentRevision, String path,
 			long contentLength,
+			long propContentLength,
 			Map<String, String> nodeProperties,
 			INodeFilter nodeFilter) {
 

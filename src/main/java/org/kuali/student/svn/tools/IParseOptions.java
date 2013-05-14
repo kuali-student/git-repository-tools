@@ -48,7 +48,7 @@ public interface IParseOptions {
 			Map<String, String> nodeProperties, INodeFilter nodeFilter);
 
 	public void onNodeContentLength(long currentRevision, String path,
-			long contentLength, Map<String, String> nodeProperties,
+			long contentLength, long propContentLength, Map<String, String> nodeProperties,
 			INodeFilter nodeFilter);
 
 }

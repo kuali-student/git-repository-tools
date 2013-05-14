@@ -31,9 +31,10 @@ public interface MergeDetectorData {
 	 * @param copyFromMD5
 	 * @param currentRevision
 	 * @param currentPath
+	 * @param svnMergeInfo 
 	 */
 	public void storePath(Long copyFromRevision, String copyFromPath,
-			String copyFromMD5, Long currentRevision, String currentPath);
+			String copyFromMD5, Long currentRevision, String currentPath, String svnMergeInfo);
 
 	/**
 	 * At the end of the revision process all of the stored paths to compute where the merge points are.

@@ -282,7 +282,7 @@ public class SvnDumpFilter {
 			 */
 			@Override
 			public void onNodeContentLength(long currentRevision, String path,
-					long contentLength, Map<String, String> nodeProperties,
+					long contentLength, long propContentLength, Map<String, String> nodeProperties,
 					INodeFilter nodeFilter) {
 
 				writeNode(fileOutputStream, currentRevision, path,
@@ -383,11 +383,24 @@ public class SvnDumpFilter {
 				if (nodeProperties.containsKey("Content-length")) {
 
 					long contentLength = extractLongValue(lineData);
-
+					
+					long propContentLength;
+					
+					try {
+						propContentLength = Long.valueOf (nodeProperties.get("Prop-content-length"));
+					} catch (NumberFormatException e) {
+						propContentLength = -1L;
+						// fall through
+					}
+					
+					// read in any of the path properties into the nodeProperties map
+					
+					
+					
 					// write the properties and copy the content (this includes
 					// both the svn properties and text content)
 					options.onNodeContentLength(currentRevision, path,
-							contentLength, nodeProperties, nodeFilter);
+							contentLength, propContentLength, nodeProperties, nodeFilter);
 					return;
 
 				}

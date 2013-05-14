@@ -13,12 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.svn.tools.merge.tools;
+package org.kuali.student.svn.tools.merge;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.kuali.student.svn.tools.merge.tools.BranchUtils;
 import org.kuali.student.svn.tools.merge.tools.BranchUtils.BranchData;
 
 /**
@@ -46,6 +47,25 @@ public class TestBranchUtils {
 		Assert.assertEquals("src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java", bd.getPath());
 		Assert.assertEquals(Long.valueOf(123456L), bd.getRevision());
 		
+		
+		
+		bd = BranchUtils.parse(123456L, "deploymentlab/trunk/1.0.x/ks-cfg-dbs/ks-embedded-db/src/main/impex/KREN_CHNL_PRODCR_T.xml");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("deploymentlab/trunk", bd.getBranchPath());
+		Assert.assertEquals("1.0.x/ks-cfg-dbs/ks-embedded-db/src/main/impex/KREN_CHNL_PRODCR_T.xml", bd.getPath());
+		Assert.assertEquals(Long.valueOf(123456L), bd.getRevision());
+		
+
+	
+	bd = BranchUtils.parse(2237L, "enumeration/enumeration-impl/src/main/java/org/kuali/student/enumeration/entity/ContextDAO.java");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("enumeration/enumeration-impl", bd.getBranchPath());
+		Assert.assertEquals("src/main/java/org/kuali/student/enumeration/entity/ContextDAO.java", bd.getPath());
+		Assert.assertEquals(Long.valueOf(2237L), bd.getRevision());
 	}
 	
 	@Test 
