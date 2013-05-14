@@ -31,15 +31,24 @@ public interface MergeDetectorData {
 	 * @param copyFromMD5
 	 * @param currentRevision
 	 * @param currentPath
-	 * @param svnMergeInfo 
 	 */
 	public void storePath(Long copyFromRevision, String copyFromPath,
-			String copyFromMD5, Long currentRevision, String currentPath, String svnMergeInfo);
+			String copyFromMD5, Long currentRevision, String currentPath);
 
 	/**
 	 * At the end of the revision process all of the stored paths to compute where the merge points are.
 	 * @param currentRevision
 	 */
 	public void processRevision(PrintWriter outputWriter, Long currentRevision);
+
+	/**
+	 * Store the svn:mergeinfo revision property vaqlue for the path and revision given.
+	 * 
+	 * @param currentRevision
+	 * @param path
+	 * @param svnMergeInfo
+	 */
+	public void storeSvnMergeInfo(long currentRevision, String path,
+			String svnMergeInfo);
 
 }

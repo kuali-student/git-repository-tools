@@ -17,7 +17,9 @@ package org.kuali.student.svn.tools.merge.model;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.kuali.student.svn.tools.merge.tools.BranchUtils;
 import org.kuali.student.svn.tools.merge.tools.BranchUtils.BranchData;
@@ -186,17 +188,14 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 	private static class MergeData {
 		private SourceData copyFrom;
 		private TargetData targetData;
-		private String svnMergeInfo;
 		/**
 		 * @param copyFrom
 		 * @param targetData
-		 * @param svnMergeInfo 
 		 */
-		public MergeData(SourceData copyFrom, TargetData targetData, String svnMergeInfo) {
+		public MergeData(SourceData copyFrom, TargetData targetData) {
 			super();
 			this.copyFrom = copyFrom;
 			this.targetData = targetData;
-			this.svnMergeInfo = svnMergeInfo;
 		}
 		/**
 		 * @return the copyFrom
@@ -210,18 +209,14 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 		public TargetData getTargetData() {
 			return targetData;
 		}
-		/**
-		 * @return the svnMergeInfo
-		 */
-		public String getSvnMergeInfo() {
-			return svnMergeInfo;
-		}
-		
-		
 		
 	}
 	
 	private List<MergeData>revisionMergeDataList = new ArrayList<>();
+	
+	private Map<TargetData, String>targetToMergeInfoMap = new HashMap<>();
+	
+	private StringBuilder svnMergeInfoBuilder = new StringBuilder();
 	
 	/**
 	 * 
@@ -235,14 +230,35 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 	 */
 	@Override
 	public void storePath(Long copyFromRevision, String copyFromPath,
-			String copyFromMD5, Long currentRevision, String currentPath, String svnMergeInfo) {
+			String copyFromMD5, Long currentRevision, String currentPath) {
 
 		SourceData sd = new SourceData(copyFromRevision, copyFromPath, copyFromMD5);
 		
 		TargetData td = new TargetData(currentRevision, currentPath);
 		
-		revisionMergeDataList.add(new MergeData(sd, td, svnMergeInfo));
+		revisionMergeDataList.add(new MergeData(sd, td));
 		
+		
+		
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.svn.tools.merge.model.MergeDetectorData#storeSvnMergeInfo(long, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void storeSvnMergeInfo(long currentRevision, String path,
+			String svnMergeInfo) {
+		
+		TargetData td = new TargetData(currentRevision, path);
+		
+		targetToMergeInfoMap.put(td, svnMergeInfo);
+		
+		if (svnMergeInfoBuilder.length() > 0)
+			svnMergeInfoBuilder.append("\n");
+		
+		svnMergeInfoBuilder.append(svnMergeInfo);
 		
 		
 	}
@@ -275,20 +291,18 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 					log.info("copyFromPath : " + copyFromData.getBranchPath());
 					log.info("targetpath: " + targetData.getBranchPath());
 					
-					if (md.getSvnMergeInfo() != null && !md.getSvnMergeInfo().isEmpty())
-						log.info("svn:mergeinfo  = " + md.getSvnMergeInfo());
-					
-					
-					String mergeInfo = md.getSvnMergeInfo();
-					
-					if (mergeInfo == null)
-						mergeInfo = "";
-					
-					outputWriter.println(String.format("%d:%d:%s:%s:%s:%s:%s", copyFromData.getRevision(), currentRevision,   copyFromData.getBranchPath(), targetData.getBranchPath(), copyFromData.getPath(), targetData.getPath(), mergeInfo));
+					outputWriter.println(String.format("detected;%d;%d;%s;%s;%s;%s", copyFromData.getRevision(), currentRevision,   copyFromData.getBranchPath(), targetData.getBranchPath(), copyFromData.getPath(), targetData.getPath()));
 					
 				}
 			}
+
+			
+			if (svnMergeInfoBuilder.length() > 0) {
+				outputWriter.println(String.format ("mergeinfo;%d;%s", currentRevision, svnMergeInfoBuilder.toString()));
+			}
 		}
+		
+		svnMergeInfoBuilder.delete(0, svnMergeInfoBuilder.length());
 		
 		revisionMergeDataList.clear();
 		

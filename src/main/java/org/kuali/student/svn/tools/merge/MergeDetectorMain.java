@@ -127,7 +127,6 @@ public class MergeDetectorMain {
 								Map<String, String> nodeProperties,
 								INodeFilter nodeFilter) {
 
-							Map<String, String> revisionProperties = new HashMap<String, String>();
 
 							if (propContentLength != -1) {
 
@@ -135,11 +134,17 @@ public class MergeDetectorMain {
 									// read any node properties into the node
 									// properties
 
-									revisionProperties = org.kuali.student.common.io.IOUtils
+									Map<String, String> revisionProperties =org.kuali.student.common.io.IOUtils
 											.extractRevisionProperties(
 													inputStream,
 													propContentLength,
 													contentLength);
+									
+									String svnMergeInfo = revisionProperties.get("svn:mergeinfo");
+									
+									if (svnMergeInfo != null && !svnMergeInfo.isEmpty()) {
+										detectorData.storeSvnMergeInfo(currentRevision, path, svnMergeInfo);
+									}
 
 								} catch (Exception e) {
 
@@ -169,13 +174,11 @@ public class MergeDetectorMain {
 								String copyFromMD5 = nodeProperties
 										.get("Text-copy-source-md5");
 
-								String svnMergeInfo = revisionProperties
-										.get("svn:mergeinfo");
 
 								detectorData.storePath(
 										Long.valueOf(copyFromRev),
 										copyFromPath, copyFromMD5,
-										currentRevision, path, svnMergeInfo);
+										currentRevision, path);
 
 							}
 
