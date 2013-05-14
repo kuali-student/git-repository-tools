@@ -15,20 +15,21 @@
  */
 package org.kuali.student.common.io;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
 import org.kuali.student.common.io.exceptions.InvalidKeyLineException;
+import org.kuali.student.svn.tools.model.ReadLineData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Kuali Student Team
@@ -43,11 +44,12 @@ import org.kuali.student.common.io.exceptions.InvalidKeyLineException;
  */
 public final class IOUtils {
 
+	private static final Logger log = LoggerFactory.getLogger(IOUtils.class);
+
 	/**
 	 * 
 	 */
 	private IOUtils() {
-		// TODO Auto-generated constructor stub
 	}
 
 	private static CharsetDecoder decoder = Charset.forName("UTF-8")
@@ -81,11 +83,12 @@ public final class IOUtils {
 
 	/**
 	 * @return true where 'PROPS-END' hasn't been encountered yet
-	 * @throws IOException 
+	 * @throws IOException
 	 * @throws InvalidKeyLineException
 	 */
 	public static boolean readKeyAndValuePair(FileInputStream inputStream,
-			Map<String, String> nodeProperties) throws InvalidKeyLineException, IOException {
+			Map<String, String> nodeProperties) throws InvalidKeyLineException,
+			IOException {
 
 		String key = readKey(inputStream);
 
@@ -125,12 +128,14 @@ public final class IOUtils {
 		String lengthLine = readLine(inputStream, "UTF-8");
 
 		if (lengthLine != null && lengthLine.equals("PROPS-END")) {
-			// if it looks like there is a line gap between the last property and the end it it really because 
-			// a V 0 is realized as a \n.  e.g. zero length text plus line ending.
-			// reading the V 0 value takes care of the line ending and we just read the PROPS-END.
+			// if it looks like there is a line gap between the last property
+			// and the end it it really because
+			// a V 0 is realized as a \n. e.g. zero length text plus line
+			// ending.
+			// reading the V 0 value takes care of the line ending and we just
+			// read the PROPS-END.
 			return null;
-		}
-		else if (!lengthLine.startsWith(startsWithCharacter)) {
+		} else if (!lengthLine.startsWith(startsWithCharacter)) {
 			throw new InvalidKeyLineException(lengthLine + " is invalid");
 		}
 
@@ -172,4 +177,121 @@ public final class IOUtils {
 
 	}
 
+	/**
+	 * Consume as many empty lines as required until a content line is read.
+	 * 
+	 * the number of empty lines read is tracked so that if this is a rewrite of
+	 * the data the same number can appear in the output.
+	 * 
+	 * @param fileInputStream
+	 * @param encoding
+	 * @return the content line with info on the number of blank/empty lines
+	 *         read before it was reached.
+	 * @throws IOException
+	 */
+	public static ReadLineData readTilNonEmptyLine(
+			FileInputStream fileInputStream, String encoding)
+			throws IOException {
+		String line = org.kuali.student.common.io.IOUtils.readLine(
+				fileInputStream, encoding);
+
+		int skippedLines = 0;
+		while (line != null) {
+
+			if (line.trim().length() == 0) {
+				skippedLines++;
+				line = org.kuali.student.common.io.IOUtils.readLine(
+						fileInputStream, encoding);
+				continue; // skip over emtpy lines
+			} else
+				return new ReadLineData(line, skippedLines);
+		}
+
+		if (skippedLines == 0)
+			return null;
+		else
+			return new ReadLineData(null, skippedLines);
+	}
+
+	public static Map<String, String> extractRevisionProperties(
+			InputStream inputStream, long propContentLength, long contentLength)
+			throws IOException {
+		
+		return extractRevisionProperties(inputStream, (int)propContentLength, (int)contentLength);
+	}
+	public static Map<String, String> extractRevisionProperties(
+			InputStream inputStream, int propContentLength, int contentLength)
+			throws IOException {
+
+		Map<String, String> revisionProperties = new LinkedHashMap<>();
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
+
+		org.apache.commons.io.IOUtils.copyLarge(inputStream, out, 0,
+				propContentLength);
+
+		String revProperties = new String(out.toByteArray());
+
+		String[] revPropItems = revProperties.split("\\n");
+
+		for (int i = 0; i < revPropItems.length; i++) {
+
+			String item = revPropItems[i];
+
+			String key = null;
+			StringBuilder valueBuilder = new StringBuilder();
+
+			if (item.startsWith("K")) {
+				key = revPropItems[i + 1];
+
+				String valueLengthString = revPropItems[i + 2];
+
+				String lengthParts[] = valueLengthString.split(" ");
+
+				int valueLength = Integer.parseInt(lengthParts[1].trim());
+
+				int charactersRead = 0;
+
+				i += 2;
+				
+				boolean secondPass = false;
+
+				while (charactersRead < valueLength) {
+
+					if (secondPass) {
+						log.info("second pass");
+					}
+					i++;
+
+					String valueLine = revPropItems[i];
+
+					valueBuilder.append(valueLine);
+
+					// account for the \n that was stripped.
+					charactersRead += valueLength + 1;
+
+					secondPass = true;
+				}
+
+				revisionProperties.put(key, valueBuilder.toString());
+			}
+
+		}
+
+		if (contentLength > propContentLength) {
+			// need to skip bytes
+			int skipBytes = contentLength - propContentLength + 1;
+
+			log.debug("neeed to skip " + skipBytes);
+
+			inputStream.skip(skipBytes);
+		} else {
+			// skip over 1
+			inputStream.skip(1);
+		}
+
+		
+		return revisionProperties;
+
+	}
 }

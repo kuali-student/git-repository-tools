@@ -37,8 +37,6 @@ public interface IParseOptions {
 
 	void onRevision(long currentRevision, ReadLineData lineData);
 
-	void onRevisionPropContentLength(long currentRevision, long propContentLength, ReadLineData lineData);
-
 	void onRevisionContentLength(long currentRevision, long contentLength,
 			ReadLineData lineData);
 

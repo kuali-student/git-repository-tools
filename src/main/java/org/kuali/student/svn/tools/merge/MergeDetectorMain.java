@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -38,16 +39,19 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author Kuali Student Team
  * 
- * The idea for this search is that we should be able to deduce from the current path if the copy from path is different.
+ *         The idea for this search is that we should be able to deduce from the
+ *         current path if the copy from path is different.
  * 
- * and if the copyfrom path contains "branch" or "tag" or "trunk" then there is a good change it was supposed to be a merge.
+ *         and if the copyfrom path contains "branch" or "tag" or "trunk" then
+ *         there is a good change it was supposed to be a merge.
  * 
- *
+ * 
  */
 public class MergeDetectorMain {
 
-	private static final Logger log = LoggerFactory.getLogger(MergeDetectorMain.class);
-	
+	private static final Logger log = LoggerFactory
+			.getLogger(MergeDetectorMain.class);
+
 	/**
 	 * @param args
 	 */
@@ -67,129 +71,124 @@ public class MergeDetectorMain {
 
 			SvnDumpFilter filter = applicationContext
 					.getBean(SvnDumpFilter.class);
-			
-			final PrintWriter pw = new PrintWriter(new FileOutputStream(args[1]));
-			
+
+			final PrintWriter pw = new PrintWriter(
+					new FileOutputStream(args[1]));
+
 			pw.println("#rev:copyfrom branch:target branch:copyfrom path:target path");
-			
+
 			final MergeDetectorData detectorData = applicationContext
 					.getBean(MergeDetectorData.class);
 
 			File dumpFile = new File(args[0]);
-			
+
 			if (!dumpFile.exists())
 				throw new FileNotFoundException(args[0] + " path not found");
-					
-			
-			filter.parseDumpFile(dumpFile.getAbsolutePath(), new AbstractParseOptions() {
 
+			filter.parseDumpFile(dumpFile.getAbsolutePath(),
+					new AbstractParseOptions() {
 
-				private long currentRevision = 0L;
-				
-				
-				@Override
-				public void onRevision(long currentRevision,
-						ReadLineData lineData) {
-					
-					
-					if (this.currentRevision > 0)
-						detectorData.processRevision(pw, this.currentRevision);
-					
-					this.currentRevision = currentRevision;
-					
+						private long currentRevision = 0L;
 
-				}
+						@Override
+						public void onRevision(long currentRevision,
+								ReadLineData lineData) {
 
-				@Override
-				public void onStreamEnd(ReadLineData lineData) {
-					
-					if (this.currentRevision > 0)
-						detectorData.processRevision(pw, this.currentRevision);
-					
-				}
+							if (this.currentRevision > 0)
+								detectorData.processRevision(pw,
+										this.currentRevision);
 
-				/* (non-Javadoc)
-				 * @see org.kuali.student.svn.tools.AbstractParseOptions#onNodeContentLength(long, java.lang.String, long, long, java.util.Map, org.kuali.student.svn.tools.model.INodeFilter)
-				 */
-				@Override
-				public void onNodeContentLength(long currentRevision,
-						String path, long contentLength,
-						long propContentLength,
-						Map<String, String> nodeProperties,
-						INodeFilter nodeFilter) {
-					
-					
-					
-					if (propContentLength != -1) {
-						
-						
-						try {
-							// read any node properties into the node properties
-							
-							String lengthLine = org.kuali.student.common.io.IOUtils.readLine(inputStream, "UTF-8");
-							
-							if (lengthLine.length() > 0) {
-								log.warn("spacer line should be null");
-							}
-							while (org.kuali.student.common.io.IOUtils.readKeyAndValuePair(inputStream, nodeProperties));
-						
-						if (contentLength > propContentLength) {
-								// skip over the remaining data
-							
-								long skippedBytes = contentLength - propContentLength;
-								
-								inputStream.skip(skippedBytes);
-								
-							}
-							
-							
-						} catch (Exception e) {
-
-							throw new RuntimeException(
-									String.format(
-											"Failed to skip over content after node(%d:%s)"
-													+ currentRevision,
-											path));
+							this.currentRevision = currentRevision;
 
 						}
-						
-					}
-					
-					String copyFromPath = nodeProperties
-							.get("Node-copyfrom-path");
-					
-					if (copyFromPath != null) {
-						
-						String copyFromRev = nodeProperties
-								.get("Node-copyfrom-rev");
-						
-						String copyFromMD5 = nodeProperties.get("Text-copy-source-md5");
-						
-						String svnMergeInfo = nodeProperties.get("svn:mergeinfo");
-						
-						detectorData.storePath(Long.valueOf(copyFromRev), copyFromPath, copyFromMD5, currentRevision, path, svnMergeInfo);
-						
-					}
 
-					
-					
-					super.onNodeContentLength(currentRevision, path, contentLength,
-							propContentLength, nodeProperties, nodeFilter);
-				}
-				
-				
+						@Override
+						public void onStreamEnd(ReadLineData lineData) {
 
-			});
-			
+							if (this.currentRevision > 0)
+								detectorData.processRevision(pw,
+										this.currentRevision);
+
+						}
+
+						/*
+						 * (non-Javadoc)
+						 * 
+						 * @see
+						 * org.kuali.student.svn.tools.AbstractParseOptions#
+						 * onNodeContentLength(long, java.lang.String, long,
+						 * long, java.util.Map,
+						 * org.kuali.student.svn.tools.model.INodeFilter)
+						 */
+						@Override
+						public void onNodeContentLength(long currentRevision,
+								String path, long contentLength,
+								long propContentLength,
+								Map<String, String> nodeProperties,
+								INodeFilter nodeFilter) {
+
+							Map<String, String> revisionProperties = new HashMap<String, String>();
+
+							if (propContentLength != -1) {
+
+								try {
+									// read any node properties into the node
+									// properties
+
+									revisionProperties = org.kuali.student.common.io.IOUtils
+											.extractRevisionProperties(
+													inputStream,
+													propContentLength,
+													contentLength);
+
+								} catch (Exception e) {
+
+									throw new RuntimeException(String.format(
+											"Failed to skip over content after node(%d:%s)"
+													+ currentRevision, path));
+
+								}
+
+							}
+							else {
+								try {
+									inputStream.skip(contentLength+1);
+								} catch (IOException e) {
+									log.error("Failed to skip " + (contentLength + 1) + " bytes.", e);
+								}
+							}
+
+							String copyFromPath = nodeProperties
+									.get("Node-copyfrom-path");
+
+							if (copyFromPath != null) {
+
+								String copyFromRev = nodeProperties
+										.get("Node-copyfrom-rev");
+
+								String copyFromMD5 = nodeProperties
+										.get("Text-copy-source-md5");
+
+								String svnMergeInfo = revisionProperties
+										.get("svn:mergeinfo");
+
+								detectorData.storePath(
+										Long.valueOf(copyFromRev),
+										copyFromPath, copyFromMD5,
+										currentRevision, path, svnMergeInfo);
+
+							}
+
+						}
+
+					});
+
 			pw.close();
 
 		} catch (Exception e) {
 			log.error("Processing failed", e);
 		}
 
-
-		
 	}
-
 
 }

@@ -88,7 +88,7 @@ public class SvnDumpFilter {
 
 			while (true) {
 
-				ReadLineData lineData = readTilNonEmptyLine(fileInputStream);
+				ReadLineData lineData = org.kuali.student.common.io.IOUtils.readTilNonEmptyLine(fileInputStream, UTF_8);
 
 				if (lineData == null) {
 					break;
@@ -361,7 +361,7 @@ public class SvnDumpFilter {
 			// consume properties until wee see the content or someother
 			// node/revision
 
-			lineData = readTilNonEmptyLine(fileInputStream);
+			lineData =  org.kuali.student.common.io.IOUtils.readTilNonEmptyLine(fileInputStream, UTF_8);
 
 			if (isRevisionStart(lineData)) {
 				// mark the end of the node
@@ -495,19 +495,14 @@ public class SvnDumpFilter {
 
 		options.onRevision(currentRevision, lineData);
 
-		ReadLineData expectingPropContentLength = readTilNonEmptyLine(fileInputStream);
+		ReadLineData expectingPropContentLength =  org.kuali.student.common.io.IOUtils.readTilNonEmptyLine(fileInputStream, UTF_8);
 
 		if (!expectingPropContentLength.startsWith("Prop-content-length")) {
 			exitOnError("Expected Prop-content-length: but found: "
 					+ expectingPropContentLength);
 		}
 
-		long propContentLength = extractLongValue(expectingPropContentLength);
-
-		options.onRevisionPropContentLength(currentRevision, propContentLength,
-				expectingPropContentLength);
-
-		ReadLineData expectingContentLength = readTilNonEmptyLine(fileInputStream);
+		ReadLineData expectingContentLength =  org.kuali.student.common.io.IOUtils.readTilNonEmptyLine(fileInputStream, UTF_8);
 
 		if (!expectingContentLength.startsWith("Content-length:")) {
 			exitOnError("Expected Content-length: but found: "
@@ -538,29 +533,7 @@ public class SvnDumpFilter {
 
 	}
 
-	private ReadLineData readTilNonEmptyLine(FileInputStream fileInputStream)
-			throws IOException {
-		String line = org.kuali.student.common.io.IOUtils.readLine(
-				fileInputStream, UTF_8);
-
-		int skippedLines = 0;
-		while (line != null) {
-
-			if (line.trim().length() == 0) {
-				skippedLines++;
-				line = org.kuali.student.common.io.IOUtils.readLine(
-						fileInputStream, UTF_8);
-				continue; // skip over emtpy lines
-			} else
-				return new ReadLineData(line, skippedLines);
-		}
-
-		if (skippedLines == 0)
-			return null;
-		else
-			return new ReadLineData(null, skippedLines);
-	}
-
+	
 	private String[] splitLine(String line) {
 
 		String parts[] = line.split(":");

@@ -8,3 +8,5 @@ target
 *.dump
 *.patch
 scripts/svn-tools
+*.swp
+*~

@@ -275,7 +275,7 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 					log.info("copyFromPath : " + copyFromData.getBranchPath());
 					log.info("targetpath: " + targetData.getBranchPath());
 					
-					if (md.getSvnMergeInfo() != null)
+					if (md.getSvnMergeInfo() != null && !md.getSvnMergeInfo().isEmpty())
 						log.info("svn:mergeinfo  = " + md.getSvnMergeInfo());
 					
 					
