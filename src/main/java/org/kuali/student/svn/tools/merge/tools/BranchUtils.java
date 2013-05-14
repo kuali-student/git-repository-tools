@@ -16,11 +16,13 @@
 package org.kuali.student.svn.tools.merge.tools;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author Kuali Student Team
@@ -31,14 +33,17 @@ public final class BranchUtils {
 	private static final Logger log = LoggerFactory.getLogger(BranchUtils.class);
 	
 	public static final class BranchData {
+		Long revision;
+		
 		String branchPath;
 		String path;
 		/**
 		 * @param branchPath
 		 * @param path
 		 */
-		public BranchData(String branchPath, String path) {
+		public BranchData(Long revision, String branchPath, String path) {
 			super();
+			this.revision = revision;
 			this.branchPath = branchPath;
 			this.path = path;
 		}
@@ -55,6 +60,12 @@ public final class BranchUtils {
 			return path;
 		}
 		
+		/**
+		 * @return the revision
+		 */
+		public Long getRevision() {
+			return revision;
+		}
 		public boolean isSandbox() {
 			return branchPathContains("sandbox");
 		}
@@ -110,7 +121,7 @@ public final class BranchUtils {
 	 * @param path
 	 * @return the determined branch data.
 	 */
-	public static BranchData parse(String path) {
+	public static BranchData parse(Long revision, String path) {
 		
 		String parts[] = path.trim().split("\\/");
 		
@@ -119,34 +130,59 @@ public final class BranchUtils {
 		
 		boolean foundBranch = false;
 		boolean onPath = false;
+
+		int beforePathRootIndex = Integer.MAX_VALUE;
 		
-		for (String part : parts) {
+		for (int i = parts.length-1; i >= 0; i--) {
+			String part = parts[i];
 			
 			if (part.toLowerCase().equals("branches") || part.toLowerCase().equals("tags") || part.toLowerCase().equals("sandbox")) {
-				foundBranch = true;
-				branchPathList.add(part);
+				beforePathRootIndex = i;
+				break;
 			}
-			else {
-				if (!onPath && foundBranch) {
-					onPath = true;
-					branchPathList.add(part);
-				}
-				else if (onPath)
-					pathList.add(part);
-				else
-					branchPathList.add(part);
-					
-			}
-			
 		}
+		
+		if (beforePathRootIndex == Integer.MAX_VALUE) {
+			// no branches tags or sandbox found
+			// treat the path as the branch
+			branchPathList.addAll(Arrays.asList(parts));
+		
+		}
+		else {
+			
+			int branchNameIndex = beforePathRootIndex + 1;
+			
+			int pathNameStartIndex = branchNameIndex + 1;
+			
+			if (parts.length < pathNameStartIndex) {
+				// there is no part after the branches part
+				for (int i = 0; i <= beforePathRootIndex; i++) {
+					branchPathList.add(parts[i]);
+				}
+				
+			}
+			else  {
+				
+				for (int i = 0; i <= branchNameIndex; i++) {
+					branchPathList.add(parts[i]);
+				}
+				
+				for (int i = pathNameStartIndex; i < parts.length; i++) {
+					pathList.add(parts[i]);
+				}
+				
+			}
+		}
+		
 		
 		// make sure there are path elements
 		if (pathList.size() == 0) {
 			// this is a atypical path with no branches or tags
-			return new BranchData("", StringUtils.join(branchPathList, "/"));
+			// put the whole name into the branches part
+			return new BranchData(revision, StringUtils.join(branchPathList, "/"), "");
 		}
 		else
-			return new BranchData(StringUtils.join(branchPathList, "/"), StringUtils.join(pathList, "/"));
+			return new BranchData(revision, StringUtils.join(branchPathList, "/"), StringUtils.join(pathList, "/"));
 	}
 	
 }

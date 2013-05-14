@@ -38,12 +38,33 @@ public class TestBranchUtils {
 	@Test
 	public void testBranchUtils() {
 		
-		BranchData bd = BranchUtils.parse("poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java");
+		BranchData bd = BranchUtils.parse(123456L, "poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java");
 	
 		Assert.assertNotNull(bd);
 		
 		Assert.assertEquals("poc/personidentity/personidentity-api/branches/personidentity-api-dev", bd.getBranchPath());
 		Assert.assertEquals("src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java", bd.getPath());
+		Assert.assertEquals(Long.valueOf(123456L), bd.getRevision());
+		
+	}
+	
+	@Test 
+	public void testMissingDataCase() {
+		// 2249:2250::sandbox/team2/branches:branches:lum
+
+		BranchData bd = BranchUtils.parse(2249L, "branches");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("branches", bd.getBranchPath());
+		Assert.assertEquals ("", bd.getPath());
+		
+		bd = BranchUtils.parse(2250L, "sandbox/team2/lum/branches");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("sandbox/team2/lum/branches", bd.getBranchPath());
+		Assert.assertEquals ("", bd.getPath());
 		
 	}
 }

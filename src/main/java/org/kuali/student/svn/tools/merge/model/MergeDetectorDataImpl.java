@@ -253,9 +253,9 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 				
 //				log.info(String.format("copyFrom = %s, target = %s", copyFromPath, targetPath));
 				
-				BranchData targetData = BranchUtils.parse(targetPath);
+				BranchData targetData = BranchUtils.parse(md.getTargetData().getRevision(), targetPath);
 				
-				BranchData copyFromData = BranchUtils.parse(copyFromPath);
+				BranchData copyFromData = BranchUtils.parse(md.getCopyFrom().getRevision(), copyFromPath);
 				
 				if (targetData.isTag())
 					continue;
@@ -266,7 +266,7 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 					log.info("copyFromPath : " + copyFromData.getBranchPath());
 					log.info("targetpath: " + targetData.getBranchPath());
 					
-					outputWriter.println(String.format("%d:%s:%s:%s:%s", currentRevision, copyFromData.getBranchPath(), targetData.getBranchPath(), copyFromData.getPath(), targetData.getPath()));
+					outputWriter.println(String.format("%d:%d:%s:%s:%s:%s", copyFromData.getRevision(), currentRevision,   copyFromData.getBranchPath(), targetData.getBranchPath(), copyFromData.getPath(), targetData.getPath()));
 					
 				}
 			}

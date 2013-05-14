@@ -7,3 +7,4 @@ target
 /do-not-commit
 *.dump
 *.patch
+scripts/svn-tools
