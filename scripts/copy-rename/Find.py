@@ -476,11 +476,11 @@ class RevisionAddData:
             if add.kind == 'dir':
                 continue
         
-            dirName = os.path.dirname (add.path)
+            dirName = os.path.dirname (add.path).replace("$", "\\$")
             
-            fileName = os.path.basename (add.path)
+            fileName = os.path.basename (add.path).replace("$", "\\$")
             
-            command = "{0} --git-dir={1} ls-tree r{2}:{3} | grep {4} ".format(git_command, gitDirectory, self.revision, dirName, fileName)
+            command = "{0} --git-dir={1} ls-tree r{2}:{3} | grep \"{4}\" ".format(git_command, gitDirectory, self.revision, dirName, fileName)
 
             result = subprocess.check_output (command, shell=1)
 
@@ -559,13 +559,21 @@ class RevisionAddData:
 
             targetPath = parts[2]
 
-            if targetPath in self.pathToAddMap.keys():
+            # convert P-{code} back into the add.path
 
-                foundAtLeastOneCopyFrom = True
+            codeParts = targetPath.split("-")
 
-                ad = self.pathToAddMap[targetPath]
-        
-                outputFile.write ("#{0}\n{1}\n{2}||{3}\n{4}||{5}\n{6}||{7}\n".format(status, "PLACEHOLDER", self.revision, ad.path, compareRevision, copyFromPath, copyFromSha1, "MISSING-MD5"))
+            code = int (codeParts[1].strip())
+
+            if code not in self.codeToAddMap.keys():
+                print "failed to find target for code {0}".format(code)
+                continue
+
+            add = self.codeToAddMap[code]
+
+            foundAtLeastOneCopyFrom = True
+
+            outputFile.write ("#{0}\n{1}\n{2}||{3}\n{4}||{5}\n{6}||{7}\n".format(status, "PLACEHOLDER", self.revision, add.path, compareRevision, copyFromPath, copyFromSha1, "MISSING-MD5"))
                 
 
         outputFile.close()
@@ -601,7 +609,7 @@ if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH" and mode != 'PRE
 
 specificRevision = None
 
-if len (sys.argv) == 6:
+if len (sys.argv) == 5:
     specificRevision = int (sys.argv[2])
     gitDirectory = sys.argv[3]
     addData = sys.argv[4]
@@ -722,12 +730,9 @@ elif mode == 'COMPARE':
     """
 
     for ad in revisionAddData:
-        if specificRevision != None:
 
-            if ad.revision == specificRevision:
-
-                ad.compare(gitDirectory)
-                break;
+        if ad.revision < specificRevision:
+            continue
         else:
 
             print "Comparing r{0}".format (ad.revision)
