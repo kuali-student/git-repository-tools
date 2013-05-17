@@ -14,7 +14,11 @@ It can import the entire repository from the root / which is a match for the pat
 git diff-tree command to find matches for the file of interest in a previous revision.
 
 The diff-tree command expects to operate on tree's so we need to construct new unconnected tree objects (containing a single file) and 
-then compare that
+then compare that.
+
+For performance reasons we compare the entire revision to previous revision and log the output.
+
+Then as a seperate step we match the files against the added files to assemble the copy from details.
 
 AUTHOR: Kuali Student Team <ks.collab@kuali.org>
 
@@ -53,6 +57,8 @@ def extractCommitSha1 (gitDirectory, revision):
 
     return commitSha1
 
+
+    
 # extract the sha1 hash of the path at the revision given from the git repository
 def extractSha1 (gitDirectory, fileType, revision, path):
 
@@ -69,7 +75,7 @@ def extractSha1 (gitDirectory, fileType, revision, path):
     output = subprocess.check_output(command, shell=1)
     
     if len (output) == 0:
-        raise Exception ("file does not exist {0}@{1}".format (path, revision))
+        return None 
 
     parts = output.split("\n")
 
@@ -111,19 +117,35 @@ def makeTree (gitDirectory, blobSha1, fileName):
     return output
 
 
+def compareTreesByRevision(gitDirectory, copyFromRevision, targetRevision, adds, outputFileName):
 
-def compareTrees(gitDirectory, treeASha1, treeBSha1):
+    outputFile = open (outputFileName, "w")
+
+    
+    
+    copyFromRevision_command = "{0} --git-dir={1} log --grep=\"@{2}\\ \" --pretty --format=\"%H\" origin/master".format(git_command, gitDirectory, copyFromRevision)
+    targetRevision_command = "{0} --git-dir={1} log --grep=\"@{2}\\ \" --pretty --format=\"%H\" origin/master".format(git_command, gitDirectory, targetRevision)
+    
+    command = "FROM=`{0}`; TO=`{1}`; {2} --git-dir={3} diff-tree -r --find-copies-harder --diff-filter=C,R,M $FROM $TO | sort -rk5".format(copyFromRevision_command, targetRevision_command, git_command, gitDirectory)
+    
+    subprocess.call(command, shell=1, stdout=outputFile)
+
+    outputFile.close()
+
+def compareTrees(gitDirectory, treeASha1, treeBSha1, outputFileName):
+
+    outputFile = open (outputFileName, "w")
 
     command = "{0} --git-dir={1} diff-tree -r --find-copies-harder --diff-filter=C,R,M {2} {3} | sort -rk5".format(git_command, gitDirectory, treeASha1, treeBSha1)
     
-    output = subprocess.check_output(command, shell=1)
+    subprocess.call(command, shell=1, stdout=outputFile)
 
-    return output.split("\n")
-    
+    outputFile.close()
+
 """
 Find the copies and moves.
 """
-def computeDiff(gitDirectory, targetRev, copyFromRev):
+def computeDiff(gitDirectory, targetTree, copyFromTree, targetRev, copyFromRev):
     
     joinOutputFile = "r{0}-r{1}-join.dat".format(targetRev, copyFromRev)
     
@@ -136,7 +158,7 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
     # read in the sha1 -> copy from path details
     copyFromSha1ToPath = {}
     
-    command = "git --git-dir={0} ls-tree -rt --full-tree r{1}".format(gitDirectory, copyFromRev)
+    command = "git --git-dir={0} ls-tree -rt --full-tree {1}".format(gitDirectory, copyFromTree)
     
     #  print command
         
@@ -164,7 +186,7 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
         copyFromSha1ToPath[copyFromSha1] = copyFromPath
         
         
-    command = "git --git-dir={0} ls-tree -rt --full-tree r{1}".format(gitDirectory, targetRev)
+    command = "git --git-dir={0} ls-tree -rt --full-tree {1}".format(gitDirectory, targetTree)
     
     #  print command
         
@@ -216,7 +238,7 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
             
     
     # get the copied and changes between the revisions
-    command = "git --git-dir={0} diff-tree --find-copies-harder --diff-filter=C,R,M -r r{1} r{2} | sort -rk5 ".format(gitDirectory, targetRev, copyFromRev)
+    command = "git --git-dir={0} diff-tree --find-copies-harder --diff-filter=C,R,M -r {1} {2} | sort -rk5 ".format(gitDirectory, targetTree, copyFromTree)
     
     print command
     
@@ -252,6 +274,8 @@ def computeDiff(gitDirectory, targetRev, copyFromRev):
         
         srcPath = tabParts[1]
         
+        # need to convert the source path back into the original path
+
         command = "git --git-dir={0} cat-file -p {1}".format(gitDirectory, dstSha1)
     
       #  print command
@@ -390,16 +414,153 @@ def fetchPath(gitDirectory, path, rev):
     
     executeCommandInWorkingDirectory(command, workingCopyDir)
 
-if len (sys.argv) != 4:
-        print "USAGE: {0} <path to git repository> <added file input data> <output file>".format (sys.argv[0])
+class Add:
+
+    def __init__(self, code, kind, path):
+        self.code = code
+        self.kind = kind
+        self.path = path
+
+class RevisionAddData:
+
+    def __init__(self, revision):
+        self.revision = revision
+
+        self.paths = []
+
+        self.codeToAddMap = {}
+
+        self.pathToAddMap = {}
+
+
+    def setCommitSha1(self,  commitSha1):
+        self.commitSha1 = commitSha1
+    
+    def addNormalPath (self, nodeKind, path):
+       
+        code = len (self.paths)
+
+        add = Add (code, nodeKind, path)
+ 
+        self.paths.append (add)
+
+        self.codeToAddMap[code] = add
+
+        self.pathToAddMap[path] = add
+
+    def compare(self, gitDirectory):
+
+        """
+        extract the copyfrom details
+        """
+
+   
+        compareRevision = self.revision - 1
+
+        outputFileName = "compare-r{0}-to-r{1}.dat".format(compareRevision, self.revision)
+
+        compareTreesByRevision(gitDirectory, compareRevision, self.revision, self.paths, outputFileName)
+
+        print "comparing {0} to {1}".format (compareRevision, self.revision)
+
+        return outputFileName
+
+    def process(self, gitDirectory):
+
+        """
+
+        We open up the compare date and match the files and direct
+        """
+
+
+        compareRevision = self.revision - 1
+        
+        inputFileName = "compare-r{0}-to-r{1}.dat".format(compareRevision, self.revision)
+
+        # this is the naming expected by the filtering program (the reverse of this program)
+        outputFileName = "r{0}-r{1}-join.dat".format (self.revision, compareRevision)
+
+        outputFile = open (outputFileName, "w")
+
+        foundAtLeastOneCopyFrom = False
+
+        for line in fileinput.input (inputFileName):
+
+            # Read the Raw output format section of the git diff-tree man page
+            # ref: https://www.kernel.org/pub/software/scm/git/docs/git-diff-tree.html
+
+            print line
+
+            parts = line.strip().split("\t")
+
+            statusPiece = parts[0]
+
+            statusParts = statusPiece.split (" ")
+            
+            # status is the last part
+            status = statusParts[4] 
+           
+            if status == "M":
+                # skip modifies
+                continue
+
+            copyFromSha1 = statusParts[2]
+            targetSha1 = statusParts[3]
+ 
+            copyFromPath = parts[1]
+
+            targetPath = parts[2]
+
+            if targetPath in self.pathToAddMap.keys():
+
+                foundAtLeastOneCopyFrom = True
+
+                ad = self.pathToAddMap[targetPath]
+        
+                outputFile.write ("#{0}\n{1}\n{2}||{3}\n{4}||{5}\n{6}||{7}\n".format(status, "PLACEHOLDER", self.revision, ad.path, compareRevision, copyFromPath, copyFromSha1, "MISSING-MD5"))
+                
+
+        outputFile.close()
+
+        if foundAtLeastOneCopyFrom == False:
+
+            os.remove (outputFileName)
+                
+      
+def usage(message):
+        if message != None:
+            print message    
+        print "USAGE: {0} <mode:PREPARE-REPO or COMPARE or PROCESS or FETCH-DUMPS> <path to git repository> <added file input data>".format (sys.argv[0])
+        print "PREPARE-REPO: will tag each commit so that for example commit r1 is tagged as r1"
+        print "COMPARE [startFromRevision]: will extract the comparison diff data based on the add file data"
+        print "PROCESS [specificRevision]: will process the diff data accumulated in the COMPARE phase and use it to create SvnDumpFilter rewrite compatible join.dat files"
+        print "FETCH [specificRevision]: will download the version 3 --incremental dump for the revisions that have data to be rewritten as determined in the PROCESS STEP."
+        """
+
+        The PROCESS-SINGLE option is for debugging/development purpopses.
+
+        The FETCH-SINGLE option is for debugginh/development purposes
+        """
         sys.exit (-1)
 
+if len (sys.argv) < 4:
+    usage(None)
 
-gitDirectory = sys.argv[1]
+mode = sys.argv[1]
 
-addData = sys.argv[2]
+if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH" and mode != 'PREPARE-REPO':
+    usage ("invalid mode: {0}".format(mode))
 
-outputFileName = sys.argv[3]
+specificRevision = None
+
+if len (sys.argv) == 6:
+    specificRevision = int (sys.argv[2])
+    gitDirectory = sys.argv[3]
+    addData = sys.argv[4]
+else:
+    gitDirectory = sys.argv[2]
+    addData = sys.argv[3]
+
 
 normalCount = 0
 copyCount = 0
@@ -407,11 +568,15 @@ copyCount = 0
 fileCount = 0
 dirCount = 0
 
+currentRevision = 0
 
-outputFile = open (outputFileName, "w")
+currentRevisionData = None
 
-multipleMatchDataFile = open ("multiple-match-data.dat", "w")
+commitSha1ToRevisionAddMap = {}
 
+revisionAddData = []
+
+# in both cases we acquire the data from the file
 for line in fileinput.input (addData):
 
         strippedLine = line.strip()
@@ -426,76 +591,22 @@ for line in fileinput.input (addData):
 
         revision = int (parts[2])
 
+        if revision > currentRevision:
+
+                currentRevision = revision
+                currentRevisionData = RevisionAddData (currentRevision)
+
+                revisionAddData.append (currentRevisionData)
+
+                print "starting on revision {0}".format(currentRevision)
+
         path = parts[3]
 
         if nodeType == 'normal':
                 # print "looking for {0}@{1}".format (path, revision)
 
-                """
-                We want to extract the sha1 for this path in the commit for this revision in git
-                """
-               
-                try: 
-                    sha1 = extractSha1 (gitDirectory, nodeKind, revision, path)
-
-                    # print "sha1 is {0} for {1}@2".format (sha1, path, revision)
-
-                    if nodeKind == 'file':
-
-                        fakeTreeSha1 = makeTree (gitDirectory, sha1, os.path.basename(path))
-                    
-                        compareRevision = revision - 1
-
-                        """
-                        For now we just look one rev back
-                        """ 
-
-                        previousCommitSha1 = extractCommitSha1(gitDirectory, compareRevision)
-
-                        results = compareTrees(gitDirectory, fakeTreeSha1, previousCommitSha1)
-
-                        if len(results) < 2:
-
-                            # print "did not find source for {0}@{1}".format (path, revision)
-                            outputFile.write ("failed::{0}@{1}\n".format (path, revision))
-
-                        else:
-
-                            print results
-
-                                                        
-                            line = results[0]
-
-                            
-                            pathParts = line.split("\t")
-
-                            # pathParts[0] is the stuff before the rank
-                            rank = pathParts[1]
-
-                            fakeTreePath = pathParts[2]
-                            copyFromPath = pathParts[3].strip("\n")
-
-                            matched = "matched::{0}@{1}::{2}@{3}\n".format(path, revision, copyFromPath, compareRevision)
-                            
-                            multipleMatchDataFile.write(matched)
-
-                            for r in results:
-
-                                if len (r) == 0:
-                                    continue
-
-                                multipleMatchDataFile.write(":::match-results:{0}\n".format(r))
-
-                            print matched
-                            outputFile.write (matched)
- 
-                    elif nodeKind == 'dir':
-                        outputFile.write("skipping::{0}@{1}::because it is a directory\n".format (path, revision))
-                    else:
-                        raise Exception ("{0} is not a valid fileType.".format (fileType))
-                except:
-                    #print traceback.format_exc()
-                    continue
+                
+                currentRevisionData.addNormalPath (nodeKind, path)
 
                 normalCount+=1
         else:
@@ -511,5 +622,90 @@ for line in fileinput.input (addData):
 
 print "{0} normal paths\n{1} copied paths\n{2} file paths\n{3} directory paths".format(normalCount, copyCount, fileCount, dirCount)
 
-multipleMatchDataFile.close()
-outputFile.close()
+if mode == 'PREPARE-REPO':
+
+    output = open ("prepare-repo.sh", "w")
+
+    command = "{0} --git-dir={1} rev-list origin/master | while read sha; do git --git-dir={2} log --pretty --format=\"commit:%H%n%B\" -n 1 $sha; done".format(git_command, gitDirectory, gitDirectory)
+
+    output.write ("{0}\n".format(command))
+        
+    output.close()
+
+    p = subprocess.Popen("/bin/sh ./prepare-repo.sh | /bin/egrep \"^commit:|git-svn-id\"", shell=1, stdout=subprocess.PIPE)
+
+    commitSha1 = None
+
+    tagFile = open ("create-repo-tags.sh",  "w")
+
+    tagFile.write("#!/bin/sh\n")
+        
+    for line in p.stdout:
+
+        if line.startswith("commit"):
+            parts = line.split(":")
+
+            if len(parts) != 2:
+                print "invalid commit line = {0}".format(line)
+                continue
+
+            commitSha1 = parts[1].strip()
+
+        else:
+
+            parts = line.strip().split (" ")
+            
+            revisionContainingPart = parts[1]
+
+            revisionParts = revisionContainingPart.split("@")
+
+            revision = int (revisionParts[1])
+
+            tagFile.write("{0} --git-dir={1} tag r{2} {3}\n".format(git_command, gitDirectory, revision, commitSha1))
+
+            commitSha1 = None
+        
+    tagFile.close()
+
+elif mode == 'COMPARE':
+
+    """
+    We need to extract the copyfrom details for each revision under consideration.
+    """
+
+    for ad in revisionAddData:
+        if specificRevision != None:
+
+            if ad.revision == specificRevision:
+
+                ad.compare(gitDirectory)
+                break;
+        else:
+            ad.compare(gitDirectory)
+
+elif mode == 'PROCESS':
+
+    for ad in revisionAddData:
+        if specificRevision != None:
+
+            if ad.revision == specificRevision:
+
+                ad.process(gitDirectory)
+                break;
+        else:
+            ad.process(gitDirectory)
+
+elif mode == 'FETCH':
+
+    for (directory, subDirs, files) in os.walk("."):
+
+        for fileName in files:
+
+            if fileName.endswith("-join.dat"):
+
+                parts = fileName.split ("-")
+
+                target = parts[0]
+                copyFrom = parts[1]
+
+                
