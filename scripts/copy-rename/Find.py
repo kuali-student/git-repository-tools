@@ -32,6 +32,7 @@ import fileinput
 import os
 import shutil
 import traceback
+import tempfile
 
 # this needs to be changed to md5sum on linux
 # windows needs an absolute path to work.
@@ -117,30 +118,33 @@ def makeTree (gitDirectory, blobSha1, fileName):
     return output
 
 
-def compareTreesByRevision(gitDirectory, copyFromRevision, targetRevision, adds, outputFileName):
-
-    outputFile = open (outputFileName, "w")
-
-    
-    
-    copyFromRevision_command = "{0} --git-dir={1} log --grep=\"@{2}\\ \" --pretty --format=\"%H\" origin/master".format(git_command, gitDirectory, copyFromRevision)
-    targetRevision_command = "{0} --git-dir={1} log --grep=\"@{2}\\ \" --pretty --format=\"%H\" origin/master".format(git_command, gitDirectory, targetRevision)
-    
-    command = "FROM=`{0}`; TO=`{1}`; {2} --git-dir={3} diff-tree -r --find-copies-harder --diff-filter=C,R,M $FROM $TO | sort -rk5".format(copyFromRevision_command, targetRevision_command, git_command, gitDirectory)
-    
-    subprocess.call(command, shell=1, stdout=outputFile)
-
-    outputFile.close()
 
 def compareTrees(gitDirectory, treeASha1, treeBSha1, outputFileName):
 
-    outputFile = open (outputFileName, "w")
 
     command = "{0} --git-dir={1} diff-tree -r --find-copies-harder --diff-filter=C,R,M {2} {3} | sort -rk5".format(git_command, gitDirectory, treeASha1, treeBSha1)
     
-    subprocess.call(command, shell=1, stdout=outputFile)
+    output = subprocess.check_output(command, shell=1)
 
-    outputFile.close()
+    lines = output.split("\n")
+
+    
+    outputFile = None
+
+    for line in lines:
+  
+        if len (line) == 0:
+            continue 
+         
+        if outputFile == None:
+
+            outputFile = open (outputFileName, "w")
+
+
+        outputFile.write ("{0}\n".format(line))
+
+    if outputFile != None:
+        outputFile.close()
 
 """
 Find the copies and moves.
@@ -459,11 +463,55 @@ class RevisionAddData:
 
         outputFileName = "compare-r{0}-to-r{1}.dat".format(compareRevision, self.revision)
 
-        compareTreesByRevision(gitDirectory, compareRevision, self.revision, self.paths, outputFileName)
 
-        print "comparing {0} to {1}".format (compareRevision, self.revision)
+        # acquire the take tree data
 
-        return outputFileName
+        treeContent = tempfile.NamedTemporaryFile(mode="w", delete=False)
+        treeContentFileName = treeContent.name
+
+        addedAtLeastOneFile = False
+
+        for add in self.paths:
+
+            if add.kind == 'dir':
+                continue
+        
+            dirName = os.path.dirname (add.path)
+            
+            fileName = os.path.basename (add.path)
+            
+            command = "{0} --git-dir={1} ls-tree r{2}:{3} | grep {4} ".format(git_command, gitDirectory, self.revision, dirName, fileName)
+
+            result = subprocess.check_output (command, shell=1)
+
+            parts = result.strip().split("\t")
+
+            withoutPath = parts[0]
+
+            
+            treeContent.write ("{0}\tP-{1}\n".format(withoutPath, add.code)) 
+
+            addedAtLeastOneFile = True
+
+       
+        treeContent.close()
+
+
+        if addedAtLeastOneFile == False:
+            print "skipping r{0} because there are no files of interest".format(self.revision)
+            return    
+
+        treeContent = open (treeContentFileName, "r")
+
+        command = "{0} --git-dir={1} mktree".format (git_command, gitDirectory)
+
+        tree = subprocess.check_output (command, shell=1, stdin=treeContent).strip()
+
+        treeContent.close()
+
+        print "tree = {0}".format (tree)
+
+        compareTrees(gitDirectory, "r{0}".format(compareRevision), tree, outputFileName)
 
     def process(self, gitDirectory):
 
@@ -681,6 +729,9 @@ elif mode == 'COMPARE':
                 ad.compare(gitDirectory)
                 break;
         else:
+
+            print "Comparing r{0}".format (ad.revision)
+
             ad.compare(gitDirectory)
 
 elif mode == 'PROCESS':
