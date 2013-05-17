@@ -761,7 +761,29 @@ elif mode == 'FETCH':
 
                 parts = fileName.split ("-")
 
-                target = parts[0]
+                target = parts[0].replace("r", "")
                 copyFrom = parts[1]
 
-                
+
+                dumpFile = "r{0}.dump".format(target)
+
+                # check for the file
+                try:
+                    
+                    test = open(dumpFile, "r")
+
+                    test.close()
+                    
+                    print "skipping {0} because it already exists.".format(dumpFile)
+                    continue
+                except:
+                    pass
+                    # fall through
+                     
+                command = "{0} dump --incremental {1} -r{2}:{2} > {3}".format(svnrdump_command, "https://svn.kuali.org/repos/student", target, dumpFile)
+              
+                print command 
+
+                subprocess.call (command, shell=1)
+
+                 
