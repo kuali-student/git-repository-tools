@@ -462,8 +462,20 @@ class RevisionAddData:
         compareRevision = self.revision - 1
 
         outputFileName = "compare-r{0}-to-r{1}.dat".format(compareRevision, self.revision)
+        
+        skipFileName = "skip-r{0}-to-r{1}.dat".format(compareRevision, self.revision)
 
 
+        # check if the file exists
+
+        if os.path.exists (outputFileName):
+            print "{0} file exists skipping".format(outputFileName)
+            return
+        
+        if os.path.exists (skipFileName):
+            print "{0} file exists skipping".format(skipFileName)
+            return
+    
         # acquire the take tree data
 
         treeContent = tempfile.NamedTemporaryFile(mode="w", delete=False)
@@ -476,9 +488,9 @@ class RevisionAddData:
             if add.kind == 'dir':
                 continue
         
-            dirName = os.path.dirname (add.path).replace("$", "\\$")
+            dirName = os.path.dirname (add.path).replace("$", "\\$").replace(" ", "\\ ")
             
-            fileName = os.path.basename (add.path).replace("$", "\\$")
+            fileName = os.path.basename (add.path).replace("$", "\\$").replace(" ", "\\ ")
             
             command = "{0} --git-dir={1} ls-tree r{2}:{3} | grep \"{4}\" ".format(git_command, gitDirectory, self.revision, dirName, fileName)
 
@@ -499,6 +511,9 @@ class RevisionAddData:
 
         if addedAtLeastOneFile == False:
             print "skipping r{0} because there are no files of interest".format(self.revision)
+            skipFile = open (skipFileName, "w")
+            skipFile.write("no files of interest\n")
+            skipFile.close()
             return    
 
         treeContent = open (treeContentFileName, "r")
@@ -512,6 +527,14 @@ class RevisionAddData:
         print "tree = {0}".format (tree)
 
         compareTrees(gitDirectory, "r{0}".format(compareRevision), tree, outputFileName)
+
+        if not os.path.exists(outputFileName):
+
+            output = open (skipFileName, "w")
+
+            output.write ("compareTree's found nothing\n")
+        
+            output.close()
 
     def process(self, gitDirectory):
 
