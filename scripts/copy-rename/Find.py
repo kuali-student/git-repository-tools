@@ -13,8 +13,7 @@ It is not complete yet for actual use but is very useful for our find history of
 It can import the entire repository from the root / which is a match for the paths we will be extracting from the svn dump.  Then we can use the
 git diff-tree command to find matches for the file of interest in a previous revision.
 
-The diff-tree command expects to operate on tree's so we need to construct new unconnected tree objects (containing a single file) and 
-then compare that.
+The diff-tree command expects to operate on tree's so we need to construct new unconnected tree objects that contain the files we want to compare for each revision.
 
 For performance reasons we compare the entire revision to previous revision and log the output.
 
@@ -31,7 +30,7 @@ import sys
 import fileinput
 import os
 import shutil
-import traceback
+import logging
 import tempfile
 
 # this needs to be changed to md5sum on linux
@@ -467,15 +466,14 @@ class RevisionAddData:
 
 
         # check if the file exists
-
+        if os.path.exists (skipFileName):
+            print "{0} file exists skipping".format(skipFileName)
+            return
+             
         if os.path.exists (outputFileName):
             print "{0} file exists skipping".format(outputFileName)
             return
         
-        if os.path.exists (skipFileName):
-            print "{0} file exists skipping".format(skipFileName)
-            return
-    
         # acquire the take tree data
 
         treeContent = tempfile.NamedTemporaryFile(mode="w", delete=False)
@@ -488,9 +486,9 @@ class RevisionAddData:
             if add.kind == 'dir':
                 continue
         
-            dirName = os.path.dirname (add.path).replace("$", "\\$").replace(" ", "\\ ")
+            dirName = os.path.dirname (add.path).replace("$", "\\$").replace(" ", "\\ ").replace("&", "\\&") 
             
-            fileName = os.path.basename (add.path).replace("$", "\\$").replace(" ", "\\ ")
+            fileName = os.path.basename (add.path).replace("$", "\\$").replace(" ", "\\ ").replace("&", "\\&")
             
             command = "{0} --git-dir={1} ls-tree r{2}:{3} | grep \"{4}\" ".format(git_command, gitDirectory, self.revision, dirName, fileName)
 
@@ -551,75 +549,112 @@ class RevisionAddData:
         # this is the naming expected by the filtering program (the reverse of this program)
         outputFileName = "r{0}-r{1}-join.dat".format (self.revision, compareRevision)
 
+
+        
+        skipFileName = "skip-r{0}-to-r{1}.dat".format(compareRevision, self.revision)
+
+        if os.path.exists (outputFileName):
+            print "{0} file exists skipping".format (outputFileName)
+            return
+
+        if os.path.exists (skipFileName):
+            print "{0} file exists skipping".format(skipFileName)
+            return
+    
+
         outputFile = open (outputFileName, "w")
 
         foundAtLeastOneCopyFrom = False
 
-        for line in fileinput.input (inputFileName):
+        try:
 
-            # Read the Raw output format section of the git diff-tree man page
-            # ref: https://www.kernel.org/pub/software/scm/git/docs/git-diff-tree.html
+            for line in fileinput.input (inputFileName):
 
-            print line
+                # Read the Raw output format section of the git diff-tree man page
+                # ref: https://www.kernel.org/pub/software/scm/git/docs/git-diff-tree.html
 
-            parts = line.strip().split("\t")
+          #      print line
 
-            statusPiece = parts[0]
+                parts = line.strip().split("\t")
 
-            statusParts = statusPiece.split (" ")
+                statusPiece = parts[0]
+
+                statusParts = statusPiece.split (" ")
             
-            # status is the last part
-            status = statusParts[4] 
+                # status is the last part
+                status = statusParts[4] 
            
-            if status == "M":
-                # skip modifies
-                continue
+                if status == "M":
+                    # skip modifies
+                    continue
 
-            copyFromSha1 = statusParts[2]
-            targetSha1 = statusParts[3]
+                copyFromSha1 = statusParts[2]
+                targetSha1 = statusParts[3]
  
-            copyFromPath = parts[1]
+                copyFromPath = parts[1]
 
-            targetPath = parts[2]
+                targetPath = parts[2]
 
-            # convert P-{code} back into the add.path
+                # convert P-{code} back into the add.path
 
-            codeParts = targetPath.split("-")
+                codeParts = targetPath.split("-")
 
-            code = int (codeParts[1].strip())
+                code = int (codeParts[1].strip())
 
-            if code not in self.codeToAddMap.keys():
-                print "failed to find target for code {0}".format(code)
-                continue
+                if code not in self.codeToAddMap.keys():
+                    print "failed to find target for code {0}".format(code)
+                    continue
 
-            add = self.codeToAddMap[code]
+                add = self.codeToAddMap[code]
 
-            foundAtLeastOneCopyFrom = True
+                foundAtLeastOneCopyFrom = True
 
-            outputFile.write ("#{0}\n{1}\n{2}||{3}\n{4}||{5}\n{6}||{7}\n".format(status, "PLACEHOLDER", self.revision, add.path, compareRevision, copyFromPath, copyFromSha1, "MISSING-MD5"))
+                md5 = self.computeMD5(gitDirectory, compareRevision, copyFromPath)
+
+#                print "md5 = {0}".format(md5)
+
+                outputFile.write ("#{0}\n{1}\n{2}||{3}\n{4}||{5}\n{6}||{7}\n".format(status, "PLACEHOLDER", self.revision, add.path, compareRevision, copyFromPath, copyFromSha1, md5))
                 
 
-        outputFile.close()
+            outputFile.close()
 
-        if foundAtLeastOneCopyFrom == False:
+            if foundAtLeastOneCopyFrom == False:
 
-            os.remove (outputFileName)
-                
-      
+                os.remove (outputFileName)
+        except:
+            # if the file does not yet exist we arrive here.
+            # the main purpose is so that the program does not 
+            # die on a file not found error.
+            logging.exception("unexpected failure")
+            pass 
+
+    def computeMD5 (self, gitDirectory, revisionTag, path):
+        
+        command = "git --git-dir={0} show r{1}:{2}".format(gitDirectory, revisionTag, path)
+    
+        # print command
+        
+        p1 = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
+        p2 = subprocess.Popen(md5sum_command, shell=True, stdin=p1.stdout, stdout=subprocess.PIPE)
+        
+        p1.stdout.close()
+        
+        output = p2.communicate()[0]
+        
+        md5Parts = output.split(" ")
+        
+        md5 = md5Parts[0]
+
+        return md5
+        
 def usage(message):
         if message != None:
             print message    
         print "USAGE: {0} <mode:PREPARE-REPO or COMPARE or PROCESS or FETCH-DUMPS> <path to git repository> <added file input data>".format (sys.argv[0])
-        print "PREPARE-REPO: will tag each commit so that for example commit r1 is tagged as r1"
+        print "PREPARE-REPO: will emit a script that when run will tag each commit so that for example commit r1 is tagged as r1, r34243 is tagged r34243, etc."
         print "COMPARE [startFromRevision]: will extract the comparison diff data based on the add file data"
         print "PROCESS [specificRevision]: will process the diff data accumulated in the COMPARE phase and use it to create SvnDumpFilter rewrite compatible join.dat files"
-        print "FETCH [specificRevision]: will download the version 3 --incremental dump for the revisions that have data to be rewritten as determined in the PROCESS STEP."
-        """
-
-        The PROCESS-SINGLE option is for debugging/development purpopses.
-
-        The FETCH-SINGLE option is for debugginh/development purposes
-        """
+        print "FETCH-DUMPS [specificRevision]: will download the version 3 --incremental dump for the revisions that have data to be rewritten as determined in the PROCESS STEP."
         sys.exit (-1)
 
 if len (sys.argv) < 4:
@@ -627,7 +662,7 @@ if len (sys.argv) < 4:
 
 mode = sys.argv[1]
 
-if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH" and mode != 'PREPARE-REPO':
+if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH-DUMPS" and mode != 'PREPARE-REPO':
     usage ("invalid mode: {0}".format(mode))
 
 specificRevision = None
@@ -774,7 +809,7 @@ elif mode == 'PROCESS':
         else:
             ad.process(gitDirectory)
 
-elif mode == 'FETCH':
+elif mode == 'FETCH-DUMPS':
 
     for (directory, subDirs, files) in os.walk("."):
 
