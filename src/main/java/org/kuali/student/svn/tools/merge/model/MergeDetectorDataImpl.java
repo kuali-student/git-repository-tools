@@ -212,9 +212,9 @@ public class MergeDetectorDataImpl implements MergeDetectorData {
 		
 	}
 	
-	private List<MergeData>revisionMergeDataList = new ArrayList<>();
+	private List<MergeData>revisionMergeDataList = new ArrayList<MergeData>();
 	
-	private Map<TargetData, String>targetToMergeInfoMap = new HashMap<>();
+	private Map<TargetData, String>targetToMergeInfoMap = new HashMap<TargetData, String>();
 	
 	private StringBuilder svnMergeInfoBuilder = new StringBuilder();
 	

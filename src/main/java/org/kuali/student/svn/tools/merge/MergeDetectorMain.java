@@ -20,13 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.kuali.student.svn.tools.AbstractParseOptions;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.kuali.student.svn.tools.merge.model.MergeDetectorData;

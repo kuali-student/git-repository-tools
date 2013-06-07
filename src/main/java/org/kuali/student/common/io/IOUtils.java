@@ -232,7 +232,7 @@ public final class IOUtils {
 			InputStream inputStream, int propContentLength, int contentLength)
 			throws IOException {
 
-		Map<String, String> revisionProperties = new LinkedHashMap<>();
+		Map<String, String> revisionProperties = new LinkedHashMap<String, String>();
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
 

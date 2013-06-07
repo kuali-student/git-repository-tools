@@ -19,8 +19,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -49,7 +47,7 @@ public class TestReadingNodeRevisionProperties {
 	public void testReadingRevisionProperties() throws InvalidKeyLineException,
 			IOException {
 
-		Map<String, String> nodeProperties = new HashMap<>();
+		Map<String, String> nodeProperties = new HashMap<String, String>();
 
 		FileInputStream inputStream = new FileInputStream(
 				"src/test/resources/revision-properties.dat");
@@ -74,7 +72,7 @@ public class TestReadingNodeRevisionProperties {
 	public void testReadingComplexRevisionProperties() throws IOException,
 			InvalidKeyLineException {
 
-		Map<String, String> nodeProperties = new HashMap<>();
+		Map<String, String> nodeProperties = new HashMap<String, String>();
 
 		FileInputStream inputStream = new FileInputStream(
 				"src/test/resources/revision-properties-no-log.dat");
@@ -113,7 +111,7 @@ public class TestReadingNodeRevisionProperties {
 			InvalidKeyLineException {
 
 		// just in the sequential order they were found
-		Map<Integer, Map<String, String>> orderedRevisionProperties = new HashMap<>();
+		Map<Integer, Map<String, String>> orderedRevisionProperties = new HashMap<Integer, Map<String, String>>();
 
 		int revPropCounter = 0;
 		

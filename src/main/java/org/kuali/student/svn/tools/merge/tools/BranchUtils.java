@@ -24,7 +24,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author Kuali Student Team
@@ -128,7 +127,7 @@ public final class BranchUtils {
 	 * @param backwards if true search the parts from last to first.
 	 */
 	private static int indexOfKey (String parts[], String key, boolean backwards) {
-		return indexOfKey(parts, new HashSet<>(Arrays.asList(new String[] {key})), backwards);
+		return indexOfKey(parts, new HashSet<String>(Arrays.asList(new String[] {key})), backwards);
 	}
 	
 	private static int indexOfKey (String parts[], Set<String>keys, boolean backwards) {
@@ -175,7 +174,7 @@ public final class BranchUtils {
 		boolean foundTrunk = false;
 		int beforePathRootIndex = Integer.MAX_VALUE;
 
-		Set<String>backwardMatchPaths = new HashSet<>();
+		Set<String>backwardMatchPaths = new HashSet<String>();
 		
 		backwardMatchPaths.add("branches");
 		backwardMatchPaths.add("tags");
@@ -185,7 +184,7 @@ public final class BranchUtils {
 		backwardMatchPaths.add("examples");
 		
 		
-		Set<String>forwardMatchPaths = new HashSet<>();
+		Set<String>forwardMatchPaths = new HashSet<String>();
 		
 		forwardMatchPaths.add("poc");
 		forwardMatchPaths.add("enumeration");
