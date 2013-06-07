@@ -17,7 +17,9 @@ package org.kuali.student.svn.tools.merge.tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -122,6 +124,38 @@ public final class BranchUtils {
 		return parts[parts.length - 1];
 	}
 
+	/*
+	 * @param backwards if true search the parts from last to first.
+	 */
+	private static int indexOfKey (String parts[], String key, boolean backwards) {
+		return indexOfKey(parts, new HashSet<>(Arrays.asList(new String[] {key})), backwards);
+	}
+	
+	private static int indexOfKey (String parts[], Set<String>keys, boolean backwards) {
+		
+		if (backwards) {
+			for (int i = (parts.length-1); i >=0; i--) {
+				String part = parts[i].toLowerCase();
+				
+				if (keys.contains(part))
+					return i;
+			}
+		}
+		else {
+			// forward
+			for (int i = 0; i < parts.length; i++) {
+				String part = parts[i].toLowerCase();
+
+				if (keys.contains(part))
+					return i;
+			}
+		
+		}		
+		
+		// failed to find a match case
+		
+		return -1;
+	}
 	/**
 	 * Split the path into the branch part and the file path part.
 	 * 
@@ -141,43 +175,33 @@ public final class BranchUtils {
 		boolean foundTrunk = false;
 		int beforePathRootIndex = Integer.MAX_VALUE;
 
-		for (int i = parts.length - 1; i >= 0; i--) {
-			String part = parts[i];
-
-			if (part.toLowerCase().equals("branches")
-					|| part.toLowerCase().equals("tags")
-					|| part.toLowerCase().equals("sandbox")
-					|| part.toLowerCase().equals("trunk")
-					|| part.toLowerCase().equals("tools")
-					|| part.toLowerCase().equals("examples")
-					|| part.toLowerCase().equals("poc")) {
-
-				if (part.toLowerCase().equals("trunk"))
-					foundTrunk = true;
-
-				beforePathRootIndex = i;
-				break;
-			}
+		Set<String>backwardMatchPaths = new HashSet<>();
+		
+		backwardMatchPaths.add("branches");
+		backwardMatchPaths.add("tags");
+		backwardMatchPaths.add("sandbox");
+		backwardMatchPaths.add("trunk");
+		backwardMatchPaths.add("tools");
+		backwardMatchPaths.add("examples");
+		
+		
+		Set<String>forwardMatchPaths = new HashSet<>();
+		
+		forwardMatchPaths.add("poc");
+		forwardMatchPaths.add("enumeration");
+		
+		beforePathRootIndex = indexOfKey(parts, backwardMatchPaths, true);
+		
+		if (beforePathRootIndex == -1) {
+			beforePathRootIndex = indexOfKey(parts, forwardMatchPaths, false);
 		}
 
-		if (beforePathRootIndex == Integer.MAX_VALUE) {
+		if (beforePathRootIndex == -1) {
 
-			// special cases
-			if (parts[0].equals("enumeration")) {
+			// no branches tags or sandbox found
+			// treat the path as the branch
 
-				branchPathList.add(parts[0]);
-				branchPathList.add(parts[1]);
-
-				for (int i = 2; i < parts.length; i++) {
-					pathList.add(parts[i]);
-				}
-			} else {
-
-				// no branches tags or sandbox found
-				// treat the path as the branch
-
-				branchPathList.addAll(Arrays.asList(parts));
-			}
+			branchPathList.addAll(Arrays.asList(parts));
 
 		} else {
 
@@ -187,8 +211,8 @@ public final class BranchUtils {
 			 * on branches the next element is the name of the branch and part
 			 * of the branches path
 			 */
-
-			if (foundTrunk) {
+			
+			if (parts[beforePathRootIndex].toLowerCase().equals("trunk")) {
 
 				int pathNameStartIndex = beforePathRootIndex + 1;
 
