@@ -15,13 +15,10 @@
  */
 package org.kuali.student.svn.tools;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedHashMap;
@@ -30,13 +27,10 @@ import java.util.Map;
 import modifier.PathRevisionAndMD5AndSHA1;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.ReaderInputStream;
-import org.apache.commons.io.output.WriterOutputStream;
 import org.kuali.student.svn.tools.model.INodeFilter;
 import org.kuali.student.svn.tools.model.ReadLineData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Svn Dump Filter is a way to change the contents of a revision as it is

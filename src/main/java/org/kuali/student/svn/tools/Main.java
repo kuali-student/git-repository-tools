@@ -17,15 +17,11 @@ package org.kuali.student.svn.tools;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
-
 import org.kuali.student.svn.tools.model.INodeFilter;
 import org.kuali.student.svn.tools.model.JoinedRevision;
-import org.kuali.student.svn.tools.model.ReadLineData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

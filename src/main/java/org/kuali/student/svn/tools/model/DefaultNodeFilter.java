@@ -22,12 +22,9 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import modifier.PathRevisionAndMD5AndSHA1;
 
 import org.slf4j.Logger;
