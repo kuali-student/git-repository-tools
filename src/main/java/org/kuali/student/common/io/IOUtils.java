@@ -125,8 +125,14 @@ public final class IOUtils {
 			FileInputStream inputStream) throws InvalidKeyLineException,
 			IOException {
 
-		String lengthLine = readLine(inputStream, "UTF-8");
+		while (true) {
+		String lengthLine = readLine(inputStream, "UTF-8").replace("\r", "");
 
+		if (lengthLine != null && lengthLine.length() == 0)
+			continue;
+		
+		
+		
 		if (lengthLine != null && lengthLine.equals("PROPS-END")) {
 			// if it looks like there is a line gap between the last property
 			// and the end it it really because
@@ -135,9 +141,10 @@ public final class IOUtils {
 			// reading the V 0 value takes care of the line ending and we just
 			// read the PROPS-END.
 			return null;
-		} else if (!lengthLine.startsWith(startsWithCharacter)) {
+		} else if (lengthLine == null || !lengthLine.startsWith(startsWithCharacter)) {
 			throw new InvalidKeyLineException(lengthLine + " is invalid");
 		}
+		
 
 		String parts[] = lengthLine.trim().split(" ");
 
@@ -158,6 +165,8 @@ public final class IOUtils {
 		String value = new String(valueBuffer).trim();
 
 		return value;
+		
+		}
 	}
 
 	private static String decode(CharsetDecoder decoder, byte[] in) {

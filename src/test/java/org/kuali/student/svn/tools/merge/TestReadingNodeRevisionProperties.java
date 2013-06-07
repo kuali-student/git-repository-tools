@@ -82,7 +82,7 @@ public class TestReadingNodeRevisionProperties {
 		String contentLengthLine = org.kuali.student.common.io.IOUtils
 				.readLine(inputStream, "UTF8");
 
-		Assert.assertEquals("Content-length: 102", contentLengthLine);
+		Assert.assertEquals("Content-length: 102", contentLengthLine.replace("\r", ""));
 
 		String skippedLine = org.kuali.student.common.io.IOUtils.readLine(
 				inputStream, "UTF8");
