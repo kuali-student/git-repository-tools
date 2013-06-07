@@ -417,6 +417,13 @@ def fetchPath(gitDirectory, path, rev):
     
     executeCommandInWorkingDirectory(command, workingCopyDir)
 
+class RevisionRange:
+
+    def __init__ (self, start, end, single):
+        self.start = start
+        self.end = end
+        self.single = single
+
 class Add:
 
     def __init__(self, code, kind, path):
@@ -650,11 +657,12 @@ class RevisionAddData:
 def usage(message):
         if message != None:
             print message    
-        print "USAGE: {0} <mode:PREPARE-REPO or COMPARE or PROCESS or FETCH-DUMPS> <path to git repository> <added file input data>".format (sys.argv[0])
+        print "USAGE: {0} <mode:PREPARE-REPO or COMPARE or PROCESS or FETCH-DUMPS or PREPARE-TO-APPLY> <path to git repository> <added file input data> [ mode specific options ]".format (sys.argv[0])
         print "PREPARE-REPO: will emit a script that when run will tag each commit so that for example commit r1 is tagged as r1, r34243 is tagged r34243, etc."
         print "COMPARE [startFromRevision]: will extract the comparison diff data based on the add file data"
         print "PROCESS [specificRevision]: will process the diff data accumulated in the COMPARE phase and use it to create SvnDumpFilter rewrite compatible join.dat files"
         print "FETCH-DUMPS [specificRevision]: will download the version 3 --incremental dump for the revisions that have data to be rewritten as determined in the PROCESS STEP."
+        print "PREPARE-TO-APPLY [maximumRevision]: will prepare a script to extract the range dumps between the rewritten revisions.  If _maximumRevision_ is not set HEAD is used."
         sys.exit (-1)
 
 if len (sys.argv) < 4:
@@ -662,18 +670,13 @@ if len (sys.argv) < 4:
 
 mode = sys.argv[1]
 
-if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH-DUMPS" and mode != 'PREPARE-REPO':
+if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH-DUMPS" and mode != 'PREPARE-REPO' and mode != 'PREPARE-TO-APPLY':
     usage ("invalid mode: {0}".format(mode))
 
 specificRevision = None
 
-if len (sys.argv) == 5:
-    specificRevision = int (sys.argv[2])
-    gitDirectory = sys.argv[3]
-    addData = sys.argv[4]
-else:
-    gitDirectory = sys.argv[2]
-    addData = sys.argv[3]
+gitDirectory = sys.argv[2]
+addData = sys.argv[3]
 
 
 normalCount = 0
@@ -787,6 +790,9 @@ elif mode == 'COMPARE':
     We need to extract the copyfrom details for each revision under consideration.
     """
 
+    if len (sys.argv) == 5:
+        specificRevision = int (sys.argv[4])
+
     for ad in revisionAddData:
 
         if ad.revision < specificRevision:
@@ -799,6 +805,9 @@ elif mode == 'COMPARE':
 
 elif mode == 'PROCESS':
 
+    if len (sys.argv) == 5:
+        specificRevision = int (sys.argv[4])
+    
     for ad in revisionAddData:
         if specificRevision != None:
 
@@ -811,6 +820,8 @@ elif mode == 'PROCESS':
 
 elif mode == 'FETCH-DUMPS':
 
+    targetRevisions = []
+
     for (directory, subDirs, files) in os.walk("."):
 
         for fileName in files:
@@ -822,6 +833,7 @@ elif mode == 'FETCH-DUMPS':
                 target = parts[0].replace("r", "")
                 copyFrom = parts[1]
 
+                targetRevisions.append (int (target))
 
                 dumpFile = "r{0}.dump".format(target)
 
@@ -844,4 +856,63 @@ elif mode == 'FETCH-DUMPS':
 
                 subprocess.call (command, shell=1)
 
+    targetRevisions.sort()
+
+    maximumRevision = "HEAD"
+
+    if len (sys.argv) == 5:
+        maximumRevision = sys.argv[4]
+    
+    currentRevision = 1
+    
+    startRevision = 1
+    endRevision = 1
+
+    rangeList = []
+
+    for revision in targetRevisions:
+
+        if startRevision < revision:
+            rangeList.append (RevisionRange (startRevision, (revision - 1), 0))
+
+        rangeList.append (RevisionRange (revision, revision, 1))
+
+        startRevision = revision + 1
+
+    rangeList.append (RevisionRange(startRevision, maximumRevision, 0)) 
+
+    # acquire the range
+    for revRange in rangeList:
+        if revRange.single == 0:
+        
+            dumpFile = "r{0}-r{1}.dump".format(revRange.start, revRange.end)
+
+            # check for the file
+            try:
+                
+                test = open(dumpFile, "r")
+
+                test.close()
+                
+                print "skipping {0} because it already exists.".format(dumpFile)
+                continue
+            except:
+                pass
+                # fall through
                  
+            command = "{0} dump --incremental {1} -r{2}:{3} > {4}".format(svnrdump_command, "https://svn.kuali.org/repos/student", revRange.start, revRange.end, dumpFile)
+            
+            print command 
+
+            subprocess.call (command, shell=1)
+
+ 
+    
+elif mode == 'PREPARE-TO-APPLY':
+    """
+    1. acquire the dumps for the ranges we are not going to be rewriting
+    2. build an order file that lists the dump file application ordering
+    3. apply those files in the prescribed order
+    """
+  
+    pass 
