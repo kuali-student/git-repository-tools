@@ -184,6 +184,12 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 
 						copyFromPathPrefix = parts[0];
 						
+						/*
+						 * This supports the bulk repair scenario where we have the absolute paths already.
+						 */
+						if (copyFromPathPrefix.equals("PLACEHOLDER"))
+							copyFromPathPrefix = null;
+						
 					}
 					else {
 
@@ -309,7 +315,8 @@ public class DefaultNodeFilter implements INodeFilter, InitializingBean {
 			
 		this.joinedRevisionList.add(jr);
 		
-		copyFromRevPathPrefixMap.put(copyFromRevision, copyFromPathPrefix);
+		if (copyFromPathPrefix != null)
+			copyFromRevPathPrefixMap.put(copyFromRevision, copyFromPathPrefix);
 		
 
 	}

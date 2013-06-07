@@ -314,12 +314,6 @@ public class SvnDumpFilter {
 		System.exit(-1);
 	}
 
-	private String extractStringKey(ReadLineData lineData) {
-		String[] parts = splitLine(lineData.getLine());
-
-		return parts[0];
-	}
-
 	private String extractStringValue(ReadLineData lineData) {
 		String[] parts = splitLine(lineData.getLine());
 
@@ -362,6 +356,16 @@ public class SvnDumpFilter {
 			// node/revision
 
 			lineData =  org.kuali.student.common.io.IOUtils.readTilNonEmptyLine(fileInputStream, UTF_8);
+			
+			if (lineData == null) {
+				log.warn("end of input reached while processing path: " + path);
+				return;
+			} else if (lineData.getLine() == null) {
+
+				options.onStreamEnd(lineData);
+
+				return;
+			}
 
 			if (isRevisionStart(lineData)) {
 				// mark the end of the node

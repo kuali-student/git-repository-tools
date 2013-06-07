@@ -73,9 +73,17 @@ public class Main {
 						if (line == null)
 							break;
 
+						File f = new File(line.trim());
+						
+						if (!f.exists()) {
+							log.warn(line + " does not exist in the current working directory.");
+							continue; // skip to the next line
+						}
+						
 						log.info(String.format("Loading Join Data from (%s)",
 								line));
-						nodeFilter.loadFilterData(new File(line));
+						
+						nodeFilter.loadFilterData(f);
 
 					}
 				} catch (IOException e) {

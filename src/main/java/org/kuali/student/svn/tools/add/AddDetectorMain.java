@@ -80,8 +80,10 @@ public class AddDetectorMain {
 
 			File dumpFile = new File(args[0]);
 
-			if (!dumpFile.exists())
+			if (!dumpFile.exists()) {
+				pw.close();
 				throw new FileNotFoundException(args[0] + " path not found");
+			}
 
 			filter.parseDumpFile(dumpFile.getAbsolutePath(),
 					new AbstractParseOptions() {
