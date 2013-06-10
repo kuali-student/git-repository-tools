@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Note for some unknown reason running in remote debug mode works but without it it gets stuck.
 DEBUG_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=6523"
 
 JAR_FILE=~/svn-history-tools-0.0.1-SNAPSHOT.jar 
@@ -35,6 +35,12 @@ $(java $JAVA_DEBUG -Xmx1024m -jar $JAR_FILE < $PIPE > java.log) &
 
 JAVA_PID=$!
 
+if test -z "$JAVA_PID"
+then
+    echo "Failed to Acquire PID"
+
+fi
+
 JOIN_WORK=$(ls -l *-join.dat | awk '{print $9}')
 
 for WORK in $JOIN_WORK
@@ -61,4 +67,3 @@ cat /dev/null >> $PIPE
 
 echo "wait $JAVA_PID"
 wait $JAVA_PID
-

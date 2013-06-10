@@ -19,6 +19,10 @@ For performance reasons we compare the entire revision to previous revision and 
 
 Then as a seperate step we match the files against the added files to assemble the copy from details.
 
+Modes:
+
+
+
 AUTHOR: Kuali Student Team <ks.collab@kuali.org>
 
 """
@@ -49,75 +53,7 @@ svnrdump_command="/usr/bin/svnrdump"
 # TODO change to using os.path.join instead of this field
 file_seperator="/"
 
-def extractCommitSha1 (gitDirectory, revision):
-    # find the commit
-    command = "{0} --git-dir={1} log --grep=\"@{2}\\ \" --pretty --format=\"%H\" origin/master".format(git_command, gitDirectory, revision)
-    
-    commitSha1 = subprocess.check_output(command, shell=1).strip("\n")
-
-    return commitSha1
-
-
-    
-# extract the sha1 hash of the path at the revision given from the git repository
-def extractSha1 (gitDirectory, fileType, revision, path):
-
-    commitSha1 = extractCommitSha1(gitDirectory, revision)
-
-    if fileType == 'file':
-
-        command = "{0} --git-dir={1} ls-tree -r {2} {3}".format(git_command, gitDirectory, commitSha1, path)
-    
-    elif fileType == 'dir':
-
-        command = "{0} --git-dir={1} ls-tree -d  {2} {3}".format(git_command, gitDirectory, commitSha1, os.path.dirname (path))
-    
-    output = subprocess.check_output(command, shell=1)
-    
-    if len (output) == 0:
-        return None 
-
-    parts = output.split("\n")
-
-    #print "parts = " + string.join (parts, ", ")
-
-    if len (parts) > 2:
-        raise Exception ("multiple matches for {0}@{1}: {2}").format (path, revision, string.join (parts, ", "))
-
-    blobLine = parts[0]
-
-    blobParts = blobLine.split("\t")
-
-    blobPart = blobParts[0]
-
-    sha1Parts = blobPart.split(" ")
-
-    sha1 = sha1Parts[2]
-
-    return sha1
-
-
-# make a git tree object that only contains the filename given.
-def makeTree (gitDirectory, blobSha1, fileName):
-    
- 
-    echo_cmd = "{0} -e \"100644 blob {1}\t{2}\"".format(echo_command, blobSha1, fileName)
-
-    mktree_command = "{0} --git-dir={1} mktree".format(git_command, gitDirectory)
-
-    #print command
-
-    p1 = subprocess.Popen(echo_cmd, shell=True, stdout=subprocess.PIPE)
-    p2 = subprocess.Popen(mktree_command, shell=True, stdin=p1.stdout, stdout=subprocess.PIPE)
-
-    p1.stdout.close()
-
-    output = p2.communicate()[0].strip("\n")
-    
-    return output
-
-
-
+# compare the two trees recursively and put the output into the named file.
 def compareTrees(gitDirectory, treeASha1, treeBSha1, outputFileName):
 
 
@@ -145,278 +81,8 @@ def compareTrees(gitDirectory, treeASha1, treeBSha1, outputFileName):
     if outputFile != None:
         outputFile.close()
 
-"""
-Find the copies and moves.
-"""
-def computeDiff(gitDirectory, targetTree, copyFromTree, targetRev, copyFromRev):
-    
-    joinOutputFile = "r{0}-r{1}-join.dat".format(targetRev, copyFromRev)
-    
-    print "Started on finding join data into: {0}".format(joinOutputFile)
-    
-    joinOutput = open (joinOutputFile, "w")
-    
-    # get the files that stayed the same between the copyFromRev and targetRev
-    
-    # read in the sha1 -> copy from path details
-    copyFromSha1ToPath = {}
-    
-    command = "git --git-dir={0} ls-tree -rt --full-tree {1}".format(gitDirectory, copyFromTree)
-    
-    #  print command
-        
-    output = subprocess.check_output(command, shell=True)
-    
-    lines = output.split("\n")
-    
-    for line in lines:
-        
-        afterModeSpaceIndex = line.find(" ")
-        
-        startOfTypeIndex = afterModeSpaceIndex + 1
-        
-        afterTypeSpaceIndex = line[startOfTypeIndex:].find(" ")
-        
-        startOfShaIndex = startOfTypeIndex + afterTypeSpaceIndex + 1
-        
-        afterShaSpaceIndex = line[startOfShaIndex:].find("\t")
-        
-        startOfPathIndex = startOfShaIndex + afterShaSpaceIndex + 1
-        
-        copyFromSha1 = line[startOfShaIndex:startOfPathIndex]
-        copyFromPath = line[startOfPathIndex:]
-        
-        copyFromSha1ToPath[copyFromSha1] = copyFromPath
-        
-        
-    command = "git --git-dir={0} ls-tree -rt --full-tree {1}".format(gitDirectory, targetTree)
-    
-    #  print command
-        
-    output = subprocess.check_output(command, shell=True)
-    
-    lines = output.split("\n")
-    
-    for line in lines:
-        
-        if len(line) == 0:
-            continue
-        
-        afterModeSpaceIndex = line.find(" ")
-        
-        startOfTypeIndex = afterModeSpaceIndex + 1
-        
-        afterTypeSpaceIndex = line[startOfTypeIndex:].find(" ")
-        
-        startOfShaIndex = startOfTypeIndex + afterTypeSpaceIndex + 1
-        
-        afterShaSpaceIndex = line[startOfShaIndex:].find("\t")
-        
-        startOfPathIndex = startOfShaIndex + afterShaSpaceIndex + 1
-        
-        targetSha1 = line[startOfShaIndex:startOfPathIndex]
-        targetPath = line[startOfPathIndex:]
-        
-        if targetSha1 in copyFromSha1ToPath.keys():
-            
-            copyFromPath = copyFromSha1ToPath[targetSha1]
-            
-            # extract the md5
-            command = "git --git-dir={0} cat-file -p {1}".format(gitDirectory, targetSha1)
-    
-            #print command
-        
-            p1 = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(md5sum_command, shell=True, stdin=p1.stdout, stdout=subprocess.PIPE)
-        
-            p1.stdout.close()
-        
-            output = p2.communicate()[0]
-
-            targetMd5 = output.split(" ")[0]
-            
-            copyFromPathPrefix = copyFromRevToPrefix[copyFromRev]
-            
-            joinOutput.write ("#{0}\n{1}\n{2}||{3}\n{4}||{5}\n{6}||{7}\n".format("Unchanged", copyFromPathPrefix, targetRev, targetPath, copyFromRev, copyFromPath, targetSha1, targetMd5))
-            
-    
-    # get the copied and changes between the revisions
-    command = "git --git-dir={0} diff-tree --find-copies-harder --diff-filter=C,R,M -r {1} {2} | sort -rk5 ".format(gitDirectory, targetTree, copyFromTree)
-    
-    print command
-    
-    outputFile = "r{0}-r{1}-diff.out".format(targetRev, copyFromRev)
-    
-    output = open (outputFile, "w")
-    
-    subprocess.call(command, shell=True, stdout=output)
-    
-    output.close()
-    
-    
-    
-    # now parse that file to write into a smaller format.
-    for line in fileinput.input(outputFile):
-        strippedLine = line.strip()
-        if len (strippedLine) == 0 or strippedLine[0] == '#':
-            continue  # skip empty lines and comments  
-        
-        parts = strippedLine.split (" ")
-        
-        srcMode = parts[0]
-        dstMode = parts[1]
-        
-        srcSha1 = parts[2]
-        dstSha1 = parts[3]
-        
-        remainder = parts[4]
-        
-        tabParts = remainder.split("\t")
-        
-        status = tabParts[0]
-        
-        srcPath = tabParts[1]
-        
-        # need to convert the source path back into the original path
-
-        command = "git --git-dir={0} cat-file -p {1}".format(gitDirectory, dstSha1)
-    
-      #  print command
-        
-        p1 = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
-        p2 = subprocess.Popen(md5sum_command, shell=True, stdin=p1.stdout, stdout=subprocess.PIPE)
-        
-        p1.stdout.close()
-        
-        output = p2.communicate()[0]
-        
-        md5Parts = output.split(" ")
-        
-        dstMd5 = md5Parts[0]
-        
-        if len (tabParts) == 3:
-            # copy
-            dstPath = tabParts[2]
-            
-         #   if verifySameFile (srcPath, dstPath) == False:
-         #       continue
-            
-            joinOutput.write ("#{0}\n{1}||{2}\n{3}||{4}\n{5}||{6}\n".format(status, targetRev, srcPath, copyFromRev, dstPath, dstSha1, dstMd5))
-            
-        else:
-            # in place modify
-             joinOutput.write ("#{0}\n{1}||{2}\n{3}||{4}\n{5}||{6}\n".format(status, targetRev, srcPath, copyFromRev, srcPath, dstSha1, dstMd5))
-        
-       
-        
-        
-    joinOutput.close()
-
-
-def fetchPath(gitDirectory, path, rev):
-    
-    # check if the tag already exists
-    tagName = "r{0}".format(rev)
-    
-    command = "{0} --git-dir={1} rev-parse {2}".format(git_command, gitDirectory, tagName)
-    
-    try:
-        
-        output = subprocess.check_output(command, shell=1).strip("\n")
-    
-        if output != tagName:
-            print "{0} exists skipping export.".format(tagName)
-            return
-
-    except:
-        
-        # this is fine it means the tag does not exist
-        print "tag {0} does not exist, fetching.".format(tagName)
-
-    # compute the top level path
-    indexAfterBaseUrl = len("http://svn.kuali.org/repos/student/")
-    
-    topLevelPath = path[indexAfterBaseUrl:]
-    
-    # find the top level working copy
-    workingCopyDir = os.path.dirname(gitDirectory)
-    
-    print workingCopyDir
- 
-    # checkout something with not a lot of data
-    command = "{0} checkout master".format(git_command)
-   
-    print command 
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-    
-    # delete the export branch if it exists
-    command = "{0} branch -D svn-export".format(git_command)
-    
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-    
-    # create the new empty revision to hold the export
-    command = "{0} checkout --orphan svn-export".format(git_command)
-    
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-    
-    # remove any files (make sure we always specify the workingCopyDir so that this works.
-    command = "{0} rm -rf *".format(git_command)
-    
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-    
-    # remove any other files from the working copy directory
-
-    for (directory, subDirs, files) in os.walk(workingCopyDir):
-    
-        topLevelDirs = subDirs
-    
-        topLevelDirs.remove('.git')
-        
-        for dirToDelete in topLevelDirs:
-            
-            fullDeletePath = directory + file_seperator + dirToDelete
-            
-            shutil.rmtree(fullDeletePath)
-        
-        break;
-        
-    command = "{0} export {1}@{2} -r {3} {4}".format(svn_command, path, rev, rev, topLevelPath)
-    
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-
-    # add place holder files into any empty directories
-    command = "find . -type d -empty | grep -v .git"
-
-    output = None
-
-    try:
-        output = subprocess.check_output(command, shell=True, cwd=workingCopyDir)
-    except:
-        print "No EmptyDirectories for {0}. Skipping placeholder files.".format(tagName)
-        output = ""
-        
-    emptyDirs = output.split("\n")
-
-    for ed in emptyDirs:
-
-        if len (ed) == 0:
-            break;
-        
-        executeCommandInWorkingDirectory ("touch {0}/placeholder.txt".format(ed), workingCopyDir)
-    
-    command = "{0} add *".format(git_command)
-    
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-    
-    command = "{0} commit -m\"{1} {2}\"".format(git_command, path, tagName)
-    
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-    
-    # force tag (this may result in the tag moving) 
-    command = "{0} tag -f {1}".format(git_command, tagName)
-    
-    executeCommandInWorkingDirectory(command, workingCopyDir)
-
+# Represent a range of commits
+# single = 1 if start and end are the same
 class RevisionRange:
 
     def __init__ (self, start, end, single):
@@ -424,6 +90,7 @@ class RevisionRange:
         self.end = end
         self.single = single
 
+# Represents a file add from the svn dump file
 class Add:
 
     def __init__(self, code, kind, path):
@@ -431,6 +98,7 @@ class Add:
         self.kind = kind
         self.path = path
 
+# represents the files that were added by a specific revision
 class RevisionAddData:
 
     def __init__(self, revision):
@@ -442,10 +110,7 @@ class RevisionAddData:
 
         self.pathToAddMap = {}
 
-
-    def setCommitSha1(self,  commitSha1):
-        self.commitSha1 = commitSha1
-    
+    # add a file add path to this revision.
     def addNormalPath (self, nodeKind, path):
        
         code = len (self.paths)
@@ -458,6 +123,8 @@ class RevisionAddData:
 
         self.pathToAddMap[path] = add
 
+    # delegate to git diff-tree to compare the files added at the current revision to the
+    # previous revision.
     def compare(self, gitDirectory):
 
         """
@@ -481,7 +148,7 @@ class RevisionAddData:
             print "{0} file exists skipping".format(outputFileName)
             return
         
-        # acquire the take tree data
+        # acquire the fake tree data
 
         treeContent = tempfile.NamedTemporaryFile(mode="w", delete=False)
         treeContentFileName = treeContent.name
@@ -490,9 +157,12 @@ class RevisionAddData:
 
         for add in self.paths:
 
+            # skip directories
             if add.kind == 'dir':
                 continue
         
+           
+            # escape problem file characters like $ space and &. 
             dirName = os.path.dirname (add.path).replace("$", "\\$").replace(" ", "\\ ").replace("&", "\\&") 
             
             fileName = os.path.basename (add.path).replace("$", "\\$").replace(" ", "\\ ").replace("&", "\\&")
@@ -541,6 +211,7 @@ class RevisionAddData:
         
             output.close()
 
+    # create the svn dump filter revision join information from the assumed to exist compare data.
     def process(self, gitDirectory):
 
         """
@@ -635,6 +306,7 @@ class RevisionAddData:
             logging.exception("unexpected failure")
             pass 
 
+    # compute the MD5 hash for the file path given based on its contents in the git repository.
     def computeMD5 (self, gitDirectory, revisionTag, path):
         
         command = "git --git-dir={0} show r{1}:{2}".format(gitDirectory, revisionTag, path)
@@ -657,12 +329,12 @@ class RevisionAddData:
 def usage(message):
         if message != None:
             print message    
-        print "USAGE: {0} <mode:PREPARE-REPO or COMPARE or PROCESS or FETCH-DUMPS or PREPARE-TO-APPLY> <path to git repository> <added file input data> [ mode specific options ]".format (sys.argv[0])
+        print "USAGE: {0} <mode:PREPARE-REPO or COMPARE or PROCESS or FETCH-DUMPS or APPLY> <path to git repository> <added file input data> [ mode specific options ]".format (sys.argv[0])
         print "PREPARE-REPO: will emit a script that when run will tag each commit so that for example commit r1 is tagged as r1, r34243 is tagged r34243, etc."
         print "COMPARE [startFromRevision]: will extract the comparison diff data based on the add file data"
         print "PROCESS [specificRevision]: will process the diff data accumulated in the COMPARE phase and use it to create SvnDumpFilter rewrite compatible join.dat files"
         print "FETCH-DUMPS [specificRevision]: will download the version 3 --incremental dump for the revisions that have data to be rewritten as determined in the PROCESS STEP."
-        print "PREPARE-TO-APPLY [maximumRevision]: will prepare a script to extract the range dumps between the rewritten revisions.  If _maximumRevision_ is not set HEAD is used."
+        print "APPLY <svn repo url> [recreate]: will prepare a script to extract the range dumps between the rewritten revisions.  If _maximumRevision_ is not set HEAD is used."
         sys.exit (-1)
 
 if len (sys.argv) < 4:
@@ -670,7 +342,7 @@ if len (sys.argv) < 4:
 
 mode = sys.argv[1]
 
-if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH-DUMPS" and mode != 'PREPARE-REPO' and mode != 'PREPARE-TO-APPLY':
+if mode != "COMPARE" and mode !=  "PROCESS" and mode != "FETCH-DUMPS" and mode != 'PREPARE-REPO' and mode != 'PREPARE-TO-APPLY' and mode != 'APPLY':
     usage ("invalid mode: {0}".format(mode))
 
 specificRevision = None
@@ -820,10 +492,25 @@ elif mode == 'PROCESS':
 
 elif mode == 'FETCH-DUMPS':
 
+    """
+
+    Fetch the target dump files that are going to be filtered.
+
+    We can determine which ones are needed by running a directory listing looking for rS-rE-join.dat named files (revision S < revision E).
+
+    Then we extract revision E and fetch the dump file of that revision into E.dump.
+
+    The second case is to extract the commits that are not going to be rewritten.
+
+    
+    """
     targetRevisions = []
+    
+    dumpSequenceFile = open ("dump-file-application-sequence.dat", "w")
 
     for (directory, subDirs, files) in os.walk("."):
 
+        # part 1 make the to be filtered dump files.
         for fileName in files:
 
             if fileName.endswith("-join.dat"):
@@ -870,17 +557,31 @@ elif mode == 'FETCH-DUMPS':
 
     rangeList = []
 
+    # part 2: build the ordered list of revision ranges.
+    # targetRevisions holds the to be filtered revisions so the other logic adds in the original revision ranges.
     for revision in targetRevisions:
 
         if startRevision < revision:
-            rangeList.append (RevisionRange (startRevision, (revision - 1), 0))
+
+            rr = RevisionRange (startRevision, (revision - 1), 0)
+
+            rangeList.append (rr)
+            
+            dumpSequenceFile.write("r{0}-r{1}.dump\n".format(rr.start, rr.end))
 
         rangeList.append (RevisionRange (revision, revision, 1))
 
+        dumpSequenceFile.write("r{0}-filtered.dump\n".format(revision))
+        
         startRevision = revision + 1
 
-    rangeList.append (RevisionRange(startRevision, maximumRevision, 0)) 
+    rr = RevisionRange(startRevision, maximumRevision, 0) 
+    rangeList.append (rr)
 
+    dumpSequenceFile.write("r{0}-r{1}.dump\n".format(rr.start, rr.end))
+
+    dumpSequenceFile.close()
+    
     # acquire the range
     for revRange in rangeList:
         if revRange.single == 0:
@@ -908,11 +609,43 @@ elif mode == 'FETCH-DUMPS':
 
  
     
-elif mode == 'PREPARE-TO-APPLY':
+elif mode == 'APPLY':
     """
-    1. acquire the dumps for the ranges we are not going to be rewriting
-    2. build an order file that lists the dump file application ordering
-    3. apply those files in the prescribed order
+    read the revision ordering file and apply the dump files in the correct sequence.
     """
-  
-    pass 
+
+    if len (sys.argv) < 4:
+        usage ("Missing empty SVN Repository Url")
+
+    repoUrl=sys.argv[4]
+
+    recreateRepo = 0
+    
+    if len (sys.argv) == 5:
+        recreateRepo = 1
+    
+
+    if recreateRepo:
+        # create the repo
+        pass
+    
+    dumpSequenceFile = open ("dump-file-application-sequence.dat", "r")
+
+    for line in dumpSequenceFile:
+
+        dumpFile = line.strip()
+
+        # skip comments or blank lines
+        if len (dumpFile) == 0 or dumpFile[0] == '#':
+            continue
+
+        command = "{0} load {1} < {2}".format(svnrdump_command, repoUrl, dumpFile)
+              
+        print command 
+
+        subprocess.call (command, shell=1)
+
+
+    dumpSequenceFile.close()
+
+     
