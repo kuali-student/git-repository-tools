@@ -334,7 +334,7 @@ def usage(message):
         print "COMPARE [startFromRevision]: will extract the comparison diff data based on the add file data"
         print "PROCESS [specificRevision]: will process the diff data accumulated in the COMPARE phase and use it to create SvnDumpFilter rewrite compatible join.dat files"
         print "FETCH-DUMPS [specificRevision]: will download the version 3 --incremental dump for the revisions that have data to be rewritten as determined in the PROCESS STEP."
-        print "APPLY <svn repo url> [recreate]: will prepare a script to extract the range dumps between the rewritten revisions.  If _maximumRevision_ is not set HEAD is used."
+        print "APPLY <svn repo url> [startRevision] [recreate]: will prepare a script to extract the range dumps between the rewritten revisions.  If _maximumRevision_ is not set HEAD is used."
         sys.exit (-1)
 
 if len (sys.argv) < 4:
@@ -619,9 +619,16 @@ elif mode == 'APPLY':
 
     repoUrl=sys.argv[4]
 
+    startFile = None
+    started = 1
+
     recreateRepo = 0
-    
-    if len (sys.argv) == 5:
+   
+    if len (sys.argv) == 6:
+        startFile = sys.argv[5]
+        started = 0
+        
+    if len (sys.argv) == 7:
         recreateRepo = 1
     
 
@@ -638,6 +645,15 @@ elif mode == 'APPLY':
         # skip comments or blank lines
         if len (dumpFile) == 0 or dumpFile[0] == '#':
             continue
+
+        if not started:
+
+            if startFile == dumpFile:
+                started = 1
+
+        if not started:
+            continue
+            # skip over this file
 
         command = "{0} load {1} < {2}".format(svnrdump_command, repoUrl, dumpFile)
               
