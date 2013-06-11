@@ -1,0 +1,5 @@
+#R074
+PLACEHOLDER
+18863||deploymentlab/trunk/kuali-wagon-s3/src/main/resources/log4j-noop.properties
+18862||deploymentlab/trunk/kuali-wagon-s3/src/main/resources/log4j.properties
+200bb02603464bc9db9ff7016a92e50d2e5bdb04||9d787050e6af8141c2fb818c954db6c3

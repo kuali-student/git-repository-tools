@@ -1,0 +1,10 @@
+#R061
+PLACEHOLDER
+17296||trunk/ks-cfg-dbs/ks-embedded-db/src/main/impex/KS_DB_VERSION.xml
+17295||trunk/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSLU_CLU_JN_CLU_INSTR.xml
+bff940f74e5d936709da0e8bb1da45e0b5ba8d56||eb49354070262d5088f4a04f42675302
+#R060
+PLACEHOLDER
+17296||trunk/ks-cfg-dbs/ks-standalone-db/src/main/impex/KS_DB_VERSION.xml
+17295||trunk/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSOR_ORG_JN_ORG_PERS_REL_TYPE.xml
+2cd545fc6ea648d3b83b42d9b0e28dd717fb7fe1||3fdf95491df0cd702e29faa517510513

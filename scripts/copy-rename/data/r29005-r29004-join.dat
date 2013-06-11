@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+29005||branches/ks-2.0-cm/ks-common/ks-common-test/src/main/resources/rice-testharness-default-log4j.properties
+29004||branches/inactive/ks-1.0.x/ks-core/ks-common-test/src/main/resources/log4j.properties
+e126891cf7157371632af8839f37352dd02dbaef||88b1bec2bd403ac98098f78bf47611c7

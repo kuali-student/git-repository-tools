@@ -1,0 +1,5 @@
+#R066
+PLACEHOLDER
+20613||deploymentlab/trunk/kuali-spring-util/src/test/resources/ResolverPropertiesFirstPlaceholderConfigurer-context.xml
+20612||deploymentlab/trunk/impex/db-impex/src/test/resources/org/kuali/db/impex/reset-db-test.xml
+04d84703e33f980c30cbadfe9ae689a7abcb432d||05ac101f4359c5e340f819b562aea224

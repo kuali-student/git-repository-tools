@@ -1,0 +1,15 @@
+#R089
+PLACEHOLDER
+1767||brms/brms-web/branches/brms-web-dev/rule-management-developer/src/main/java/org/kuali/student/rules/devgui/client/controller/DevelopersGuiController.java
+1766||brms/brms-web/branches/brms-web-dev/rule-management-developer/src/main/java/org/kuali/student/rules/devgui/client/controller/DevelopersGuiMain.java
+c9befc6dd40e52ad88a28f85cc8871ea2df1d01d||34367bff76a070076f44c7b0136ff9d8
+#R086
+PLACEHOLDER
+1767||brms/brms-web/branches/brms-web-dev/rule-management-developer/src/main/java/org/kuali/student/rules/devgui/client/service/DevelopersGuiServiceAsync.java
+1766||brms/brms-web/branches/brms-web-dev/rule-management-developer/src/main/java/org/kuali/student/rules/devgui/client/DevGuiServiceAsync.java
+e55ecac4723743670d93cbbd51495ac47c46e81b||88c3953e93bac97a19119cbec3464edc
+#R076
+PLACEHOLDER
+1767||brms/brms-web/branches/brms-web-dev/rule-management-developer/src/main/java/org/kuali/student/rules/devgui/client/service/DevelopersGuiService.java
+1766||brms/brms-web/branches/brms-web-dev/rule-management-developer/src/main/java/org/kuali/student/rules/devgui/client/DevGuiService.java
+ba35c81a8e9f6a374a7ed86fc3964b3ec31946a8||8dedde92da09bbc5fb4e434cd1461ee4

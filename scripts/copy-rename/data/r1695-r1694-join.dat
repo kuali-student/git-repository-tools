@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+1695||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/log4j.properties
+1694||poc/ks-poc/trunk/src/main/resources/log4j.properties
+88e15ea4e2b09209e63a505946113eb217a2c902||eb1f4625ecb87e316fc0c2bef0cbcf95
+#R100
+PLACEHOLDER
+1695||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/drools-repository/repository.xml
+1694||brms/brms-impl/branches/brms-impl-dev/rule-repository-impl/src/main/resources/drools-repository/repository.xml
+a3af3dde55ffadb1eca3d4578e1da008fa8a0d07||b67c2c670acb100cc3177dc80933f226

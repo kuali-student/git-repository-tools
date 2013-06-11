@@ -1,0 +1,10 @@
+#R059
+PLACEHOLDER
+14790||branches/ks-poc-1.1.x-br/ks-core/ks-common-util/src/main/java/org/kuali/student/common/messagebuilder/MessageTreeBuilder.java
+14789||branches/ks-1.0.x/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSPlaceholder.java
+5f5101e6194966934c2383b47668892c62696ee8||ec7a4e0e1fb4c8ca94cced025dbf17bc
+#R058
+PLACEHOLDER
+14790||branches/ks-poc-1.1.x-br/ks-core/ks-common-util/src/test/java/org/kuali/student/common/messagebuilder/impl/SimpleBooleanMessageBuilderTest.java
+14789||tags/ks-1.1-20100526-build-20/ks-core/ks-common-util/src/test/java/org/kuali/student/common/messagebuilder/impl/SuccessMessageBuilderTest.java
+f9c373409e0389f908a17bfc541a81675b4c218f||cc8a3408abfe894bf5eb57c60acc2754

@@ -1,0 +1,10 @@
+#R084
+PLACEHOLDER
+16439||trunk/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/requirements/CourseRequirementsManageView.java
+16438||tags/builds/ks-1.1-20100921-build-133/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/requirements/ProgramRequirementsManageView.java
+6200c0f5aff200b05542aa1e116d21051a81aa3a||9d6ece1d576412334580cdb5808c3474
+#R059
+PLACEHOLDER
+16439||trunk/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/requirements/CourseRequirementsViewController.java
+16438||tags/builds/ks-1.1-20100921-build-133/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/requirements/ProgramRequirementsViewController.java
+208dfc670083ea20e83eda0f74decdd8f5e1e73c||a7af3ab4d8778a4b200248f31b08b97b

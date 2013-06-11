@@ -1,0 +1,15 @@
+#R090
+PLACEHOLDER
+1225||brms/brms-api/trunk/.project
+1224||poc/common/branches/common-dev/.project
+aca9c52ce31e6785860d59c3dfc4f68989893533||1e99777481e0bc0bd4f61fdc16b5c2d6
+#R084
+PLACEHOLDER
+1225||brms/brms-api/trunk/.settings/org.maven.ide.eclipse.prefs
+1224||poc/ks-poc/trunk/.settings/org.maven.ide.eclipse.prefs
+0b26bf1874f4216f947624bb197752b181de664d||7a0e017c7656a36d22dd52192181f8bc
+#R051
+PLACEHOLDER
+1225||brms/brms-api/trunk/pom.xml
+1224||poc/learningunitmanagement/lum-api/branches/lum-api-dev/pom.xml
+cde44b20773ea259d426218b3132306f28ecfba8||5c9d7033a1da6306dc0c978afc0d265e

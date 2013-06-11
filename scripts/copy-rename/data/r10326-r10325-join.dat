@@ -1,0 +1,5 @@
+#R053
+PLACEHOLDER
+10326||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/writer/JavaEnumConstantCalculatorTest.java
+10325||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/writer/XmlTypeNameBuilderTest.java
+390bb40c28cc7e82adf6a4d0003be2de1b41b14a||8aee0715e8a9eb69c2c75a0bcdb780e7

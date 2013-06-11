@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+30264||sandbox/ks-1.3-core-slice-demo/modules/ks-enroll/trunk/ks-enroll-impl/src/main/java/org/kuali/student/core/statement/util/RulesEvaluationUtil.java
+30263||branches/ks-1.3-ec1/ks-core/ks-core-api/src/main/java/org/kuali/student/core/statement/util/RulesEvaluationUtil.java
+e7744f0c0fd1d1b8474c54674902f58e79595a24||c5c702b8c2e07d1d803e7716a8fe55a7
+#R100
+PLACEHOLDER
+30264||sandbox/ks-1.3-core-slice-demo/modules/ks-enroll/trunk/ks-enroll-impl/src/main/java/org/kuali/student/core/statement/util/PropositionBuilder.java
+30263||branches/ks-1.3-ec1/ks-core/ks-core-api/src/main/java/org/kuali/student/core/statement/util/PropositionBuilder.java
+be8464a0daefa739f1091a864f87b5536fcf464f||2cdb7654f20d4507528dc1469a7ff95a

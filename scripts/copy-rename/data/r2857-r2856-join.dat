@@ -1,0 +1,15 @@
+#R058
+PLACEHOLDER
+2857||sandbox/team2/ks-core/branches/ks-core-dev/core-impl/src/main/java/org/kuali/student/core/organization/entity/OrgPositionRestrictionAttributeDef.java
+2856||sandbox/team2/ks-core/branches/ks-core-dev/core-impl/src/main/java/org/kuali/student/core/organization/entity/OrgAttributeDef.java
+a540e69d55b772c53684b605e56120451b0643d0||79248450604a28db54c0ba2c831908e7
+#R051
+PLACEHOLDER
+2857||sandbox/team2/ks-core/branches/ks-core-dev/core-impl/src/main/java/org/kuali/student/core/entity/TimeAmount.java
+2856||sandbox/team2/ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/organization/dto/TimeAmount.java
+deeed23a91dfb6eb6511fb7a88faed13f1967f66||a2462872ba56ade277d8a2292d676fa4
+#R050
+PLACEHOLDER
+2857||sandbox/team2/ks-core/branches/ks-core-dev/core-impl/src/main/java/org/kuali/student/core/organization/entity/OrgPositionRestrictionAttribute.java
+2856||sandbox/team2/ks-core/branches/ks-core-dev/core-impl/src/main/java/org/kuali/student/core/organization/entity/OrgAttribute.java
+5f3a7d22574e9228af3fd39247eadf7e89e8f546||a4801c5fb20fba547a5e7b3334ec4605

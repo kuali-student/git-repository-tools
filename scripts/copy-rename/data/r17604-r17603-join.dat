@@ -1,0 +1,15 @@
+#R088
+PLACEHOLDER
+17604||deploymentlab/branches/sts-2.5.1/ks-lum/ks-lum-ui/.project
+17603||branches/ks-1.1-uif/ks-web/ks-rice/.project
+fb8e799ad30a6d3de49086d57a6f3c7b116ec338||6ac8d7b78048a8a2ebc638e4c3b6cc5d
+#R086
+PLACEHOLDER
+17604||deploymentlab/branches/sts-2.5.1/ks-lum/ks-lum-ui/.settings/org.eclipse.jdt.core.prefs
+17603||branches/ks-1.0.x/ks-core/.settings/org.eclipse.jdt.core.prefs
+7ee7e667e95197a4a95d28d058c951f96a2f4eba||34f877ec91240aa0bce417a3c544d77c
+#R085
+PLACEHOLDER
+17604||deploymentlab/branches/sts-2.5.1/ks-lum/ks-lum-ui/.settings/org.maven.ide.eclipse.prefs
+17603||branches/ks-1.0.x/ks-web/ks-standalone/.settings/org.maven.ide.eclipse.prefs
+cad745b53852d02f7a3047244c72c4c44295e298||526a41724602fce9c234cb22e3a6ebce

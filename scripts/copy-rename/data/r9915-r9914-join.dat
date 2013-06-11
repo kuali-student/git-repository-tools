@@ -1,0 +1,10 @@
+#R067
+PLACEHOLDER
+9915||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/organization/service/jaxws/GetAllAncestors.java
+9914||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/organization/service/jaxws/GetAncestors.java
+0ab1fb7fa46c0b7f76062d553abb47aad8a4ccb3||0df1d33df52d43550456bcc66b8d09ba
+#R063
+PLACEHOLDER
+9915||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/organization/service/jaxws/GetAllAncestorsResponse.java
+9914||deploymentlab/branches/1.0.0.x/lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetAllCluIdsInCluSetResponse.java
+f58e738aa2b7d801197aebd7d4c2df06cd91f1ba||b66bed36b9ea77066ceb7489ad6a8e28

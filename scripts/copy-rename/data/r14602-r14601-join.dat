@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+14602||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/lum-ui-test-lookup-context.xml
+14601||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-ui/src/main/resources/lum-ui-lookup-context.xml
+48c690339233d51fa83753789f81eac31cd0026f||4362ccc7148a0dfa1d5b6680146a155a

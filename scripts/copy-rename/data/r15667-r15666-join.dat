@@ -1,0 +1,10 @@
+#R093
+PLACEHOLDER
+15667||trunk/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/course/service/impl/TestCluSetInfoDictionary.java
+15666||tags/ks-1.1-20100812-build-91/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/course/service/impl/TestCluInfoDictionary.java
+d7110014aa4281799b229b627c55d8027ec8b203||0aec08993fcf8ed4861508826c0842be
+#R070
+PLACEHOLDER
+15667||trunk/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/lrc/service/impl/TestLrcDictionary.java
+15666||tags/ks-1.1-20100818-build-97/ks-core/ks-core-impl/src/test/java/org/kuali/student/core/dictionary/service/TestProposalInfoDictionary.java
+f8ff819f7886b7a671b6be0983439299a0498a5c||b4a54bcdb3b795a42de1471d239b5276

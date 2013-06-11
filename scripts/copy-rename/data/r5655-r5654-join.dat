@@ -1,0 +1,15 @@
+#R068
+PLACEHOLDER
+5655||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/XmlTypeNameBuilder.java
+5654||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/SimpleXmlWriter.java
+119d0b735440091336e6e2d468f1351259868634||1cfaa27f6d688b5da772e9bb5e50a77c
+#R065
+PLACEHOLDER
+5655||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/XmlTypeNameBuilderTest.java
+5654||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/ExcelSpreadsheetReaderTest.java
+d37af902bee881e3436b25397ede5bc05628b786||4ffacb7f345a23eb7655b33bd20c35c3
+#R057
+PLACEHOLDER
+5655||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/ClassNameDecorator.java
+5654||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/ConstraintRefWriter.java
+4d16aa97f8b427d3aca3a9d89f2e759ff10c22e5||149e5803635c4966853f20f64316b3ef

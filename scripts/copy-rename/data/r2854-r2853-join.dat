@@ -1,0 +1,10 @@
+#R088
+PLACEHOLDER
+2854||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/resources/META-INF/wsdl/DictionaryService.xjb
+2853||sandbox/team2/ks-lum/branches/ks-lum-dev/lum-api/src/main/resources/wsdl/AtpService.xjb
+aeca8cd899f1b977d80f88acf8b83a0e2aeade38||36d524bebf0d32606077ae2e54b03d1f
+#R065
+PLACEHOLDER
+2854||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/resources/META-INF/wsdl/DictionaryService.wsdl
+2853||dictionary/trunk/dic-api/src/main/resources/wsdl/DictionaryService.wsdl
+c9d7deabf9a3d2f2ab94eff495e52d8fe7a77831||4c2cfe9e26d17343b2560b638bcff1ac

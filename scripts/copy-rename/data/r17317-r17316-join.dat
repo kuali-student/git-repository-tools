@@ -1,0 +1,5 @@
+#R061
+PLACEHOLDER
+17317||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/rpc/CredentialProgramRpcServiceAsync.java
+17316||deploymentlab/branches/ks-1.1-db/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/rpc/ProgramRpcServiceAsync.java
+85fdcb555111e6593efc9e5aca9c6eeb7d098799||efee862b8f0ee20898679501a07d1c0d

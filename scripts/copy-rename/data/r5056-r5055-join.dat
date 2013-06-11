@@ -1,0 +1,10 @@
+#R066
+PLACEHOLDER
+5056||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/SecurityRpcServiceAsync.java
+5055||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/EventStateCallback.java
+a549579b27b5540f84db61b67259f7058a55f57c||b3a5c801a04520a4859b3f103555b5a1
+#R057
+PLACEHOLDER
+5056||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/SecurityRpcService.java
+5055||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/SelectionChangeHandler.java
+2be7072fe478dbdd19ea206a22604fedb2cc8229||abebfd2691c2a5e7aa47256fe739a6c1

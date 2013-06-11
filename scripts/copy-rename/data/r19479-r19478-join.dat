@@ -1,0 +1,10 @@
+#R096
+PLACEHOLDER
+19479||deploymentlab/trunk/kuali-maven-common/src/main/java/org/kuali/maven/common/UrlBuilder.java
+19478||deploymentlab/trunk/maven-kualisite-plugin/src/main/java/org/kuali/maven/plugin/ksite/mojo/UrlBuilder.java
+ffb53bdefca77b80d64d1a47914ee3c0fca56a3d||a4d48fb38bd1a642c1e4e15dda808833
+#R086
+PLACEHOLDER
+19479||deploymentlab/trunk/kuali-maven-common/src/main/java/org/kuali/maven/common/SiteContext.java
+19478||deploymentlab/trunk/maven-kualisite-plugin/src/main/java/org/kuali/maven/plugin/ksite/mojo/SiteContext.java
+78ee00142cd88870d6761c9d68be0064c20d6f11||fafdf3ba261ed2c25b4577085fb4a556

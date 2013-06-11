@@ -1,0 +1,10 @@
+#R055
+PLACEHOLDER
+7887||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/model/util/ServicesFilterArrangeByKeysTest.java
+7886||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/model/util/ServicesFilterChainedTest.java
+5a5aae97e2517c915cb3763d27b72fb2e7efab33||bd598d21d6c5b649c92dee3b61472780
+#R054
+PLACEHOLDER
+7887||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/util/ServicesFilterArrangeByKeys.java
+7886||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/util/ServicesFilterByKeys.java
+c044b84e7330cb31340fa9c9940a9dce0ff79047||5dc381f4d4ef7717252f3ef25bae7f32

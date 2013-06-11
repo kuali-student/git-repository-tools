@@ -1,0 +1,10 @@
+#R077
+PLACEHOLDER
+17477||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/core/view/CoreDocsViewConfiguration.java
+17476||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/bacc/view/BaccDocsViewConfiguration.java
+accb4c65ae184bb0668285697e5f88198005396e||afee51347552964107f814d67dd2a179
+#R062
+PLACEHOLDER
+17477||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/core/edit/CoreSummaryConfiguration.java
+17476||tags/builds/ks-1.1-20101102-build-220/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/core/view/CoreViewAllConfiguration.java
+41205973b787fe72ed65ea2d4e70f961e8372a1c||a83cf4e535e0c71e7b98df05cb388c73

@@ -1,0 +1,10 @@
+#R081
+PLACEHOLDER
+7243||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/ValidateRequestHandler.java
+7242||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/ValidateResultHandler.java
+fc4a0afdb29f8c4a6431e919089fa06e8181e2a0||8fd5d9552dd58ced729031a93bfbf866
+#R053
+PLACEHOLDER
+7243||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/ValidationEventBindingImpl.java
+7242||ks-core/branches/ks-core-1.0.0-m1/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/LostFocusValidationEventBinding.java
+3ca841229603d281916550b48a3bf47bb228e193||d2ec3dd9d79deea0efc354e86209142a

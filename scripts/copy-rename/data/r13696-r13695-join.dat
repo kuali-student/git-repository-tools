@@ -1,0 +1,10 @@
+#R072
+PLACEHOLDER
+13696||ks-lum/branches/ks-lum-dev/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/IsCluSetDynamic.java
+13695||deploymentlab/tags/ks-1.0.0-m5/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetCluSetIdsFromCluSet.java
+ac98e6bdfff8164a0be439d6fee5a79beada983a||c7580ed71f247227696876896028ffd6
+#R069
+PLACEHOLDER
+13696||ks-lum/branches/ks-lum-dev/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/IsCluSetDynamicResponse.java
+13695||deploymentlab/tags/ks-1.0.0-m5/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/IsCluInCluSetResponse.java
+52cd682d57be05edcfd65555d38ade4a213fd264||8e2347174d0e0406d6fd950fe8ab2e48

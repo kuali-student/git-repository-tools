@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+24400||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_LRR_RES_SRC_RELTN.xml
+24399||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_LRR_RES_SRC_RELTN.xml
+4e480e64aad1a624e3c1392b6a6840fbeb59932b||13db65908991d0b3322fbc0167c34087
+#R100
+PLACEHOLDER
+24400||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_LRR_RES_SOURCE.xml
+24399||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_LRR_RES_SOURCE.xml
+7118148290681df55ae74921ccb652d3ddeb10f7||95b4ffa1af9e6fc72ee5b3d46d643a51

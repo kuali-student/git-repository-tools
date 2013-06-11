@@ -1,0 +1,5 @@
+#R054
+PLACEHOLDER
+20641||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/SimpleConfigurablePropertyPlaceholderConfigurerTest-context.xml
+20640||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/ConfigurablePropertyPlaceholderConfigurerTest-context.xml
+14a7eb9a2f068b958eecb14db9219a87567368d3||de0f5fd4d0dd1d5023f703d4670f8a84

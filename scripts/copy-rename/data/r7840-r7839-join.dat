@@ -1,0 +1,5 @@
+#R097
+PLACEHOLDER
+7840||tools/maven-dictionary-generator/trunk/src/test/resources/constraints-dictionary-config.xml
+7839||tools/maven-dictionary-generator/trunk/src/test/resources/constraints-dictionary-config-generated-excel.xml
+5b8fa2ef14f1d86b22e069e3eff66e84cb6cebcb||e2cfe634f6f7a54a3da9324816f9035f

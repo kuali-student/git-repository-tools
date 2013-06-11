@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+26271||branches/ks-2.0-cm-rice/ks-web/ks-embedded/src/main/webapp/WEB-INF/remoting-servlet.xml
+26270||branches/ks-1.3-services/ks-web/ks-embedded/src/main/webapp/WEB-INF/remoting-servlet.xml
+74b577389d33e760abc1710d63d29f8e0a905ece||bab247e0d5747c83a9ea650ee4989e21
+#R100
+PLACEHOLDER
+26271||branches/ks-2.0-cm-rice/ks-web/ks-embedded/src/main/webapp/WEB-INF/ks-servlet.xml
+26270||branches/ks-1.3-services/ks-web/ks-embedded/src/main/webapp/WEB-INF/ks-servlet.xml
+2c53a20dba36fc9fe733e6dfb9a7676d139d8a52||8607e04d63e2ad02876a24adf3080394

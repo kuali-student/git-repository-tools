@@ -1,0 +1,10 @@
+#R062
+PLACEHOLDER
+6810||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/student/common/assembly/client/LookupQosMetadata.java
+6809||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/XmlTypeNameBuilder.java
+bdbd884f479de2a55650376125b67a6eebb34775||86e34af907ad5440361164f3025ceb8c
+#R062
+PLACEHOLDER
+6810||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/student/common/assembly/client/ConstraintMetadata.java
+6809||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/Constraint.java
+c3c5277d52084239016bf155f1743802122a4f02||863ba234379e72458ea2f49e94fbaa08

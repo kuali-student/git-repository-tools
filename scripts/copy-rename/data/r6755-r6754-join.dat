@@ -1,0 +1,10 @@
+#R068
+PLACEHOLDER
+6755||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/OrchestrationObjectsDataWriterTest.java
+6754||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/OrchestrationObjectWriterTest.java
+be7dbdc1cc48e1bf059c596f0a57667c6ae885a0||0ab20ae59b645f77c642c4ae2acb6b01
+#R065
+PLACEHOLDER
+6755||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/OrchestrationObjectsWriterUsingCodemodel.java
+6754||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/OrchestrationObjectWriter.java
+ffeec6f2dcc97c3c3c4717efd9f4df30bf4e42ef||be2b23b5d65f24a98f06938ad91a4b0c

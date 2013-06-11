@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+4182||ks-core/branches/ks-core-dev/common-ui/src/main/resources/org/kuali/student/common/ui/public/images/logo_bar.jpg
+4181||ks-core/branches/ks-core-dev/common-ui/src/main/resources/org/kuali/student/common/ui/public/images/Kuali_logo_bar.jpg
+cb9b070f0bbfe02023cf5ab0c2794f12cff87782||9c1e3e59488ea8d0aa6dfffe2cb1b868
+#R058
+PLACEHOLDER
+4182||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/application/HeaderLinkItem.java
+4181||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/breadcrumb/KSBreadcrumbItem.java
+a4d490ef44ffdb11d8cb304bc0cc66dbf0be45f1||27a4afc99946e47b197af28bc3fa1af2

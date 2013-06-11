@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+20502||sandbox/ks-r2-poc/trunk/ks-services/src/site/site.xml
+20501||deploymentlab/tags/impex-1.0.10/src/site/site.xml
+3a75faef430f323338a72d26a0f869a804817654||a9ccb4fca328c5d8688810d7aece66aa
+#R090
+PLACEHOLDER
+20502||sandbox/ks-r2-poc/trunk/ks-services/ks-services-api/src/site/site.xml
+20501||deploymentlab/tags/impex-1.0.12/src/site/site.xml
+3a75faef430f323338a72d26a0f869a804817654||a9ccb4fca328c5d8688810d7aece66aa

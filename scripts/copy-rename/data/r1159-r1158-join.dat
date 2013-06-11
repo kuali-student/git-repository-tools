@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+1159||poc/brms/brms-ri/branches/brms-ri-dev2/validate-rule/src/test/resources/drools/drls/org/kuali/student/rules/validate/Math101Enrollment.drl
+1158||poc/brms/brms-ri/branches/brms-ri-dev2/validate-rule/src/test/resources/Math101Enrollment.drl
+be836b65cb521517d92060f5419d7986d0e4afae||6a2fbd9e5b929cf735812a941d4a452d
+#R100
+PLACEHOLDER
+1159||poc/brms/brms-ri/branches/brms-ri-dev2/validate-rule/src/test/resources/drools/drls/org/kuali/student/rules/validate/Cpr101Enrollment.drl
+1158||poc/brms/brms-ri/branches/brms-ri-dev2/validate-rule/src/test/resources/Cpr101Enrollment.drl
+ed43a1889aaff35255d43861721a4076b9745dea||e3a07fbc74029aa90cef010366bcb174
+#R100
+PLACEHOLDER
+1159||poc/brms/brms-ri/branches/brms-ri-dev2/validate-rule/src/test/resources/drools/drls/org/kuali/student/rules/validate/Chem201Enrollment.drl
+1158||poc/brms/brms-ri/branches/brms-ri-dev2/validate-rule/src/test/resources/Chem201Enrollment.drl
+a51c83ec0e5e41b6fdf924a9715e7e2c92fc8b8c||990bd2c835d730ba81828513440a65b7

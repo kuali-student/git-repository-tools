@@ -1,0 +1,5 @@
+#R082
+PLACEHOLDER
+15158||trunk/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/program/service/impl/CredentialProgramDataGenerator.java
+15157||deploymentlab/branches/ks-1.1-db/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/program/service/impl/MajorDisciplineDataGenerator.java
+605c568c7241a465362db4145c6026d380373371||54d2b34ad69a48f0d80b2de9dc915442

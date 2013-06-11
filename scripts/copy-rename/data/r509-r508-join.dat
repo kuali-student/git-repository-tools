@@ -1,0 +1,10 @@
+#R073
+PLACEHOLDER
+509||poc/learningunitmanagement/lum-api/branches/lum-api-dev/lu-api/src/main/java/org/kuali/student/poc/wsdl/learningunit/lu/jaxws/FetchLuiDisplay.java
+508||poc/learningunitmanagement/lum-api/branches/lum-api-dev/lu-api/src/main/java/org/kuali/student/poc/wsdl/learningunit/lu/jaxws/FetchLui.java
+6bedcdc5dc3912ac128ed9e1efba3027d45b2e15||a85740401d82b3766deb788949b5836b
+#R062
+PLACEHOLDER
+509||poc/learningunitmanagement/lum-api/branches/lum-api-dev/lu-api/src/main/java/org/kuali/student/poc/wsdl/learningunit/lu/jaxws/FetchLuiDisplayResponse.java
+508||poc/learningunitmanagement/lum-api/branches/lum-api-dev/lu-api/src/main/java/org/kuali/student/poc/wsdl/learningunit/lu/jaxws/FetchCluSetInfoResponse.java
+99450e505935c7fe2a3954f3c0584b00253c0d01||e59c8d879d6225a64b3691abacac6862

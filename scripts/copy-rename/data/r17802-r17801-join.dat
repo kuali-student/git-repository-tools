@@ -1,0 +1,10 @@
+#R070
+PLACEHOLDER
+17802||trunk/ks-lum/ks-lum-ui-common/src/main/java/org/kuali/student/lum/common/client/lo/rpc/LoCategoryRpcService.java
+17801||branches/ks-1.1-ver/ks-lum/ks-lum-ui-common/src/main/java/org/kuali/student/lum/common/client/lo/rpc/LoRpcService.java
+92d062bf98f980dbfbf31b539fdc3e83a01cec71||f4422d75a4e2cfe64aee00f7d2ac1873
+#R067
+PLACEHOLDER
+17802||trunk/ks-lum/ks-lum-ui-common/src/main/java/org/kuali/student/lum/common/client/lo/rpc/LoCategoryRpcServiceAsync.java
+17801||deploymentlab/branches/sts-2.5.1/ks-lum/ks-lum-ui-common/src/main/java/org/kuali/student/lum/common/client/lo/rpc/LoRpcServiceAsync.java
+7b5e560fb98ee33cab67b094654b28ccd39c33ec||ceadbb43d838e0e04a57c58d63004446

@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+20824||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/test/resources/META-INF/persistence.xml
+20823||sandbox/ks-r2-poc/trunk/ks-services-alternative/ks-services-impl/src/test/resources/META-INF/persistence.xml
+3846f955b007f52e2f56a7cc54df51a979568029||5b4852b110d1207c0065381223f1739a

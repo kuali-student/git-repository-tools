@@ -1,0 +1,10 @@
+#R087
+PLACEHOLDER
+4922||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/LoadModelHandler.java
+4921||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/SaveHandler.java
+ec76036914970e9d2ba17bd2269ceb3126387254||23bc52e1c251d209b0db42eebe9a1cfd
+#R067
+PLACEHOLDER
+4922||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/LoadModelEvent.java
+4921||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/SaveEvent.java
+e926d8f48d951fd03d9efec29f182bd5850b6103||6cac8e6dd601ac316ff19bda2ebe5f3f

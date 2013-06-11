@@ -1,0 +1,15 @@
+#R093
+PLACEHOLDER
+3508||brms/brms-impl/branches/brms-impl-dev/rule-execution-impl/src/main/resources/drools/drls/org/kuali/student/rules/ruleexecution/runtime/report/ast/SuccessMessageLogger.drl
+3507||brms/brms-impl/branches/brms-impl-m1/rule-execution-impl/src/main/resources/drools/drls/org/kuali/student/rules/rulesetexecution/runtime/ast/SuccessMessageLogger.drl
+5c2bcdb899fe5b8ee49ab5096ed48e37b65f848c||c4186e2b9a1a9a2721afa4dd433930fe
+#R093
+PLACEHOLDER
+3508||brms/brms-impl/branches/brms-impl-dev/rule-execution-impl/src/main/resources/drools/drls/org/kuali/student/rules/ruleexecution/runtime/report/ast/FailureMessageLogger.drl
+3507||brms/brms-impl/branches/brms-impl-m1/rule-execution-impl/src/main/resources/drools/drls/org/kuali/student/rules/rulesetexecution/runtime/ast/FailureMessageLogger.drl
+3a253aa344bdda21f1a8a741fd982a7a8fd385b4||b8299c47c63cd0983eea421e513c13f8
+#R066
+PLACEHOLDER
+3508||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-oracle.properties
+3507||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application.properties
+cd84150660fbcfaf3e6eab089e450852254f53d3||59fbfe1cfeef7c0a92e0f70c9849c3b7

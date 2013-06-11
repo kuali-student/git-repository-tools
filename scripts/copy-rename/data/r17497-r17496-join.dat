@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+17497||trunk/ks-web/ks-rice/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ksApplications.tag
+17496||branches/student-1.1.0-M9/ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ksApplications.tag
+a443a7fad142fa435a56c2bf747d1eb36ef9b257||ef843ad6781b0c72ca48afb5082058b3
+#R100
+PLACEHOLDER
+17497||trunk/ks-web/ks-rice/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ksMaintenance.tag
+17496||branches/student-1.1.0-M9/ks-admin/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ksMaintenance.tag
+22b31f4ab3fb3705a0409f89a763b35ca86f5e67||39ba6ab8ccf73c09743ecf138763b107
+#R087
+PLACEHOLDER
+17497||trunk/ks-web/ks-rice/src/main/webapp/WEB-INF/tags/rice-portal/mainTab.tag
+17496||tags/builds/ks-1.1-20101019-build-182/ks-admin/src/main/webapp/WEB-INF/tags/rice-portal/mainTab.tag
+ad84d388a12e10425d6fb25563386f63dd9b5b00||b6c12fcf0dc7fade97759003407e86ba

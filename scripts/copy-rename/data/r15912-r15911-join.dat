@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+15912||trunk/ks-lum/ks-lum-impl/src/test/resources/ks-org.sql
+15911||branches/ks-1.1-uif/ks-core/ks-core-web/src/main/resources/ks-org.sql
+bf3ab454bba28d3eafd93cd9b7d71b6567a6c154||6d5cbe9ca1c0e08b9a52af457be59874
+#R100
+PLACEHOLDER
+15912||trunk/ks-lum/ks-lum-impl/src/test/resources/ks-atp.sql
+15911||branches/ks-1.0.x/ks-core/ks-core-impl/src/test/resources/ks-atp.sql
+543681105c30af3ef07fe4d947c5314651496ed7||f5dbf81b83304972da16da13928b59cb

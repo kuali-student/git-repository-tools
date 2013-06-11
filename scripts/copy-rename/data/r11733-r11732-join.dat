@@ -1,0 +1,15 @@
+#R099
+PLACEHOLDER
+11733||ks-web/branches/ks-web-dev/ks-standalone/src/main/resources/ks-lrc.sql
+11732||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/test/resources/ks-lrc.sql
+e0f1736f1043e80c8ee274927b643d9258fd5917||6620f866222dcd78df008c01811ec6c6
+#C099
+PLACEHOLDER
+11733||ks-web/branches/ks-web-dev/ks-embedded/src/main/resources/ks-lrc.sql
+11732||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/test/resources/ks-lrc.sql
+e0f1736f1043e80c8ee274927b643d9258fd5917||6620f866222dcd78df008c01811ec6c6
+#C099
+PLACEHOLDER
+11733||ks-lum/branches/ks-lum-dev/ks-lum-web/src/main/resources/ks-lrc.sql
+11732||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/test/resources/ks-lrc.sql
+e0f1736f1043e80c8ee274927b643d9258fd5917||6620f866222dcd78df008c01811ec6c6

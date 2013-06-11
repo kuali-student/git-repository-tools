@@ -1,0 +1,10 @@
+#R055
+PLACEHOLDER
+2233||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/ValidateObjectResponse.java
+2232||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/FindObjectTypesResponse.java
+3ed1912f682efadacb21ad17baa0ed543ba6299a||eb4be244ae0f631087ffcc67bd616785
+#R055
+PLACEHOLDER
+2233||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/ValidateStructureDataResponse.java
+2232||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/FetchEnumerationResponse.java
+b0cc4a905102b098bf976b1378dd10252f7661b1||48b3704157776e377eabed2121eeb683

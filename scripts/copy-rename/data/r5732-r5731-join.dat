@@ -1,0 +1,10 @@
+#R075
+PLACEHOLDER
+5732||ks-lum/branches/ks-lum-dev/ks-lum-web/src/main/resources/META-INF/ksb-identity-orm.xml
+5731||ks-core/branches/ks-core-dev/ks-core-web/src/main/resources/META-INF/ksb-orm.xml
+9a47a611e05d1a37f04ab5de915b9db41f65290f||6ad9f5e01f39677ddfbae1dcaa355327
+#R063
+PLACEHOLDER
+5732||ks-lum/branches/ks-lum-dev/ks-lum-web/src/main/resources/META-INF/ksb-sequence-orm.xml
+5731||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/META-INF/ksb-orm.xml
+9a47a611e05d1a37f04ab5de915b9db41f65290f||6ad9f5e01f39677ddfbae1dcaa355327

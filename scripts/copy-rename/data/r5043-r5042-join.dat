@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+5043||sandbox/team2/ks-rice-standalone/trunk/src/main/config/sql/kns_docs_oracle.sql
+5042||sandbox/team2/ks-rice-standalone/branches/kns-module-impl-br/src/main/config/sql/kns_docs_oracle.sql
+b431f122fd1001c019fa2a5fa4178cc1bbc385dc||4f83111eae254b2c18ac0d2de9aaa0aa
+#R100
+PLACEHOLDER
+5043||sandbox/team2/ks-rice-standalone/trunk/src/main/config/sql/kns_docs_mysql.sql
+5042||sandbox/team2/ks-rice-standalone/branches/kns-module-impl-br/src/main/config/sql/kns_docs_mysql.sql
+8ed8bb2a84dd0fa894d3b3a1dcb58e9eb81bcc98||0f0b252eeda9ddf96193fba181c52ede

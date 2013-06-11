@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+20270||tools/maven-kscontractdoc-plugin/trunk/src/test/java/org/kuali/student/contract/model/impl/ServiceContractModelQDoxLoaderTest.java
+20269||tools/maven-kscontractdoc-plugin/trunk/src/test/java/org/kuali/student/dictionary/model/impl/ServiceContractModelQDoxLoaderTest.java
+f4d410ad059cea365c8b422f2aa22ee5f6be5f81||1c691ba49174f69cb612cede19c3c755

@@ -1,0 +1,5 @@
+#R088
+PLACEHOLDER
+20544||deploymentlab/trunk/impex/db-jdbc/src/test/resources/kuali-dba.xml
+20543||deploymentlab/trunk/impex/db-jdbc/src/test/resources/org/kuali/db/jdbc/dba-properties-test.xml
+f94bcd340a45194eb0ed5fa6339407878a600bbf||25204de31057460a3205a77fca997bc8

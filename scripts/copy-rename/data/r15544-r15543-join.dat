@@ -1,0 +1,5 @@
+#R099
+PLACEHOLDER
+15544||deploymentlab/trunk/impex/jdbc-support/src/test/resources/standalone-config.xml
+15543||deploymentlab/branches/ks-1.1-m2e/ks-web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/standalone-config.xml
+41ccf5add9177486111909393788d0571cab257c||9e518b5f53d978affafb5916e2266451

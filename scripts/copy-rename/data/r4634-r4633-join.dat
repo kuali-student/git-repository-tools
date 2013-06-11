@@ -1,0 +1,15 @@
+#R065
+PLACEHOLDER
+4634||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetNaturalLanguageForReqComponentResponse.java
+4633||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetNaturalLanguageForReqComponentInfoResponse.java
+67e943462e773a1b54a1ae47e5bb4a20a826a386||1de63cf222fe11dfc48134c614f529e0
+#R065
+PLACEHOLDER
+4634||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetNaturalLanguageForLuStatementResponse.java
+4633||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetNaturalLanguageForLuStatementInfoResponse.java
+bfc2c7249674295a3d1285709668ab5e4ef77400||488d641decdffeaa7426b7c9c79b2d0c
+#R050
+PLACEHOLDER
+4634||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetNaturalLanguageForLuStatement.java
+4633||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetNaturalLanguageForLuStatementInfo.java
+fa9b95e7da63bc219634fea7d2e7b7816bd5ecb5||fcc059c404ca758cd441fea77090a56b

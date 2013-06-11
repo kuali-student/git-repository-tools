@@ -1,0 +1,10 @@
+#R055
+PLACEHOLDER
+8756||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/organization/ui/client/mvc/view/OrgPersonRelationTypePicker.java
+8755||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/organization/ui/client/mvc/view/OrgTypePicker.java
+8d87a15b3c608ffa23c411580b44dea8fa0921f9||a94b18b950241ff6e49cfd45b3ba7bfb
+#R052
+PLACEHOLDER
+8756||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/organization/ui/client/mvc/view/PositionTable.java
+8755||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/search/TempSearchBackedTable.java
+05532aec66b7ee025a0198f9e851235730d156e2||0e0023aa834510674c7b2248bd971907

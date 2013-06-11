@@ -1,0 +1,15 @@
+#R070
+PLACEHOLDER
+2625||brms/brms-impl/branches/brms-impl-dev/rule-repository-impl/src/main/java/org/kuali/student/rules/translators/drools/RuleSetValidatorDroolsImpl.java
+2624||brms/brms-impl/branches/brms-impl-dev/rule-repository-impl/src/main/java/org/kuali/student/rules/translators/drools/RuleSetVerifier.java
+9005d6e8966398f4366aa62740fed6807d4414cb||4a8384f94d51d2a7defd7a6816d7fcbd
+#R068
+PLACEHOLDER
+2625||brms/brms-impl/branches/brms-impl-dev/rule-repository-impl/src/main/java/org/kuali/student/rules/translators/RuleSetVerificationResult.java
+2624||brms/brms-api/branches/brms-api-dev/rule-repository-api/src/main/java/org/kuali/student/rules/repository/dto/RuleSetVerificationResultDTO.java
+fafe5a641be75db674a279015840ccffa3b065e5||560c4964c84b3e83c13d19604866a6d1
+#R064
+PLACEHOLDER
+2625||brms/brms-impl/branches/brms-impl-dev/rule-repository-impl/src/main/java/org/kuali/student/rules/translators/RuleSetValidator.java
+2624||poc/brms/brms-ri/branches/brms-ri-dev2/rules-repository/src/test/java/org/kuali/student/rules/repository/rule/AllTests.java
+5b20b30f57481bf15a65868c9a40c8f097f9c6e9||863fcc708246ca4cfc968cc3e9070fb7

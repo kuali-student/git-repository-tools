@@ -1,0 +1,10 @@
+#R099
+PLACEHOLDER
+11871||deploymentlab/trunk/1.0.x/ks-cfg-dbs/src/main/impex/schema/ks-lum-schema.xml
+11870||ks-cfg-dbs/ks-lum-db/tags/ks-lum-db-1.0.0-m5/schema.xml
+7674d1319d8d91f0162ddc7feb959fd7aa7a4f2f||37cac86d650abb17f4382eb8ed182f4f
+#R099
+PLACEHOLDER
+11871||deploymentlab/trunk/1.0.x/ks-cfg-dbs/src/main/impex/schema/ks-core-schema.xml
+11870||ks-cfg-dbs/ks-core-db/tags/ks-core-db-1.0.0-m5/schema.xml
+477cf0733a3261ae47f25053a52565f138672047||9ce4231332ec2989d99e35303f0ad5d9

@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+20913||sandbox/ks-r2-poc/trunk/ks-services/ks-services-api/src/main/java/org/kuali/student/core/atp/dto/AtpSeasonalTypeInfo.java
+20912||branches/inactive/ks-1.0.x/ks-core/ks-core-api/src/main/java/org/kuali/student/core/atp/dto/AtpSeasonalTypeInfo.java
+72fbe31340a4c32cf3faea996323dab5c13b827f||64eb6a7fe8e2471459a20a829c2bc72d

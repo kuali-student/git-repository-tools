@@ -1,0 +1,15 @@
+#R074
+PLACEHOLDER
+21||poc/personidentity/personidentity-ri/branches/personidentity-ri-dev/personidentity/src/main/resources/cxf-context.xml
+20||poc/common/branches/common-dev/common-test/src/main/resources/META-INF/cxf-context.xml
+60cab8b7228f9aae273b1653515ce642deb49b4c||d12068a4cc96d972357f4ec06b739dbc
+#R072
+PLACEHOLDER
+21||poc/personidentity/personidentity-ri/branches/personidentity-ri-dev/personidentity/src/main/resources/jaxws-context.xml
+20||poc/common/branches/common-dev/common-test/src/main/resources/META-INF/jaxws-context.xml
+f267d05163dae8c75501682cde495b53399e6956||95acbdffecf696476e568e59584729d9
+#R052
+PLACEHOLDER
+21||poc/personidentity/personidentity-ri/branches/personidentity-ri-dev/personidentity/src/main/resources/jpa.properties
+20||poc/common/branches/common-dev/common-test/src/main/resources/META-INF/jpa.properties
+41b1eb8430134bb304a16e2ad80de78a9d8853a6||502f569f3ccaaebe8e6c0210de9a5f19

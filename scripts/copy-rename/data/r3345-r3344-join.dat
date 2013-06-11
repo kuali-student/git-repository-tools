@@ -1,0 +1,10 @@
+#R065
+PLACEHOLDER
+3345||ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/dto/HasTypeState.java
+3344||sandbox/team2/ks-core/branches/ks-core-dev/common-test/src/main/java/org/kuali/student/common/test/spring/SystemProperties.java
+22c8077b00a7774280346f58a0aca62c94b15a27||095f1836ff9251dba519a965db30072f
+#R054
+PLACEHOLDER
+3345||ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/organization/dto/OrgCodeInfo.java
+3344||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/dto/LrTypeInfo.java
+f74bab3525de56e24918a1a025fccc2cb38e6d9c||8a308b7c874606720a25f3fd3a44f559

@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+6522||ks-core/branches/ks-core-dev/ks-core-web/src/main/resources/ks-atp.sql
+6521||ks-core/branches/ks-core-dev/ks-core-impl/src/test/resources/ks-atp.sql
+ad74bb40974508d24f543fe05e8865b8d916c45f||a192b038302b59484248f98e57172b2b

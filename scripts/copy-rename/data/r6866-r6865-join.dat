@@ -1,0 +1,10 @@
+#R096
+PLACEHOLDER
+6866||tools/maven-component-sandbox/trunk/src/test/java/org/kuali/student/orchestration/orch/MetadataInterrogator.java
+6865||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/student/common/assembly/client/MetadataInterrogator.java
+c364fd3edd4c8285be1ba444dd38ae267b0a7595||9e00e95159e12138e5acc656e66e59bd
+#R054
+PLACEHOLDER
+6866||tools/maven-component-sandbox/trunk/src/test/java/org/kuali/student/orchestration/orch/CreditCourseMetadataTest.java
+6865||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/GroupTypeStatePatternMatcherTest.java
+2b6b4fd4e05d17c57a6abe2be7fbc823316931a7||375be6c8702acaf62a15791fd42b382e

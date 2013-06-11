@@ -1,0 +1,5 @@
+#R077
+PLACEHOLDER
+1065||poc/brms/brms-ri/branches/brms-ri-dev2/rule-execution/src/main/java/org/kuali/student/rules/rulesetexecution/runtime/ast/GenerateRuleReport.java
+1064||poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast/GenerateRuleReport.java
+8a13c61f1b71bfd83b06b4240282541c66818837||3ec629a1a4d3fa4c6455ee065c26bf37

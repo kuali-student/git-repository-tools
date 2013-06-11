@@ -1,0 +1,10 @@
+#R072
+PLACEHOLDER
+15200||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/KSRadioButtonList.java
+15199||deploymentlab/branches/ks-1.1-db/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/KSCheckBoxList.java
+db484d828b4cb047d41e275d8db142b7698c5786||23579a7575c4550723b952e333d134d2
+#R062
+PLACEHOLDER
+15200||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/impl/KSRadioButtonListImpl.java
+15199||branches/ks-1.1-uif/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/impl/KSCheckBoxListImpl.java
+09d506fdd87f11725eb2c6e4adeda3203b9f5930||26f0c095d66ec8f16b3b0e240d2c3714

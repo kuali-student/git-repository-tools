@@ -1,0 +1,5 @@
+#R068
+PLACEHOLDER
+20693||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/malformed-properties.xml
+20692||deploymentlab/trunk/kuali-spring-util/src/main/resources/org/kuali/spring/util/default-properties.xml
+4a5a5e2e6d1d0530a574380d8188d2fa5a5b3f70||b8fb965d1acced928687b4c34f8770a6

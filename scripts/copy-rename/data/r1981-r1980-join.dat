@@ -1,0 +1,5 @@
+#R050
+PLACEHOLDER
+1981||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/test/resources/rulemanagement-mock-service-context.xml
+1980||brms/brms-impl/branches/brms-impl-dev/rule-repository-impl/src/test/resources/rule-repository-mock-service-context.xml
+5c093dc389d8e5af028d3916ba67651274d3eff3||baee0f55c03cc124510e8023db15af9f

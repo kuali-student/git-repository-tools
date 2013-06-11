@@ -1,0 +1,10 @@
+#R094
+PLACEHOLDER
+15950||deploymentlab/trunk/impex/torque-generator/src/test/java/org/kuali/core/db/torque/FilteredPropertyCopierTest.java
+15949||deploymentlab/trunk/impex/maven-impex-plugin/src/test/java/org/apache/torque/mojo/FilteredPropertyCopierTest.java
+b5f38bb02f3310797ae4c831ae142e0334291ce4||552a4c63fa6b6e1bec81b99e61235734
+#R094
+PLACEHOLDER
+15950||deploymentlab/trunk/impex/torque-generator/src/main/java/org/kuali/core/db/torque/FilteredPropertyCopier.java
+15949||deploymentlab/trunk/impex/maven-impex-plugin/src/main/java/org/apache/torque/mojo/FilteredPropertyCopier.java
+cd8e6d14b88ccc906d2498ed1edccd034a2e3ff1||51a01f16586ecfb2474111849f96719d

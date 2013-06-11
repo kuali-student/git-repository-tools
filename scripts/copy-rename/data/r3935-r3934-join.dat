@@ -1,0 +1,10 @@
+#R068
+PLACEHOLDER
+3935||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/security/AuthorizationCallback.java
+3934||ks-core/branches/ks-core-dev/common-test/src/main/java/org/kuali/student/common/test/spring/SystemProperties.java
+22c8077b00a7774280346f58a0aca62c94b15a27||095f1836ff9251dba519a965db30072f
+#R067
+PLACEHOLDER
+3935||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/security/SecurityContext.java
+3934||poc/common/branches/common-dev/common-test/src/main/java/org/kuali/student/poc/common/test/spring/SystemProperties.java
+e9bb3678ba2ab8a0c3b0f1a2e550c4c0829b84f1||3f416837780b6c7ffacc38208a762d7b

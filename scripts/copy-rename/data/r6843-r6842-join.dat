@@ -1,0 +1,15 @@
+#R072
+PLACEHOLDER
+6843||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/OrchestrationObjectsLoader.java
+6842||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/OrchestrationObjectsWriter.java
+2d6f9959652634002772f11384902e980d074e11||4584ffb6bf3858e5134e171aa7e1cc59
+#R052
+PLACEHOLDER
+6843||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/TypeStateConstraint.java
+6842||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/DictionaryExecutionException.java
+ad3e951ea6369c079897e52dff091645ada2a40b||02795607447f62353f0bc38ef8d20559
+#R050
+PLACEHOLDER
+6843||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/StringQuoter.java
+6842||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/ClassNameDecorator.java
+cac986d91ffdd8b65a1e9871ccbef0e7cb12b792||424439dd90ce5856016a05670f7b3d72

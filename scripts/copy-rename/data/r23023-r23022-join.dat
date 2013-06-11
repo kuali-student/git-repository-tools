@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+23023||tools/maven-kscontractdoc-plugin/trunk/src/test/resources/ks-base-dictionary-validchars.xml
+23022||branches/ks-1.3/ks-enroll/ks-enroll-api/src/main/resources/ks-base-dictionary-validchars.xml
+44a34818b1bd9f615718432ee130f4934212a677||387edbc6f619247602e50b3a201e90e1
+#R100
+PLACEHOLDER
+23023||tools/maven-kscontractdoc-plugin/trunk/src/test/resources/ks-base-dictionary-controls.xml
+23022||branches/ks-1.3/ks-enroll/ks-enroll-api/src/main/resources/ks-base-dictionary-controls.xml
+a416a9dc90a804526f9b36a0857ade9e7c986702||3f37c859cc9bb606e994e010eb2f49ed

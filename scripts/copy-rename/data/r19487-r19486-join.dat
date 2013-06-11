@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+19487||deploymentlab/trunk/kuali-maven-common/src/main/resources/log4j.properties
+19486||deploymentlab/tags/kuali-wagon-s3-1.0.12/src/main/resources/log4j.properties
+200bb02603464bc9db9ff7016a92e50d2e5bdb04||9d787050e6af8141c2fb818c954db6c3

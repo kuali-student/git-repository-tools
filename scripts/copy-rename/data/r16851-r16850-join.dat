@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+16851||trunk/ks-lum/ks-lum-api/src/main/resources/org/kuali/student/lum/lrc/Lrc.gwt.xml
+16850||branches/ks-1.1-ver/ks-lum/ks-lum-api/src/main/resources/org/kuali/student/lum/lu/Lu.gwt.xml
+3dec8b913b87d096cb46bbee8fe1a7e552a9f1fe||f2fd9e2bd096588cdf7c5c21eaeb313c
+#R096
+PLACEHOLDER
+16851||trunk/ks-common/ks-common-api/src/main/resources/org/kuali/student/core/versionmanagement/VersionManagement.gwt.xml
+16850||deploymentlab/branches/ks-1.1-db/ks-core/ks-core-api/src/main/resources/org/kuali/student/core/comment/Comment.gwt.xml
+c964c3743090f3bfcf6561b687971e18b0d3fa86||9a18331b619877b23e4b2186e0013c1b
+#R088
+PLACEHOLDER
+16851||trunk/ks-lum/ks-lum-api/src/main/resources/org/kuali/student/lum/program/ProgramDto.gwt.xml
+16850||deploymentlab/branches/ks-1.1-M7/ks-lum/ks-lum-api/src/main/resources/org/kuali/student/lum/lu/Lu.gwt.xml
+3dec8b913b87d096cb46bbee8fe1a7e552a9f1fe||f2fd9e2bd096588cdf7c5c21eaeb313c

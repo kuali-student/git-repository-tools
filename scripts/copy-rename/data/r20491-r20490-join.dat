@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+20491||trunk/ks-core/ks-core-ui/src/main/resources/org/kuali/student/core/statement/ui/StatementUI.gwt.xml
+20490||branches/inactive/ks-1.0.x/ks-core/ks-core-ui/src/main/resources/org/kuali/student/core/proposal/ui/ProposalUI.gwt.xml
+91b1470a28b7ae0dbe0f18d8fe7d1fbf9491d26b||e31aa1bcb345656b37a45f73531ebfb4

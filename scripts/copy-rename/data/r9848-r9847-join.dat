@@ -1,0 +1,5 @@
+#R080
+PLACEHOLDER
+9848||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/rice/core/config/spring/RiceConfigFactoryBean.java
+9847||deploymentlab/branches/proposalhistory/ks-core/ks-common-util/src/main/java/org/kuali/student/rice/config/spring/NestedConfigFactoryBean.java
+17b20180bd299040d6f0c8311c91c50e050849d0||8b9c2348fe32c2f8474a3199981211db

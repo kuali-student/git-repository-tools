@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+15910||deploymentlab/trunk/impex/torque-generator/src/test/resources/log4j.properties
+15909||deploymentlab/trunk/impex/jdbc-support/src/test/resources/log4j.properties
+ea1cb4231f0be9a37249d94ddbb2cc95e850230e||20936d0780a3dd13bb43ef2a9a3e6fa4

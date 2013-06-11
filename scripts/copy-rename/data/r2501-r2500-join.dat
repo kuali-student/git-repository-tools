@@ -1,0 +1,15 @@
+#R078
+PLACEHOLDER
+2501||brms/brms-api/branches/brms-api-dev/fact-finder-api/src/main/java/org/kuali/student/rules/factfinder/service/jaxws/OperationFailedExceptionBean.java
+2500||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/OperationFailedExceptionBean.java
+3643ae16c92417cde82c29b8bd1460e04a838e96||b989bc1220def87a5a148b748f7fd809
+#R077
+PLACEHOLDER
+2501||brms/brms-api/branches/brms-api-dev/fact-finder-api/src/main/java/org/kuali/student/rules/factfinder/service/jaxws/DoesNotExistExceptionBean.java
+2500||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/DoesNotExistExceptionBean.java
+6b352dbd6b8c4d9b4d4370bf2a7bb74a56329cca||9e45a5aec24df933b67569a7777fa438
+#R053
+PLACEHOLDER
+2501||brms/brms-api/branches/brms-api-dev/fact-finder-api/src/main/java/org/kuali/student/rules/factfinder/service/jaxws/FindFactTypesResponse.java
+2500||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/FindObjectTypesResponse.java
+3ed1912f682efadacb21ad17baa0ed543ba6299a||eb4be244ae0f631087ffcc67bd616785

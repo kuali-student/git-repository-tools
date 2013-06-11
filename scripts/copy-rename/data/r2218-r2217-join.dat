@@ -1,0 +1,10 @@
+#R052
+PLACEHOLDER
+2218||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/dto/ContextValueDescriptor.java
+2217||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/dto/FieldDescriptor.java
+2d02339be35f273780e244c68dba13f3fd63d957||bb50a96885c48e4db737a10cc9814f11
+#R051
+PLACEHOLDER
+2218||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/dto/ContextDescriptor.java
+2217||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/dto/Context.java
+58adf5f6aa82c5adb6334b1e370f120d78b18749||f0405309651221ac83973833a254adde

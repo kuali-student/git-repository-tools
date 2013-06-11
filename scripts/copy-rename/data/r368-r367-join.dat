@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+368||poc/learningunitmanagement/lum-ri/branches/lum-ri-dev/luipersonrelation-ri/src/test/resources/log4j.properties
+367||poc/common/branches/common-dev/common-test/src/main/resources/log4j.properties
+fe9ee0ffa725288e4f72367eceb4d8e7695eb9e3||832de7a0f67d60e8e44fdc3705039785
+#R052
+PLACEHOLDER
+368||poc/learningunitmanagement/lum-ri/branches/lum-ri-dev/luipersonrelation-ri/src/main/resources/META-INF/persistence.xml
+367||poc/learningunitmanagement/lum-ri/branches/lum-ri-dev/lu-ri/src/main/resources/META-INF/persistence.xml
+65f75702aaf58c5dcbad1ce0fec17a9889dd26ab||250b11b2e17fab35c20da3e96200e435

@@ -1,0 +1,10 @@
+#R072
+PLACEHOLDER
+1886||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/FetchBusinessRuleTypeResponse.java
+1885||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/FetchBusinessRuleInfoResponse.java
+06e9eddf1eccbf7b0f446c770833b01533820077||ca5971b0364a3eeadbde55a52fdc63c8
+#R064
+PLACEHOLDER
+1886||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/FetchBusinessRuleInfoDTOResponse.java
+1885||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/FindAnchorsByAnchorTypeResponse.java
+29d8e59bf7841809f7f581898ed7047f1c49d063||f0aa7c749444741ac77b8e84612ac407

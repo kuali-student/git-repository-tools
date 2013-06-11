@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+3372||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/resources/views/org/kuali/student/rules/lumgui/fields.properties
+3371||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/resources/views/org/kuali/student/rules/lum/fields.properties
+d3f5a12faa99758192ecc4ed3fc22c9249232e86||81051bcc2cf1bedf378224b0a93e2877
+#R100
+PLACEHOLDER
+3372||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/resources/views/org/kuali/student/rules/lumgui/configuration.properties
+3371||brms/brms-web/branches/brms-web-dev/rule-management-developer/src/main/resources/views/org/kuali/student/rules/devgui/configuration.properties
+a7e06c470366b37ae72aade92e305b07190c423e||e8643c87a0c4c7c86982b757c4666a15

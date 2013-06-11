@@ -1,0 +1,10 @@
+#R092
+PLACEHOLDER
+20229||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/nb-configuration.xml
+20228||sandbox/ks-r2-poc/trunk/ks-services/ks-services-api/nb-configuration.xml
+1b82c4d76bb581feaf42fd5e4a029f103f29e3bb||668a7ca585b0f78b9983c407614fc79f
+#R064
+PLACEHOLDER
+20229||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/main/java/org/kuali/student/enrollment/lpr/service/adapter/authorization/LuiPersonRelationDefaultContextFromRequestAdapter.java
+20228||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/main/java/org/kuali/student/enrollment/lpr/service/adapter/authorization/LuiPersonRelationRuntimeExceptionCatcherAdapter.java
+457e7e12ea98326cd1678c86e5e06ff1b377728f||3857c61fd4705c162fbd41254cb00eea

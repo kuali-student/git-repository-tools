@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+28787||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-security/ks-sts/src/test/java/org/kuali/student/security/trust/TestSecurityTokenService.java
+28786||branches/inactive/ks-1.1-perf/ks-security/ks-sts/src/test/java/org/kuali/student/security/trust/TestSecurityTokenService.java
+cce448bbd80dc4b9c4c0bcf2505a24ee37bf05d3||e172b9b4ebffe95dbab71e97951334d4
+#R100
+PLACEHOLDER
+28787||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-security/ks-sts/src/test/java/org/kuali/student/security/trust/SupportBeanSTS.java
+28786||branches/inactive/ks-1.1-perf/ks-security/ks-sts/src/test/java/org/kuali/student/security/trust/SupportBeanSTS.java
+ebde575d4feba6459fef0a5465f9f647efdcc975||eda8ceadaa109b93f0917e8bd42d37ee

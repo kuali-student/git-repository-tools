@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+20879||deploymentlab/trunk/kuali-spring-util/src/main/java/org/kuali/spring/util/PlaceholderConfigurer.java
+20878||deploymentlab/trunk/kuali-spring-util/src/main/java/org/kuali/spring/util/ConfigurablePropertyPlaceholderConfigurer.java
+8e9a3d4260383cc44a27842ee16748e2529d5780||e5699e9bbfa4678f04bf3a8cacb90977

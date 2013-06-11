@@ -1,0 +1,15 @@
+#R073
+PLACEHOLDER
+7307||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/writer/OrchestrationObjectsAssemblerWriterToLumUITest.java
+7306||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/writer/OrchestrationObjectsWriterToLumUITest.java
+dc38476933780fe5dc5bc756dfdb394162ae4530||920814a7ffb69889043ae63e011131c7
+#R072
+PLACEHOLDER
+7307||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/writer/OrchestrationObjectsAssemblerWriterToComponentSandboxTest.java
+7306||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/writer/OrchestrationObjectsWriterToComponentSandboxTest.java
+1ceae9853bdde06cd81910fed76320b301aa47ed||4c47d91477d1426e68c47d1ecfffd8ed
+#R055
+PLACEHOLDER
+7307||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/writer/OrchestrationObjectsAssemblerWriter.java
+7306||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/writer/OrchestrationObjectsWriter.java
+09d22f475722c90d734806a4f5688314879b6a01||47e91cd0850aeb64da92edb7ab2a7c6b

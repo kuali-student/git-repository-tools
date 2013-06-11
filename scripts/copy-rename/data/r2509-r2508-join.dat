@@ -1,0 +1,10 @@
+#R068
+PLACEHOLDER
+2509||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application.properties
+2508||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-rulemanagement.properties
+44a775fc1f2885e6273c346d6a50ca9019131ed7||0c1a164a2afe514e25ff729b43b2c539
+#R067
+PLACEHOLDER
+2509||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-context.xml
+2508||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-rulemanagement-context.xml
+6c11e01342f5ead127723e7c2d212b299ccbf0c5||551b6f4e773402e8295eb5872996d7a8

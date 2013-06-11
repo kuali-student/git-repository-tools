@@ -1,0 +1,15 @@
+#R078
+PLACEHOLDER
+7892||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lu/entity/CluFeeRecordAttribute.java
+7891||deploymentlab/branches/1.0.0-m3/lum/ks-lum-impl/src/main/java/org/kuali/student/lum/lu/entity/CluSetAttribute.java
+e44e8e3070b1d1ec18e53f0a1dc2fb1546a88b1b||2e0b83146c6eebc2031cd1cc9a4a978b
+#R055
+PLACEHOLDER
+7892||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lu/entity/AffiliatedOrg.java
+7891||ks-lum/branches/ks-lum-1.0.0-m1/ks-lum-impl/src/main/java/org/kuali/student/lum/lu/entity/CluAcademicSubjectOrg.java
+a1cfa3dede4364079e4e479b2262c734185f372b||151e021d7c0600b3a683f2f30355e4a0
+#R054
+PLACEHOLDER
+7892||ks-lum/branches/ks-lum-dev/ks-lum-api/src/main/java/org/kuali/student/lum/lu/dto/CluFeeRecordInfo.java
+7891||ks-lum/branches/ks-lum-dev/ks-lum-api/src/main/java/org/kuali/student/lum/lo/dto/LoTypeInfo.java
+4ff44191ac1f42066783c2a406d77b3b57dbb121||705c84f1753ecf214da7c75e7f518432

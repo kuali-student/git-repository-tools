@@ -1,0 +1,10 @@
+#R077
+PLACEHOLDER
+16073||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/DataService.java
+16072||tags/ks-1.1-20100822-build-101/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/AbstractBaseDataOrchestrationRpcGwtServlet.java
+c641ce99a2ae06c9d1036d31e2f3455c68659390||ddb31b93705fc03eea4bec4f64efa945
+#R077
+PLACEHOLDER
+16073||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/AbstractDataService.java
+16072||tags/ks-1.1-20100821-build-100/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/AbstractBaseDataOrchestrationRpcGwtServlet.java
+c641ce99a2ae06c9d1036d31e2f3455c68659390||ddb31b93705fc03eea4bec4f64efa945

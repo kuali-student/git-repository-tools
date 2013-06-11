@@ -1,0 +1,15 @@
+#R056
+PLACEHOLDER
+7284||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/Service.java
+7283||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/OrchObjLookup.java
+6a263cf423559c818f4c1cb7f9b4c01ef72169f7||c37a19d9a9f14ced72ca8889e2496ffa
+#R055
+PLACEHOLDER
+7284||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/validation/XmlTypesValidator.java
+7283||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/validation/OrchestrationModelValidator.java
+4c53b596de095f1913808c772d1c8a74eac795bf||beff588f57ce4a69d690dc4323c6cec9
+#R053
+PLACEHOLDER
+7284||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/Project.java
+7283||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/MessageStructure.java
+0df10aa6d87361b3517a57f9e950734036cf0988||03dd9552fe33ce634e428ae1b757af17

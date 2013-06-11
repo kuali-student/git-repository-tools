@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+3895||ks-core/branches/ks-core-dev/common-ui/src/test/resources/transactions.properties
+3894||ks-core/branches/ks-core-dev/common-test/src/main/resources/transactions.properties
+b2ee7f577b5167476ea93a6198b8d24ad8f25381||95135525d5663ee87893ff4c700497e6
+#R052
+PLACEHOLDER
+3895||ks-core/branches/ks-core-dev/common-ui/src/test/resources/jdbc.properties
+3894||ks-lum/branches/ks-lum-dev/lum-web/src/main/resources/jdbc.properties
+640032a8428715cc0c222bd6e8a0fee517c86635||dee9954d1f36736bdd5a160030b149e0

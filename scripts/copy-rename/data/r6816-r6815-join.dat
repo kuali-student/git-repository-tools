@@ -1,0 +1,10 @@
+#R090
+PLACEHOLDER
+6816||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/CreditCourseDurationHelper.java
+6815||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/CreditCourseDurationDataHelper.java
+4e5b8d763f9c2095de2d4291e0846f52cda3ea4f||8a5811a836e57c896eabc253591141f2
+#R088
+PLACEHOLDER
+6816||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/CreditCourseActivityContactHoursHelper.java
+6815||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/CreditCourseActivityContactHoursDataHelper.java
+7efbaf4848d70da02da9c73b966f6f120288d681||9cfd44ddde51a23a66c8c77e595666bd

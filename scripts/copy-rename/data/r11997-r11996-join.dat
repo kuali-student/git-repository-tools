@@ -1,0 +1,15 @@
+#R072
+PLACEHOLDER
+11997||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/MetadataRpcService.java
+11996||ks-core/branches/ks-core-dev-orch/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/UploadStatusRpcService.java
+f95200cb6d317b1b0f6bce877a53be83f0452374||27467cd6098249602bebf45f5e59fe2b
+#R072
+PLACEHOLDER
+11997||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/MetadataRpcServiceAsync.java
+11996||ks-core/branches/ks-core-1.0.0-m4/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/UploadStatusRpcServiceAsync.java
+e1895cac85b8823c8bcb480c78596e1ef981e344||5d1d1a7caf8b7e25e30d28229b22b534
+#R050
+PLACEHOLDER
+11997||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/MetadataRpcGwtServlet.java
+11996||ks-core/branches/ks-core-1.0.0-m4/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/UploadStatusRpcGwtServlet.java
+15228b5e21d4d66987a67832a2ba46f0cb7615af||17f5de6ac3006a75127d7ceb2b64e150

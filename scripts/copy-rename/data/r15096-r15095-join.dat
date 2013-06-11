@@ -1,0 +1,10 @@
+#R065
+PLACEHOLDER
+15096||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/course-test-context.xml.inwork
+15095||tags/ks-1.1-poc-20100605-build-9/ks-lum/ks-lum-impl/src/test/resources/course-dev-test-context.xml
+64c0a770cfb8cff412cfcb84f8dde2d0bab03367||05d412da8213ce0259f39b852f12c959
+#R056
+PLACEHOLDER
+15096||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/course-additional-context.xml.inwork
+15095||deploymentlab/tags/ks-1.0.0/ks-lum/ks-lum-impl/src/test/resources/lu-additional-context.xml
+26ae6c35c4fad6faf8b25af93f18c68b539b1bc5||877c8e4a0ec22872b8237c8b7256b71d

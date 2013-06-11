@@ -1,0 +1,5 @@
+#R096
+PLACEHOLDER
+14780||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/program/service/assembler/MajorDisciplineDataGenerator.java
+14779||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/program/service/impl/MajorDisciplineDataGenerator.java
+605c568c7241a465362db4145c6026d380373371||54d2b34ad69a48f0d80b2de9dc915442

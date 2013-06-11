@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+31249||branches/ks-2.0-cm/ks-core/ks-core-impl/src/main/java/org/kuali/student/r2/core/class1/type/model/TypeTypeRelationAttributeEntity.java
+31248||branches/ks-1.3-ec1/ks-enroll/ks-enroll-impl/src/main/java/org/kuali/student/r2/core/class1/type/model/TypeTypeRelationAttributeEntity.java
+2c13c1322ee823c2ec5415c207d0b4a4a960e74c||a1d081c13459cc4e7fbbcec8e8940647
+#R100
+PLACEHOLDER
+31249||branches/ks-2.0-cm/ks-core/ks-core-impl/src/main/java/org/kuali/student/r2/core/class1/type/model/TypeAttributeEntity.java
+31248||branches/ks-1.3-ec1/ks-enroll/ks-enroll-impl/src/main/java/org/kuali/student/r2/core/class1/type/model/TypeAttributeEntity.java
+e06d5eea8530a8add65b4b7c130cf154b8c7f640||34ae6db2c872129971fbf435d212c118

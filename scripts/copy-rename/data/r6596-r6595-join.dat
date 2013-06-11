@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+6596||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/Link.java
+6595||ks-core/branches/ks-core-1.0.0-m1/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSHelpLink.java
+15a7f60cfe58efbe96a3bc5a96d0f2fa338d13f8||a640003148426aa2bae25e7b96250390
+#R084
+PLACEHOLDER
+6596||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/menus/impl/KSListMenuImpl.java
+6595||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/menus/impl/KSBasicMenuImpl.java
+8175d4ae9ce2d4300decf5781681654507220aff||b7c5094f326ac86f44726049b845fbff

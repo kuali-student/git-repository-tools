@@ -1,0 +1,15 @@
+#R057
+PLACEHOLDER
+6845||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/base/DocumentBinaryInfoMetadata.java
+6844||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/CreditCourseFormatMetadata.java
+db856fe66fdcb28088ff6ff4ddd4947d2362d0d5||eee385645d0b22cb5bbaefe459f1ad12
+#R054
+PLACEHOLDER
+6845||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/base/AcademicSubjectOrgInfoMetadata.java
+6844||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/CreditCourseActivityContactHoursMetadata.java
+3e40544caf9f7cc621d60cd015b3b9d176ecb42e||cc9abee21ec6c258e8f555898982bfef
+#R050
+PLACEHOLDER
+6845||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/base/CluFeeInfoMetadata.java
+6844||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/NewCreditCourseProposalMetadata.java
+7ef2501134890ec969aeccfde8aeb4f8f984a581||126660748c506312a2582133186dc710

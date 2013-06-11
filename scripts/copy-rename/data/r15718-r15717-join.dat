@@ -1,0 +1,5 @@
+#R067
+PLACEHOLDER
+15718||deploymentlab/trunk/maven-log-appender/src/main/java/org/kuali/maven/mojo/logging/MyLogger.java
+15717||deploymentlab/trunk/maven-log-appender/src/main/java/org/kuali/maven/mojo/logging/MavenLogger.java
+180dcd2c0d01c18a4bf0360870c5dbacfb3973bf||48da0b54c7f02314195f42ccbdfa13fb

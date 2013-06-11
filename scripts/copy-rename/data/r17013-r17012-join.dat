@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+17013||trunk/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSST_STMT_TYP_JN_STMT_TYP.xml
+17012||trunk/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSST_STMT_TYP_JN_STMT_TYP.xml
+d593117147da85203fa4bc517ce1091c05784441||28d5139152232b695abd21d5d96aa6be
+#R100
+PLACEHOLDER
+17013||trunk/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSST_STMT_TYP_JN_RC_TYP.xml
+17012||trunk/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSST_STMT_TYP_JN_RC_TYP.xml
+bb52350c0892da73dc10a1ae5b2f4972e6528ae2||dffaba22dfe88a1543542e8bc3b8f3e6

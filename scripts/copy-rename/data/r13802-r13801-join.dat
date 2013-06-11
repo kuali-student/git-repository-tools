@@ -1,0 +1,5 @@
+#R066
+PLACEHOLDER
+13802||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/course/service/jaxws/DeleteCourseResponse.java
+13801||deploymentlab/tags/ks-1.0.0-m5/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lo/service/jaxws/DeleteLoLoRelationResponse.java
+9285b48605d24804772ebe2a0d3593c059f7c175||4868fea725cd9002a4e5f6688e5b85b5

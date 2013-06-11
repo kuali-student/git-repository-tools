@@ -1,0 +1,10 @@
+#R075
+PLACEHOLDER
+5324||ks-lum/branches/ks-lum-dev/ks-lum-web/src/main/resources/ks-lo.sql
+5323||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/test/resources/ks-lo.sql
+6715e9952e37af9a007b3bee76c5735746da371f||6efe45c0ba9a025daf5101fb39b1e4e3
+#R068
+PLACEHOLDER
+5324||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/entity/LoRichText.java
+5323||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/security/AuthorizationCallback.java
+8e35542ce6a2d596fe95846229e26586a63ae5fc||ac674228489ef7fc6e6e0c90747441d7

@@ -1,0 +1,10 @@
+#R060
+PLACEHOLDER
+212||poc/common/branches/common-dev/common-test/src/test/java/org/kuali/student/common_test_tester/support/jaxws/FindStringIdResponse.java
+211||poc/personidentity/personidentity-api/tags/personidentity-api-0.0.2/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/CreatePersonRelationResponse.java
+ce9b3c94554f9a0de275f4e2aadcc47db3cc96dd||b57b83825a5c2e750f724c23fd2b8f91
+#R060
+PLACEHOLDER
+212||poc/common/branches/common-dev/common-test/src/test/java/org/kuali/student/common_test_tester/support/jaxws/SaveStringResponse.java
+211||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/CreatePersonRelationResponse.java
+ce9b3c94554f9a0de275f4e2aadcc47db3cc96dd||b57b83825a5c2e750f724c23fd2b8f91

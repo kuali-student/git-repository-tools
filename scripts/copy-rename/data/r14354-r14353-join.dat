@@ -1,0 +1,15 @@
+#R079
+PLACEHOLDER
+14354||branches/ks-poc-1.1.x-br/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/poc/AbstractBaseDataOrchestrationRpcGwtServlet.java
+14353||branches/ks-poc-1.1.x-br/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/gwt/AbstractBaseDataOrchestrationRpcGwtServlet.java
+a4454cfaf598dba6ffe6d7bbfb5c1eeae47be2c4||1c423e38fb2c9a3c7818cf82d4b58d0b
+#R064
+PLACEHOLDER
+14354||branches/ks-poc-1.1.x-br/ks-core/ks-common-impl/src/main/java/org/kuali/student/core/assembly/transform/IdTranslatorFilter.java
+14353||branches/ks-poc-1.1.x-br/ks-core/ks-common-impl/src/main/java/org/kuali/student/core/assembly/IdTranslatorAssemblerFilter.java
+71768c53f1eb781e0cd3ba82a1b87744e20230cd||636b75bbd1b09492e0c24e66def51358
+#R054
+PLACEHOLDER
+14354||branches/ks-poc-1.1.x-br/ks-core/ks-common-impl/src/main/java/org/kuali/student/core/assembly/transform/AuthorizationFilter.java
+14353||deploymentlab/tags/ks-1.0.0/ks-core/ks-common-impl/src/main/java/org/kuali/student/core/assembly/BaseAssembler.java
+04c5cde75132ea08b650b4fa8dec909a062c31f7||11260639e37dd1f28c7350490fc03082

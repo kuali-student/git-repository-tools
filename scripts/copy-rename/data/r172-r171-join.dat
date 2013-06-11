@@ -1,0 +1,5 @@
+#R061
+PLACEHOLDER
+172||poc/common/branches/common-dev/common-test/src/test/resources/META-INF/test-persistence.xml
+171||poc/common/branches/common-dev/common-test/exampleTests-ri-dev/jpa-ri/src/test/resources/META-INF/dummy-persistence.xml
+60e31c708245adc0c27f3bb548d65de3d201444c||ce43b422b60fcd2002783a340e63db2d

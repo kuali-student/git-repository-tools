@@ -1,0 +1,5 @@
+#R052
+PLACEHOLDER
+6008||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/exceptions/OperationFailedException.java
+6007||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/server/mvc/dto/BeanMappingException.java
+e9fc3bc219a55f1ae07926ca7d7e5a7de1af99ca||14556d6522ffafec977f3ca59b5139d1

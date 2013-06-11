@@ -1,0 +1,15 @@
+#R084
+PLACEHOLDER
+6581||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/AtpRpcServiceAsync.java
+6580||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/LoRpcServiceAsync.java
+ddd6448b5a8394cc96aaa09b15bcee7a1aa321aa||32c2a1ca6adf57afa4a06be3f6b1d401
+#R069
+PLACEHOLDER
+6581||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/server/gwt/AtpRpcGwtServlet.java
+6580||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/server/gwt/LoRpcGwtServlet.java
+1f5223e77cd8eed46149581fdd3fb265e1772598||f19e78f447d825c666bade0a22801fc3
+#R050
+PLACEHOLDER
+6581||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/AtpRpcService.java
+6580||sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/atp/ui/client/service/AtpRpcService.java
+e61872d5bc6d92fd6606c953c44924bfa50560fd||bf90da58e6a805bf5e2e7f3d9a3f3e18

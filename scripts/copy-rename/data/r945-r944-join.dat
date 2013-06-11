@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+945||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/main/java/org/kuali/student/rules/brms/core/util/LoadDataBean.java
+944||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/test/java/org/kuali/student/rules/brms/core/util/LoadDataBean.java
+6fccef0b56ae19bea9a5116b5f852e5cee9700ab||51ba110a78cb3f51b1c47a7e3594a248
+#R100
+PLACEHOLDER
+945||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/main/java/org/kuali/student/rules/brms/core/util/LoadBeanListener.java
+944||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/test/java/org/kuali/student/rules/brms/core/util/LoadBeanListener.java
+943170353455884ce38392e2ebd2dfc75949e536||ddb1174dcf2e4f0b79256d081acefa34

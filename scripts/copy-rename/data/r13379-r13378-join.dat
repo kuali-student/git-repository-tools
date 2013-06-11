@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+13379||ks-core/branches/ks-core-dev/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/standard/public/images/common/plus_13px.png
+13378||branches/ks-1.0.x/ks-lum/ks-lum-ui/src/main/resources/org/kuali/student/lum/ui/theme/standard/public/images/plus_13px.png
+34cb3b75c916dcd0fc88a8208040cdb69736652e||31f5a9704b58234a87b84b89ee96392b
+#R074
+PLACEHOLDER
+13379||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/sections/MultiplicitySection.java
+13378||deploymentlab/tags/ks-1.0.0/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/validator/CharFilter.java
+de77fab0303ab91f989c6c08a74d40c35a6e1164||2cee2f6ae029dcb89cdbe654511b5f44

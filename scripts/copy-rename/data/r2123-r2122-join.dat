@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+2123||enumeration/enumeration-impl/src/main/resources/META-INF/enumerationmanagement-persistence.xml
+2122||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/resources/META-INF/enumerationmanagement-persistence.xml
+915a49b09e0c2bd751f35d06480e78bda7d65184||4b30be3c01bc127560b5f3ee9a2c9971

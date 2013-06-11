@@ -1,0 +1,10 @@
+#R083
+PLACEHOLDER
+1591||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulesmanagement/dto/StatusDTO.java
+1590||poc/learningunitmanagement/lum-api/branches/lum-api-dev/lu-api/src/main/java/org/kuali/student/poc/xsd/learningunit/lu/dto/Status.java
+69ca61d58ae0565cc7ffbf7b38c3d2381af0c331||d4c0c86ab2de6b3558736dc6198d924e
+#R064
+PLACEHOLDER
+1591||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulesmanagement/dto/RightHandSideDTO.java
+1590||brms/brms-impl/branches/brms-impl-dev/rule-common/src/main/java/org/kuali/student/rules/internal/common/entity/RightHandSide.java
+601cba8e42a42cc62b48c2ea82e76c5cb2176523||ef4ec1a9ea7941a927dbdfb4b52bc143

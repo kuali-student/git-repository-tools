@@ -1,0 +1,5 @@
+#R058
+PLACEHOLDER
+20768||deploymentlab/trunk/kuali-spring-util/src/main/resources/org/kuali/spring/util/default-property-handler-wiring.xml
+20767||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/PropertyHandlerFlattenPropertyValuesTest-context.xml
+1984aaaca12988c2de55102101f1edcc9592e317||e1871e18c058bfc842a287a2737e4467

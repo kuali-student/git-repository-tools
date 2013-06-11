@@ -1,0 +1,10 @@
+#R069
+PLACEHOLDER
+13983||branches/ks-poc-1.1.x-br/ks-core/ks-common-impl/src/test/java/org/kuali/student/core/assembly/data/MockPerson.java
+13982||deploymentlab/tags/ks-1.0.0/ks-core/ks-common-ui/src/test/java/org/kuali/student/common/ui/server/mvc/dto/ConstraintMockPerson.java
+fede4d2074f76adf8d84f767170b7b8fc1ec2c15||1a40c5846523ae24d05ef3ca083ee52e
+#R060
+PLACEHOLDER
+13983||branches/ks-poc-1.1.x-br/ks-core/ks-common-impl/src/test/java/org/kuali/student/core/assembly/data/MockAddress.java
+13982||branches/ks-poc-1.1.x-br/ks-core/ks-common-impl/src/test/java/org/kuali/student/common/validator/ConstraintMockAddress.java
+995963b90727e8151ca714444c5bd1013be2b6e5||0aef2b458ba6c73f666d48726505f598

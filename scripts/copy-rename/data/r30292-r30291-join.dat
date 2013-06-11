@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+30292||branches/ks-2.0-cm/ks-web/ks-embedded/src/main/resources/META-INF/standalone-config-defaults.xml
+30291||branches/ks-2.0-cm-rice/ks-web/ks-embedded/src/main/resources/META-INF/standalone-config-defaults.xml
+4928de9965f9734760e0742b38184b1a795319c5||7242cf8cf575706d43d8ed3729e5e1f6
+#R100
+PLACEHOLDER
+30292||branches/ks-2.0-cm/ks-web/ks-embedded/src/main/resources/spy.properties
+30291||branches/ks-1.3-ec1/ks-web/ks-embedded/src/main/resources/spy.properties
+6167c730a78de48465eb6acc6279367843cf98e0||aac54317ed80768d8d6b929df3355887

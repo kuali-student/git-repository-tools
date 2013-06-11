@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+25468||sandbox/ks-1.3-process-poc/ks-enroll/ks-enroll-impl/src/main/java/org/kuali/student/r2/core/process/service/ProcessServiceImpl.java
+25467||sandbox/ks-1.3-process-poc/ks-enroll/ks-enroll-api/src/main/java/org/kuali/student/r2/core/process/service/ProcessServiceImpl.java
+dba89137862d3d8a5099ce6e0daf36116a1815c3||e13a0f442b92f99a3a0da434d4be6645
+#R100
+PLACEHOLDER
+25468||sandbox/ks-1.3-process-poc/ks-enroll/ks-enroll-impl/src/main/java/org/kuali/student/r2/core/process/service/ProcessServiceAuthorizationDecorator.java
+25467||sandbox/ks-1.3-process-poc/ks-enroll/ks-enroll-api/src/main/java/org/kuali/student/r2/core/process/service/ProcessServiceAuthorizationDecorator.java
+b69f745a155a977370ba3b5d29c87e3d8606dd2f||918b90bdfec98bf52331523b36ecd955

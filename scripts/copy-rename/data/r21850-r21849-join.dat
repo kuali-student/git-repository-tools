@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+21850||trunk/ks-common/ks-common-ui/src/main/resources/org/kuali/student/common/ui/server/jasperreports/AnalysisReport.jrxml
+21849||tags/builds/ks-1.2-20110412-build-71/ks-common/ks-common-ui/src/main/resources/org/kuali/student/common/ui/server/jasperreports/ScreenPrintReport.jrxml
+03cd5c88603cf54d1954741256ad80de5aa48ec3||b094f80977186b1321174ae03a3ae6a8

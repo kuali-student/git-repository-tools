@@ -1,0 +1,10 @@
+#R092
+PLACEHOLDER
+3924||brms/branches/brms-dev/execution-impl/src/main/java/org/kuali/student/brms/ruleexecution/runtime/drools/DroolsKnowledgeBase.java
+3923||brms/brms-impl/branches/brms-impl-dev/rule-execution-impl/src/main/java/org/kuali/student/rules/ruleexecution/runtime/drools/DroolsKnowledgeBase.java
+77d27f2d2daebf43d914341e4b838a35e00a8c4b||fce3df5faaac372e10dd6a0b82e5ec19
+#R070
+PLACEHOLDER
+3924||brms/branches/brms-dev/execution-impl/src/test/java/org/kuali/student/brms/ruleexecution/runtime/drools/util/Message.java
+3923||brms/brms-impl/branches/brms-impl-dev/rule-execution-impl/src/test/java/org/kuali/student/rules/ruleexecution/runtime/drools/util/Message.java
+97e8e3a5ea3ace8932e60caa134d14bb9147ad87||13c93451b0593562cd6fe0f1fe17d90d

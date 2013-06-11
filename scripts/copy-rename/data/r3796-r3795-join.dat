@@ -1,0 +1,10 @@
+#R077
+PLACEHOLDER
+3796||examples/ui/ks-ui-kitchensink/branches/ks-ui-kitchensink-dev/src/main/java/org/kuali/student/ui/kitchensink/public/images/1day.png
+3795||ks-core/branches/ks-core-dev/common-ui/src/main/resources/org/kuali/student/common/ui/client/images/messagebox_warning.png
+f09e60fa25ebec11a227d5273d71bc4c64de7081||f8fd4c9db0f35ca3cf9f30a04c2371b6
+#R060
+PLACEHOLDER
+3796||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSTabPanelAbstract.java
+3795||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSModalDialogPanelAbstract.java
+007b8cbc3a872e90a8b89eae7c4cbc99dbe40ff2||92fdc7f89ea7f4e63f44b5db9c191499

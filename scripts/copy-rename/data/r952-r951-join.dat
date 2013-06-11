@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+952||poc/brms/brms-ri/branches/brms-ri-dev/validate-rule/src/main/resources/META-INF/brms-persistence.xml
+951||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/main/resources/META-INF/brms-persistence.xml
+d2a36894f784420a14a69ed27f1aeeeb356c8afc||b4b47804dd4a6e0583299474b12e20c7
+#R075
+PLACEHOLDER
+952||poc/brms/brms-ri/branches/brms-ri-dev/rule-execution/src/test/resources/brms-core-test-context.xml
+951||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/test/resources/brms-core-test-context.xml
+078585fd36a0973c238198b769db90d5c4435614||299f8db6651b3835efee616674bc5fbb
+#R050
+PLACEHOLDER
+952||poc/brms/brms-ri/branches/brms-ri-dev/validate-rule/src/test/resources/brms-core-test-context.xml
+951||poc/brms/brms-ri/branches/brms-ri-dev/validate-rule/src/main/resources/validate-rule-context.xml
+c0324add8e2d217479ebf8dcd92f1cd5711909ab||633ea4ac7f2a1aedc4ee934cbff83219

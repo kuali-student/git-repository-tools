@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+6517||sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/atp/ui/public/KualiStudent.css
+6516||sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/organization/ui/public/KualiStudent.css
+2a47b69af41247bf6b16a43fbe955702a53e24a7||ae77e2765ede607ceddecc3a074260c1
+#R100
+PLACEHOLDER
+6517||sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/atp/ui/AtpUI.gwt.xml
+6516||sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/organization/ui/AtpUI.gwt.xml
+7cdcd1ea9676159b97d750eb129ed6441bfc9560||dc48c13c813bb502c71ad06d6ca59abd
+#R100
+PLACEHOLDER
+6517||sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/atp/ui/public/images/loading.gif
+6516||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/resources/org/kuali/student/commons/ui/public/images/loading.gif
+911aed33b92242cb4d1ffdd7c5563c510af6a77a||b3c17182fd4275eb2e3d4e55c1c8cfc1

@@ -1,0 +1,10 @@
+#R068
+PLACEHOLDER
+14952||branches/ks-poc-1.1.x-br/ks-core/ks-core-api/src/main/java/org/kuali/student/core/statement/service/jaxws/GetStatementTreeViewForNlUsageTypeResponse.java
+14951||branches/ks-poc-1.1.x-br/ks-core/ks-core-api/src/main/java/org/kuali/student/core/statement/service/jaxws/UpdateStatementTreeViewResponse.java
+e70fd439b49fb852d34c76be1b6343e38bfb70b2||773b950d78ed2d50f2c1febfeee4bcb6
+#R054
+PLACEHOLDER
+14952||branches/ks-poc-1.1.x-br/ks-core/ks-core-api/src/main/java/org/kuali/student/core/statement/service/jaxws/GetStatementTreeViewForNlUsageType.java
+14951||deploymentlab/tags/ks-1.0.0-m5/brms/ks-brms-api/src/main/java/org/kuali/student/brms/rulemanagement/service/jaxws/GetBusinessRuleType.java
+2e3ba441ad8166989f05f4f516af1b027d1d96a0||5c214fdcea388427479d356a27979a05

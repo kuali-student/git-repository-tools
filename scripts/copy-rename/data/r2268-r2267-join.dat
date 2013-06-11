@@ -1,0 +1,15 @@
+#R078
+PLACEHOLDER
+2268||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/FetchEnumeration.java
+2267||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/FetchEnumeration.java
+34ec59dd14ee84875559bb6a0c186491504e7669||1de8e334deb642f6576dd8cde3dcf561
+#R059
+PLACEHOLDER
+2268||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/RemoveEnumeratedValueResponse.java
+2267||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/ValidateStructureDataResponse.java
+aaed489ba8f7844666216ef25de41895bdcc32f0||b411c1a122592b977859d3006a1690f6
+#R058
+PLACEHOLDER
+2268||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/FetchEnumerationResponse.java
+2267||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/service/jaxws/FetchEnumerationResponse.java
+b0cc4a905102b098bf976b1378dd10252f7661b1||48b3704157776e377eabed2121eeb683

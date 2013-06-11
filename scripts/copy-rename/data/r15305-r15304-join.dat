@@ -1,0 +1,10 @@
+#R095
+PLACEHOLDER
+15305||deploymentlab/trunk/impex/jdbc-support/src/main/java/org/kuali/db/DelimiterType.java
+15304||deploymentlab/tags/impex-parent-1.0.0/maven-impex-plugin/src/main/java/org/apache/torque/mojo/DelimiterType.java
+ee00d22006c26744b4f2df72aacf9dd5a0adc813||f93f23d942ad521b132b807a9f89bd56
+#R094
+PLACEHOLDER
+15305||deploymentlab/trunk/impex/jdbc-support/src/main/java/org/kuali/db/SqlSplitter.java
+15304||deploymentlab/trunk/impex/maven-impex-plugin/src/main/java/org/apache/torque/mojo/SqlSplitter.java
+2a4ab69a1c3a8a3fcdd9bd286b18e54a3b212989||97767be3bd49e04a7db7709cc3ecaf9d

@@ -1,0 +1,5 @@
+#R071
+PLACEHOLDER
+10346||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/TranslatableValueWidget.java
+10345||deploymentlab/branches/1.0.0-m3/1.0.0.x-rpc/core/ks-common-impl/src/main/java/org/kuali/student/core/assembly/data/PathParser.java
+235c3abf8c4e745d17b25f4a1474459e7956d272||0ddd4bb729de28620f6db3766b3b37ce

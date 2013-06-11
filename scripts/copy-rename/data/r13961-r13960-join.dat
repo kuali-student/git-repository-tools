@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+13961||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/META-INF/log4j.properties
+13960||branches/ks-1.0.x/ks-lum/ks-lum-ui/src/main/resources/META-INF/log4j.properties
+5c216c6e2f5717cea54fe2d8b31cfed0259f0ffe||27be33ad67b66a314df7930db3a7d8cd
+#R100
+PLACEHOLDER
+13961||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/META-INF/rice.keystore
+13960||branches/ks-1.0.x/ks-core/ks-core-ui/src/main/resources/rice.keystore
+c3296a60d02a8016d5e0aabdabf0818c4283319f||a2cdc7f16dbaed92bae850eed03ec030
+#R089
+PLACEHOLDER
+13961||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/META-INF/ks-lum-test-config.xml
+13960||branches/ks-repo-1.0/ks-lum/ks-lum-ui/src/main/resources/META-INF/ks-lum-ui-config.xml
+af577714ea9aef1e7a695350d4a1e3c0289b7264||b8f3b953188c79c4020c0d440dab39e0

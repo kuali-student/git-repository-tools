@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+2127||enumeration/enumeration-impl/src/main/resources/transactions.properties
+2126||poc/personidentity/personidentity-ri/branches/personidentity-ri-dev/personidentity/src/main/resources/transactions.properties
+6a8831b04f4d686db449f865c0c6fc050546eae7||59bdcbc9fa80652d958ad9be331a7dda
+#R100
+PLACEHOLDER
+2127||enumeration/enumeration-impl/src/main/resources/jpa.properties
+2126||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/main/resources/jpa.properties
+67a61f316eab055e8b81da070d60cc3eef10ae36||9204b1fb0dbf4f62b8837ac411b00715
+#R085
+PLACEHOLDER
+2127||enumeration/enumeration-impl/src/main/resources/enumeration-context.xml
+2126||poc/personidentity/personidentity-ri/branches/personidentity-ri-dev/personidentity/src/main/resources/personidentity-context.xml
+e69768352cb857c9fca3da720acd5499a68b1be0||77645b8af54f2f6325e90978811d3f6e

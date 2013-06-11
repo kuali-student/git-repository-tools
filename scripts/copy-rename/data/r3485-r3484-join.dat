@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+3485||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSRichTextToolbarAbstract$Strings.properties
+3484||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSRichTextToolbar$Strings.properties
+363b7045848c0712e8bb93cd52637e6ae8b8bea3||d41d8cd98f00b204e9800998ecf8427e
+#R088
+PLACEHOLDER
+3485||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/impl/KSRichTextToolbarImpl.java
+3484||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSRichTextToolbar.java
+f67d9c5d233713f9d990cb472bdaf0b0e684d869||58da7db1c299064ec8febfd9a4703968

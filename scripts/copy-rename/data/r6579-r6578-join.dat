@@ -1,0 +1,10 @@
+#R088
+PLACEHOLDER
+6579||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/selectors/KSAdvancedSearchRpcComponent.java
+6578||ks-core/branches/ks-core-1.0.0-m1/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/suggestbox/KSAdvancedSearchRpc.java
+d6fc43151e5afa8dd74b697445780e1e867cb4fb||d8adf9c335508550ad5cb9cdaf90c627
+#R069
+PLACEHOLDER
+6579||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/selectors/KSAdvancedSearchWindowComponent.java
+6578||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/suggestbox/KSAdvancedSearchWindow.java
+6a7ac352bbb5dfcf66d474cbfb5f49fe88f5b1c5||01aee1d78d20b774ad8748dbc3b164b5

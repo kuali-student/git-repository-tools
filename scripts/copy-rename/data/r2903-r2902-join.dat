@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+2903||ks-core/branches/ks-core-dev/core-api/src/main/resources/org/kuali/student/core/enumeration/Enumeration.gwt.xml
+2902||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/Enumeration.gwt.xml
+4a9b26707a4e4288c0b927a059a050a75fd33e05||a4a3c0a2a57d56e90c9b460f1b92e21f
+#R100
+PLACEHOLDER
+2903||ks-core/branches/ks-core-dev/core-api/src/main/resources/org/kuali/student/core/organization/Organization.gwt.xml
+2902||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/Dictionary.gwt.xml
+4a9b26707a4e4288c0b927a059a050a75fd33e05||a4a3c0a2a57d56e90c9b460f1b92e21f

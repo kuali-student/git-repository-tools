@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+29117||branches/ks-2.0-cm/ks-lum/ks-lum-api/src/test/java/org/kuali/student/lum/conversion/R1TestDataUtil.java
+29116||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/conversion/R1TestDataUtil.java
+d966e1b17e099e6c203c041fbebff68645dddf28||c5917da0ec6a35d351fe9a7639f4bd03
+#R100
+PLACEHOLDER
+29117||branches/ks-2.0-cm/ks-lum/ks-lum-api/src/test/java/org/kuali/student/lum/conversion/LumConverterTest.java
+29116||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/conversion/LumConverterTest.java
+1349d541a556bc889617c90529678b7f1aa0772a||f574bd72b004863a007dcabb791a9632
+#R100
+PLACEHOLDER
+29117||branches/ks-2.0-cm/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/conversion/util/factory/CourseInfoFactory.java
+29116||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/conversion/util/factory/CourseInfoFactory.java
+77959f1b4d37cf4904ce3f75ab4501fdf7ac9e43||8d4b766298245235aa7f45dce989cab3

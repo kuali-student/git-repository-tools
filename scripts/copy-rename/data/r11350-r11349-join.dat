@@ -1,0 +1,5 @@
+#R050
+PLACEHOLDER
+11350||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/rice/core/jpa/spring/RicePersistenceUnitPostProcessor.java
+11349||ks-core/branches/ks-core-1.0.0-m1/ks-common-util/src/main/java/org/kuali/rice/core/jpa/spring/RicePersistenceUnitPostProcessor.java
+5bf4584cd8aedad13ef9c80f9752b679d1d9e92b||ec3531ba194e94f1b54262ec6df95c53

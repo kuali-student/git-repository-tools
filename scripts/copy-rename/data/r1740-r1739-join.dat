@@ -1,0 +1,15 @@
+#R091
+PLACEHOLDER
+1740||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulemanagement/dao/RuleManagementDAO.java
+1739||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulesmanagement/dao/RulesManagementDAO.java
+0dd12cfda96c3724c96348682ffeb438d1acea37||b5c30d50b42b828f249b48a4076c2702
+#R090
+PLACEHOLDER
+1740||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulemanagement/dao/impl/RuleManagementDAOImpl.java
+1739||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulesmanagement/dao/impl/RulesManagementDAOImpl.java
+8b994150915d36494de77edee459ec58ee5e1638||bda6732f902ddeb4bf4faee3c306a191
+#R082
+PLACEHOLDER
+1740||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulemanagement/service/impl/RuleManagementServiceImpl.java
+1739||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulesmanagement/service/impl/RulesManagementServiceImpl.java
+318050b5656efbc07306d7d00c006bf24336334f||dc8ab5722f3362c6202039de5d700a40

@@ -1,0 +1,10 @@
+#R067
+PLACEHOLDER
+4709||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/CommentAttribute.java
+4708||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lrc/entity/ResultComponentAttribute.java
+6b02a768d60c68bf36fd76e9f14dd00b16a5cdd6||f0b564e7b40374c6d2fcc8f0a6c8ad8c
+#R058
+PLACEHOLDER
+4709||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/Comment.java
+4708||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lrc/entity/ResultComponent.java
+06b270466703c1c2f80280feefd7073b3eb40c57||33adbc33884214d721b58aa474ab4139

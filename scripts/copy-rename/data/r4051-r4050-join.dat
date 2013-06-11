@@ -1,0 +1,10 @@
+#R069
+PLACEHOLDER
+4051||ks-lum/branches/ks-lum-dev/lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/view/CourseSection.java
+4050||ks-lum/branches/ks-lum-dev/lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/view/CourseInformation.java
+85f08ae9108772986b01857129b8afb4755512d6||a7d9a24cb6758d704eaa43c8880ff4b6
+#R053
+PLACEHOLDER
+4051||ks-lum/branches/ks-lum-dev/lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/view/CourseAuthor.java
+4050||ks-lum/branches/ks-lum-dev/lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/LuRpcServiceAsync.java
+5b84aa624fd8aaa8bbc99cff6f28a0f08ea440e3||c00ff049a87f8e071737eeb1292aa02b

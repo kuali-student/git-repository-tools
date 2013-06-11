@@ -1,0 +1,15 @@
+#R071
+PLACEHOLDER
+2292||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/WidgetsNoServer.gwt.xml
+2291||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/Widgets.gwt.xml
+9ac1109b3b7f0347f03b98ecd2ad32925b759ac1||e542a7905154206d42b56052ec924c65
+#R060
+PLACEHOLDER
+2292||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/MessagesNoServer.gwt.xml
+2291||commons/ks-commons-ui/tags/ks-commons-ui-0.0.3/src/main/java/org/kuali/student/commons/ui/Messages.gwt.xml
+a857c22edb73955d4dcdacd4c671faa0f53e3922||808d1ce8469adba4a997ed495f76a4cd
+#R056
+PLACEHOLDER
+2292||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/MVCNoServer.gwt.xml
+2291||commons/ks-commons-ui/tags/ks-commons-ui-0.0.2/src/main/java/org/kuali/student/commons/ui/MVC.gwt.xml
+d04db5fd4f82a385e5a1cca4449998900da2588c||2bcb53b2c3cbb024012ef529d7451046

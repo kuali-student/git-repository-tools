@@ -1,0 +1,10 @@
+#R090
+PLACEHOLDER
+8282||deploymentlab/tags/proposalhistory/template/styles/fonts.css
+8281||deploymentlab/branches/proposalhistory/ks-core/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/standard/public/css/InitFonts.css
+ba548064bc8daaf9661e98b9846c9790e585f36d||affc308896d83a16933bbed0c9601a4f
+#R068
+PLACEHOLDER
+8282||deploymentlab/tags/proposalhistory/template/styles/reset.css
+8281||deploymentlab/branches/1.0.0.x/core/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/standard/public/css/Reset.css
+77ab5f6be5b828124b5d02e7e4051ce316f42702||bc47c17605e4a9ad1ef4c4e356f86bef

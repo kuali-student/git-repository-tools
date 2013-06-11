@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+7583||deploymentlab/branches/1.0.0-m3/security/ks-standard-sec/.settings/org.eclipse.jdt.core.prefs
+7582||deploymentlab/branches/1.0.0-m3/core/ks-core-api/.settings/org.eclipse.jdt.core.prefs
+77c5d8898628281a2676c82437030d117c9153f8||8c10f5b510736a97452031e6c8e47012
+#R065
+PLACEHOLDER
+7583||deploymentlab/branches/1.0.0-m3/security/ks-standard-sec/.project
+7582||deploymentlab/branches/1.0.0-m3/core/ks-core-api/.project
+90e1c37f62099b5459f5f2e1c8f7e1621c8a6c45||d4a302165be0f3419ff3695f7ffb7d00
+#R063
+PLACEHOLDER
+7583||deploymentlab/branches/1.0.0-m3/security/ks-standard-sec/.classpath
+7582||deploymentlab/branches/1.0.0-m3/core/ks-core-ui/.classpath
+239c900ebd3fcc2bc446379c4d3d82af56a6a740||617b68d8a9e4c8151cabf2078364d525

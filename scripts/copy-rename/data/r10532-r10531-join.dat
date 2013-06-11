@@ -1,0 +1,10 @@
+#R097
+PLACEHOLDER
+10532||deploymentlab/trunk/test/ws/ks-soapui/src/main/resources/KualiStudent-soapui-project.xml
+10531||deploymentlab/trunk/test/ws/ks-soapui/src/main/resources/KualiStudentMilestone4-soapui-project.xml
+e367dc479c64fd3af1697e02b1fe0aaa889692ff||9a17c79ff1e5b9d80b00d4c5fcb1516a
+#C060
+PLACEHOLDER
+10532||deploymentlab/trunk/test/ws/ks-soapui/src/main/resources/KualiStudent-soapui-project/LuServiceSoapBinding/settings.xml
+10531||deploymentlab/trunk/test/ws/ks-soapui/src/main/resources/KualiStudentMilestone4-soapui-project.xml
+e367dc479c64fd3af1697e02b1fe0aaa889692ff||9a17c79ff1e5b9d80b00d4c5fcb1516a

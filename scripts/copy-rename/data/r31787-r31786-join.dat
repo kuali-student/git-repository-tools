@@ -1,0 +1,20 @@
+#R100
+PLACEHOLDER
+31787||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-27-KS-lum-retire-by-proposal-msg-bootstrap.sql
+31786||branches/ks-1.2-sprint4/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-27-KS-lum-retire-by-proposal-msg-bootstrap.sql
+5d13cdd2b35ff03dad0bea90d0283c4916cdc343||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+31787||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/readme.txt
+31786||branches/ks-1.2-sprint4/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/readme.txt
+130c11663c3cedc91528b13e19bec4f32d8bb328||71e7816baad569f84aa40eb1f93c4c16
+#R100
+PLACEHOLDER
+31787||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/R1.2.2/2012-03-28-KS-KRIM-retire-by-proposal-dialog-and-screen-permission.sql
+31786||branches/ks-1.2-sprint4/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/R1.2.2/2012-03-28-KS-KRIM-retire-by-proposal-dialog-and-screen-permission.sql
+10b24eeb4445608ef32257d44d7f277741339187||62583e6080944750c18b0f23b0d46aa8
+#R100
+PLACEHOLDER
+31787||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/R1.2.2/2012-01-02_KRIM-Add-KSCM-Users.sql
+31786||branches/ks-1.2-sprint4/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/R1.2.2/2012-01-02_KRIM-Add-KSCM-Users.sql
+c9c8d36129cc66fcc402c332d4546eba1b91fb6d||796c6f7edcd47fef34ef5d446d2600b7

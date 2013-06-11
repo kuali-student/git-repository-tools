@@ -1,0 +1,10 @@
+#R074
+PLACEHOLDER
+4002||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/event/SaveHandler.java
+4001||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/forms/EditModeChangeHandler.java
+259ea3b842a6595bd9747e3e08963de74701f104||c766a7664edd48455565e1441fafd11f
+#R060
+PLACEHOLDER
+4002||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/event/SaveEvent.java
+4001||ks-lum/branches/ks-lum-dev/lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/LuRpcServiceAsync.java
+5b84aa624fd8aaa8bbc99cff6f28a0f08ea440e3||c00ff049a87f8e071737eeb1292aa02b

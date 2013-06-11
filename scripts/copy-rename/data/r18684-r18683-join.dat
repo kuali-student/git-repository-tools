@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+18684||branches/ks-1.1-perf/ks-web/ks-standalone/src/main/java/org/kuali/rice/kim/service/IdentityManagementService.java
+18683||tags/builds/perf/ks-1.1-20101220-build-9/ks-web/ks-standalone/src/main/java/org/kuali/rice/kim/service/IdentityManagementService.java
+6e19b91aace3e23ca17abe456f02edb7d0d222fd||f2a85c2cbacafbf1da66bf8d0065fa56
+#R100
+PLACEHOLDER
+18684||branches/ks-1.1-perf/ks-web/ks-rice/src/main/java/org/kuali/rice/kim/service/IdentityManagementService.java
+18683||tags/builds/perf/ks-1.1-20101220-build-9/ks-web/ks-rice/src/main/java/org/kuali/rice/kim/service/IdentityManagementService.java
+6e19b91aace3e23ca17abe456f02edb7d0d222fd||f2a85c2cbacafbf1da66bf8d0065fa56
+#R100
+PLACEHOLDER
+18684||branches/ks-1.1-perf/ks-web/ks-embedded/src/main/java/org/kuali/rice/kim/service/IdentityManagementService.java
+18683||tags/builds/perf/ks-1.1-20101220-build-9/ks-web/ks-embedded/src/main/java/org/kuali/rice/kim/service/IdentityManagementService.java
+6e19b91aace3e23ca17abe456f02edb7d0d222fd||f2a85c2cbacafbf1da66bf8d0065fa56

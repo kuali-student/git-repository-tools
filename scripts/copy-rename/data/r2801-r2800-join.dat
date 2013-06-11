@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+2801||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/test/resources/log4j.xml
+2800||brms/brms-impl/branches/brms-impl-dev/rule-execution-impl/src/test/resources/log4j.xml
+e335a6704742f5f8b33335c0825f5cd01f3c30c4||2d293c1ff925c3cccf5bbafabafe58c3

@@ -1,0 +1,10 @@
+#R073
+PLACEHOLDER
+5421||sandbox/team2/ks-rice-standalone/trunk/src/test/java/org/kuali/student/lum/workflow/qualifier/CollegeCommitteeQualifierResolverTest.java
+5420||sandbox/team2/ks-rice-standalone/branches/ks-rice-standalone-uberwar/src/test/java/org/kuali/student/lum/workflow/qualifier/CollegeQualifierResolverTest.java
+8748d92adc70c8976bef288e2f8f09f766059618||f9e30bcde695949d07bae1011fe08b67
+#R060
+PLACEHOLDER
+5421||sandbox/team2/ks-rice-standalone/trunk/src/main/java/org/kuali/student/lum/workflow/qualifier/MinimalOrgInfo.java
+5420||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/entity/LoRichText.java
+4de6a5a6fe98ccc094853f374ead820092a7dbe6||c81c26b86429cd918875f466feff73a1

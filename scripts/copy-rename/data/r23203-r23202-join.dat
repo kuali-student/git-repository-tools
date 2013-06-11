@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+23203||tools/maven-kscontractdoc-plugin/trunk/src/main/resources/pesc/CoreMain_v1.8.0.xsd
+23202||tools/maven-dictionary-generator/trunk/src/main/resources/CoreMain_v1.8.0.xsd
+593c97614e6661804819a53bff0f6860963723bf||222e49aff6a4682a2336f3945f18974a

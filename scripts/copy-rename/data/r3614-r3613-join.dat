@@ -1,0 +1,15 @@
+#R072
+PLACEHOLDER
+3614||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/model/ReqComponentTypeInfo.java
+3613||poc/brms/brms-ri/tags/brms-ri-0.0.1/brms-core/src/main/java/org/kuali/student/rules/brms/core/entity/ComputationMethod.java
+adfb56b04e76d0d0d4f6ac9b964121696694250b||7d501b011096999197a7c10877ac46a1
+#R072
+PLACEHOLDER
+3614||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/model/TypeInfo.java
+3613||poc/brms/brms-ri/branches/brms-ri-dev/brms-core/src/main/java/org/kuali/student/rules/brms/core/entity/ComputationMethod.java
+adfb56b04e76d0d0d4f6ac9b964121696694250b||7d501b011096999197a7c10877ac46a1
+#R056
+PLACEHOLDER
+3614||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/view/LumDialog.java
+3613||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/view/LumSwitchPanel.java
+801781fe064ddb8140c794525e998fe9da8b0923||b0f9575123420205198db7f12d110c89

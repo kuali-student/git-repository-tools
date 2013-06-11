@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+20115||deploymentlab/branches/ks-r2-config/ks-core/ks-core-impl/.classpath
+20114||deploymentlab/branches/ks-r2-config/ks-admin/.classpath
+6baae99dad82dbed582274bab3ae0fd511eb632e||59bfcaa9f4799fa88685122f5513031f
+#R093
+PLACEHOLDER
+20115||deploymentlab/branches/ks-r2-config/ks-core/ks-core-impl/.project
+20114||deploymentlab/trunk/examples/psu/.project
+b85cdf9d3b475932316814ef56f612edb1997568||44477d629e7d68707618528cff186db4

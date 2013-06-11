@@ -1,0 +1,5 @@
+#R088
+PLACEHOLDER
+19443||deploymentlab/trunk/maven-kualisite-plugin/src/main/java/org/kuali/maven/plugin/ksite/mojo/KualiSiteMojo.java
+19442||deploymentlab/tags/maven-cloudfront-plugin-1.0.12/src/main/java/org/kuali/maven/mojo/s3/BaseMojo.java
+bc7951a9df329e38ec9a0037031f989037154145||30527181d8b6db67b842bfbc3d3be784

@@ -1,0 +1,15 @@
+#R076
+PLACEHOLDER
+3622||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/impl/KSHelpDialogImpl.java
+3621||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSHelpDialog.java
+368a9a094b7edd4389750bf0f6e38804a030969f||2af76c44da0daebd3609310a2dba528e
+#R067
+PLACEHOLDER
+3622||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/impl/KSInfoDialogPanelImpl.java
+3621||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSInfoDialogPanel.java
+2f5ddb1b052ab6fa77748f6b06cccb56d323c4f3||edca78c0bb81ed04025cf66b9348b66a
+#R063
+PLACEHOLDER
+3622||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSModalDialogPanelAbstract.java
+3621||brms/brms-impl/branches/brms-impl-dev/rule-repository-impl/src/main/java/org/kuali/student/rules/translators/RuleSetValidator.java
+594446d7a905f201067d7178796a30df85b8eb5b||224ae9e5d7f8715fa7514595059b2253

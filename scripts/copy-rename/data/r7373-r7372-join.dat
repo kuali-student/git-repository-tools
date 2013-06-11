@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+7373||ks-cfg-dbs/ks-core-db/trunk/KSEM_ENUM_VAL_ENT.xml
+7372||ks-cfg-dbs/ks-embedded-db/trunk/KSEM_ENUM_VAL_ENT.xml
+ee0463ab3044ccc58a801a82b38e5615d87384c8||9324dea8245f49861369499e5b49ff48
+#R100
+PLACEHOLDER
+7373||ks-cfg-dbs/ks-core-db/trunk/KSEM_CTX_ENT.xml
+7372||ks-cfg-dbs/ks-embedded-db/trunk/KSEM_CTX_ENT.xml
+f60ec9755e6e132ce216952dec57e5d0f64e02db||582d0798a1d1444d04cee2eeeeb49b90

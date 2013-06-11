@@ -1,0 +1,10 @@
+#R096
+PLACEHOLDER
+5669||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/test/java/org/kuali/student/lum/ui/requirements/util/LuServiceMock.java
+5668||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/test/java/org/kuali/student/lum/nlt/naturallanguage/LuServiceMock.java
+20575b7c98ef9a62da5caab47d1ffa98560ca542||eb299d81d7a378f105a0c014f06f10bd
+#R086
+PLACEHOLDER
+5669||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/test/java/org/kuali/student/lum/ui/requirements/util/RequirementsUtil.java
+5668||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/test/java/org/kuali/student/lum/nlt/naturallanguage/NaturalLanguageUtil.java
+35e138f5c0f744d2c850f0cf0a8db488a10a5082||b6a9d1e9650b4b9dc7fe6fe4e11ff10d

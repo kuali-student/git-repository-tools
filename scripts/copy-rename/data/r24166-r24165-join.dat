@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+24166||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_LPR_ROSTER.xml
+24165||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_LPR_ROSTER.xml
+c9ef82209989b3dd7889ff72cc9df76b28ab380e||3aadbad19559afddb3fa3e2b52240676
+#R100
+PLACEHOLDER
+24166||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_LPRROSTER_LUI_RELTN.xml
+24165||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_LPRROSTER_LUI_RELTN.xml
+cb8f124112e97a9ab6ac41a639c5f75d4c68ff93||2a63846f083bdca210d3b826fb21b558
+#R100
+PLACEHOLDER
+24166||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_LPR_ROSTER_ENTRY.xml
+24165||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_LPR_ROSTER_ENTRY.xml
+00a3aaf5e36a71596cca78f643fa99dc698d54c5||737a4b888fc333a64d211366aac10ceb

@@ -1,0 +1,10 @@
+#R057
+PLACEHOLDER
+7891||ks-core/branches/ks-core-dev/ks-common-impl/src/main/java/org/kuali/student/core/entity/CurrencyAmount.java
+7890||ks-core/branches/ks-core-dev/ks-common-impl/src/main/java/org/kuali/student/core/entity/Amount.java
+633047aff91d046761349684967fdde6e91415c0||e6347b0a921c18b5c3837aa9c2b072b8
+#R056
+PLACEHOLDER
+7891||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/dto/CurrencyAmountInfo.java
+7890||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/dto/AmountInfo.java
+fafc5db36ad41da8b3e1915c77d0f5bcdcded4a5||72a9999b041a31c93d21cac25ab21f13

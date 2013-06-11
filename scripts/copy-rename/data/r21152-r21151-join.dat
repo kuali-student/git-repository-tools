@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+21152||tools/maven-kscontractdoc-plugin/trunk/src/main/java/org/kuali/student/datadictionary/util/DictionaryFormatter.java
+21151||sandbox/ks-r2-poc/trunk/ks-services/ks-services-api/src/main/java/org/kuali/student/datadictionary/util/DictionaryFormatter.java
+8eb672d20fe5b948ee0af4f220510812bc592a23||9afae93d8d65041164dd28e0c0cb061b
+#R100
+PLACEHOLDER
+21152||tools/maven-kscontractdoc-plugin/trunk/src/main/java/org/kuali/student/datadictionary/util/ComplexSubstructuresHelper.java
+21151||sandbox/ks-r2-poc/trunk/ks-services/ks-services-api/src/main/java/org/kuali/student/datadictionary/util/ComplexSubstructuresHelper.java
+26c14ac7836321da13826adf5f3a5aa4e0045940||aac2f21d8178a0721e03381287b64eca

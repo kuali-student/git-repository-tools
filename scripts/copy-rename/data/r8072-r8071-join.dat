@@ -1,0 +1,15 @@
+#R087
+PLACEHOLDER
+8072||brms/branches/brms-dev/ks-statement-impl/src/test/java/org/kuali/student/brms/statement/config/context/lu/CourseListContextImpl.java
+8071||brms/branches/brms-dev/ks-statement-impl/src/main/java/org/kuali/student/brms/statement/config/contexts/CourseListContextImpl.java
+5cfaefda7f327ed540d753ed4f43931558954f98||3f6fa42fcd8049d9d68d928d16df63e0
+#R076
+PLACEHOLDER
+8072||brms/branches/brms-dev/ks-statement-impl/src/test/java/org/kuali/student/brms/statement/config/context/lu/AbstractLuContext.java
+8071||brms/branches/brms-dev/ks-statement-impl/src/main/java/org/kuali/student/brms/statement/config/contexts/AbstractLuContext.java
+d50823d89c7439ed608b93ebf9c6dba85c0932ad||be1384e585bfe98b237b6fea0bb37338
+#R064
+PLACEHOLDER
+8072||brms/branches/brms-dev/ks-statement-impl/src/test/java/org/kuali/student/brms/statement/config/context/lu/CluSetInfo.java
+8071||ks-lum/branches/ks-lum-1.0.0-m1/ks-lum-impl/src/main/java/org/kuali/student/lum/nlt/naturallanguage/util/CustomCluSetInfo.java
+b08e59f02508f6c4f551e0628493ef9dfe41eb61||9366208c0fd1a282adee0eefbdf96d35

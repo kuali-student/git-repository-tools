@@ -1,0 +1,10 @@
+#R056
+PLACEHOLDER
+5768||ks-core/branches/ks-core-dev/ks-common-ui/src/main/resources/META-INF/application-state-persistence.xml
+5767||ks-core/branches/ks-core-dev/ks-core-impl/src/main/resources/META-INF/role-persistence.xml
+6313b9ee216e348aadb4e15be24900bc5bb62667||a7b0a23c0e24059d62b39b68116e293f
+#R053
+PLACEHOLDER
+5768||ks-core/branches/ks-core-dev/ks-common-ui/src/main/resources/application-state-context.xml
+5767||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/test/resources/lrc-additional-context.xml
+0a28232126fe696eaf37698b764cbaf7b043703c||4c4822faf6026f472557a853fa7f4364

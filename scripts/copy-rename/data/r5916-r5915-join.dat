@@ -1,0 +1,15 @@
+#R066
+PLACEHOLDER
+5916||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/proposal/ui/client/service/ProposalRpcService.java
+5915||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/SecurityRpcService.java
+5e79ae15e5c566859943456ce31b4d0ed798557b||be801066f3acb1d892592994c569f91a
+#R065
+PLACEHOLDER
+5916||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/proposal/ui/client/service/ProposalRpcServiceAsync.java
+5915||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/DirtyStateChangeHandler.java
+a421a3fbfb16e37a2963fe48be91613c24b55729||6182dc01cd754940fd84d848fe78e9fa
+#R058
+PLACEHOLDER
+5916||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/proposal/ui/server/gwt/ProposalRpcGwtServlet.java
+5915||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/configuration/mvc/ProposalInfoModelDTO.java
+cda1187b85c02164259f44dc22ff0c7e2fbe7e75||ee90a57296577b9687aee475c2c98cb2

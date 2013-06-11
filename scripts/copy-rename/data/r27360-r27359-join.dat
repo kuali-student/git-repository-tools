@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+27360||branches/ks-2.0-cm/ks-lum/ks-lum-impl2/src/main/java/org/kuali/student/lum/lo/service/impl/LearningObjectiveServiceImpl.java
+27359||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/service/impl/LearningObjectiveServiceImpl.java
+8cfb38147be627441c45b27d71427b7ebff1e490||719903574411e639b8f8b927a0b09d1f
+#R100
+PLACEHOLDER
+27360||branches/ks-2.0-cm/ks-lum/ks-lum-impl2/src/main/java/org/kuali/student/lum/lo/service/impl/LearningObjectiveServiceAssembler.java
+27359||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/service/impl/LearningObjectiveServiceAssembler.java
+781fe8921f53ceef2dce8d96309afd8cafec44eb||25e8b08debeb54e7613cae6a2690847b

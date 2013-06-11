@@ -1,0 +1,10 @@
+#R055
+PLACEHOLDER
+6886||ks-core/branches/ks-core-dev-orch/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/CollectionModelChangeEvent.java
+6885||ks-core/tags/ks-core-1.0.0-m1/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/ModelChangeEvent.java
+5d65066fae1d51352e568b07f672f9d7000d0c0b||0c40455164af26e14bbc6d4e4d7ccb07
+#R053
+PLACEHOLDER
+6886||ks-core/branches/ks-core-dev-orch/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/DataModelChangeEvent.java
+6885||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/ModelChangeHandler.java
+6d6c76c981c01342b418b962056be581f351945e||faa0c1319340390da2fa326996b03e5b

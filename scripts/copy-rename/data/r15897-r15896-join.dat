@@ -1,0 +1,10 @@
+#R071
+PLACEHOLDER
+15897||trunk/ks-core/ks-core-api/src/main/java/org/kuali/student/core/document/dto/RefDocRelationTypeInfo.java
+15896||tags/old-tags/ks-old-directory-structure/ks-lum/branches/ks-lum-dev-orch/ks-lum-api/src/main/java/org/kuali/student/lum/lo/dto/LoTypeInfo.java
+0f228ae431909dd666fff90d5a2e30d2b1af1a28||e052725eee41da5e9b371c7b247efd5e
+#R062
+PLACEHOLDER
+15897||trunk/ks-core/ks-core-api/src/main/java/org/kuali/student/core/document/dto/RefDocRelationInfo.java
+15896||tags/old-tags/ks-old-directory-structure/ks-lum/branches/ks-lum-1.0.0-m4/ks-lum-api/src/main/java/org/kuali/student/lum/lu/dto/CluPublicationInfo.java
+cc3f8e35fec4002c6ee3247ec465e40390f731e9||3a924c52d36aede5f3bec19063b513fe

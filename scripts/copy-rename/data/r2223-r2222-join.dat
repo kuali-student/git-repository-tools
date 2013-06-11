@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+2223||brms/brms-impl/branches/brms-impl-dev/integration-tests/src/test/resources/META-INF/rulemanagement-persistence.xml
+2222||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/resources/META-INF/rulemanagement-persistence.xml
+93e2c2c1e2bd98058ced611a54b09d2fbeab28b1||8b942322c0101d20ba5a68029ea9dae6
+#R088
+PLACEHOLDER
+2223||brms/brms-impl/branches/brms-impl-dev/integration-tests/src/test/resources/test-beans.xml
+2222||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/test/resources/test-beans.xml
+9c39d6a142ebce31e4260bbdd0bf97591357d52b||26f1a982d2a554e98f6b288bf703eee5

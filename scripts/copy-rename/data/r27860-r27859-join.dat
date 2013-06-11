@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+27860||branches/ks-2.0-cm/ks-core-merged2/ks-core-api/src/main/resources/ks-rice-dictionary-validation-service-configuration.xml
+27859||branches/ks-1.3-services/ks-enroll/ks-enroll-api/src/main/resources/ks-rice-dictionary-validation-service-configuration.xml
+6b02077209f0cc50061f699fb10d13c5b445fc66||d7c6ee21d96e4fc8f1a6a53b10fa2751
+#R100
+PLACEHOLDER
+27860||branches/ks-2.0-cm/ks-core-merged2/ks-core-api/src/main/resources/ks-rice-data-dictionary-service-configuration.xml
+27859||branches/ks-1.3-services/ks-enroll/ks-enroll-api/src/main/resources/ks-rice-data-dictionary-service-configuration.xml
+fceaf4d373beea4184461cddd8950e0fb27ce0c4||a93d40ffc22ea931e599690b2438b4fc
+#R100
+PLACEHOLDER
+27860||branches/ks-2.0-cm/ks-core-merged2/ks-core-api/src/main/resources/ks-data-dictionary-validator-configuration.xml
+27859||branches/ks-1.3-services/ks-enroll/ks-enroll-api/src/main/resources/ks-data-dictionary-validator-configuration.xml
+fbc87bf5ac7304e3df097fa859151ed071cb361c||92fa82c9f6d1aad11fc63edfcfc379e6

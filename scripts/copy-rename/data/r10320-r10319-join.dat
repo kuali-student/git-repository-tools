@@ -1,0 +1,10 @@
+#R083
+PLACEHOLDER
+10320||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/command/run/OrchestrationObjectsWriterToLumUIRunTest.java
+10319||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/command/run/ServicesWriterToComponentSandboxRunTest.java
+a372840aa9ed774796a6e339b9d0831fab5f7871||3ae01bc2c0bdf53fff34e04a67c648c8
+#R071
+PLACEHOLDER
+10320||tools/maven-dictionary-generator/trunk/src/test/resources/Orrch-Dict Hugh 030310.xls
+10319||tools/maven-dictionary-generator/trunk/src/test/resources/orchestration-dictionary.xls
+7d203d79de602906589fdca49af4e3e9e1c1ab96||2050ba812de400b67e72d42d49a44fab

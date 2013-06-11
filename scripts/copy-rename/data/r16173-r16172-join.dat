@@ -1,0 +1,10 @@
+#R085
+PLACEHOLDER
+16173||trunk/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/statement/config/context/GpaContextImpl.java
+16172||tags/builds/ks-1.1-20100905-build-116/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/statement/config/context/GPAContextImpl.java
+7501ed0ec6e957a4314e49ea2a112097e02e2dbf||a050219d239bf1533d67ea8535585e6f
+#R067
+PLACEHOLDER
+16173||trunk/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/statement/config/context/GpaContextImplTest.java
+16172||tags/builds/ks-1.1-20100905-build-116/ks-lum/ks-lum-impl/src/test/java/org/kuali/student/lum/statement/config/context/PersonContextImplTest.java
+51222750f7fd4f7a415cce8f990dc49e7948c514||39ad71f968c99a43cc39862126fb8e35

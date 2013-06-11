@@ -1,0 +1,620 @@
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Post Rice2/0-M8 maint docs/2011-11-01-Academic-Calendar-Main-Doc.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/07-Post Rice2/0-M8 maint docs/2011-11-01-Academic-Calendar-Main-Doc.sql
+530b3bcfd35a940a7886db28f5e78570b4296fea||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Post Rice2/0-M8 maint docs/2011-10-08-Course-Offering-Maint-Doc.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/07-Post Rice2/0-M8 maint docs/2011-10-08-Course-Offering-Maint-Doc.sql
+6cd1a8e0e594193333d8c136588d94e0f4361710||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/06-Rice2.0-M7 to Rice2.0-M8/2011-08-29.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/06-Rice2.0-M7 to Rice2.0-M8/2011-08-29.sql
+04ac9760f92ceaf92a975911aaa9ae02c39782c0||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/06-Rice2.0-M7 to Rice2.0-M8/2011-08-17.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/06-Rice2.0-M7 to Rice2.0-M8/2011-08-17.sql
+18bae30bbac376154aceac166b9dc40cd10469bb||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/06-Rice2.0-M7 to Rice2.0-M8/2011-08-11.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/06-Rice2.0-M7 to Rice2.0-M8/2011-08-11.sql
+f15cf5c666020a7f4408396b35782e46c6d9b4eb||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-29.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-29.sql
+351b41a2fae95aa80a09c780e7dfb0c6219bea72||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-29-m7.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-29-m7.sql
+5ef95a4dfe0388da89f66f13ab9d4d4e01fb71f9||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-28-m7.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-28-m7.sql
+93c156a42bb41bde6b4d95b0d2e3fa92384b789e||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-25-m7.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-25-m7.sql
+7944a9abf33aeece29ce6937aed5b52e31864ce3||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-24-m7.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-24-m7.sql
+023962759b809d12badfa2fa775107ca45a98ee9||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-22.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-22.sql
+22b5d7f2b36f084a2ec62800c2db2e724c226cb8||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-13.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-13.sql
+607e1fd1e079f302c393a4c0e933cf3dfc481d8c||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-11-m6.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-11-m6.sql
+3cefb25a36f960984d326c2d44e7adf57965c24a||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-07-m6.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-07-07-m6.sql
+d4409054834d8defd93c1797db59ecd0bf434165||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-29.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-29.sql
+c2eabafc1a29cb3e81422ea6a47cc53fef54b181||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-28.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-28.sql
+0a18f6b12c187ad6b4dfff599ffba7d2f9f4ffe2||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-23.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-23.sql
+7c73f59141c8896082a75f8dd8650daab146fa19||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-21.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-21.sql
+751cac59a7c504b49eafccb81ba61f9eed1e7b31||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-17-m6.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-17-m6.sql
+e12a281677d1447ceee1efdfba801361290aa54e||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-13-m6.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/05-Rice2.0-M5 to Rice2.0-M7/2011-06-13-m6.sql
+5c4b4a9e69644b84c92a4e23f1f7516c00aab93c||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-06-15.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-06-15.sql
+3becc521edb0268b1d8f507553ea3fc5c3a20685||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-06-08.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-06-08.sql
+acd29d3ef7ae54e4234f485db8e15d3878bac4df||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-06-06.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-06-06.sql
+3fa82653f57f62c06cebe10d564b6e7c0d40dfdb||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-05-13.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-05-13.sql
+fe2470a8efcf265ce016b9b63093707dbb1ca0f6||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-05-09.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-05-09.sql
+34377e6e6e9f85657dc9ee41d262b21b682f40ed||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-04-28.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-04-28.sql
+59440dec89e672d920e42557abbc39703e0dedb8||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-03-23.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2011-03-23.sql
+d36bf629b83976becb682546055c81d6f1fc8da2||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2010-05-12.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2010-05-12.sql
+36914c873f9744f7cd4c04352dab0704796a6ce8||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2010-05-03.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2010-05-03.sql
+15c9a7a11cb92aa6b470195afe0fd97111903481||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2010-04-15.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/04-Rice1.0.3 to Rice2.0 M5/2010-04-15.sql
+cabb58f45f2ff8be8555e811a531607ba12f7762||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/03-R1.2.0 to R1.3.0/2011-05-05-org-org-relationship-cleanup.sql
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/src/main/resources/upgrades/03-R1.2.0 to R1.3.0/2011-05-05-org-org-relationship-cleanup.sql
+1efe2608bca1233afe0068dc070c27322fbbe3b4||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/.settings/org.maven.ide.eclipse.prefs
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/.settings/org.maven.ide.eclipse.prefs
+1cc0d97d7639f9591bb165257972d9837b242398||b3d515b707a2e02a167e34f130e8e0ee
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/.settings/org.eclipse.jdt.core.prefs
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/.settings/org.eclipse.jdt.core.prefs
+490048c29d59c50c607da95ae206a50c0d5428e4||70c00aeb5e75cf1f2060629c78d77a32
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/.project
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/.project
+9c7fcd0fe985ca2be8b4183165e67c98d1f278fe||e52b20ecce1f139023b65f5f13170cdf
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/.classpath
+26120||branches/ks-1.3-services/ks-core/ks-core-sql/.classpath
+e65ccab093adf336cce03694dab09c68eb7f0546||71f5287bb33e395f2879c2329fadf2b7
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-11-03.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-11-03.sql
+a9dcba1b382d116a4c039a33ca000c702be73fdf||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-27.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-27.sql
+6c4aa6019918d01c2a2d534b4f68a009e64ac068||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-26.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-26.sql
+2360920257a5f4eaea90b4f66da8a74d986bb3d1||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-25.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-25.sql
+83003b8da4f9a912ccd584378ccbed79061dc2d5||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-24.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-24.sql
+409bce962ea1c39028cc5f4ed910989761f25238||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-23.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-23.sql
+4195bb1934afd3b79f074451d8981e04763ae575||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-21.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/08-Rice2.0-M9 to Rice2.0-b1/2011-10-21.sql
+e24f356af5fcd1e8e09382d689bdd16c2558e084||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-10-03.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-10-03.sql
+3f9f6c6715f82e8eee9ec0852a0e68fcff447090||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-27.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-27.sql
+b780500902ff6ad350f8ac8d74199e1ae5237874||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-26.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-26.sql
+ca3d4734ff4cdb0470bbfa6cc03b7731ae391ed4||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-26b.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-26b.sql
+26e68ecaa1fa22cd5c6c4b56fec974e1378fb902||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-18.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-18.sql
+2a2fc97fcc09e50ef1277d8201b6c3f7cb50dc1a||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-16.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-16.sql
+0aa33392504528a2ce401b3eabe90238b34c56bf||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-15.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-15.sql
+976ed1033fa1e314fb9a1c8200db6c3de6407dca||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-07.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-07.sql
+16cc846d2b0f31ad095cd17c0a1d81b2e3a9f648||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-01.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/upgrades/07-Rice2.0-M8 to Rice2.0-M9/2011-09-01.sql
+a73e14645e407addf88e4b73244a1e936de6d56f||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_ENUM_VAL_T.sql
+26120||branches/ks-1.3/ks-core/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_ENUM_VAL_T.sql
+23017396da4dd3685d8ba18a84b4ed2f58afa24e||ef83892c8eacdbabe59a3d9bfb63619f
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/pom.xml
+26120||branches/ks-1.3/ks-core/ks-core-sql/pom.xml
+3f1cf54f0eff3e0d4c01a7cb9462443556b95ee5||058b7c9928b708a8bf42ea64de4a0c0c
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/02-R1.1.0 to R1.2.0/2011-03-31-core-KSMG-export-bootstrap.sql
+26120||branches/ks-1.2-perf/ks-core/ks-core-sql/src/main/resources/upgrades/02-R1.1.0 to R1.2.0/2011-03-31-core-KSMG-export-bootstrap.sql
+9848f87e863cbba8afbac059f6f57f2f5a456cda||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/02-R1.1.0 to R1.2.0/2011-02-23-core-KSEM-bootstrap.sql
+26120||branches/ks-1.2-perf/ks-core/ks-core-sql/src/main/resources/upgrades/02-R1.1.0 to R1.2.0/2011-02-23-core-KSEM-bootstrap.sql
+53840aacefaddf95b9c4c53bab72f390244a5ce9||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/messages/data/KSMG_MESSAGE.sql
+26120||branches/ks-1.2-perf/ks-core/ks-core-sql/src/main/resources/initial-db/messages/data/KSMG_MESSAGE.sql
+b868c5c652c520644f24a675f6c0cf9355bb73b9||cfa6ec139f5b4957b3beb2f7e4488652
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/R1.1.0-core-db-version-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/R1.1.0-core-db-version-bootstrap.sql
+5f5e275baed9a96a3982665b09c3eae5e424df97||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2011-02-02-1-core-msg-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2011-02-02-1-core-msg-bootstrap.sql
+9b095b9a4678c8eab868f69cde48ce71f7a7e79f||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-15-1-core-KSOR-reference.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-15-1-core-KSOR-reference.sql
+136ff3e2e2c1c1cdac8869d8386a880841abda11||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-15-1-core-KSEM-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-15-1-core-KSEM-bootstrap.sql
+dd3b477339d0e8191a792232aa636d36bd68061d||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-15-1-core-KSAP-reference.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-15-1-core-KSAP-reference.sql
+f0ccd68ba1214e03cbec5cb50d904183ea051a6a||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-09-1-core-enum-subject-areas-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-09-1-core-enum-subject-areas-bootstrap.sql
+f6e737e61712d31d627d663308a289c74df15ad3||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-08-1-core-enum-subject-areas-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-08-1-core-enum-subject-areas-bootstrap.sql
+3f925ddb41ce9ee63e64ef135ff5de0e9e03191c||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-27-1-core-enum-subject-areas-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-27-1-core-enum-subject-areas-bootstrap.sql
+a8be519e562d63996780a0ea6565c21b0d5d1e2f||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-26-1-core-enum-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-26-1-core-enum-bootstrap.sql
+27af8e5d84c3ba225822d5a245b748188ccb1964||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-25-1-core-msg-bootstrap.sql
+26120||branches/inactive/ks-perf/ks-core/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-25-1-core-msg-bootstrap.sql
+afe1f70278799f2ab65dd2ab316dd565c6ba1dee||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-23-core-richText-bootstrap.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-23-core-richText-bootstrap.sql
+b02df87013bb53a42b5d99bb859451951163be77||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-18-core-msg-bootstrap.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-18-core-msg-bootstrap.sql
+00647a93fffc2f1ac2da18b03ed3cf55f532ac4d||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-17-org-testing-services-reference.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-17-org-testing-services-reference.sql
+976057e4d3572a0e8978d874f62a05fa313d2985||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-17-org-testing-services-bootstrap.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-17-org-testing-services-bootstrap.sql
+83a0c5d0d0c967ae5b699d26b17de3f38b3c4a70||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-17-org-institutions-reference.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-17-org-institutions-reference.sql
+b18ced1930b1bea28dfba85d13ad7a4157a4216f||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-16-atp-update-start-end-dates-reference.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-16-atp-update-start-end-dates-reference.sql
+385cda795b47aee935005a472ac391aceaa7e54c||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-21-1-core-stmt-bootstrap.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-10-21-1-core-stmt-bootstrap.sql
+92f2dde2001a62431f6e48503d0c1c73b3ab6e12||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-21-1-core-msg-bootstrap.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-10-21-1-core-msg-bootstrap.sql
+cb197713d615e4a79a807a174ca50a1f53aed2cb||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/statement/ks-core-statement-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/statement/ks-core-statement-create-schema.sql
+b916989bdfe2d342df6f9958beec8e602501842b||bb3b5ce57eeb52ad1a5ab758bd2670c1
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/statement/ks-core-statement-constraints.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/statement/ks-core-statement-constraints.sql
+1f58968365d57fcf34070621119d922b09fbfcad||af49c8a22488571e54a4f0fb3fc4735a
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/proposal/ks-core-proposal-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/proposal/ks-core-proposal-create-schema.sql
+700aac5d48f6ea85c05b26ddd5bb88568876b37a||58e8d2cef9ad062f65f3bd9af6cef8e0
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/proposal/ks-core-proposal-constraints.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/proposal/ks-core-proposal-constraints.sql
+28c4715886f75b35846bb0076a736fb824116386||a702c0cdeb88ce78c5239507ce1eb16e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/proposal/data/KSPR_PROPOSAL_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/proposal/data/KSPR_PROPOSAL_TYPE.sql
+b1642e7845a6647d3fb2d123458c8784c49cfab3||17e7fb7e902b0c7c65f33cf052e5f5c9
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/proposal/data/KSPR_PROPOSAL_REFTYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/proposal/data/KSPR_PROPOSAL_REFTYPE.sql
+61016ae9ac65c688f115f49e2724cf5e956e7c25||c409b6cdcc6df3ed6245b020cbb3b4cb
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG.sql
+b8bf3d76bb8eded269873ee4766619fed4734ebb||0d15d54186874ed6c37281d8bf36e5c8
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_POS_RESTR.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_POS_RESTR.sql
+f99f938f5dc056594c2811701c4afe2361a2c3ec||76ea7f7928adeddfc696a0624d9a600b
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_PERS_RELTN.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_PERS_RELTN.sql
+a1e52780d77db2447cc0502b98e1d26e898937d9||d2892d33706fb8ddb4cd9642a4607f03
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_ORG_RELTN.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_ORG_RELTN.sql
+843615753e2177390d1fdda0c0e344bc27122ef7||1dbf71a5170aaf8b2f51970467dc541d
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_HIRCHY.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/reference-data/KSOR_ORG_HIRCHY.sql
+4e454860ce210aef4d8813d42f06323b85d56e7d||932ecd841693d7e375dbae7333170d37
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/ks-core-organization-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/ks-core-organization-create-schema.sql
+088fa123ece2542e69901cae7923204203b261d1||31ca5c80117fb0312b97e7f69a4dc10b
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/ks-core-organization-constraints.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/ks-core-organization-constraints.sql
+7c858ff8a740702d11556c34a0777f0ba5e27eae||24949b79877a7afa865d76184b1fef7f
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_TYPE.sql
+141fe71342c74189c191305574f13d893fd1eeb9||1e5bbfd584f9d1209b0144117ba17dc8
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_TYPE_JN_ORG_PERRL_TYP.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_TYPE_JN_ORG_PERRL_TYP.sql
+e8450758014a28e7bb8069c1a383b6db9a8cb7b7||839486c19373dfac79adf5d2c17bc164
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_PERS_RELTN_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_PERS_RELTN_TYPE.sql
+bb8d2b6017d407af50c3599433e72e31da441b20||31e2c83bba5a3bca33e2451cff77d15e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_ORG_RELTN_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_ORG_RELTN_TYPE.sql
+729e968f15c5ecb7bafcf05fbf3a9626cca01c71||e71160e73bd74e28d43341f3ee90e666
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_JN_ORG_PERS_REL_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_JN_ORG_PERS_REL_TYPE.sql
+1f8c85e2f28ac8974c4c1cd924ec1282d58599bc||c06cbfbfa174869106821f8cd1d8a3f6
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_HIRCHY_JN_ORG_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/organization/data/KSOR_ORG_HIRCHY_JN_ORG_TYPE.sql
+97a04859a877b1a9a28b64ccb6047fec736aee1c||362c170d3e5096dc980bf1dfb228bbd7
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/messages/ks-core-messages-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/messages/ks-core-messages-create-schema.sql
+70637d31a7fab640be414111bbf7fa0e3726fdc5||685b37d726b366d33b259112acc79766
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/ks-core-enumerationmanagement-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/ks-core-enumerationmanagement-create-schema.sql
+97c182344c2dd0731d054dc7b829dc3b44ffd278||f80244968d0d4723a598d2d11c6bc77e
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/ks-core-enumerationmanagement-constraints.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/ks-core-enumerationmanagement-constraints.sql
+29ad95f8e97fb1f3d53af148afe8514d6f65aa71||fd1659191ec7ec128fabcb80e773a99b
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_ENUM_T.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_ENUM_T.sql
+b3ea03ee9d4b7ac9548d305828804c555649dbd4||e9667ec5474824610849c8729f37c4c8
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_CTX_T.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_CTX_T.sql
+e9517352bc65257bd71a4ed9ad3e51bd972954d4||250ccaa4ec42ef6c832e60cf04de3c58
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_CTX_JN_ENUM_VAL_T.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/enumerationmanagement/data/KSEM_CTX_JN_ENUM_VAL_T.sql
+442ff01bdba02d61e0b22eab1b2e99f5d7461380||0106889a6a2f473974672849398d0adf
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/ks-core-document-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/ks-core-document-create-schema.sql
+c604d537bde6540f02f3262291b4a1f1fa0b97bd||f64fa2ae3efea276c1f6182c867addc3
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/ks-core-document-constraints.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/ks-core-document-constraints.sql
+fc2f80dc9015feaf5db676ec84f345319fcc190f||4b36ce0c8b5094610644d917ee081ba2
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_RICH_TEXT_T.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_RICH_TEXT_T.sql
+8f9f033591c325cc3e8b21da5c0f27d07db1a299||f992c4152ddd76ca0037b3322cf97298
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_REL_TYP_JN_SUB_TYP.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_REL_TYP_JN_SUB_TYP.sql
+0f37fe8c9b42a157e63c52bc817dd92683f2d66f||5c1fd3c0768cbee7339c765ccec9a207
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_OBJ_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_OBJ_TYPE.sql
+3fb298dd5f9b9af19d8e1522eff4472f2fd7bed1||14bc65cbd58b20160fcc0e11fed81d8a
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_OBJ_SUB_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_OBJ_SUB_TYPE.sql
+a173a9b34220bb10f85aba0312fa34b64e037f9c||bb733223e489118378a07780b3a3f819
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_DOC_RELTN_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_REF_DOC_RELTN_TYPE.sql
+0c5282f3a16e529fbaf3bf17a5a341b2161bfdba||89eb30e92ba1a05aac13585b4d0a63b5
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_DOCUMENT_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_DOCUMENT_TYPE.sql
+744f7a8dd6d91c7de60f216839742d528a1b81e1||b1eaf87ca5cd8b71145c0f5a95f6e6d5
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_DOCUMENT_CATEGORY.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/document/data/KSDO_DOCUMENT_CATEGORY.sql
+9d05663c571ed6a5654ad9734c86eb31f1b30a96||c23d341512541bbc805a13ae947a4b99
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/comment/ks-core-comment-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/comment/ks-core-comment-create-schema.sql
+ead433f2d281be020d7f5dc68d380db055b6e2ed||f442d9ed5d44c8449362c7a8a57aadbb
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/comment/ks-core-comment-constraints.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/comment/ks-core-comment-constraints.sql
+d1a7aa2d9a93f7b0634e1dbf95d1a768af3101ad||8fa886a14d2703d3aab7a5ce690303b6
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/comment/data/KSCO_TAG_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/comment/data/KSCO_TAG_TYPE.sql
+488b647a5fac2a51a72595edba95d028be38d211||3bfa73e935f1b5968883f6d4da994da7
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/comment/data/KSCO_REFERENCE_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/comment/data/KSCO_REFERENCE_TYPE.sql
+00d2b6c6ad660977fe285c00e9737da8f8943b2f||0925343084dfdb869a37168ce06b9873
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/comment/data/KSCO_COMMENT_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/comment/data/KSCO_COMMENT_TYPE.sql
+9226c773fca448edf24851c1d0b8251106973ad8||319603046e5de82dbb93d9861252c887
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_RICH_TEXT_T.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_RICH_TEXT_T.sql
+fae890f0d37ae5ada652f61639fc27c8bda973b1||7a62eebb6c381dc2169696652d895559
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_MLSTN.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_MLSTN.sql
+e197ee611d4ad843c82c592b789770e8e325a656||34bfa5d74f4e2c274a11a8227f3e6d66
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_DT_RANGE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_DT_RANGE.sql
+3ffe3706d13b823e77a15c2faa9b9ac003e938b6||31aa39c32b839d143083603b2d2118d2
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_ATP.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/reference-data/KSAP_ATP.sql
+99966d503f1cd9af766d1f1aea7736513e37961b||db7f15fe66a3ee0c178decc5ba428338
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/ks-core-atp-create-schema.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/ks-core-atp-create-schema.sql
+b689c8b1f19e9a08494ded4eca24aa96f8f592d2||0ab39c97c23898b7a49b0329d4b0c7dd
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/ks-core-atp-constraints.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/ks-core-atp-constraints.sql
+3e880a70af1d7176b3834cbd6a177e75d465471e||f4348daa2ca9652d52689f5f241b9671
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_MLSTN_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_MLSTN_TYPE.sql
+fd6ab2306e064fa31b3956fa3478578d4de4b7f0||19a0ef9c55d58f9510f858cee137b49f
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_DT_RANGE_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_DT_RANGE_TYPE.sql
+d588851a6140ef623018d1c6e941d0fb2ada82c3||351b826f5755f43d7f1266de664edc2b
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_ATP_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_ATP_TYPE.sql
+2e0227efb99b0d73d54feab9e7648d846a82b450||64b8fd421b6345421257b28fb0c20335
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_ATP_SEASONAL_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_ATP_SEASONAL_TYPE.sql
+b5068b9d64defb64e2079585d1082fee10664826||72a3c8f672c91c9ac39a1ecf1eff28ec
+#R100
+PLACEHOLDER
+26121||branches/ks-2.0-cm/ks-core-temp/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_ATP_DUR_TYPE.sql
+26120||branches/inactive/ks-1.1-perf/ks-core/ks-core-sql/src/main/resources/initial-db/atp/data/KSAP_ATP_DUR_TYPE.sql
+3261ebba55c3d71895ef4e15c7ec0d84eaa56b99||d7b041b5aa279c6e272df324f6f260d7

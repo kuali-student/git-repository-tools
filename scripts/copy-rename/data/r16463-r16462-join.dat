@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+16463||trunk/ks-cfg-dbs/ks-lum-db/src/main/impex/KSLR_RICH_TEXT_T.xml
+16462||tags/builds/ks-1.1-20100925-build-137/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSLR_RICH_TEXT_T.xml
+2dc2d895321cd64f22dcaece5f3df6ed6005bf8e||5ab33e5c8e7a437138a9937105402f54
+#R085
+PLACEHOLDER
+16463||trunk/ks-cfg-dbs/ks-lum-db/src/main/impex/KSLR_RESCOMP.xml
+16462||tags/builds/ks-1.1-20100925-build-137/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSLR_RESCOMP.xml
+5c2e86443ac8512b1b52d498681a24ef52b69c27||45f8bd60874aa0b0802bd0895ffcea25
+#R056
+PLACEHOLDER
+16463||trunk/ks-cfg-dbs/ks-lum-db/src/main/impex/KSLR_RESCOMP_TYPE.xml
+16462||tags/builds/ks-1.1-20100923-build-135/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSLR_RESCOMP_TYPE.xml
+3913bc0ba3cf83a8fa6994cf6d6e2b7ce34e97dd||7994c4bae26c92ba7b702328c962ae5f

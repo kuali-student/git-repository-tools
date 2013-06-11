@@ -1,0 +1,10 @@
+#R069
+PLACEHOLDER
+507||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/FetchPersonDisplay.java
+506||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/DeletePerson.java
+a24eb3000d45a07ece55c4c51c39535f38eb6e0c||5867445f7e81913ec770358243f1b753
+#R063
+PLACEHOLDER
+507||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/FetchPersonDisplayResponse.java
+506||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/FetchPersonTypeResponse.java
+a1256e4e1f05fcde60a05cce1bc1c3da63f8659d||81f555acf6f91e29a585f79cc4369db8

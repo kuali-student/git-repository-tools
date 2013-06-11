@@ -1,0 +1,10 @@
+#R078
+PLACEHOLDER
+20977||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/main/java/org/kuali/student/r2/common/entity/BaseType.java
+20976||branches/ks-1.1/ks-common/ks-common-impl/src/main/java/org/kuali/student/core/entity/BaseType.java
+60d4734a760d2527b2a9d4a0100e25ea87e1493c||bd4bc67d31cdf27e4b84d48cc9ddcb84
+#R078
+PLACEHOLDER
+20977||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/main/java/org/kuali/student/r2/common/entity/Type.java
+20976||branches/inactive/student-1.1.0-M9/ks-common/ks-common-impl/src/main/java/org/kuali/student/core/entity/BaseType.java
+60d4734a760d2527b2a9d4a0100e25ea87e1493c||bd4bc67d31cdf27e4b84d48cc9ddcb84

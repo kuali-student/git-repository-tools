@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+20398||deploymentlab/trunk/impex/db-jdbc/src/test/resources/log4j.xml
+20397||deploymentlab/trunk/impex/db-impex/src/test/resources/log4j.xml
+d5fde2d6bc1784633e4ff2c5873812c776c93238||eda2c57b52dbf21fe053865f475fb438

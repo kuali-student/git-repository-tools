@@ -1,0 +1,170 @@
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-27-lum-retire-by-proposal-msg-bootstrap.sql
+29066||tags/builds/1.2/ks-1.2-20120328-build-461/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-27-lum-retire-by-proposal-msg-bootstrap.sql
+23e5837455404d2f4df4cef3b290c9d85af48cc9||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-08-KS-lum-KSEM-retireCourse-bootstrap.sql
+29066||tags/builds/1.2/ks-1.2-20120316-build-449/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-08-KS-lum-KSEM-retireCourse-bootstrap.sql
+4266e8569f18f6fb4dfd91ded60e30e94301d05b||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/server/gwt/CreditCourseRetireProposalRpcGwtServlet.java
+29066||tags/builds/1.2/ks-1.2-20120315-build-448/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/server/gwt/CreditCourseRetireProposalRpcGwtServlet.java
+f568a6bd5239fcb9e203abae7eb49bccc9486976||bdff50515754c8f1e7f94d9533578c9e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/CreditCourseRetireProposalRpcService.java
+29066||tags/builds/1.2/ks-1.2-20120315-build-448/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/CreditCourseRetireProposalRpcService.java
+f82e299fdf57d47f03db7a7ed04af54d35cfd005||05d1d473bf0f84242c468e3dce03c74a
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/CreditCourseRetireProposalRpcServiceAsync.java
+29066||tags/builds/1.2/ks-1.2-20120315-build-448/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/CreditCourseRetireProposalRpcServiceAsync.java
+abec398bb36af4a558e8434d93a8efb7a96e59b7||c095a15c7b2db7b218628e83c0fdd823
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-09-KS-KRIM-retireClu-dialog-permission.sql
+29066||tags/builds/1.2/ks-1.2-20120315-build-448/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-09-KS-KRIM-retireClu-dialog-permission
+01ad3d25758b86d7adb8f56a91028172ae4d3f19||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-01-15-lum-msg-bootstrap.sql
+29066||tags/builds/1.2/ks-1.2-20120315-build-448/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-01-15-lum-msg-bootstrap.sql
+9610c80988291d25ebe9599d097a8499e1dada70||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-web/ks-standalone/src/main/webapp/admin/configView.jsp
+29066||tags/builds/1.2/ks-1.2-20120314-build-447/ks-web/ks-standalone/src/main/webapp/admin/configView.jsp
+457c8cdf68e1a6a9feba0855f32c4473f1353d80||622ff8ecf0ad1c8c1b5c8295bd48dc94
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-web/ks-embedded/src/main/webapp/admin/configView.jsp
+29066||tags/builds/1.2/ks-1.2-20120314-build-447/ks-web/ks-embedded/src/main/webapp/admin/configView.jsp
+457c8cdf68e1a6a9feba0855f32c4473f1353d80||622ff8ecf0ad1c8c1b5c8295bd48dc94
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-09-KS-KRIM-retireClu-dialog-permission
+29066||tags/builds/1.2/ks-1.2-20120314-build-447/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-03-09-KS-KRIM-retireClu-dialog-permission
+01ad3d25758b86d7adb8f56a91028172ae4d3f19||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-web/ks-standalone/src/main/webapp/css/screen.css
+29066||tags/builds/1.2/ks-1.2-20120313-build-446/ks-web/ks-standalone/src/main/webapp/css/screen.css
+8be517b9add8cefa3f14d50b04a6678074b4aab5||9eac1ebd39b42fff61aecdb4c3de7a41
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-web/ks-embedded/src/main/webapp/css/screen.css
+29066||tags/builds/1.2/ks-1.2-20120313-build-446/ks-web/ks-embedded/src/main/webapp/css/screen.css
+8be517b9add8cefa3f14d50b04a6678074b4aab5||9eac1ebd39b42fff61aecdb4c3de7a41
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-02-28_KRIM-Fix-Open-Document-Permission-Type.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-02-28_KRIM-Fix-Open-Document-Permission-Type.sql
+04154f1b4716a79b506261465c27350fb91ec54c||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-02-14_KRIM-Remove-Collab-Permission.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-02-14_KRIM-Remove-Collab-Permission.sql
+4fb2ed46fc9b7b6392a9f1c5ef505edb70ae8e6e||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-25_KRIM-Save-Document-Permission.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-25_KRIM-Save-Document-Permission.sql
+fbc8eaa4a5a947aee8156b2017f08f904dd74782||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-25_KRIM-Fix-Use-Screen-Permission-Type.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-25_KRIM-Fix-Use-Screen-Permission-Type.sql
+ffd246de5fc18561e93843cafc38fd6685aafb1f||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-24_KRIM-Collab-Action-Permissions.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-24_KRIM-Collab-Action-Permissions.sql
+1aacb88f683ec87f98e0362bc645a06aa16aeb3a||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-23_KRIM_Use-Course-Modify-Screen-Permission.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-23_KRIM_Use-Course-Modify-Screen-Permission.sql
+f2b2bf14b10e09a8efce64a16d1f0c1746837003||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-23_KRIM_Fix-Open-Document-Permission-Template.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-23_KRIM_Fix-Open-Document-Permission-Template.sql
+94b40ae1dbaba05a18b7c3c9b4f9e2306d5d1ad0||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-20_KRIM_Fix-Adhoc-Permission-Type.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-20_KRIM_Fix-Adhoc-Permission-Type.sql
+96290213ccf187353174a7769b190920716b3ac9||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-19_KRIM_Fix_Withdraw_Permission.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-19_KRIM_Fix_Withdraw_Permission.sql
+f705afc0e37546684b5fc21ce8492e49075498db||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-17-KRIM-Open-Document-Final-Processed-Withdraw-Permissions.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-17-KRIM-Open-Document-Final-Processed-Withdraw-Permissions.sql
+f9c27bda0c6a79d73a809f88e3b87cdb4a646c35||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-15_KRIM-Blanket-Approve-Dropdown-Permission.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-15_KRIM-Blanket-Approve-Dropdown-Permission.sql
+de5ee7c86fe6d32df9551ac293e1aa834aae1869||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-12_KRIM-Blanket-Approve-Permission.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-12_KRIM-Blanket-Approve-Permission.sql
+11f67af87ff9126595c183dba23cc00400273903||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-11_KRIM-Use-Screen-Permissions.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-11_KRIM-Use-Screen-Permissions.sql
+82962a77f71b457060297c7f577c1cbdde31f52b||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-06_KRIM-Adhoc-Types-Perms-Roles.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-06_KRIM-Adhoc-Types-Perms-Roles.sql
+4958b314483ac2eb59a0f69c563e281440bbd3c8||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-01_03_KRIM-Course-Workflow-Roles-Responsibilities.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-01_03_KRIM-Course-Workflow-Roles-Responsibilities.sql
+e2741ea6e9bccab54a70f3aedca6b3e5ad2305f9||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-01_02_KRIM-Workflow-Role-Types.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-01_02_KRIM-Workflow-Role-Types.sql
+faa5e7b66de3b272c4a8154348011a1ec9f9db51||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-01_01_KRIM-Types-Perms-Roles.sql
+29066||tags/builds/1.2/ks-1.2-20120311-build-444/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-01_01_KRIM-Types-Perms-Roles.sql
+8aa8ba24459e43767c943afebc1eca542d5a6b9d||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-01-23-KRIM-permission-fixes.sql
+29066||tags/builds/1.2/ks-1.2-20120125-build-396/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-01-23-KRIM-permission-fixes.sql
+82b0ff44f4934b19005b2ef8ad12708acb4eff89||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-01-04-KRIM-permission-fixes.sql
+29066||tags/builds/1.2/ks-1.2-20120113-build-386/ks-lum/ks-lum-sql/src/main/resources/upgrades/05-R1.2.1 to R1.2.2/2012-01-04-KRIM-permission-fixes.sql
+da7f55079000f3c4ceb06491d4929387a8d9b8dc||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-api/src/main/resources/META-INF/wsdl/ProgramService.wsdl
+29066||sandbox/ks-2.0-cm-sandbox/ks-lum/ks-lum-api/src/main/resources/META-INF/wsdl/ProgramService.wsdl
+95792fdffdd7ea7336d5f2d40aed67d15fdae271||ce59d06794f1f26e1cbfe595dbe7c8c9
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-02_KRIM-Add-Users-To-KSCM-User-Role.sql
+29066||branches/ks-2.0-cm-rice/ks-lum/ks-lum-sql/src/main/resources/upgrades/04-R1.2.0 to R1.2.1/2011-11-10-KRIM-add-users-to-kscm-user-role.sql
+86ed90acbf59e2d8852a121bd4b24ae9a0ae2bca||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29067||branches/ks-2.0-cm/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-02_KRIM-Unterminate-Admin-User.sql
+29066||branches/ks-1.2-perf/ks-lum/ks-lum-rice/src/main/config/sql/2011-08-02-KRIM-admin-affiliation-bootstrap.sql
+5ce15ca04526d12151c5a6c167c6625e44abbe99||ec14bfdaece74ea4a4faba6513e7c3eb

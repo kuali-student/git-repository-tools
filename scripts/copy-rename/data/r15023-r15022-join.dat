@@ -1,0 +1,15 @@
+#R064
+PLACEHOLDER
+15023||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/course/dto/CourseRevenueInfo.java
+15022||deploymentlab/tags/ks-1.0.0-m5/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/dto/CluFeeRecordInfo.java
+2d2c88dc8662122139b825ca38ae73b865a7216c||7436d20a67c717dc1a95865c8d6dd2cb
+#R061
+PLACEHOLDER
+15023||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/course/dto/CourseFeeInfo.java
+15022||deploymentlab/branches/ks-poc-1.1.x-br-15012/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/course/dto/FormatInfo.java
+0e50e75a2fd5c10b0505d619e4de3e642b9136b9||58b8007c0ad17bc1b2ece5b87910828b
+#R057
+PLACEHOLDER
+15023||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/course/dto/CourseExpenditureInfo.java
+15022||deploymentlab/branches/ks-1.1-db/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/program/dto/CluInstructorInfo.java
+0aa79fa22ec561d57f38ad64199be8c611c2d898||1fadbd17c5334a7a80095eda5ab68459

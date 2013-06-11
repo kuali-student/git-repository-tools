@@ -1,0 +1,5 @@
+#R073
+PLACEHOLDER
+19354||deploymentlab/trunk/impex/db-jdbc/src/main/resources/org/kuali/db/jdbc.properties
+19353||deploymentlab/trunk/impex/db-impex/src/test/resources/jdbc.properties
+38ac4680aec52358fcddc7421526415e3824625d||e53ab376e9f98226082a10b6bb76ead0

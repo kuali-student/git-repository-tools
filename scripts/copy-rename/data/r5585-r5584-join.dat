@@ -1,0 +1,10 @@
+#R066
+PLACEHOLDER
+5585||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/SaveActionHandler.java
+5584||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/event/LoadModelHandler.java
+447216d4288ad14aba336cc034fd49840af0bcd3||08af5ef6e8c21d309f9c58f4ed392419
+#R066
+PLACEHOLDER
+5585||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/configuration/mvc/ProposalInfoModelDTO.java
+5584||brms/brms-impl/branches/brms-impl-m1/rule-repository-impl/src/main/java/org/kuali/student/rules/repository/drools/rule/DroolsConstants.java
+55face3dd072311f7fb9318b180039898b0e4865||a629c93a4beaa6533bc7c227ffefa4a8

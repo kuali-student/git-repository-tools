@@ -1,0 +1,10 @@
+#R090
+PLACEHOLDER
+3148||ks-core/branches/ks-core-dev/core-api/src/main/resources/META-INF/wsdl/EnumerationManagementService.wsdl
+3147||enumeration/enumeration-api/src/main/resources/wsdl/EnumerationService.wsdl
+eafdbaaea709faef21b7d049daabf5e43ad761be||dd9c5650fdc0547be8ef972c1896a941
+#R079
+PLACEHOLDER
+3148||ks-core/branches/ks-core-dev/core-api/src/main/resources/META-INF/wsdl/EnumerationManagementService.xjb
+3147||dictionary/trunk/dic-api/src/main/resources/wsdl/DictionaryService.xjb
+b8a0b109bbf38eca3b45ccf2f014de6d5d984b55||4279ece90e8c42fb8b44f47dcee014e2

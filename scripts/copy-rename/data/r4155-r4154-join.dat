@@ -1,0 +1,10 @@
+#R070
+PLACEHOLDER
+4155||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/event/DirtyStateChangeHandler.java
+4154||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/event/SaveHandler.java
+09de64d75a2842cd75d1ac976acf6ac9da60d0bf||91cf88e4bb29688ea9c241ba0e831b0f
+#R051
+PLACEHOLDER
+4155||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/event/DirtyStateChangeEvent.java
+4154||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/forms/EditModeChangeEvent.java
+8d73c4ebe3c458e8e288d969f78ba2bb42e7d4b6||e382811ecc92dc445a5921cb92db863d

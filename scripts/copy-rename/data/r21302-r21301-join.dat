@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+21302||branches/ks-1.3/ks-common/ks-common-api/.classpath
+21301||sandbox/ks-services-api/trunk/ks-common-api/.classpath
+35d4dccd66b22cb5da4d8703608153b598a2f384||3b78e6829c062ea9a890e98cfcc77b83
+#R100
+PLACEHOLDER
+21302||branches/ks-1.3/ks-common/ks-common-util/.project
+21301||deploymentlab/branches/ks-r2-config/ks-common/ks-common-util/.project
+3231bb16a151e3a0f613b7b1d59325741db06f03||895b177133171fc61d2bb4c36dcc529e
+#R100
+PLACEHOLDER
+21302||branches/ks-1.3/ks-common/ks-common-impl/.project
+21301||deploymentlab/branches/ks-r2-config/ks-common/ks-common-impl/.project
+8b19eae78d3f368ebb3ed779bd552680e9988a56||f53cf35c84d8bd418d1b6643b39956f9

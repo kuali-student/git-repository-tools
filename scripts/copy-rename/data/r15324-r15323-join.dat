@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+15324||trunk/ks-core/ks-core-impl/src/test/resources/ks-base-dictionary-test-context.xml
+15323||deploymentlab/branches/ks-1.1-db/ks-core/ks-core-impl/src/test/resources/ks-base-dictionary-context.xml
+44e718687b2d471aae80a6ac31dcc4aebffbd479||d3d97e366898786c74157f66218b2cd7
+#R099
+PLACEHOLDER
+15324||trunk/ks-core/ks-core-impl/src/test/resources/ks-courseInfo-dictionary-test-context.xml
+15323||deploymentlab/branches/ks-poc-1.1.x-br-15012/ks-core/ks-core-impl/src/test/resources/ks-courseInfo-dictionary-context.xml
+ae2f2abee771d30940788f3fe83edaca79ad487c||ba5ee9ffbb873cc7000b814b6ba3c93a
+#R099
+PLACEHOLDER
+15324||trunk/ks-core/ks-core-impl/src/test/resources/ks-cluInfo-dictionary-test-context.xml
+15323||deploymentlab/branches/ks-1.1-db/ks-core/ks-core-impl/src/test/resources/ks-cluInfo-dictionary-context.xml
+09f0d771fa3f5d3c7238730561c3a9d0e64e1c20||6b8ed06b4b867fcdc01d547e3c4271dc

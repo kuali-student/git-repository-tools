@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+26679||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_PROCESS_TYPE.xml
+26678||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_PROCESS_TYPE.xml
+2a6a50376044214fa8d3e244865e29cb6bc37fe6||8116227aa728696c47e7ba2ee7808b7a
+#R100
+PLACEHOLDER
+26679||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_INSTR_TYPE.xml
+26678||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_INSTR_TYPE.xml
+a2be63c5cace5857b605fc17106b10c041e16fae||83ceffbb1a249b4fccccad60edf4a50f
+#R100
+PLACEHOLDER
+26679||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_CHECK_TYPE.xml
+26678||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_CHECK_TYPE.xml
+c2e24302f1406fbfa2942a3857c9258be28d0b62||782181f7cba378e951f43160921ec0b3

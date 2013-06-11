@@ -1,0 +1,10 @@
+#R081
+PLACEHOLDER
+3144||ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/enumerable/service/jaxws/GetEnumeration.java
+3143||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/dictionary/service/jaxws/GetEnumeration.java
+37e4e8c04f9afb800a6bed0621116807feb47caf||e76a519057dcf89d0dccb728a6fcbd73
+#R073
+PLACEHOLDER
+3144||ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/enumerable/service/jaxws/GetEnumerationResponse.java
+3143||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/dictionary/service/jaxws/GetEnumerationResponse.java
+24ba9f643ab441ec7e01260096c8436a3a7aec18||1dc75fd2a81bc341ac92185d79bd1b5b

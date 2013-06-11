@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+14576||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-api/src/main/resources/org/kuali/student/lum/statement/typekey/Typekey.gwt.xml
+14575||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-api/src/main/resources/org/kuali/student/lum/lu/typekey/Typekey.gwt.xml
+734b383899b4b2e57d76ed6018a2e1cad1bc2d6c||b8d6e04575cf8c86f93f5c9a74525a7f
+#R091
+PLACEHOLDER
+14576||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/statement/typekey/ReqComponentFieldTypeKeys.java
+14575||branches/ks-poc-1.1.x-br/ks-core/ks-core-api/src/main/java/org/kuali/student/core/statement/naturallanguage/util/ReqComponentFieldTypes.java
+899038d0d17a379cc1a030e76fb398581f547c71||081f8c03f261f23db98947cd8ab88758
+#R090
+PLACEHOLDER
+14576||branches/ks-poc-1.1.x-br/ks-core/ks-core-impl/src/test/java/org/kuali/student/core/statement/naturallanguage/ReqComponentFieldTypeKeys.java
+14575||tags/ks-1.1-20100603-build-29/ks-core/ks-core-api/src/main/java/org/kuali/student/core/statement/naturallanguage/util/ReqComponentFieldTypes.java
+2625e0ea5480bacd066dce8d44a71627c12d9980||c8c1ad07e12a4b7cf1f7bb04f7e23fca

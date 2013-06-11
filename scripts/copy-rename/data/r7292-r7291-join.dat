@@ -1,0 +1,15 @@
+#R091
+PLACEHOLDER
+7292||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/FindCourseHelper.java
+7291||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseHelper.java
+20b6bd126d59c87a4d3a1263fcb752eff8c4e22b||503eb2a3c5a1e3cccfd589771cb4e6b3
+#R088
+PLACEHOLDER
+7292||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/FindCourseConstants.java
+7291||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseConstants.java
+b674b8d306d23199e75ddee55bfca3715a17a3ba||16facce7c18694516708d5070fd923a9
+#R081
+PLACEHOLDER
+7292||tools/maven-component-sandbox/trunk/src/main/java/org/kuali/student/orchestration/orch/FindCourseMetadata.java
+7291||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseMetadata.java
+b4e6b3bbf1bde90c968c5692a0534700771352ce||63eb113ab765990420c5ddb2c59e73f0

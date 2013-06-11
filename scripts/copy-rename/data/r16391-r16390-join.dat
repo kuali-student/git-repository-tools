@@ -1,0 +1,15 @@
+#R080
+PLACEHOLDER
+16391||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/RejectCancelGroup.java
+16390||branches/ks-1.1-uif/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/CreateCancelGroup.java
+06927312c823bde3e9fc4516d88fa8dfce7411c8||a227e17a63f7b22067c49a8432f30751
+#R077
+PLACEHOLDER
+16391||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/AcknowledgeCancelGroup.java
+16390||branches/ks-1.0.x/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/SearchCancelGroup.java
+baa0aea1027aa6e07ab9f278222cefff035e8f98||b9602b07980a24c1e173973be260f38c
+#R076
+PLACEHOLDER
+16391||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/ConfirmApprovalCancelGroup.java
+16390||branches/ks-1.0.x/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/SendCancelGroup.java
+3d7104dabe46bad2791e41b5afe2913d9260dd78||b28eab0820ace0f78831df76047eb95f

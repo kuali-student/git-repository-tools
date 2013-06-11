@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+4417||sandbox/R1-test-deployment/branches/R1-test-deployment-dev/src/main/resources/ks-org.sql
+4416||ks-core/branches/ks-core-dev/core-impl/src/test/resources/ks-org.sql
+4bda2788882d92f45d36997b55db8a7a5e9c7499||d0593e451c86e2bdbe80feea89907fef
+#R082
+PLACEHOLDER
+4417||sandbox/R1-test-deployment/branches/R1-test-deployment-dev/src/main/resources/cxf-ks-context.xml
+4416||ks-core/branches/ks-core-dev/core-web/src/main/resources/cxf-context.xml
+1ea6e88421873bd5544e5bcb07d6a499c7f49678||53c02224057bf62144bdf8b821425474

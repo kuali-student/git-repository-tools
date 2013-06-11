@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+28189||trunk/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-02_KRIM-Add-Users-To-KSCM-User-Role.sql
+28188||branches/ks-2.0-cm-rice/ks-lum/ks-lum-sql/src/main/resources/upgrades/04-R1.2.0 to R1.2.1/2011-11-10-KRIM-add-users-to-kscm-user-role.sql
+86ed90acbf59e2d8852a121bd4b24ae9a0ae2bca||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+28189||trunk/ks-lum/ks-lum-rice/src/main/config/sql/upgrades/01-R0.0.0 to R1.2.2/2012-01-02_KRIM-Unterminate-Admin-User.sql
+28188||branches/ks-1.2-perf/ks-lum/ks-lum-rice/src/main/config/sql/2011-08-02-KRIM-admin-affiliation-bootstrap.sql
+5ce15ca04526d12151c5a6c167c6625e44abbe99||ec14bfdaece74ea4a4faba6513e7c3eb

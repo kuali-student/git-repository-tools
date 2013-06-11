@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+29485||sandbox/ks-1.3-core-slice-demo/modules/ks-enroll/trunk/ks-enroll-impl/src/test/java/org/kuali/student/r2/common/service/impl/TypeServiceMockImplTest.java
+29484||branches/ks-1.3/ks-enroll/ks-enroll-impl/src/test/java/org/kuali/student/r2/common/service/impl/TypeServiceMockImplTest.java
+56b376dd2a248fcd63908f4d4568aebfada1837b||1bcf182f31afdbfc13bc3fd70a185b42
+#R100
+PLACEHOLDER
+29485||sandbox/ks-1.3-core-slice-demo/modules/ks-enroll/trunk/ks-enroll-impl/src/test/java/org/kuali/student/enrollment/class2/acal/service/impl/TestAcademicCalendarServiceJira679Impl.java
+29484||branches/ks-1.3/ks-enroll/ks-enroll-impl/src/test/java/org/kuali/student/enrollment/class2/acal/service/impl/TestAcademicCalendarServiceJira679Impl.java
+7787c28d74721a0b1455ee52085c5d8780cbffd0||83273e5c580d5bb56596e75a862e7dc0
+#R100
+PLACEHOLDER
+29485||sandbox/ks-1.3-core-slice-demo/modules/ks-enroll/trunk/ks-enroll-impl/src/test/java/org/kuali/student/enrollment/class2/acal/service/impl/TestAcademicCalendarServiceJira530Impl.java
+29484||branches/ks-1.3/ks-enroll/ks-enroll-impl/src/test/java/org/kuali/student/enrollment/class2/acal/service/impl/TestAcademicCalendarServiceJira530Impl.java
+cf38756bad89ad20d8c45cd0c623ac108440069d||1b52eb4fd58a30cefe1acd248c8f4d3f

@@ -1,0 +1,10 @@
+#R050
+PLACEHOLDER
+2863||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/exceptions/jaxws/VersionMismatchExceptionBean.java
+2862||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/ReadOnlyExceptionBean.java
+0ac05a8f7dcbf08223717afe99cc37e14129542b||36fe68c1eb68e220b18777193d5b9824
+#C050
+PLACEHOLDER
+2863||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/exceptions/jaxws/DataValidationErrorExceptionBean.java
+2862||brms/brms-api/branches/brms-api-dev/rule-management-api/src/main/java/org/kuali/student/rules/rulemanagement/service/jaxws/ReadOnlyExceptionBean.java
+0ac05a8f7dcbf08223717afe99cc37e14129542b||36fe68c1eb68e220b18777193d5b9824

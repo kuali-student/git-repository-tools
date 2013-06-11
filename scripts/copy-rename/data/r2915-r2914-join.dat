@@ -1,0 +1,15 @@
+#R054
+PLACEHOLDER
+2915||ks-core/branches/ks-core-dev/core-api/src/main/resources/org/kuali/student/core/dictionary/Dictionary.gwt.xml
+2914||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/LoggingNoServer.gwt.xml
+a676a1f060d02abbac37c57a84587baaa47b9267||65cff8910ef4f5e866eeecb560f14702
+#C054
+PLACEHOLDER
+2915||ks-core/branches/ks-core-dev/core-api/src/main/resources/org/kuali/student/core/atp/Atp.gwt.xml
+2914||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/LoggingNoServer.gwt.xml
+a676a1f060d02abbac37c57a84587baaa47b9267||65cff8910ef4f5e866eeecb560f14702
+#C054
+PLACEHOLDER
+2915||ks-core/branches/ks-core-dev/core-api/src/main/resources/org/kuali/student/core/Core.gwt.xml
+2914||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/LoggingNoServer.gwt.xml
+a676a1f060d02abbac37c57a84587baaa47b9267||65cff8910ef4f5e866eeecb560f14702

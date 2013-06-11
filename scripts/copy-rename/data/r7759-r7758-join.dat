@@ -1,0 +1,15 @@
+#R074
+PLACEHOLDER
+7759||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/spreadsheet/WorksheetAlreadyExistsException.java
+7758||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/spreadsheet/WorksheetNotFoundException.java
+7a143922001d2fde8075f7ccf7ba9236ede1dcde||1ab7817efe71eac7308b9ddcd816bf01
+#R061
+PLACEHOLDER
+7759||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/wiki/Login.java
+7758||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/model/wiki/PageHelper.java
+5302b23cbd6023b56e26ba7d8c28da531f69d985||d6444b3c22f50b6d14b0c6e844c96cd3
+#R053
+PLACEHOLDER
+7759||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/model/wiki/LoginTest.java
+7758||tools/maven-dictionary-generator/trunk/src/test/java/org/kuali/student/dictionary/writer/JavaClassFileNameBuilderTest.java
+2686cdcf60c96719dadf158932cd7b6645985379||2ca180d656c325272bb49056d1b970fb

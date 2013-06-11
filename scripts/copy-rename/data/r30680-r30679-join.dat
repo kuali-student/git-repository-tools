@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+30680||branches/ks-2.0-cm/ks-core/ks-core-impl/src/main/resources/search-test-context.xml
+30679||branches/ks-1.3-ec1/ks-enroll/ks-enroll-impl/src/test/resources/search-test-context.xml
+6ac8dea54587152dc21888e5f7ac1f33afc9fbd5||ffcd88b7046e99994edd39cd620640da

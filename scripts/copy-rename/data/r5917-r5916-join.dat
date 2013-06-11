@@ -1,0 +1,10 @@
+#R084
+PLACEHOLDER
+5917||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/KSLabelList.java
+5916||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/KSCheckBoxList.java
+39a278caa581c750f41cf77ae912cb1684fdf050||7a66c4cb9a00e17898366a0cd3fdb661
+#R060
+PLACEHOLDER
+5917||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/impl/KSLabelListImpl.java
+5916||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/impl/KSCheckBoxListImpl.java
+8f1767ff970d22151cd75a365261e2f6a0989d47||b0eeb0991d8e17c20840c67c95484896

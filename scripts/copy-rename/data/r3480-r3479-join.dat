@@ -1,0 +1,10 @@
+#R083
+PLACEHOLDER
+3480||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/impl/KSAccordionPanelImpl.java
+3479||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSAccordionPanel.java
+64ccfc87e828ae442f9ed6d4e1c960a9f856586f||c929a3fd5f8d54998c38b5ea10f019fb
+#R060
+PLACEHOLDER
+3480||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSDatePickerAbstract.java
+3479||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSDatePicker.java
+2ac8e4dc2bb6ce46ceb5dcdd3db470e3eb631710||ef157c4d9c88044ec2c3207fed3dd339

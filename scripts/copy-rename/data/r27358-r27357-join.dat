@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+27358||branches/ks-2.0-cm/ks-lum2/ks-lum-impl2/src/main/java/org/kuali/student/lum/program/service/impl/ProgramServiceImpl.java
+27357||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/program/service/impl/ProgramServiceImpl.java
+56db6eaeb916f0d3ee9ee51d5a30c0380496434b||657c407b4e00980c333332f03cf3387d
+#R100
+PLACEHOLDER
+27358||branches/ks-2.0-cm/ks-lum2/ks-lum-impl2/src/main/java/org/kuali/student/lum/program/service/impl/ProgramRequirementAssembler.java
+27357||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/program/service/impl/ProgramRequirementAssembler.java
+48c77cc2e4e81fc76b9d8f3d2b3dada147016171||99ab6d1f867f97ea92ce58665397a8a4
+#R100
+PLACEHOLDER
+27358||branches/ks-2.0-cm/ks-lum2/ks-lum-impl2/src/main/java/org/kuali/student/lum/program/service/impl/ProgramServiceMethodInvoker.java
+27357||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/program/service/impl/ProgramServiceMethodInvoker.java
+6895636abe02e1b0556473f04105082e771fc32e||c017c4a275c86db880bbb063104436a1

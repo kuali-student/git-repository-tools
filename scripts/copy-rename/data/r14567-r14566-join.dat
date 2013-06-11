@@ -1,0 +1,10 @@
+#R074
+PLACEHOLDER
+14567||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/statement/config/context/lu/InstructorPermConditionCourseListContextImpl.java
+14566||tags/ks-1.1-20100528-build-22/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/statement/config/context/lu/GradeConditionCourseListContextImpl.java
+e22352ed0cb8abab4bf312c93cbba6a85684d082||039bbdf5a04e69e8338199c6006b5948
+#R074
+PLACEHOLDER
+14567||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/statement/config/context/lu/OrgPermConditionCourseListContextImpl.java
+14566||tags/ks-1.1-20100526-build-20/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/statement/config/context/lu/GradeConditionCourseListContextImpl.java
+e22352ed0cb8abab4bf312c93cbba6a85684d082||039bbdf5a04e69e8338199c6006b5948

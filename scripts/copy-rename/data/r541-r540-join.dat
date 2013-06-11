@@ -1,0 +1,10 @@
+#R095
+PLACEHOLDER
+541||poc/learningunitmanagement/lum-ri/branches/lum-ri-dev/learningunit/src/main/resources/test-beans.xml
+540||poc/learningunitmanagement/lum-ri/branches/lum-ri-dev/lu-ri/src/test/resources/test-beans.xml
+863e8e9cf5007c00b1ffa1f15650da7e5066f76d||2d0626329ff2f10e36bbb7aa170215de
+#R088
+PLACEHOLDER
+541||poc/learningunitmanagement/lum-ri/branches/lum-ri-dev/learningunit/src/main/java/org/kuali/student/poc/learningunit/lu/LoadBeanListener.java
+540||poc/common/branches/common-dev/common-test/src/main/java/org/kuali/student/poc/common/test/spring/LoadBeanListener.java
+9ba4b12ad84e778584d8cc395cd4fdfd42b01d4f||37bc6adb87fe46c6d40d8774f7cd5528

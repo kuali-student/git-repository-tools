@@ -1,0 +1,125 @@
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-lum/trunk/ks-lum-sql/src/main/resources/upgrades/03-R1.2 to R1.3/2011-07-14-lum-mysql-fix-bootstrap.sql
+29589||branches/ks-1.3-ec1/ks-lum/ks-lum-sql/src/main/resources/upgrades/04-R1.2 to R1.3/2011-07-14-lum-mysql-fix-bootstrap.sql
+f188ddc1261fcd2730a8738e29b31b3ef96ae0b9||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/03-R1.1.1 to R1.1.2/2011-04-04-lum-KSEM-bootstrap.sql
+29589||branches/ks-1.2-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/03-R1.1.1 to R1.2.0/2011-04-04-lum-KSEM-bootstrap.sql
+75d304ac778cd9d06e2f080c4ff4c4c5332ffba3||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/03-R1.1.1 to R1.1.2/2011-03-30-lum-msg-bootstrap.sql
+29589||branches/ks-1.2-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/03-R1.1.1 to R1.2.0/2011-03-30-lum-msg-bootstrap.sql
+33e24be7e368976c6f8f6b8f18848bed945c5608||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-10-1-lum-stmt-course-requisites.sql
+29589||branches/inactive/ks-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-10-1-lum-stmt-course-requisites.sql
+f20ef87b0da101e5550d1c6b5aa4c2e6d68a2e35||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-04-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-04-1-lum-msg-bootstrap.sql
+68707a8ea9dc8906cc9aab574350c3a4d3d3b5dd||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-27-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-27-1-lum-msg-bootstrap.sql
+e67bd242ef4479cebf356e76208f390b13d9e66b||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-15-1-lum-KSST-reference.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-12-15-1-lum-KSST-reference.sql
+ff7ce976cdc7a4e2a9bec12663c6ed19a1633831||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-09-1-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-12-09-1-lum-stmt-bootstrap.sql
+be5cfd39db707092020e2f6324303447d64baaf8||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-07-1-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-12-07-1-lum-stmt-bootstrap.sql
+d537f0793a5324407f6428df8c87d7bfd1da79eb||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-02-1-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-12-02-1-lum-stmt-bootstrap.sql
+874ef0c0962ffb706b8005025d2d8fffbed4bafc||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-12-01-1-KSLAB-1535-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-12-01-1-KSLAB-1535-bootstrap.sql
+638118d4c161933ed52a846ef824983b7ecfce41||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-22-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-22-1-lum-msg-bootstrap.sql
+909d4bb962ca42d9d2443f40ce8a02aeb0c0f290||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-17-1-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-17-1-lum-stmt-bootstrap.sql
+7d92b94e3c55b34009ff1ef7780c4d82c4c72cbd||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-16-2-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-16-2-lum-stmt-bootstrap.sql
+b7d3134165b6f5a562a90b017bea46b417212ee5||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-08-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-08-1-lum-msg-bootstrap.sql
+cd3a92d27696f46e008026c3588c65a987412bdc||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-05-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-05-1-lum-msg-bootstrap.sql
+ed495b54aceb1c652fb60cd936f9059b76aec895||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-04-3-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-04-3-lum-msg-bootstrap.sql
+ca39badae3b6b24a002d0315775bc2043f8aecad||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-04-2-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-04-2-lum-stmt-bootstrap.sql
+4eaaff7d8e3583d64907c4edf6586692fb16e09b||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-03-2-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-03-2-lum-msg-bootstrap.sql
+89b37ee327df6cb0e317cdd7de665358e7285d85||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-11-03-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-11-03-1-lum-msg-bootstrap.sql
+52a81294a4e863f2b9dfee804bc9b3794061891a||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-29-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-10-29-1-lum-msg-bootstrap.sql
+ad436c282f04dec608469e7b066afca54ffbf7c3||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-28-2-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-10-28-2-lum-stmt-bootstrap.sql
+c86e4ea93d2438016e745c99d3afbe3752f42dd0||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-28-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-10-28-1-lum-msg-bootstrap.sql
+2841727a0acf97e9d8b1548b969c08678959f5a4||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-26-1-lum-msg-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-10-26-1-lum-msg-bootstrap.sql
+2edb9108e7ef24a7537e4740634525afa7f46403||d41d8cd98f00b204e9800998ecf8427e
+#R100
+PLACEHOLDER
+29590||sandbox/ks-1.3-core-slice-demo/modules/ks-core/trunk/ks-core-sql/src/main/resources/upgrades/01-R1.1.0-M10 to R1.1.0/2010-10-22-1-lum-stmt-bootstrap.sql
+29589||branches/inactive/ks-1.1-perf/ks-lum/ks-lum-sql/src/main/resources/upgrades/R1.1.0-M10 to R1.1.0/2010-10-22-1-lum-stmt-bootstrap.sql
+d10ae095ebcf51cd394436e830509442b683d056||d41d8cd98f00b204e9800998ecf8427e

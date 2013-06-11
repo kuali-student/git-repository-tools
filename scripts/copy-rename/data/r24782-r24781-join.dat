@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+24782||branches/ks-1.3-services/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/program/dto/ProgramVariationInfo.java
+24781||branches/ks-1.2-perf/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/program/dto/ProgramVariationInfo.java
+0177e9a8e38e24cb0ef8827b1a895d08d21cde39||439fd683f65ee191b3f572f9d26f0502
+#R100
+PLACEHOLDER
+24782||branches/ks-1.3-services/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/program/dto/ProgramRequirementInfo.java
+24781||branches/ks-1.2-perf/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/program/dto/ProgramRequirementInfo.java
+36b8e5775e1282993ee7f2fc0e1ec6b5caceda72||5f303daff73eb9f2d59794ce322d994c
+#R100
+PLACEHOLDER
+24782||branches/ks-1.3-services/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/program/dto/MajorDisciplineInfo.java
+24781||branches/ks-1.2-perf/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/program/dto/MajorDisciplineInfo.java
+52a2f8b6aabb3dfdd253b889a1e1c03b4e5f0df7||a8dee9dd0d3048e005877644f8307451

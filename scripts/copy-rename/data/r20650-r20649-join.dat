@@ -1,0 +1,5 @@
+#R077
+PLACEHOLDER
+20650||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/PropertyPlaceholderConfigurerSystemOverrideTest-context.xml
+20649||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/SimpleConfigurablePropertyPlaceholderConfigurerTest-context.xml
+77c18d6279051dd612255dab00377600378d756c||6fe9e2b780d4d7e5e72fe69112bd2a3e

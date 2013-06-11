@@ -1,0 +1,5 @@
+#R062
+PLACEHOLDER
+20547||deploymentlab/trunk/impex/db-jdbc/src/test/java/org/kuali/spring/util/PropertiesLogger.java
+20546||deploymentlab/trunk/impex/db-jdbc/src/test/java/org/kuali/spring/util/PropertyPlaceholderConfigurer.java
+2bdcc916e0ced1785bb23fccd48a8e7970f62c7f||44ba2794dd8838b11f0b91008793a55d

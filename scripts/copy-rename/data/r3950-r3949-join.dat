@@ -1,0 +1,10 @@
+#R083
+PLACEHOLDER
+3950||ks-core/branches/ks-core-dev/core-impl/src/test/java/org/kuali/student/core/atp/TestAtpDaoImpl.java
+3949||sandbox/team2/ks-lum/branches/ks-lum-dev/lum-impl/src/test/java/org/kuali/student/lum/atp/dao/impl/TestAtpDaoImpl.java
+94c3c7935cf036df49b83e0c645415747b2f87dc||e98bfacaba08984dabd7c71b087b786b
+#R073
+PLACEHOLDER
+3950||ks-core/branches/ks-core-dev/core-impl/src/test/java/org/kuali/student/core/atp/TestAtpService.java
+3949||sandbox/team2/ks-lum/branches/ks-lum-dev/lum-impl/src/test/java/org/kuali/student/lum/atp/dao/impl/TestAtpService.java
+793c31631f8aa2aa436f073189a2395973312214||c7a1982fe833c9a00f7911e43f931c57

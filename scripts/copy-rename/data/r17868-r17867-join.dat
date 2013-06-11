@@ -1,0 +1,5 @@
+#R054
+PLACEHOLDER
+17868||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/events/StateChangeEvent.java
+17867||tags/builds/ks-1.1-20101102-build-220/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/events/ModelLoadedEvent.java
+c28bad65e4a5bff99bab482f646539fc87d5d2b5||97be47214c2f92ca3c98d05afe916b6a

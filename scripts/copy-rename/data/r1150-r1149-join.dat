@@ -1,0 +1,10 @@
+#R093
+PLACEHOLDER
+1150||poc/brms/brms-ri/branches/brms-ri-dev2/brms-core/src/main/java/org/kuali/student/rules/brms/core/service/BusinessRuleManagementService.java
+1149||poc/brms/brms-ri/branches/brms-ri-dev2/brms-core/src/main/java/org/kuali/student/rules/brms/core/service/FunctionalBusinessRuleManagementService.java
+57a9f2b8a6dc672a17f61121b563ea6568e0d84e||1ba4cd8c29e2b11ba89f60ab93f0645a
+#R092
+PLACEHOLDER
+1150||poc/brms/brms-ri/branches/brms-ri-dev2/brms-core/src/test/java/org/kuali/student/rules/brms/core/service/BusinessRuleManagementServiceTest.java
+1149||poc/brms/brms-ri/branches/brms-ri-dev2/brms-core/src/test/java/org/kuali/student/rules/brms/core/service/FunctionalBusinessRuleManagementServiceTest.java
+7befdb604e7b825725bb37f7f6a476a2db6ab69c||c2eef2364b7851a3e02726de95d4f8ca

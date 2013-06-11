@@ -1,0 +1,5 @@
+#R060
+PLACEHOLDER
+20480||sandbox/ks-r2-poc/trunk/ks-services/ks-services-api/src/test/resources/testContext.xml
+20479||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/test/resources/testContext.xml
+3dd85e983574289f1fc99286f08c04d3a54b4bfe||a6036be068d6ec5ef10a0ad72fbc62d0

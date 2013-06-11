@@ -1,0 +1,15 @@
+#R099
+PLACEHOLDER
+8222||deploymentlab/branches/1.0.0-m3/core/ks-core-impl/.classpath
+8221||deploymentlab/branches/1.0.0.x/core/ks-common-impl/.classpath
+6bc2da7c98920391009b6eb3fc4ad118a984dc98||17eef08b29d05228a0cf95c6ccca0aff
+#R083
+PLACEHOLDER
+8222||deploymentlab/branches/1.0.0-m3/core/ks-core-impl/.project
+8221||deploymentlab/branches/1.0.0.x/core/ks-common-ui/.project
+583c7bca2c05893a7b030929171d4938619bf1a7||8ebc91ff60deab153dadbd898a41c4bd
+#R083
+PLACEHOLDER
+8222||deploymentlab/branches/1.0.0-m3/core/ks-core-impl/.settings/org.eclipse.jdt.core.prefs
+8221||brms/branches/brms-dev/.settings/org.eclipse.jdt.core.prefs
+8428b0abf8bc4a8e94d2ff8748a76581b9593579||92479b50280b20650f3280a349186953

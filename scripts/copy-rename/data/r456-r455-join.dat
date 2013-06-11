@@ -1,0 +1,15 @@
+#R069
+PLACEHOLDER
+456||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/FindPeopleByPersonIdsResponse.java
+455||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/SearchForPeopleResponse.java
+f94e88d68b3e1bb4d80d814054788e206922e731||d367a7de09c6bd2f597903c0df0bd9a4
+#R068
+PLACEHOLDER
+456||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/FindPeopleDisplayByPersonIdsResponse.java
+455||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/SearchForPeopleByRelationResponse.java
+026474228947943762b886b668375ee2f2518776||16f72b141aba69aba63de7b3301b3ee5
+#R050
+PLACEHOLDER
+456||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/FindPeopleDisplayByPersonIds.java
+455||poc/personidentity/personidentity-api/tags/personidentity-api-0.0.2/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/SearchForPeopleByPersonTypeResponse.java
+007ea3dc9872e7a0da5a466656e353cbe708bfe1||744acf53e9a2024a1327e024cf43960c

@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+11848||ks-cfg-dbs/ks-rice-client-db/trunk/schema.xml
+11847||ks-cfg-dbs/ks-rice-server-db/trunk/schema.xml
+4b36a682d5c5824f3986f15d76792c9166617bd0||6f3e45f6b056cfbec7272ec2d64fa2de
+#R100
+PLACEHOLDER
+11848||ks-cfg-dbs/ks-rice-client-db/trunk/data.dtd
+11847||ks-cfg-dbs/ks-rice-server-db/trunk/data.dtd
+630d694f5af64637d483a191bd789d309040b39e||cb247c4b19b8bef08ff49df7d6cd8176
+#R100
+PLACEHOLDER
+11848||ks-cfg-dbs/ks-rice-client-db/trunk/database.dtd
+11847||deploymentlab/tags/kuali-impex-1.0.0/src/main/resources/database.dtd
+de2fc5cff84e0157368591b839fa3a74cce90d48||b2e68a52e8b71c85c5c501065ef7a56f

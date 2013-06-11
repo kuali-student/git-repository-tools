@@ -1,0 +1,10 @@
+#R067
+PLACEHOLDER
+10270||ks-core/branches/ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/organization/ui/theme/standard/StandardTheme.gwt.xml
+10269||deploymentlab/branches/1.0.0-m3/1.0.0.x-rpc/core/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/custom/CustomTheme.gwt.xml
+4d618ee6deb20afc7f87420d99f3bd0bc90a6f6c||93b21f471a35505030f29b2a88256430
+#R053
+PLACEHOLDER
+10270||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/organization/ui/theme/standard/client/OrgCssImpl.java
+10269||deploymentlab/branches/1.0.0-m3/1.0.0.x-rpc/lum/ks-lum-ui/src/main/java/org/kuali/student/lum/ui/theme/standard/client/LumCssImpl.java
+da077e2725a54060035af899b123c3a51642b5c7||3d8b5d75a5d522f756299e6374324a8b

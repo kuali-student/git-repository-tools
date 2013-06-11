@@ -1,0 +1,10 @@
+#R055
+PLACEHOLDER
+1405||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/SearchForPersonDisplayDTOs.java
+1404||poc/personidentity/personidentity-api/tags/personidentity-api-0.0.2/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/SearchForPeople.java
+6f507c734887e57cd3a7ec08ffd8b2e43306e0a1||034f25533045b5e498e065f58045c8fd
+#R051
+PLACEHOLDER
+1405||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/SearchForPersonDisplayDTOsResponse.java
+1404||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/FindPersonIdsForPersonTypeResponse.java
+f7bef9433d6d7c55b2feb75b47a9e260caaac1cc||241b1e5dd75c1ebbd57079610edef150

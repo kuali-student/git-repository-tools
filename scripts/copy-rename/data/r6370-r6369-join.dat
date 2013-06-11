@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+6370||ks-lum/branches/ks-lum-dev/ks-lum-api/src/main/resources/org/kuali/student/lum/lo/typekey/Typekey.gwt.xml
+6369||ks-lum/branches/ks-lum-1.0.0-m1/ks-lum-api/src/main/resources/org/kuali/student/lum/lu/typekey/Typekey.gwt.xml
+58a62bfe5b7fd57cd33367be15acd124f4d42e73||1dd8e2dae8d268a34c87e2f194ca46ea
+#R100
+PLACEHOLDER
+6370||ks-lum/branches/ks-lum-dev/ks-lum-api/src/main/resources/org/kuali/student/lum/lo/Lo.gwt.xml
+6369||ks-core/branches/ks-core-1.0.0-m1/ks-core-api/src/main/resources/org/kuali/student/core/enumeration/Enumeration.gwt.xml
+4a9b26707a4e4288c0b927a059a050a75fd33e05||a4a3c0a2a57d56e90c9b460f1b92e21f

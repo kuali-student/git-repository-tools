@@ -1,0 +1,10 @@
+#R076
+PLACEHOLDER
+2312||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-factfinder.properties
+2311||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-rulemanagement.properties
+44a775fc1f2885e6273c346d6a50ca9019131ed7||0c1a164a2afe514e25ff729b43b2c539
+#R056
+PLACEHOLDER
+2312||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/cxf-factfinder-context.xml
+2311||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/cxf-rulemanagement-context.xml
+12b6fecfeba301c6ae1931a61ab47c1172c76669||ff28922bd6460b39a1fa2a46c56babc2

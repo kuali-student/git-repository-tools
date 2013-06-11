@@ -1,0 +1,10 @@
+#R066
+PLACEHOLDER
+273||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/exceptions/jaxws/UnsupportedActionExceptionBean.java
+272||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/exceptions/jaxws/MissingParameterExceptionBean.java
+91753e15e105821a2e5b41a08776b78758c16d02||e589e22af2b1bc171e75a19ff105fd5a
+#R050
+PLACEHOLDER
+273||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/exceptions/UnsupportedActionException.java
+272||poc/common/tags/common-0.0.2/common-ws/src/main/java/org/kuali/student/poc/common/ws/exceptions/AlreadyExistsException.java
+4b37ccaf7c0a54894985c39caa017bff5c94c7da||9439181aefdc6bdaf0a6353192b7a486

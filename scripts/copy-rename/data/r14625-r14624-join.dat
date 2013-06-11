@@ -1,0 +1,5 @@
+#R086
+PLACEHOLDER
+14625||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/service/assembler/LumServiceMethodInvoker.java
+14624||tags/ks-1.1-poc-20100612-build-16/ks-lum/ks-lum-impl/src/main/java/org/kuali/student/lum/course/service/impl/CourseServiceMethodInvoker.java
+35d903808bd16a66872760813250354479263b1c||ee62d0d504315302df5637d9f1ca83a9

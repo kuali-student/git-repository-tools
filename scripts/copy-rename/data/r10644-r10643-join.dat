@@ -1,0 +1,15 @@
+#R054
+PLACEHOLDER
+10644||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/util/Elements.java
+10643||deploymentlab/branches/1.0.0-m4/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/widgets/a/util/Elements.java
+43a625adb9d1a9a242a4831bc026fd846285ea6e||dfe9021a82dc68b4cd120f173b6017f3
+#R054
+PLACEHOLDER
+10644||ks-core/branches/ks-core-dev/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/standard/public/images/common/lightbox_close_20px.png
+10643||deploymentlab/branches/1.0.0-m3/1.0.0.x-rpc/core/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/custom/public/images/common/grey_gradient.png
+45177d89cae0d7963b3ddc5350bd22374b6e7363||be8174960dfff2756f04d34385f9d116
+#R053
+PLACEHOLDER
+10644||ks-core/branches/ks-core-dev/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/standard/public/images/common/lightbox_close_hover_20px.png
+10643||deploymentlab/branches/1.0.0-m3/1.0.0.x-rpc/core/ks-common-ui/src/main/resources/org/kuali/student/common/ui/theme/standard/public/images/common/grey_gradient.png
+45177d89cae0d7963b3ddc5350bd22374b6e7363||be8174960dfff2756f04d34385f9d116

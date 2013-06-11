@@ -1,0 +1,15 @@
+#R097
+PLACEHOLDER
+4158||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/example/dto/MockCluIdentifierInfo.java
+4157||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/dto/CluIdentifierInfo.java
+1c2c7c45006595192539f311ec3222dd0ffe8448||b6e814844773144f044042326d6bfb1a
+#R093
+PLACEHOLDER
+4158||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/example/dto/MockCluInstructorInfo.java
+4157||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/dto/CluInstructorInfo.java
+9649181a5fb6fcb32d6ffb610936697ae1b97d57||357db6a1ccd29e2d11dfbac07fd1f797
+#R081
+PLACEHOLDER
+4158||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/example/dto/MockCluInfo.java
+4157||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/dto/CluInfo.java
+551f401d059195ec9e91c65ef99c8a23d5305f2b||210bbb252313b32f49f5b507187f5b1d

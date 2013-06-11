@@ -1,0 +1,10 @@
+#R087
+PLACEHOLDER
+11025||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindProposalMetadata.java
+11024||deploymentlab/trunk/1.0.x/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseMetadata.java
+618f70c96c569a592be180feaaefddcc97900ec6||2610f3c1b6a34654a70650dd49385f8d
+#R076
+PLACEHOLDER
+11025||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindProposalHelper.java
+11024||deploymentlab/trunk/1.0.x/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseHelper.java
+e2c8632417f657a6f80eb8955e636b1c33998ba4||ae2b0a3e188b0f982cea73fa51ecb01f

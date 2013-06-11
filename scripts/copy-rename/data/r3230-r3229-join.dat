@@ -1,0 +1,10 @@
+#R081
+PLACEHOLDER
+3230||ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/search/service/jaxws/SearchForResultsResponse.java
+3229||ks-lum/branches/ks-lum-dev/lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/SearchForResultsResponse.java
+d888a3b68f6dbc7393074d5d3d97e3eb674dc7da||57ecb354ba954c6c2fcc501b4d475043
+#R078
+PLACEHOLDER
+3230||ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/search/service/jaxws/SearchForResults.java
+3229||sandbox/team2/ks-core/branches/ks-core-dev/core-api/src/main/java/org/kuali/student/core/organization/service/jaxws/SearchForResults.java
+81fab24f49534f0b4117e564257a1b6c5e785234||94161c3a8681262df51f43da0f275445

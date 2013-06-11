@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+24560||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_LUI_MTG_SCHE.xml
+24559||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_LUI_MTG_SCHE.xml
+d16837252851dee40ad7cff54d9e48f2f53b1ee2||eda8cd399436f08b1d4cf0654efc53e4
+#R100
+PLACEHOLDER
+24560||branches/ks-1.3/ks-cfg-dbs/ks-embedded-db/src/main/impex/KSEN_LUI_LUCD.xml
+24559||branches/ks-1.3/ks-cfg-dbs/ks-standalone-db/src/main/impex/KSEN_LUI_LUCD.xml
+1fe6c73ab355b88f579e20bb51d3646a59555391||21ba1b8db6ad8aae0fab348dda9077ea

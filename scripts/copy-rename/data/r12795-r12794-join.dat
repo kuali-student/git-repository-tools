@@ -1,0 +1,10 @@
+#R097
+PLACEHOLDER
+12795||deploymentlab/trunk/foo/pom.xml
+12794||deploymentlab/trunk/1.0.x/pom.xml
+cdc13d5107f8ce1063b21ad666b8f17bbaee5718||fae35d4f268edbc18ad27438dcd28d83
+#R085
+PLACEHOLDER
+12795||deploymentlab/trunk/foo/.project
+12794||deploymentlab/trunk/maven/resources/emptyEclipseDotProjectFile.xml
+f9baf469398779c4a19c33c1b0df94caa4530333||38cdedb59653aab74850a64d6f0633cc

@@ -1,0 +1,15 @@
+#R064
+PLACEHOLDER
+4750||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/Reference.java
+4749||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/Tag.java
+24142c8cb209ef49750260779378172ff8186c2b||3464153c5060fc5029f956c9d17121ff
+#R061
+PLACEHOLDER
+4750||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/ReferenceAttribute.java
+4749||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/TagTypeAttribute.java
+d92ea57fed067d1709f1cc46c39c21f81d254195||e213d0d15b610cf78e1c1fdfa708b958
+#R054
+PLACEHOLDER
+4750||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/ReferenceTypeAttribute.java
+4749||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/TagAttribute.java
+3c9a4b1bd3fcfd30eb6daee16ca1e581c8635cc9||fff631be24e81682d1ee7d56a4a63563

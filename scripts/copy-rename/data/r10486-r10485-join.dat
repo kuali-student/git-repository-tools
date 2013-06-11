@@ -1,0 +1,5 @@
+#R068
+PLACEHOLDER
+10486||deploymentlab/branches/1.0.0-m4/ks-psrg/src/main/resources/ks-psrg-spring-config.xml
+10485||deploymentlab/branches/1.0.0.x/web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/StandaloneSpringBeans.xml
+149f4ef53b70675f5b1b85ee0266b32b2bbfc949||c60feb89b489dc05ea936029d76ee84c

@@ -1,0 +1,5 @@
+#R092
+PLACEHOLDER
+17452||trunk/ks-core/ks-core-ui/src/main/java/org/kuali/student/common/ui/client/widgets/rules/RuleExpressionParser.java
+17451||branches/ks-1.1-uif/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/ui/requirements/client/model/RuleExpressionParser.java
+dbbcacd26c5e3a382dd7925744a17744d2cf765b||8643e14f610a490e5eb66be3e344e793

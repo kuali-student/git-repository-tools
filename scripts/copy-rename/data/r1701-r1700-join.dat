@@ -1,0 +1,15 @@
+#R091
+PLACEHOLDER
+1701||brms/brms-impl/branches/brms-impl-dev/rule-common/src/main/java/org/kuali/student/rules/internal/common/entity/BusinessRuleTypeKey.java
+1700||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulesmanagement/entity/BusinessRuleTypeKey.java
+2edf0bcf528665f2efd0f1529a8b31877b5975fe||d1df027e7f687fda83206c377a5f0af4
+#R091
+PLACEHOLDER
+1701||brms/brms-impl/branches/brms-impl-dev/rule-common/src/main/java/org/kuali/student/rules/internal/common/entity/AnchorTypeKey.java
+1700||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulesmanagement/entity/AnchorTypeKey.java
+b13a85eff762cd70ff0af513a581b51bdccb5bf0||9638c4854831185b3bf2b402f347b1b1
+#R091
+PLACEHOLDER
+1701||brms/brms-impl/branches/brms-impl-dev/rule-common/src/main/java/org/kuali/student/rules/internal/common/entity/AgendaType.java
+1700||brms/brms-impl/branches/brms-impl-dev/rule-management-impl/src/main/java/org/kuali/student/rules/rulesmanagement/entity/AgendaType.java
+62caa1a9fb765b0e826f0e1ff16a3cb0a01dc1b3||dc9bb401f5468c3a44cfb3d41ff71ba4

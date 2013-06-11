@@ -1,0 +1,10 @@
+#R093
+PLACEHOLDER
+16787||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/variation/view/VariationInformationViewConfiguration.java
+16786||tags/builds/ks-1.1-20100923-build-135/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/view/ProgramInformationViewConfiguration.java
+02debd5befd59f307595247952b78dda66dd491c||3cf76dbe658192c928a4ae8220b2839d
+#R090
+PLACEHOLDER
+16787||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/variation/edit/VariationInformationEditConfiguration.java
+16786||tags/builds/ks-1.1-20100926-build-138/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/edit/ProgramInformationEditConfiguration.java
+1bca7c8c86b4d1b848dec5ca9192331abdff1b0f||71ba33e9cd5cfa73bff2a296fa27d474

@@ -1,0 +1,5 @@
+#R086
+PLACEHOLDER
+18723||deploymentlab/trunk/impex/maven-impex-plugin/src/main/java/org/apache/torque/mojo/morph/VersionTableMorpher.java
+18722||deploymentlab/tags/impex-1.0.10/maven-impex-plugin/src/main/java/org/apache/torque/mojo/morph/DataMorpher.java
+f1f725447bc6e772fb5991cf416f6a90385fa656||42c8250b2466425c9739312fcefcdfc8

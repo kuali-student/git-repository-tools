@@ -1,0 +1,15 @@
+#R062
+PLACEHOLDER
+4934||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/document/service/impl/DocumentServiceAssembler.java
+4933||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/dto/HasTypeState.java
+19e1f97343277e09cd827e0e6e77ceb3adce86ac||4158f8a25e7f291afa883aeacad3b23b
+#R059
+PLACEHOLDER
+4934||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/document/dao/DocumentDao.java
+4933||sandbox/team2/lum/branches/lum-0.0.1/lum-web/src/main/java/edu/umd/ks/poc/lum/web/lum/client/LumConstants.java
+bcb65a79c8c8eb9158bbfdca7693afe19ca4026c||815a5e72567fb7546d59f717234a6c66
+#R057
+PLACEHOLDER
+4934||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/document/dao/impl/DocumentDaoImpl.java
+4933||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/CommentAttribute.java
+a19914a368024136cb01c170ca31d69fbcf4833d||7a8d14c89e61f0a3c3368340b36f8714

@@ -1,0 +1,10 @@
+#R056
+PLACEHOLDER
+20289||deploymentlab/trunk/impex/db-jdbc/src/main/resources/org/kuali/db/mysql.xml
+20288||deploymentlab/trunk/impex/db-jdbc/src/main/resources/org/kuali/db/jdbc-context.xml
+33464517ffb382e75ce959dad7fa981bac934b0f||202104815eccbab1077fdf856d440800
+#C060
+PLACEHOLDER
+20289||deploymentlab/trunk/impex/db-jdbc/src/main/resources/org/kuali/db/db.xml
+20288||deploymentlab/trunk/impex/db-jdbc/src/main/resources/org/kuali/db/jdbc-context.xml
+33464517ffb382e75ce959dad7fa981bac934b0f||202104815eccbab1077fdf856d440800

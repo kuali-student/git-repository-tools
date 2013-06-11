@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+20410||deploymentlab/trunk/impex/db-jdbc/src/test/resources/org/kuali/db/jdbc/dba-test-properties.xml
+20409||deploymentlab/trunk/impex/db-jdbc/src/test/resources/dba-test-properties.xml
+8ba0b8b006b5ab227f9ab8271c99ec34a7169b0c||8a248e2a2e8af62b98474fde09a75bc2
+#R094
+PLACEHOLDER
+20410||deploymentlab/trunk/impex/db-jdbc/src/test/resources/org/kuali/db/jdbc/dba-test-context.xml
+20409||deploymentlab/trunk/impex/db-jdbc/src/test/resources/dba-test-context.xml
+514dea85f32f73ecd68de5fc58a743952870406b||2a7f83c7ecf5d93eaa7ce549bd47430c

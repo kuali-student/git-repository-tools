@@ -1,0 +1,10 @@
+#R077
+PLACEHOLDER
+11250||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/workflow/CollaboratorRequestSafari.gwt.xml
+11249||ks-lum/branches/ks-lum-1.0.0-m4/ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/workflow/CollaboratorRequestFirefox.gwt.xml
+4f2ab9e8ab31f0fb8e7e5336c722388737c34c3a||643e3af051c3a5c123c4148cd6997b20
+#R076
+PLACEHOLDER
+11250||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/main/LUMMainSafari.gwt.xml
+11249||deploymentlab/trunk/1.0.x/ks-lum/ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/main/LUMMainFirefox.gwt.xml
+2d015abc65fbc5ae37a3d9520e1afe8bd465b61b||3aa023f755b3d8f67826c544be1464ad

@@ -1,0 +1,10 @@
+#R055
+PLACEHOLDER
+5493||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/DictionaryExpander.java
+5492||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/dto/HasTypeState.java
+19e1f97343277e09cd827e0e6e77ceb3adce86ac||4158f8a25e7f291afa883aeacad3b23b
+#R052
+PLACEHOLDER
+5493||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/ModelValidator.java
+5492||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/entity/LoRichText.java
+4de6a5a6fe98ccc094853f374ead820092a7dbe6||c81c26b86429cd918875f466feff73a1

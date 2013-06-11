@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+13563||deploymentlab/trunk/examples/ubc/cdm-embedded-db/schema.xml
+13562||branches/ks-1.0.x/ks-cfg-dbs/ks-embedded-db/schema.xml
+3f0a22146cb098da554bea968117ef8dffd4c3f8||d1e1c15e95cc29f6d87be6df7e003512
+#R100
+PLACEHOLDER
+13563||deploymentlab/trunk/examples/ubc/cdm-embedded-db/data.dtd
+13562||branches/ks-1.0.x/ks-cfg-dbs/ks-embedded-db/data.dtd
+698697ac521afbd709e073f79a0f6a592f61f188||1e8690801345a1b58fced511182f0821
+#R100
+PLACEHOLDER
+13563||deploymentlab/trunk/examples/ubc/cdm-embedded-db/database.dtd
+13562||branches/ks-1.0.x/ks-cfg-dbs/ks-embedded-db/database.dtd
+de2fc5cff84e0157368591b839fa3a74cce90d48||b2e68a52e8b71c85c5c501065ef7a56f

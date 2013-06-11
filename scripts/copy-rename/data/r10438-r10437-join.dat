@@ -1,0 +1,10 @@
+#R068
+PLACEHOLDER
+10438||ks-web/branches/ks-web-dev/ks-standalone/src/main/java/org/kuali/rice/ksb/messaging/KSBClientProxy.java
+10437||sandbox/team2/lum/branches/lum-dev/lum-overlay/src/main/java/edu/umd/ks/poc/util/KSBClientProxy.java
+05207e00c1777114c1c88b28c557cf2cf57651a0||b15e785db21246f3009e61f380515120
+#R068
+PLACEHOLDER
+10438||ks-web/branches/ks-web-dev/ks-embedded/src/main/java/org/kuali/rice/ksb/messaging/KSBClientProxy.java
+10437||sandbox/team2/lum/branches/lum-0.0.1/lum-overlay/src/main/java/edu/umd/ks/poc/util/KSBClientProxy.java
+05207e00c1777114c1c88b28c557cf2cf57651a0||b15e785db21246f3009e61f380515120

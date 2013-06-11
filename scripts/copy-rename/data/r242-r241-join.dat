@@ -1,0 +1,15 @@
+#R079
+PLACEHOLDER
+242||poc/common/branches/common-dev/common-test/src/main/java/org/kuali/student/poc/common/test/spring/Manager.java
+241||poc/common/branches/common-dev/common-test/src/main/java/org/kuali/student/poc/common/test/spring/Dao.java
+897caf49504101e8d6e0778059d23ec275c22954||2d744d80c40506d81b58b1f5e139fcf6
+#R066
+PLACEHOLDER
+242||poc/common/branches/common-dev/common-test/src/main/java/org/kuali/student/poc/common/test/spring/AbstractManagerTest.java
+241||poc/common/branches/common-dev/common-test/src/main/java/org/kuali/student/poc/common/test/spring/AbstractServiceTest.java
+d3b074c1edd78058da30746bc6e521278ff202fa||6970da4a6e42e3d1d6f7daeb97450875
+#R062
+PLACEHOLDER
+242||poc/common/branches/common-dev/common-test/src/main/resources/META-INF/default-manager-context-test.xml
+241||poc/common/branches/common-dev/common-test/src/main/resources/META-INF/default-service-context-test.xml
+9427a2b9438417d5858c1bbf59d1dfe2becac0fa||45fb91413874bef46b7948c59b598c4c

@@ -1,0 +1,10 @@
+#R090
+PLACEHOLDER
+272||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/exceptions/jaxws/CircularReferenceExceptionBean.java
+271||poc/personidentity/personidentity-api/tags/personidentity-api-0.0.2/src/main/java/org/kuali/student/poc/wsdl/personidentity/person/jaxws/CircularReferenceExceptionBean.java
+6998e466cdea727b451541b610de01d909ce5792||f39aaa91e91e3708ecf5b47cec88ce72
+#R084
+PLACEHOLDER
+272||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/exceptions/CircularReferenceException.java
+271||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/wsdl/personidentity/exceptions/CircularReferenceException.java
+f0ab077671dd1043a49ac4fa04dccf1458bc44d3||7fdc8fe8b5e36ecd1d40678e344c0c1e

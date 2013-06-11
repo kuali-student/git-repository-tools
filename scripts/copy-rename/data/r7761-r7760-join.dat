@@ -1,0 +1,10 @@
+#R097
+PLACEHOLDER
+7761||ks-core/branches/ks-core-dev/ks-common-impl/src/test/resources/base-org-dict-config.xml
+7760||ks-core/branches/ks-core-dev/ks-core-impl/src/main/resources/organization-dictionary-config.xml
+7d49fff35f35c98d54d558a479ba2cc74dd79ac3||5ef43856992e9c640ae2fb96038b8787
+#R075
+PLACEHOLDER
+7761||ks-core/branches/ks-core-dev/ks-common-impl/src/test/resources/test-cross-search.xml
+7760||ks-core/branches/ks-core-dev/ks-core-impl/src/main/resources/organization-search-config.xml
+b7ad74721f7eea889188543752a10566006758ef||d2b30d3ac01e76077f967d956de3344d

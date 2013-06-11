@@ -1,0 +1,5 @@
+#R090
+PLACEHOLDER
+824||poc/brms/brms-ri/branches/brms-ri-dev/rules-common/src/main/java/org/kuali/student/rules/common/util/CourseEnrollmentRequest.java
+823||poc/brms/brms-ri/branches/brms-ri-dev/validate-rule/src/main/java/org/kuali/student/rules/validate/CourseEnrollmentRequest.java
+82f87926a4c85f01841445fddd5fd29f3490204d||34f3618910d3d29a60159245032e643c

@@ -1,0 +1,10 @@
+#R073
+PLACEHOLDER
+5397||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/SendCancelGroup.java
+5396||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/buttongroups/YesNoGroup.java
+0bd43800fd07aaa98e7bd391879a2fe023acab6e||51ac36c036826e48bb3298965c6f3e53
+#R054
+PLACEHOLDER
+5397||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/KSErrorDialog.java
+5396||commons/ks-commons-ui/branches/ks-commons-ui-dev/src/main/java/org/kuali/student/commons/ui/widgets/ErrorDialog.java
+b11b800ad9accb0934bc4725d3e85567dfef95b2||c5929167cabdc4bf851bec6f210df43f

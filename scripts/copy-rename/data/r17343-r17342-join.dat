@@ -1,0 +1,5 @@
+#R075
+PLACEHOLDER
+17343||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/events/ValidationFailedEvent.java
+17342||trunk/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/events/MajorViewEvent.java
+76831a8ad2a639047a2bdd9a50bac490a2c2e91a||ebcf5a56fc64912bca46a4dc7438d1a5

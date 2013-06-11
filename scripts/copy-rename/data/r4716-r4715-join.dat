@@ -1,0 +1,10 @@
+#R057
+PLACEHOLDER
+4716||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/Tag.java
+4715||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/Comment.java
+29aff8821debbbd16115b82acc5d3717d1cb98e8||611d5fb52fbca2d2b00462d995a19ba7
+#R056
+PLACEHOLDER
+4716||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/TagTypeAttribute.java
+4715||ks-core/branches/ks-core-dev/ks-core-impl/src/main/java/org/kuali/student/core/comment/entity/CommentTypeAttribute.java
+952c08df8372fceec46d057ffe4dce698eb21abf||c6642a8fefb43da1635a98864921bb7d

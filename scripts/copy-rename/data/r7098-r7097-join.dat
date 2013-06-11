@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+7098||ks-cfg-dbs/ks-embedded-db/trunk/KSLU_LO_CATEGORY_TYPE.xml
+7097||ks-cfg-dbs/ks-lum-db/trunk/KSLU_LO_CATEGORY_TYPE.xml
+9fb0a50b8f3f8edf134ad4f98e5a701c436bd087||118a6842bac710e1cd07f410375b45bc
+#R100
+PLACEHOLDER
+7098||ks-cfg-dbs/ks-embedded-db/trunk/KSLU_LO_CATEGORY_TYPE_ATTR.xml
+7097||ks-cfg-dbs/ks-embedded-db/tags/ks-embedded-db-1.0.0-m2/KSCO_REFERENCE_TYPE_ATTR.xml
+e2ebc124caac213c29749b803ac5630b34b42a64||cc0b4b9be40600909ff5b0819457fdca

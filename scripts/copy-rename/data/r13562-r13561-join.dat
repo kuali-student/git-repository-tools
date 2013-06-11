@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+13562||deploymentlab/trunk/examples/ubc/cdm-embedded/src/main/webapp/notauthorized.html
+13561||branches/ks-1.0.x/ks-web/ks-embedded/src/main/webapp/notauthorized.html
+f3a02ccb8f8006c850a9b6ea76b4cac161413e56||8437f118e9546bddd2c6ba9fc83916bf
+#R073
+PLACEHOLDER
+13562||deploymentlab/trunk/examples/ubc/cdm-embedded/src/main/resources/CdmSpringBeans-core.xml
+13561||deploymentlab/trunk/examples/ubc/cdm-embedded/src/main/resources/CdmSpringBeans.xml
+093e479e973064be6e7e98d630d5d4156762b834||2b8b596ab569cff5dc77f34065197adf

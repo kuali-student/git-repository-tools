@@ -1,0 +1,10 @@
+#R073
+PLACEHOLDER
+20896||trunk/ks-common/ks-common-ui/src/main/resources/org/kuali/student/common/ui/server/jasperreports/ProposalSubReport.jrxml
+20895||tags/builds/ks-1.2-20110402-build-56/ks-common/ks-common-ui/src/main/resources/org/kuali/student/common/ui/server/jasperreports/ScreenPrintSubReport.jrxml
+201a7ed254b8721b417f9ae24309629e7586244e||5fd42a3486fd0584bbf9960243898888
+#R060
+PLACEHOLDER
+20896||trunk/ks-common/ks-common-ui/src/main/resources/org/kuali/student/common/ui/server/jasperreports/ProposalReport.jrxml
+20895||tags/builds/ks-1.2-20110402-build-56/ks-common/ks-common-ui/src/main/resources/org/kuali/student/common/ui/server/jasperreports/ScreenPrintReport.jrxml
+440e78e056c4eb325cc1152c79715163e7a45609||229627edb7bf0a826082e71f4ad92560

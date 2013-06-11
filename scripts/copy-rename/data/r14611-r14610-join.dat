@@ -1,0 +1,15 @@
+#R075
+PLACEHOLDER
+14611||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/ks-program.sql
+14610||deploymentlab/branches/ks-1.1-m2e/ks-web/ks-embedded/src/main/resources/ks-kns.sql
+2b0d86858ca002d7f412d1e86e7143ad0b5f040d||a2a50d8f3a491feeaa41950fd0ac6702
+#R066
+PLACEHOLDER
+14611||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/test/resources/program-additional-context.xml
+14610||branches/ks-poc-1.1.x-br/ks-web/ks-embedded/src/main/resources/ks-embedded-context.xml
+ba8c6df2bac496bb98b43cc7c0652a3d827d97e4||297224f04e4e1d69fa11912323e78b1f
+#R066
+PLACEHOLDER
+14611||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-impl/src/main/resources/META-INF/program-persistence.xml
+14610||branches/ks-poc-1.1.x-br/ks-core/ks-core-impl/src/main/resources/META-INF/role-persistence.xml
+bfdd09afe5406f5af6e5c8520555590cbab0dc89||8360dbf2dab6bfe02157edeab581792c

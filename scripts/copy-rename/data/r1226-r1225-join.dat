@@ -1,0 +1,15 @@
+#R089
+PLACEHOLDER
+1226||brms/brms-api/trunk/rule-management/pom.xml
+1225||brms/brms-api/trunk/rule-repository/pom.xml
+9b4355d325fae93fef6f4c475a52136e04deef53||115dca9ec3aaa8df25482c0960e01ee9
+#C089
+PLACEHOLDER
+1226||brms/brms-api/trunk/rule-execution/pom.xml
+1225||brms/brms-api/trunk/rule-repository/pom.xml
+9b4355d325fae93fef6f4c475a52136e04deef53||115dca9ec3aaa8df25482c0960e01ee9
+#C089
+PLACEHOLDER
+1226||brms/brms-api/trunk/fact-finder/pom.xml
+1225||brms/brms-api/trunk/rule-repository/pom.xml
+9b4355d325fae93fef6f4c475a52136e04deef53||115dca9ec3aaa8df25482c0960e01ee9

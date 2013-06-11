@@ -1,0 +1,5 @@
+#R058
+PLACEHOLDER
+2219||brms/brms-api/branches/brms-api-dev/rule-execution-api/src/main/java/org/kuali/student/rules/ruleexecution/dto/PropositionReportDTO.java
+2218||brms/brms-impl/branches/brms-impl-dev/rule-common-impl/src/main/java/org/kuali/student/rules/internal/common/statement/report/PropositionReport.java
+c8f2e59077676e7b40cf844bb95a4b91bc84c7f0||27ab9a3b5a2767d9838fa90fb55b5ef9

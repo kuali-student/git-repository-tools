@@ -1,0 +1,15 @@
+#R071
+PLACEHOLDER
+7692||deploymentlab/trunk/ks-multiproject/jars/jar1/.project
+7691||deploymentlab/branches/1.0.0-m3/core/ks-core-api/.project
+90e1c37f62099b5459f5f2e1c8f7e1621c8a6c45||d4a302165be0f3419ff3695f7ffb7d00
+#R062
+PLACEHOLDER
+7692||deploymentlab/trunk/ks-multiproject/jars/jar2/.project
+7691||deploymentlab/branches/1.0.0-m3/lum/ks-lum-api/.project
+5c2943320dc4cd490bea47d9988ec2471a41165a||92e22766664485874b785ae8b95f9f2c
+#R059
+PLACEHOLDER
+7692||deploymentlab/trunk/ks-multiproject/war1/.project
+7691||deploymentlab/branches/1.0.0-m3/brms/ks-brms-execution-api/.project
+83094e901f404040d8eb2c3c32fc76227451916d||2d322483459886a6407c3af3bb16a7c4

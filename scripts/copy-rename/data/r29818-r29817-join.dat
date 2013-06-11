@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+29818||branches/ks-2.0-cm/ks-web/ks-embedded/src/main/resources/dozerBeanMapping.xml
+29817||branches/ks-2.0-cm/ks-lum/ks-lum-impl/src/test/resources/dozerBeanMapping.xml
+1affb2ef78b3e71918fe0a725f138d49a7863f55||cfaba33fdc84619a60a8ac33806e27a8

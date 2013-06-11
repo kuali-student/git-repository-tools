@@ -1,0 +1,5 @@
+#R056
+PLACEHOLDER
+19333||deploymentlab/trunk/impex/jdbc-support/src/test/resources/jdbc.properties
+19332||deploymentlab/tags/impex-1.0.12/jdbc-support/src/main/resources/org/kuali/db/oracle/custom.properties
+04441b961943f8da2e0639bb81531f665dd92b76||1358f321feaff049928ee030af946eb2

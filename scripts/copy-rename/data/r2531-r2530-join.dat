@@ -1,0 +1,10 @@
+#R056
+PLACEHOLDER
+2531||sandbox/team2/ks-core/branches/ks-core-dev/common-test/src/test/java/org/kuali/student/common_test_tester/support/MyDaoLoader.java
+2530||sandbox/team2/lum/branches/lum-0.0.1/lum-web/src/main/java/edu/umd/ks/poc/lum/web/spring/LumServicesContext.java
+19f8fbb3c77fba70ecd83f17a693f812d3c7ddab||0e2079b56616a95073bb846d4b23cfdd
+#R056
+PLACEHOLDER
+2531||sandbox/team2/ks-core/branches/ks-core-dev/common-test/src/main/java/org/kuali/student/common/test/spring/DaoLoader.java
+2530||brms/brms-api/branches/brms-api-dev/rule-repository-api/src/main/java/org/kuali/student/rules/repository/service/jaxws/adapter/RuleMapType.java
+8deb3734ab17935e7fb17cb09427e798cb01197f||4db3c17bced23e56fcb29c6a85a02a73

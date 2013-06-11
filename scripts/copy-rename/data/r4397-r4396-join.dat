@@ -1,0 +1,10 @@
+#R059
+PLACEHOLDER
+4397||ks-core/branches/ks-core-dev/common-test/src/test/java/org/kuali/student/common_test_tester/support/jaxws/EchoResponse.java
+4396||poc/common/branches/common-0.1.0-poms2/common-test/src/test/java/org/kuali/student/common_test_tester/support/jaxws/SaveStringResponse.java
+f7619c6a53e5d818a09453fb60054810087ea7b0||644ff9d144e851a05293df17602c7a1f
+#R058
+PLACEHOLDER
+4397||ks-core/branches/ks-core-dev/common-test/src/test/java/org/kuali/student/common_test_tester/support/jaxws/Echo.java
+4396||poc/common/branches/common-0.1.0-poms2/common-test/src/test/java/org/kuali/student/common_test_tester/support/jaxws/SaveString.java
+cd283434ab069fdc2cc48e102de67127f1c425b8||94b76786fddb1254b7da454983d44cb7

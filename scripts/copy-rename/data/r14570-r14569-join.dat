@@ -1,0 +1,10 @@
+#R093
+PLACEHOLDER
+14570||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/MajorDisciplineController.java
+14569||tags/ks-1.1-poc-20100629-build-33/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/tools/client/configuration/MajorDisciplineController.java
+01820f96ff77c5767441453b8d49467d7f0c4a14||d140529b316b850ab0d013c0a4d3daca
+#R089
+PLACEHOLDER
+14570||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-program/src/main/java/org/kuali/student/lum/program/client/MajorDisciplinePanel.java
+14569||tags/ks-1.1-poc-20100629-build-33/ks-lum/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/tools/client/configuration/MajorDisciplinePanel.java
+195f5f47e9188e03f2bf2c4700d63a94fc00d23b||753b000958b8e171f1470436b8384194

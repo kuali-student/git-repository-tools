@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+5541||ks-core/branches/ks-core-dev/ks-core-api/src/main/resources/org/kuali/student/core/document/Document.gwt.xml
+5540||ks-core/branches/ks-core-dev/ks-core-api/src/main/resources/org/kuali/student/core/Core.gwt.xml
+325fea4ed6576f6aad184f4649a17dec0b9a93ce||84479b1694ca66f15c3c0bb5b7c0f250
+#R069
+PLACEHOLDER
+5541||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/dto/ModelDTOAdapter.java
+5540||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/configuration/mvc/ModelDTOAdapter.java
+c761bc36c17ad38463d2811307195b69a722eeac||b41043f0de050e3a403f1f0648d0a456

@@ -1,0 +1,15 @@
+#R090
+PLACEHOLDER
+274||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/binding/JaxbAttributeMapListAdapter.java
+273||poc/personidentity/personidentity-api/tags/personidentity-api-0.0.1-alpha/src/main/java/org/kuali/student/poc/util/jaxb/JaxbAttributeMapListAdapter.java
+418c4d4187f5d792fdd7cd6b34ee640f2cb8930b||58e74e94435318a9cdecebfdd575d9d9
+#R089
+PLACEHOLDER
+274||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/binding/JaxbAttribute.java
+273||poc/personidentity/personidentity-api/tags/personidentity-api-0.0.2/src/main/java/org/kuali/student/poc/util/jaxb/JaxbAttribute.java
+2b7c841cf8aaa7db007a46c5c22f63811c5b9d55||9706a7feafcd550d1d5b26ad1df2080f
+#R087
+PLACEHOLDER
+274||poc/common/branches/common-dev/common-ws/src/main/java/org/kuali/student/poc/common/ws/binding/JaxbAttributeList.java
+273||poc/personidentity/personidentity-api/tags/personidentity-api-0.0.2/src/main/java/org/kuali/student/poc/util/jaxb/JaxbAttributeList.java
+8dae1a8c5f532ec4b47132c9b91981a4b2cfc0b4||0d4e17a5856b08a8efa12c8b255b03de

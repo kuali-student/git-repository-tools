@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+26138||branches/ks-2.0-cm/ks-core-temp/ks-core-api/src/main/java/org/kuali/student/core/enumerationmanagement/EnumerationManagementServiceConstants.java
+26137||branches/ks-2.0-cm/ks-core-temp/ks-core-api/src/main/java/org/kuali/student/core/enumerationmanagement/service/EnumerationManagementServiceConstants.java
+4ee21ae595dde5fc33e7350e82781b69b54d6126||e673faec3fdeddc2681a0d3cbcb539b9
+#R100
+PLACEHOLDER
+26138||branches/ks-2.0-cm/ks-core-temp/ks-core-api/src/main/java/org/kuali/student/core/type/TypeServiceConstants.java
+26137||branches/ks-2.0-cm/ks-common-temp/ks-common-api/src/main/java/org/kuali/student/common/util/constants/TypeServiceConstants.java
+09274b5fec1b2425cd0a0930328e0d893f6b2d3f||d0cdb7e0160f250fb7db4beebb8c7c17
+#R100
+PLACEHOLDER
+26138||branches/ks-2.0-cm/ks-core-temp/ks-core-api/src/main/java/org/kuali/student/core/state/StateServiceConstants.java
+26137||branches/ks-2.0-cm/ks-common-temp/ks-common-api/src/main/java/org/kuali/student/common/util/constants/StateServiceConstants.java
+8d07c46fbc4a2bf5c0189eed2a892fc82f26d271||615a6dee16ec74834a1093b6bd0fc1a2

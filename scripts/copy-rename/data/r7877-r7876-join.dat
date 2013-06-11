@@ -1,0 +1,15 @@
+#R079
+PLACEHOLDER
+7877||brms/branches/brms-dev/ks-statement-impl/src/main/java/org/kuali/student/brms/statement/entity/ObjectTypeAttribute.java
+7876||brms/branches/brms-dev/ks-statement-impl/src/main/java/org/kuali/student/brms/statement/entity/StatementAttribute.java
+1626f130039296ae7052f122ca8795ec064dbf8b||f17bd2fa6bbaa2a6fe113dd06c1e84b7
+#R062
+PLACEHOLDER
+7877||brms/branches/brms-dev/ks-statement-impl/src/main/java/org/kuali/student/brms/statement/entity/ObjectSubType.java
+7876||ks-lum/branches/ks-lum-1.0.0-m1/ks-lum-impl/src/main/java/org/kuali/student/lum/lu/entity/LuDocumentRelationType.java
+f874e691b0423edae3adde73ff67e06ea2bc75f2||64d0c449f240f4b909197804dd6fb155
+#R050
+PLACEHOLDER
+7877||brms/branches/brms-dev/ks-statement-impl/src/main/java/org/kuali/student/brms/statement/entity/ObjectSubTypeAttribute.java
+7876||brms/branches/brms-dev/ks-brms-impl/src/main/java/org/kuali/student/brms/rulemanagement/entity/BusinessRuleAttribute.java
+e736a7ec2307937a16191e88e265f8cfced8e057||557368554bb20d2d76b20c23fcee05fb

@@ -1,0 +1,15 @@
+#R084
+PLACEHOLDER
+14558||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/multiplicity/wip/MultiplicityHeader.java
+14557||tags/ks-1.1-20100526-build-20/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/sections/MultiplicityHeader.java
+30e74ae97c20086723619438d71f70d41c84f67c||c2b1b31bceb387f6096dbd2bff26f7a5
+#R077
+PLACEHOLDER
+14558||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/binding/wip/MultiplicityGroupItemBinding.java
+14557||deploymentlab/branches/ks-1.1-m2e/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/binding/MultiplicityItemBinding.java
+b1d5e2e21624c4c8162ed2c15fdd0907d5258c76||0da4114df705a237a79c23c44fceee77
+#R050
+PLACEHOLDER
+14558||trunk/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/binding/wip/MultiplicityGroupBinding.java
+14557||deploymentlab/branches/ks-1.1-m2e/ks-core/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/configurable/mvc/binding/MultiplicityCompositeBinding.java
+4792c5bcf78527564892a0e96b7afb7be7d671d7||b46abc71990184de7d3405afa7032253

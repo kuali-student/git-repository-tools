@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+20109||deploymentlab/branches/ks-r2-config/ks-security/ks-sts/.classpath
+20108||deploymentlab/branches/ks-r2-config/ks-common/ks-common-test/.classpath
+6baae99dad82dbed582274bab3ae0fd511eb632e||59bfcaa9f4799fa88685122f5513031f
+#R100
+PLACEHOLDER
+20109||deploymentlab/branches/ks-r2-config/ks-security/ks-standard-sec/.classpath
+20108||deploymentlab/branches/ks-r2-config/ks-common/ks-common-impl/.classpath
+6baae99dad82dbed582274bab3ae0fd511eb632e||59bfcaa9f4799fa88685122f5513031f

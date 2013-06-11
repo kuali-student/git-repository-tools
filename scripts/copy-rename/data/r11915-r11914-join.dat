@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+11915||ks-web/branches/ks-web-dev/ks-rice/src/main/resources/org/kuali/rice/standalone/config/StandaloneSpringBeans.xml
+11914||ks-web/branches/ks-web-dev/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/StandaloneSpringBeans.xml
+c3455c47dfff9972deae354bc58efa0c1e4b2965||012c941ee380f8719f46afc5b46b8686

@@ -1,0 +1,10 @@
+#R073
+PLACEHOLDER
+15300||deploymentlab/trunk/test/performance/ks-tsung/suites/search
+15299||deploymentlab/tags/performance-1.0.0/ks-tsung/suites/smoke
+2fbf24931066b25a347faf29d0ec70ee0b2220eb||408adf9954fd5a4a612cc3ff0457de3c
+#R064
+PLACEHOLDER
+15300||deploymentlab/trunk/test/performance/ks-tsung/tests/course_search.rb
+15299||deploymentlab/trunk/test/performance/ks-tsung/tests/create_proposal.rb
+8004794564d0a6273006f7e155804b5f293e6b9c||498b26bc96a207d20e6e6af29021f5ce

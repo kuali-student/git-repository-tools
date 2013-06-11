@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+19781||trunk/ks-core/ks-core-ui/src/main/resources/org/kuali/student/core/document/ui/DocumentUI.gwt.xml
+19780||branches/inactive/ks-1.0.x/ks-core/ks-core-ui/src/main/resources/org/kuali/student/core/workflow/ui/WorkflowUI.gwt.xml
+9060a12488c66db9ae17e55836e6b750b9d0ccb4||f40cba73ebe2863dc619594a0774384d

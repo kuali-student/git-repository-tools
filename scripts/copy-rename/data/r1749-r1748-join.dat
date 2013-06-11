@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+1749||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-rulerepository.properties
+1748||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application.properties
+ac5f9e40972b9d01ac2c6bcf3aaad1be30debe8c||c3f88f9615194d4732c9c935ff3596f9
+#R086
+PLACEHOLDER
+1749||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/cxf-rulerepository-context.xml
+1748||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/cxf-context.xml
+39eedd052ecb3d05255b593f7ef3915db552a84d||3e74e770307ea452b4b21900926c2451
+#R074
+PLACEHOLDER
+1749||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-rulerepository-context.xml
+1748||brms/brms-impl/branches/brms-impl-dev/brms-ws/src/main/resources/application-context.xml
+24229bb044ef7978410119c0a363621a15c94d2a||e4fbc97a5bf0d4f78b1b92ab7cf2bf52

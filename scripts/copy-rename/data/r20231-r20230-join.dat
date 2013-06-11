@@ -1,0 +1,5 @@
+#R052
+PLACEHOLDER
+20231||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/main/java/org/kuali/student/enrollment/lpr/service/adapter/federator/LuiPersonRelationFederatingAdapter.java
+20230||sandbox/ks-r2-poc/trunk/ks-services/ks-services-impl/src/main/java/org/kuali/student/enrollment/lpr/service/adapter/LuiPersonRelationAdapter.java
+e7ac8a3b889deb7c43430ff6513beb85f36e4f22||c60e38c9d6dbd4abebf460225893541f

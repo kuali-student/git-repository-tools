@@ -1,0 +1,10 @@
+#R095
+PLACEHOLDER
+17483||trunk/ks-lum/ks-lum-impl/src/test/resources/statement-test-context.xml
+17482||tags/builds/ks-1.1-20100922-build-134/ks-lum/ks-lum-impl/src/test/resources/statement-additional-context.xml
+49d6f16c5379d926a525425cfe537e709ca1398f||628108af73c6ab6298ae08098d90488b
+#R050
+PLACEHOLDER
+17483||trunk/ks-lum/ks-lum-impl/src/test/resources/statement-test-context-registry.xml
+17482||tags/builds/ks-1.1-20100904-build-115/ks-lum/ks-lum-impl/src/main/resources/statement-context.xml
+a20c13ea59d4cdac672f743018c25f974174b479||54450e095a3d473887f0ed693c30e027

@@ -1,0 +1,10 @@
+#R080
+PLACEHOLDER
+7086||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/exceptions/jaxws/CircularRelationshipExceptionBean.java
+7085||ks-core/branches/ks-core-dev-orch/ks-core-api/src/main/java/org/kuali/student/core/exceptions/jaxws/CircularReferenceExceptionBean.java
+2ca49cbc768d184e96558b2423431b0f414d85f6||7f36bea5e9f66d072d11356c6c32c3a5
+#R073
+PLACEHOLDER
+7086||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/exceptions/CircularRelationshipException.java
+7085||ks-core/branches/ks-core-dev/ks-core-api/src/main/java/org/kuali/student/core/exceptions/CircularReferenceException.java
+8870fe4fa16883e710b7c580eee55b7e3403cf59||88d575f170fcb70a32c93907cbf2545d

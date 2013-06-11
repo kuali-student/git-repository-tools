@@ -1,0 +1,15 @@
+#R096
+PLACEHOLDER
+11330||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/rice/student/core/web/listener/RiceContextLoaderListener.java
+11329||ks-web/branches/ks-web-1.0.0-m4/ks-embedded/src/main/java/org/kuali/rice/core/web/listener/RiceContextLoaderListener.java
+5e2767200ae7e2ec5dd6170d6ff5d1c01b1a9ac1||ee5e48a47e1fa2097b608013052fe8c7
+#R096
+PLACEHOLDER
+11330||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/rice/student/core/web/context/RiceWebApplicationContextProxy.java
+11329||ks-web/branches/ks-web-1.0.0-m4/ks-embedded/src/main/java/org/kuali/rice/core/web/context/RiceWebApplicationContextProxy.java
+0972cef71bba49022e75d70892a75c70170867c1||67bb040c108aeee4aa28fbd4c15ba9a3
+#R095
+PLACEHOLDER
+11330||ks-core/branches/ks-core-dev/ks-common-util/src/main/java/org/kuali/rice/student/ksb/messaging/KSBClientProxy.java
+11329||ks-web/branches/ks-web-dev/ks-standalone/src/main/java/org/kuali/rice/ksb/messaging/KSBClientProxy.java
+3081473d5961c2ef98fb60486f546344c4daa0d3||ecc2eeb1734b106da810d8910e37e074

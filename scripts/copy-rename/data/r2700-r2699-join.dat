@@ -1,0 +1,10 @@
+#R091
+PLACEHOLDER
+2700||dictionary/trunk/dic-impl/src/main/java/org/kuali/student/dictionary/validator/ValidationResult.java
+2699||commons/ks-commons-ui/tags/ks-commons-ui-0.0.3/src/main/java/org/kuali/student/commons/ui/validators/client/ValidationResult.java
+d788833bbfe7104571ed393af756f42eb80a9d38||a326a5bbae697d2e27385c452d4100b2
+#R090
+PLACEHOLDER
+2700||dictionary/trunk/dic-impl/src/main/java/org/kuali/student/dictionary/validator/Validator.java
+2699||enumeration/enumeration-impl/src/main/java/org/kuali/student/enumeration/validator/Validator.java
+f2257dd7b1afc642b329008508d1ea083695ee23||14905ee99d7ec508f7ae78d36030cc59

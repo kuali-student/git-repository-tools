@@ -1,0 +1,10 @@
+#R095
+PLACEHOLDER
+2672||enumeration/enumeration-api/src/main/resources/wsdl/EnumerationService.xjb
+2671||enumeration/enumeration-web/src/main/resources/wsdl/EnumerationService.xjb
+b64490a8ee66acc1ce20b23f2f234f5bc20ba221||452b2c9be7b17d0ff24b58f74a2c5f3f
+#R059
+PLACEHOLDER
+2672||enumeration/enumeration-api/src/main/resources/wsdl/EnumerationService.wsdl
+2671||enumeration/enumeration-web/src/main/resources/wsdl/EnumerationService.wsdl
+09fcc5a82cbaae7650bf4a23221288d07bf79547||5eddc997eba1758c4d33fe91d41d86af

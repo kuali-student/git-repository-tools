@@ -1,0 +1,10 @@
+#R076
+PLACEHOLDER
+14359||trunk/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetCluSetTreeView.java
+14358||deploymentlab/tags/ks-1.0.0-m5/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetClusFromCluSet.java
+1b1b319d7c73f9a00a152dc3cd2d67bb29a333b9||911bce14f532e01156dc6b24dbdade77
+#R057
+PLACEHOLDER
+14359||trunk/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetCluSetTreeViewResponse.java
+14358||deploymentlab/tags/ks-1.0.0-m5/ks-lum/ks-lum-api/src/main/java/org/kuali/student/lum/lu/service/jaxws/GetCluCluRelationResponse.java
+1a56a6986b6e42c51f7bfc811b967e07afa93f12||8934563613e72d518c00d55c4fa2b979

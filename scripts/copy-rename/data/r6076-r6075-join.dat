@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+6076||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/lum-ui.properties
+6075||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/META-INF/lum-ui.properties
+29bbb0e17578b74721c68cbadb4b5a4a35d63830||332185542b155846d0b4959da3c052a7
+#R100
+PLACEHOLDER
+6076||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/database-context.xml
+6075||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/META-INF/database-context.xml
+775a33b8cbf9ffe84fa3a8f185309e9cc81406fa||af0ce2924b4eb61dd9bb7c260e74cb45
+#R091
+PLACEHOLDER
+6076||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/lum-gwt-context.xml
+6075||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/META-INF/gwt-context.xml
+455f87ffe9c7ed6f510f306d3c921c89ba1cd12d||68a9868a38245424bb6d818e701f3eaf

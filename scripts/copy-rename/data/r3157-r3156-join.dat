@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+3157||ks-core/branches/ks-core-dev/core-impl/src/test/resources/testMessageData.xml
+3156||message/trunk/message-impl/src/main/resources/testMessageData.xml
+5a06d51e4e040aa4c8e1e84df447519991f78937||6576c9fb911aba37e6e44df803f3e88a
+#R081
+PLACEHOLDER
+3157||ks-core/branches/ks-core-dev/core-impl/src/test/java/org/kuali/student/core/messages/dao/impl/MessageManagementDAOImplTest.java
+3156||message/trunk/message-impl/src/test/java/org/kuali/student/message/dao/impl/MessageManagementDAOImplTest.java
+aba4026f20c4a913e718efb0aa830c0e54057ac2||4ee77c33a8351610d6230717aaa6a0d6
+#R079
+PLACEHOLDER
+3157||ks-core/branches/ks-core-dev/core-impl/src/test/java/org/kuali/student/core/messages/service/impl/MessageServiceImplTest.java
+3156||message/trunk/message-impl/src/test/java/org/kuali/student/message/service/impl/MessageServiceImplTest.java
+bfdb15bb61b1e9f6958a7a98a6356fddaaa02921||ee6d31cc09de4ec34ca6798d6151529f

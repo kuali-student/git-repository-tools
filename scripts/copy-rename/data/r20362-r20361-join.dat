@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+20362||deploymentlab/trunk/impex/db-jdbc/src/test/resources/application-properties.xml
+20361||deploymentlab/trunk/impex/db-impex/src/test/resources/application-properties.xml
+fb212acc38227dfef2c47294b4ff3117a7aec73a||c1f9ef05d3c6fbaaf53b9fb92896b539
+#R091
+PLACEHOLDER
+20362||deploymentlab/trunk/impex/db-jdbc/src/test/resources/application-context.xml
+20361||deploymentlab/trunk/impex/db-impex/src/test/resources/application-context.xml
+dd6ba3770c2fe5ccb9775e986141ae7583b5fd6e||e9613e416bf4cebd8b5d5c08ba2b236c

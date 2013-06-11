@@ -1,0 +1,15 @@
+#R074
+PLACEHOLDER
+6422||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/LoRpcServiceAsync.java
+6421||sandbox/searchwidgets/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/mvc/UncheckedApplicationEventHandler.java
+3b5a479eb8ca4841c0c3161fbd82d8bb24e55827||5c87ea4c964cb353f2e7eb4ba937a907
+#R071
+PLACEHOLDER
+6422||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/client/service/LoRpcService.java
+6421||sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/proposal/ui/client/service/ProposalRpcServiceAsync.java
+f755aaee136c7d2f17c34bca745f7e92cd752f06||89d6aeea64b1cc937a9c938600adcb5a
+#R064
+PLACEHOLDER
+6422||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/course/server/gwt/LoRpcGwtServlet.java
+6421||ks-core/branches/ks-core-dev/ks-core-ui/src/main/java/org/kuali/student/core/proposal/ui/server/gwt/ProposalRpcGwtServlet.java
+8a1a02e2959764ff51770741cd150398c4deb63f||0378fc7b4981271e47f46d486dbd351f

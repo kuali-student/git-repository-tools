@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+14032||trunk/ks-cfg-dbs/ks-core-db/KSEM_ENUM_VAL_T.xml
+14031||branches/ks-1.0.x/ks-cfg-dbs/ks-embedded-db/KSEM_ENUM_VAL_T.xml
+33bb21fd44646408585ff17c74ee60e9b4192a31||1c8b2fd9ac57a6af0e9e0230bedce977
+#R100
+PLACEHOLDER
+14032||trunk/ks-cfg-dbs/ks-core-db/KSEM_CTX_T.xml
+14031||branches/ks-1.0.x/ks-cfg-dbs/ks-embedded-db/KSEM_CTX_T.xml
+34a320aa0b5498db1c3fa602f2712418692a4c58||d0f10023c4ce5894fb609b213558a00d
+#R100
+PLACEHOLDER
+14032||trunk/ks-cfg-dbs/ks-core-db/KSEM_CTX_JN_ENUM_VAL_T.xml
+14031||branches/ks-1.0.x/ks-cfg-dbs/ks-embedded-db/KSEM_CTX_JN_ENUM_VAL_T.xml
+e23b101aece2a07c4bd900d9895e7a5ccad28f97||a87b7619b6cd21b150dd38ae67a873d1

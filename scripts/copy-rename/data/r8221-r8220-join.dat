@@ -1,0 +1,5 @@
+#R087
+PLACEHOLDER
+8221||tools/maven-dictionary-generator/trunk/src/test/resources/lu-dictionary-structure-config.xml
+8220||tools/maven-dictionary-generator/trunk/src/test/resources/lu-cluInfo-dictionary-override-config.xml
+0dac719a855db409a33ceb6c7862e306ecbb6931||c6c9e18fa1bebcff1ca1f7c34fe2ee31

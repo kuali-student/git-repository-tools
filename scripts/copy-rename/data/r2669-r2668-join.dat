@@ -1,0 +1,15 @@
+#R075
+PLACEHOLDER
+2669||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/RemoveEnumerationMetaResponse.java
+2668||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/RemoveEnumeratedValueResponse.java
+6babf4f949840bb7823a1fede1491d4569c48a24||aacd3b30bd6c611cc0e4d6014f7c23a5
+#R069
+PLACEHOLDER
+2669||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/AddEnumerationMetaResponse.java
+2668||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/FetchEnumerationMetaResponse.java
+3d3bb3ff5746ba804d5e2fd55bc9e64f41faed76||3a8d68a005bd84185bda45040e7761aa
+#R069
+PLACEHOLDER
+2669||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/RemoveEnumerationMeta.java
+2668||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/service/jaxws/FetchEnumerationMeta.java
+814cb4b4da9f13db5a00ea23b639d451bef38c7f||2064879bed3c4421057fd0e3f038b580

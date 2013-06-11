@@ -1,0 +1,15 @@
+#R085
+PLACEHOLDER
+7291||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseConstants.java
+7290||ks-lum/tags/ks-lum-1.0.0-m3/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/CopyFromSingleUseLosButtonConstants.java
+da9b77ffb81e5fd675a191e7d2b47bd45976c810||446b2aa44770ade32ad408e01b9713e6
+#R077
+PLACEHOLDER
+7291||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseMetadata.java
+7290||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/CopyFromSingleUseLosButtonMetadata.java
+9cdd5de3785129521ed881537b5c49eb50531593||bac25505b709189a4c16bc8bb144efd8
+#R073
+PLACEHOLDER
+7291||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/FindCourseHelper.java
+7290||ks-lum/tags/ks-lum-1.0.0-m3/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/assembly/data/client/refactorme/orch/CopyFromSingleUseLosButtonHelper.java
+eb57e5e05da41e9d97734e5bbce616d27b79c644||4544c016c7368fa35571c2d3dc36b0ba

@@ -1,0 +1,10 @@
+#R089
+PLACEHOLDER
+3509||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/impl/KSSelectableTableListImpl.java
+3508||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/KSSelectableTableList.java
+e80d736f40e3dbc58370901eaada5ed405893c4e||02693840faff0e6c210e85ebda2301eb
+#R076
+PLACEHOLDER
+3509||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/impl/KSRadioButtonListImpl.java
+3508||ks-core/branches/ks-core-dev/common-ui/src/main/java/org/kuali/student/common/ui/client/widgets/list/KSRadioButtonList.java
+20b591bb84041d7536aab02e34d84bf4e9ec517a||e2e2bdf05aa07f04ff13853dd1fc49bf

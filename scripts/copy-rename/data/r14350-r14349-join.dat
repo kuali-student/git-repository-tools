@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+14350||branches/ks-poc-1.1.x-br/ks-core/ks-common-impl/src/main/resources/common-lookup-context.xml
+14349||branches/ks-poc-1.1.x-br/ks-lum/ks-lum-ui/src/main/resources/common-lookup-context.xml
+36a1bd1c3b67c4db8e278e343751e927816b9f10||f8df4c3760c8a14e62d0745f88e64204

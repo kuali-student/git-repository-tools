@@ -1,0 +1,15 @@
+#R100
+PLACEHOLDER
+5730||tools/maven-dictionary-generator/.classpath
+5729||poc/poms/branches/poms-dev/.classpath
+d8f291998b83cb5e57273cbcdd6b0a69867b82e5||df22514291688e3d6f3b8bd88ea9abde
+#R085
+PLACEHOLDER
+5730||tools/maven-dictionary-generator/.settings/org.maven.ide.eclipse.prefs
+5729||sandbox/team2/ks-integrate/.settings/org.maven.ide.eclipse.prefs
+cad745b53852d02f7a3047244c72c4c44295e298||526a41724602fce9c234cb22e3a6ebce
+#R083
+PLACEHOLDER
+5730||tools/maven-dictionary-generator/.settings/org.eclipse.jdt.core.prefs
+5729||sandbox/team2/ks-integrate/.settings/org.eclipse.jdt.core.prefs
+d09dac0f2b28438e975df7bb7165df1c8a5bf623||a35146a9c17d179096f8398434ec1d8e

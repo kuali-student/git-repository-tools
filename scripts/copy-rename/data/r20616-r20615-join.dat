@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+20616||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/ConfigurablePropertyPlaceholderConfigurerTest-context.xml
+20615||deploymentlab/trunk/kuali-spring-util/src/test/resources/ResolverPropertiesFirstPlaceholderConfigurer-context.xml
+a945ac2a97b459c68b1c016aab42e8209e014b59||b1c6ff74a54c6b247df547175e437776
+#C100
+PLACEHOLDER
+20616||deploymentlab/trunk/kuali-spring-util/src/test/resources/org/kuali/spring/util/ResolvePropertiesFirstPlaceholderConfigurer-context.xml
+20615||deploymentlab/trunk/kuali-spring-util/src/test/resources/ResolverPropertiesFirstPlaceholderConfigurer-context.xml
+a945ac2a97b459c68b1c016aab42e8209e014b59||b1c6ff74a54c6b247df547175e437776

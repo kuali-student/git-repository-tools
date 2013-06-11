@@ -1,0 +1,15 @@
+#R062
+PLACEHOLDER
+40||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/PersonRelationInfo.java
+39||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/PersonDisplayInfo.java
+0522e8f79645b40592c4a7e8e06db98b1cc65024||a7fbce9a2a8614cb41924bbd3abfa771
+#R060
+PLACEHOLDER
+40||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/PersonRelationDisplay.java
+39||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/PersonCriteria.java
+d461a3ffbd4e876638665512a55dcdeb1f12d052||09f40129d3b307bd67108afbf6544c47
+#R058
+PLACEHOLDER
+40||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/PersonRelationCriteria.java
+39||poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/PersonRelationTypeDisplay.java
+f4143f9f5971233e800f912172174073bd2f35dc||5435a8dd9b7fb2d06f05fba56f83e0a9

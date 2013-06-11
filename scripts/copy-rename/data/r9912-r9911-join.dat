@@ -1,0 +1,10 @@
+#R098
+PLACEHOLDER
+9912||ks-core/branches/ks-core-dev/ks-core-impl/src/main/resources/comment-commentInfo-dictionary-override-config.xml
+9911||tools/maven-dictionary-generator/trunk/src/test/resources/comment-commentInfo-dictionary-override-config.xml
+36006de1be0e19904e6cd5954ea5638a1c781499||4377716c4f24e860dea0aefee85f8bdf
+#R060
+PLACEHOLDER
+9912||ks-core/branches/ks-core-dev/ks-core-impl/src/main/resources/comment-commentInfo-dictionary-structure-config.xml
+9911||tools/maven-dictionary-generator/trunk/src/test/resources/comment-commentInfo-dictionary-structure-config.xml
+b291960e21c932474beba3dafad44b43c8de5b80||3c7fdabc0d416bfb51d7adf808699af4

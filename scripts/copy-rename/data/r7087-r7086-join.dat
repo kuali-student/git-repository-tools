@@ -1,0 +1,15 @@
+#R078
+PLACEHOLDER
+7087||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/entity/LoCategoryTypeAttribute.java
+7086||ks-lum/branches/ks-lum-dev-orch/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/entity/LoCategoryAttribute.java
+372363080a5ce923d7489a9ae65a53fedf902eaf||c6d89168ddbbe44e9b077d4ec065f326
+#R073
+PLACEHOLDER
+7087||ks-lum/branches/ks-lum-dev/ks-lum-api/src/main/java/org/kuali/student/lum/lo/dto/LoCategoryTypeInfo.java
+7086||ks-lum/branches/ks-lum-dev-orch/ks-lum-api/src/main/java/org/kuali/student/lum/lo/dto/LoTypeInfo.java
+0f228ae431909dd666fff90d5a2e30d2b1af1a28||e052725eee41da5e9b371c7b247efd5e
+#R072
+PLACEHOLDER
+7087||ks-lum/branches/ks-lum-dev/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/entity/LoCategoryType.java
+7086||ks-lum/tags/ks-lum-1.0.0-m2/ks-lum-impl/src/main/java/org/kuali/student/lum/lo/entity/LoCategory.java
+7713d107f4b2069b1794c87aa44f850c4ea668a0||b59125467483c1b389cf7cff6a76a345

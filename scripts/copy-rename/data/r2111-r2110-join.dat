@@ -1,0 +1,10 @@
+#R067
+PLACEHOLDER
+2111||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/dto/EnumeratedValue.java
+2110||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/dto/EnumeratedValue.java
+dd737ef235191b0a8b1ae9eed1cc2102a7f689cb||3c5b00d556f15bcb55f3081ace68bd64
+#R064
+PLACEHOLDER
+2111||enumeration/enumeration-api/src/main/java/org/kuali/student/enumeration/dto/package-info.java
+2110||dictionary/trunk/dic-api/src/main/java/org/kuali/student/dictionary/dto/package-info.java
+75462e186823dee9404d93d5de33e2b949e258af||1472ac5956cdc42c01bb0d231ff88dac

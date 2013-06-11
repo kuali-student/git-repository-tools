@@ -1,0 +1,5 @@
+#R100
+PLACEHOLDER
+25291||branches/ks-1.3-services/ks-enroll/ks-enroll-api/src/main/java/org/kuali/student/r2/common/exceptions/MessageException.java
+25290||branches/ks-1.2-perf/ks-common/ks-common-api/src/main/java/org/kuali/student/common/messages/MessageException.java
+b6e04598319521ae1f9a9b45279922f91da86c9a||0ee76bcc3fdfed7f8ffb8e26bccd6c0b

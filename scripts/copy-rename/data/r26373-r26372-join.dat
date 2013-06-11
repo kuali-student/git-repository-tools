@@ -1,0 +1,10 @@
+#R100
+PLACEHOLDER
+26373||branches/ks-2.0-cm/ks-common-temp/ks-common-impl/src/main/java/org/kuali/student/enrollment/dao/GenericEntityDao.java
+26372||branches/ks-1.3-services/ks-enroll/ks-enroll-impl/src/main/java/org/kuali/student/enrollment/dao/GenericEntityDao.java
+b287bdd9e233fd6b5170351d1820d3976e887784||a6c44173dc4d1636065e2ce9643ac32c
+#R100
+PLACEHOLDER
+26373||branches/ks-2.0-cm/ks-common-temp/ks-common-impl/src/main/java/org/kuali/student/enrollment/dao/EntityDao.java
+26372||branches/ks-1.3-services/ks-enroll/ks-enroll-impl/src/main/java/org/kuali/student/enrollment/dao/EntityDao.java
+5f77bd465a0e7e1d3786fe5bf9b7604429f9542e||6acbe2e164d351a475fe59c340711480

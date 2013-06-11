@@ -1,0 +1,10 @@
+#R092
+PLACEHOLDER
+5385||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/CommentRpcService.java
+5384||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/comment/CommentRpcService.java
+ca9bee56863885e5b4874f931ca3789aa03ff731||cc3f259ab874c807b5dd2bb5e2a8d946
+#R091
+PLACEHOLDER
+5385||ks-core/branches/ks-core-dev/ks-common-ui/src/main/java/org/kuali/student/common/ui/client/service/CommentRpcServiceAsync.java
+5384||ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/java/org/kuali/student/lum/lu/ui/client/async/CommentRpcServiceAsync.java
+cdf0d6d6447722af5f220eea8428fa6059e158ed||b94e9bedbd0aa7e6235a75a645f75bb7

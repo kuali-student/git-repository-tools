@@ -1,0 +1,10 @@
+#R060
+PLACEHOLDER
+5497||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/DictionaryExecutionException.java
+5496||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/ConstraintRefWriter.java
+43543b9687a47a044c19fbcd0eb00991e2c75629||302d6e6b6c6f6b58417d893a83e8b153
+#R058
+PLACEHOLDER
+5497||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/DictionaryValidationException.java
+5496||tools/maven-dictionary-generator/trunk/src/main/java/org/kuali/student/dictionary/WorksheetReader.java
+a80149a019ba31ad539fa732a08deea9b60b1971||da75bd46edcf3bfa24cf319a383cd9aa

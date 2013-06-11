@@ -1,0 +1,5 @@
+#R095
+PLACEHOLDER
+19311||deploymentlab/trunk/kuali-maven-common/src/main/java/org/kuali/maven/mojo/BaseMojo.java
+19310||deploymentlab/tags/impex-1.0.12/maven-impex-plugin/src/main/java/org/apache/torque/mojo/BaseMojo.java
+ac766ee59f71f6408a3e94be6bfcbeb097a2eafc||4eea389fd3782f121b9e9aabbe77930a

@@ -1,0 +1,10 @@
+#R072
+PLACEHOLDER
+3409||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/model/ILumModelObject.java
+3408||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/model/LumModelObject.java
+93ab60f404a1b6ce93c302179425ff824d639a5c||d1471561c630c7e90dddaadd727de79f
+#R060
+PLACEHOLDER
+3409||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/view/LumStackPanel.java
+3408||brms/brms-web/branches/brms-web-lum/rule-management-lum/src/main/java/org/kuali/student/rules/lumgui/client/view/LumTextArea.java
+63f93bae8e1902b77c341d4d30ed7e5bd4cf6ab0||f914e43e9026e97a2276ddf0ab6eb59f

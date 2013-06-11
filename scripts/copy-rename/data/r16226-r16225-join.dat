@@ -1,0 +1,10 @@
+#R095
+PLACEHOLDER
+16226||deploymentlab/trunk/maven-kuali-properties-plugin/src/main/java/org/kuali/maven/mojo/properties/BaseMojo.java
+16225||deploymentlab/trunk/impex/maven-impex-plugin/src/main/java/org/apache/torque/mojo/BaseMojo.java
+ccdbf0693b9856dd6ea744073f04cee9517acc0c||aa264dd70ad4972aeac59d0b22d9fc97
+#R083
+PLACEHOLDER
+16226||deploymentlab/trunk/maven-kuali-properties-plugin/src/main/java/org/kuali/maven/mojo/properties/PropertyHandlingException.java
+16225||deploymentlab/tags/impex-parent-1.0.1/torque-generator/src/main/java/org/kuali/core/db/torque/PropertyHandlingException.java
+10e1086d7dfa8e39a7e7b9403a264955f0c7771c||11b61229a17dfbda2745709ecde5c23a
