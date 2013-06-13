@@ -209,12 +209,20 @@ def verifySameFile(srcPath, dstPath):
 """
 Find the copies and moves.
 """
-def computeDiff(gitDirectory, targetRev, copyFromRev):
+def computeDiff(gitDirectory, targetRev, copyFromRev, filePathPrefix):
     
     joinOutputFile = "r{0}-r{1}-join.dat".format(targetRev, copyFromRev)
     
     print "Started on finding join data into: {0}".format(joinOutputFile)
-    
+   
+    if os.path.exists(joinOutputFile):
+
+        if filePathPrefix != None:
+            joinOutputFile = "{0}-{1}".format (filePathPrefix, joinOutputFile)
+        else:
+            print "ERROR: {0} already exists.  You need to specify a prefix"
+            sys.exit (-1)
+ 
     joinOutput = open (joinOutputFile, "w")
     
     # get the files that stayed the same between the copyFromRev and targetRev
@@ -420,7 +428,13 @@ for line in open(revisionData):
     elif type == 'DIFF':
         targetRev = int (parts[1])
         copyFromRev = int (parts[2])
-        computeDiff (gitDirectory, targetRev, copyFromRev)
+
+        pathPrefix = None
+
+        if len (parts) == 4:
+            pathPrefix = parts[3]
+
+        computeDiff (gitDirectory, targetRev, copyFromRev, pathPrefix)
     else:
         print 'USAGE: %s <git directory> <revision data file>' % sys.argv[0]
         sys.exit (-1)
