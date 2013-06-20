@@ -377,8 +377,16 @@ public class SvnDumpFilter {
 				String parts[] = splitLine(lineData.getLine());
 
 				nodeProperties.put(parts[0], parts[1]);
-
-				if (nodeProperties.containsKey("Content-length")) {
+				
+				if (parts[0].equals("Node-action") && parts[1].equals("delete")) {
+					/*
+					 * Handle where the last path in the dump file is a deleted path
+					 * we need to trigger it to be persisted.
+					 */
+					options.onAfterNode(currentRevision, path, nodeProperties, nodeFilter);
+					return;
+				}
+				else if (nodeProperties.containsKey("Content-length")) {
 
 					long contentLength = extractLongValue(lineData);
 					
