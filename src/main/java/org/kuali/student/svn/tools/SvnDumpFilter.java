@@ -356,6 +356,7 @@ public class SvnDumpFilter {
 				return;
 			} else if (lineData.getLine() == null) {
 
+				options.onAfterNode(currentRevision, path, nodeProperties, nodeFilter);
 				options.onStreamEnd(lineData);
 
 				return;
