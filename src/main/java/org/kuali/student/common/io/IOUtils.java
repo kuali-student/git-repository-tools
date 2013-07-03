@@ -268,7 +268,8 @@ public final class IOUtils {
 				while (charactersRead < valueLength) {
 
 					if (secondPass) {
-						log.info("second pass");
+						valueBuilder.append("\n");
+						log.debug("second pass");
 					}
 					i++;
 
@@ -277,7 +278,7 @@ public final class IOUtils {
 					valueBuilder.append(valueLine);
 
 					// account for the \n that was stripped.
-					charactersRead += valueLength + 1;
+					charactersRead += valueLine.length() + 1;
 
 					secondPass = true;
 				}

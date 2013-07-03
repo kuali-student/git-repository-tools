@@ -146,6 +146,7 @@ public abstract class AbstractParseOptions implements IParseOptions {
 	public void onRevisionContentLength(
 			long currentRevision,
 			long contentLength,
+			long propContentLength,
 			ReadLineData lineData) {
 		try {
 			inputStream.skip(contentLength + 1);

@@ -213,8 +213,9 @@ public class SvnDumpFilter {
 			 */
 			@Override
 			public void onRevisionContentLength(long currentRevision,
-					long contentLength, ReadLineData lineData) {
+					long contentLength, long propContentLength, ReadLineData lineData) {
 
+				// TODO write out the propcontent length element.
 				lineData.println(fileOutputStream);
 
 				try {
@@ -509,6 +510,8 @@ public class SvnDumpFilter {
 					+ expectingPropContentLength);
 		}
 
+		long propContentLength = extractLongValue(expectingPropContentLength);
+		
 		ReadLineData expectingContentLength =  org.kuali.student.common.io.IOUtils.readTilNonEmptyLine(fileInputStream, UTF_8);
 
 		if (!expectingContentLength.startsWith("Content-length:")) {
@@ -516,10 +519,10 @@ public class SvnDumpFilter {
 					+ expectingPropContentLength);
 		}
 
+		
 		long contentLength = extractLongValue(expectingContentLength);
 
-		options.onRevisionContentLength(currentRevision, contentLength,
-				expectingContentLength);
+		options.onRevisionContentLength(currentRevision, contentLength, propContentLength, expectingContentLength);
 
 	}
 
