@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.kuali.student.svn.tools.merge.tools.BranchUtils;
-import org.kuali.student.svn.tools.merge.tools.BranchUtils.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

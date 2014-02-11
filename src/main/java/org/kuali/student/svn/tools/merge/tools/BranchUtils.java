@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,67 +36,7 @@ public final class BranchUtils {
 	private static final Logger log = LoggerFactory
 			.getLogger(BranchUtils.class);
 
-	public static final class BranchData {
-		Long revision;
-
-		String branchPath;
-		String path;
-
-		/**
-		 * @param branchPath
-		 * @param path
-		 */
-		public BranchData(Long revision, String branchPath, String path) {
-			super();
-			this.revision = revision;
-			this.branchPath = branchPath;
-			this.path = path;
-		}
-
-		/**
-		 * @return the prefix
-		 */
-		public String getBranchPath() {
-			return branchPath;
-		}
-
-		/**
-		 * @return the path
-		 */
-		public String getPath() {
-			return path;
-		}
-
-		/**
-		 * @return the revision
-		 */
-		public Long getRevision() {
-			return revision;
-		}
-
-		public boolean isSandbox() {
-			return branchPathContains("sandbox");
-		}
-
-		public boolean isBranch() {
-			return branchPathContains("branches");
-		}
-
-		public boolean isTag() {
-
-			return branchPathContains("tags");
-		}
-
-		private boolean branchPathContains(String test) {
-
-			if (branchPath.contains(test))
-				return true;
-			else
-				return false;
-
-		}
-
-	}
+	
 
 	public static final class PathData {
 		private Long addedRevision;
@@ -155,16 +97,39 @@ public final class BranchUtils {
 		
 		return -1;
 	}
+	public static interface IBranchTagAssist {
+
+		BranchData parseBranch(Long revision, String path, String[] parts) throws VetoBranchException;
+		
+		
+	}
+	
 	/**
 	 * Split the path into the branch part and the file path part.
 	 * 
 	 * @param path
 	 * @return the determined branch data.
+	 * @throws VetoBranchException 
 	 */
-	public static BranchData parse(Long revision, String path) {
+	
+	public static BranchData parse (Long revision, String path) {
+		try {
+			return parse(revision, path, null);
+		} catch (VetoBranchException e) {
+			return null;
+		}
+	}
+	public static BranchData parse(Long revision, String path, IBranchTagAssist assist) throws VetoBranchException {
 
 		String parts[] = path.trim().split("\\/");
 
+		if (assist != null) {
+			BranchData bd = assist.parseBranch(revision, path, parts);
+		
+			if (bd != null)
+				return bd;
+		}
+		
 		List<String> branchPathList = new ArrayList<String>();
 		List<String> pathList = new ArrayList<String>();
 

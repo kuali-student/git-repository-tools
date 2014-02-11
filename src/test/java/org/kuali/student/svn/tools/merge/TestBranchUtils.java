@@ -19,8 +19,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.kuali.student.svn.tools.merge.tools.BranchUtils;
-import org.kuali.student.svn.tools.merge.tools.BranchUtils.BranchData;
 
 /**
  * @author Kuali Student Team
