@@ -19,6 +19,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedHashMap;
@@ -26,6 +28,7 @@ import java.util.Map;
 
 import modifier.PathRevisionAndMD5AndSHA1;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.IOUtils;
 import org.kuali.student.svn.tools.model.INodeFilter;
 import org.kuali.student.svn.tools.model.ReadLineData;
@@ -40,6 +43,22 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class SvnDumpFilter {
+
+	public static final String SVN_DUMP_KEY_TEXT_COPY_SOURCE_SHA1 = "Text-copy-source-sha1";
+
+	public static final String SVN_DUMP_KEY_TEXT_COPY_SOURCE_MD5 = "Text-copy-source-md5";
+
+	public static final String SVN_DUMP_KEY_NODE_COPYFROM_PATH = "Node-copyfrom-path";
+
+	public static final String SVN_DUMP_KEY_NODE_COPYFROM_REV = "Node-copyfrom-rev";
+
+	public static final String SVN_DUMP_KEY_NODE_KIND = "Node-kind";
+
+	public static final String SVN_DUMP_KEY_PROP_CONTENT_LENGTH = "Prop-content-length";
+
+	public static final String SVN_DUMP_KEY_CONTENT_LENGTH = "Content-length";
+
+	public static final String SVN_DUMP_KEY_NODE_ACTION = "Node-action";
 
 	private static final String UTF_8 = "UTF-8";
 
@@ -71,11 +90,24 @@ public class SvnDumpFilter {
 		this.parseDumpFile(dumpFile, options, null);
 	}
 	
-	public void parseDumpFile(String dumpFile, IParseOptions options, INodeFilter nodeFilter)
-			throws FileNotFoundException {
+
+	public void parseDumpFile(InputStream inputStream,
+			AbstractParseOptions options) throws FileNotFoundException {
+		
+		this.parseDumpFile(inputStream, options, null);
+		
+	}
+	
+	public void parseDumpFile(String dumpFile, IParseOptions options, INodeFilter nodeFilter) throws FileNotFoundException {
 
 		FileInputStream fileInputStream = new FileInputStream(dumpFile);
 
+		parseDumpFile(fileInputStream, options, nodeFilter);
+	}
+	
+	public void parseDumpFile(InputStream fileInputStream, IParseOptions options, INodeFilter nodeFilter)
+			throws FileNotFoundException {
+	
 		options.setFileInputStream(fileInputStream);
 
 		try {
@@ -335,7 +367,7 @@ public class SvnDumpFilter {
 	}
 
 	private void processNode(ReadLineData lineData, IParseOptions options,
-			INodeFilter nodeFilter, FileInputStream fileInputStream)
+			INodeFilter nodeFilter, InputStream fileInputStream)
 			throws IOException {
 
 		String path = extractStringValue(lineData);
@@ -380,7 +412,7 @@ public class SvnDumpFilter {
 
 				nodeProperties.put(parts[0], parts[1]);
 				
-				if (parts[0].equals("Node-action") && parts[1].equals("delete")) {
+				if (parts[0].equals(SVN_DUMP_KEY_NODE_ACTION) && parts[1].equals("delete")) {
 					/*
 					 * Handle where the last path in the dump file is a deleted path
 					 * we need to trigger it to be persisted.
@@ -388,14 +420,14 @@ public class SvnDumpFilter {
 					options.onAfterNode(currentRevision, path, nodeProperties, nodeFilter);
 					return;
 				}
-				else if (nodeProperties.containsKey("Content-length")) {
+				else if (nodeProperties.containsKey(SVN_DUMP_KEY_CONTENT_LENGTH)) {
 
 					long contentLength = extractLongValue(lineData);
 					
 					long propContentLength;
 					
 					try {
-						propContentLength = Long.valueOf (nodeProperties.get("Prop-content-length"));
+						propContentLength = Long.valueOf (nodeProperties.get(SVN_DUMP_KEY_PROP_CONTENT_LENGTH));
 					} catch (NumberFormatException e) {
 						propContentLength = -1L;
 						// fall through
@@ -423,11 +455,11 @@ public class SvnDumpFilter {
 			long currentRevision, String path,
 			Map<String, String> nodeProperties, INodeFilter nodeFilter) {
 
-		String action = nodeProperties.get("Node-action");
+		String action = nodeProperties.get(SVN_DUMP_KEY_NODE_ACTION);
 
 		if (nodeFilter != null && action != null && action.equals("add")) {
 
-			String nodeType = nodeProperties.get("Node-kind");
+			String nodeType = nodeProperties.get(SVN_DUMP_KEY_NODE_KIND);
 
 			PathRevisionAndMD5AndSHA1 joinHistoryData = nodeFilter
 					.getCopyFromData(currentRevision, path);
@@ -435,16 +467,16 @@ public class SvnDumpFilter {
 			/*
 			 * For now we will only try to join paths on add that are not already joined.
 			 */
-			if (nodeProperties.get("Node-copyfrom-rev") == null && joinHistoryData != null) {
+			if (nodeProperties.get(SVN_DUMP_KEY_NODE_COPYFROM_REV) == null && joinHistoryData != null) {
 
-				String original = nodeProperties.put("Node-copyfrom-rev",
+				String original = nodeProperties.put(SVN_DUMP_KEY_NODE_COPYFROM_REV,
 						String.valueOf(joinHistoryData.getRevision()));
 
 				if (original != null)
 					log.warn("Overriting existing Node-copyfrom-rev: "
 							+ original);
 
-				original = nodeProperties.put("Node-copyfrom-path",
+				original = nodeProperties.put(SVN_DUMP_KEY_NODE_COPYFROM_PATH,
 						joinHistoryData.getPath());
 
 				if (original != null)
@@ -454,7 +486,7 @@ public class SvnDumpFilter {
 				// only write the hashes if the type is file
 				if (nodeType.equals("file")) {
 					
-					original = nodeProperties.put("Text-copy-source-md5",
+					original = nodeProperties.put(SVN_DUMP_KEY_TEXT_COPY_SOURCE_MD5,
 							joinHistoryData.getMd5());
 
 					if (original != null)
@@ -465,7 +497,7 @@ public class SvnDumpFilter {
 
 					if (sha1 != null) {
 
-						original = nodeProperties.put("Text-copy-source-sha1",
+						original = nodeProperties.put(SVN_DUMP_KEY_TEXT_COPY_SOURCE_SHA1,
 								joinHistoryData.getSha1());
 
 						if (original != null)
@@ -479,7 +511,7 @@ public class SvnDumpFilter {
 			}
 		}
 
-		String contentLengthValue = nodeProperties.remove("Content-length");
+		String contentLengthValue = nodeProperties.remove(SVN_DUMP_KEY_CONTENT_LENGTH);
 
 		PrintWriter pw = new PrintWriter(fileOutputStream);
 
@@ -497,7 +529,7 @@ public class SvnDumpFilter {
 	}
 
 	private void processRevision(ReadLineData lineData, IParseOptions options,
-			FileInputStream fileInputStream) throws IOException {
+			InputStream fileInputStream) throws IOException {
 
 		currentRevision = extractLongValue(lineData);
 
@@ -505,7 +537,7 @@ public class SvnDumpFilter {
 
 		ReadLineData expectingPropContentLength =  org.kuali.student.common.io.IOUtils.readTilNonEmptyLine(fileInputStream, UTF_8);
 
-		if (!expectingPropContentLength.startsWith("Prop-content-length")) {
+		if (!expectingPropContentLength.startsWith(SVN_DUMP_KEY_PROP_CONTENT_LENGTH)) {
 			exitOnError("Expected Prop-content-length: but found: "
 					+ expectingPropContentLength);
 		}
@@ -526,8 +558,8 @@ public class SvnDumpFilter {
 
 	}
 
-	private void transferStreamContent(FileInputStream fileInputStream,
-			FileOutputStream fileOutputStream, long contentLength)
+	private void transferStreamContent(InputStream fileInputStream,
+			OutputStream fileOutputStream, long contentLength)
 			throws IOException {
 
 		contentLength += 1; // I believe this is for the null byte in C. Without
@@ -556,6 +588,7 @@ public class SvnDumpFilter {
 		return new String[] { parts[0], parts[1].trim() };
 
 	}
+
 
 	
 

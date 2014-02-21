@@ -199,7 +199,7 @@ public final class IOUtils {
 	 * @throws IOException
 	 */
 	public static ReadLineData readTilNonEmptyLine(
-			FileInputStream fileInputStream, String encoding)
+			InputStream fileInputStream, String encoding)
 			throws IOException {
 		String line = org.kuali.student.common.io.IOUtils.readLine(
 				fileInputStream, encoding);

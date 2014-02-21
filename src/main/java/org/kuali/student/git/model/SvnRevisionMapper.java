@@ -27,6 +27,10 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.kuali.student.git.utils.GitBranchUtils;
+import org.kuali.student.svn.tools.merge.model.BranchData;
 
 /**
  * 
@@ -38,17 +42,29 @@ public class SvnRevisionMapper {
 	public static class SvnRevisionMap {
 		private long revision;
 		private String branchName;
+		private String branchPath;
 		private String commitId;
 		/**
 		 * @param branchName
 		 * @param commitId
 		 */
-		public SvnRevisionMap(long revision, String branchName, String commitId) {
+		public SvnRevisionMap(long revision, String branchName, String branchPath, String commitId) {
 			super();
 			this.revision = revision;
 			this.branchName = branchName;
+			this.branchPath = branchPath;
 			this.commitId = commitId;
 		}
+		
+		
+		/**
+		 * @return the branchPath
+		 */
+		public String getBranchPath() {
+			return branchPath;
+		}
+
+
 		/**
 		 * @return the branchName
 		 */
@@ -76,12 +92,14 @@ public class SvnRevisionMapper {
 		
 	}
 	private File revisonMappings;
-
+	private Repository repo;
+	
 	/**
 	 * 
 	 */
 	public SvnRevisionMapper(Repository repo) {
 		
+		this.repo = repo;
 		revisonMappings = new File (repo.getDirectory(), "jsvn");
 		
 		revisonMappings.mkdirs();
@@ -120,7 +138,15 @@ public class SvnRevisionMapper {
 			
 			String[] parts = line.split ("::");
 			
-			revisionHeads.add(new SvnRevisionMap(revision, parts[0], parts[1]));
+			String branchName = parts[0];
+			
+			String commitId = parts[1];
+			
+			String branchPath = GitBranchUtils.getBranchPath(branchName);
+			
+			String filteredPath = branchPath.replaceAll("@[0-9]+$", "");
+			
+			revisionHeads.add(new SvnRevisionMap(revision, branchName, filteredPath, commitId));
 			
 		}
 		
@@ -139,6 +165,8 @@ public class SvnRevisionMapper {
 	public ObjectId getRevisionBranchHead(long revision,
 			String branchPath) throws IOException {
 		
+		String canonicalBranchPath = GitBranchUtils.getCanonicalBranchName(branchPath);
+		
 		File revisionFile = new File (revisonMappings, "r" + revision);
 		
 		List<String> lines = FileUtils.readLines(revisionFile, "UTF-8");
@@ -147,7 +175,7 @@ public class SvnRevisionMapper {
 			
 			String[] parts = line.split ("::");
 			
-			if (parts[0].equals(Constants.R_HEADS + branchPath)) {
+			if (parts[0].equals(Constants.R_HEADS + canonicalBranchPath)) {
 				ObjectId id = ObjectId.fromString(parts[1]);
 				
 				return id;
@@ -160,6 +188,5 @@ public class SvnRevisionMapper {
 		// if not found it means that the reference can't be found.
 		return null;
 	}
-	
-	
+
 }

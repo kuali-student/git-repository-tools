@@ -15,8 +15,8 @@
  */
 package org.kuali.student.svn.tools;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import org.kuali.student.svn.tools.model.INodeFilter;
@@ -30,7 +30,7 @@ import org.kuali.student.svn.tools.model.ReadLineData;
  */
 public abstract class AbstractParseOptions implements IParseOptions {
 
-	protected FileInputStream inputStream;
+	protected InputStream inputStream;
 
 	/**
 	 * 
@@ -42,7 +42,7 @@ public abstract class AbstractParseOptions implements IParseOptions {
 	/* (non-Javadoc)
 	 * @see org.kuali.student.svn.tools.IParseOptions#setFileInputStream(java.io.FileInputStream)
 	 */
-	public void setFileInputStream(FileInputStream inputStream) {
+	public void setFileInputStream(InputStream inputStream) {
 		this.inputStream = inputStream;
 		
 	}
@@ -156,15 +156,6 @@ public abstract class AbstractParseOptions implements IParseOptions {
 							+ currentRevision);
 		}
 	}
-
-	
-	
-
-	
-	
-	
-	
-
 	
 
 }

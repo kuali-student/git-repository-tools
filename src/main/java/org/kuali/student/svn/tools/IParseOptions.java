@@ -15,7 +15,7 @@
  */
 package org.kuali.student.svn.tools;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Map;
 
 import org.kuali.student.svn.tools.model.INodeFilter;
@@ -27,7 +27,7 @@ import org.kuali.student.svn.tools.model.ReadLineData;
  */
 public interface IParseOptions {
 
-	void setFileInputStream(FileInputStream inputStream);
+	void setFileInputStream(InputStream inputStream);
 	
 	void onStreamEnd(ReadLineData lineData);
 

@@ -1,0 +1,190 @@
+/*
+ * Copyright 2014 The Kuali Foundation
+ * 
+ * Licensed under the Educational Community License, Version 1.0 (the
+ * "License"); you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.opensource.org/licenses/ecl1.php
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.kuali.student.git.tools.merge;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
+import junit.framework.Assert;
+
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.utils.GitBranchUtils;
+import org.kuali.student.svn.tools.merge.model.BranchData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * 
+ * Test Git Branch Utils 
+ * @author Kuali Student Team
+ *
+ */
+public class TestGitBranchUtils {
+
+	private static final Logger log = LoggerFactory.getLogger(TestGitBranchUtils.class);
+	
+	/**
+	 * 
+	 */
+	public TestGitBranchUtils() {
+	}
+	
+	@Test
+	@Ignore
+	public void testAgainstPaths() throws IOException, VetoBranchException {
+		
+		BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/paths.txt"));
+		
+		String line = null;
+		
+		while ((line = reader.readLine()) != null) {
+			String parts[] = line.split(":");
+			
+			String path = parts[1].trim();
+			
+			line = reader.readLine();
+			
+			parts = line.split(":");
+			
+			String kind = parts[1].trim();
+			
+			testPath (kind, path);
+			
+			String spacer = reader.readLine();
+			
+			Assert.assertEquals("--", spacer);
+		}
+		reader.close();
+	}
+
+	@Test
+	public void testCanonicalBranchName () {
+		String path = "poc/common/brms-dev";
+		
+		String expectedBranchName = "poc_common_brms-dev";
+		
+		String actualBranchName = GitBranchUtils.getCanonicalBranchName(path);
+		
+		Assert.assertEquals(expectedBranchName, actualBranchName);
+	}
+	
+	@Test
+	public void testBranchesPathVeto() {
+		
+		String path = "branches";
+		
+		boolean exception = false;
+		try {
+			GitBranchUtils.parse(path);
+		} catch (VetoBranchException e) {
+			exception = true;
+		}
+		
+		Assert.assertEquals(true, exception);
+	}
+	
+	@Test
+	public void testEncounteredPaths() {
+		
+		assertPath("sandbox/searchwidgets/.classpath", "sandbox/searchwidgets", ".classpath", false);
+		
+		assertPath("enumeration/.classpath", "enumeration", ".classpath", false);
+		assertPath("enumeration/enumeration-api/.classpath", "enumeration", "enumeration-api/.classpath", false);
+		
+		assertPath("dictionary/dictionary-api/.classpath", "dictionary", "dictionary-api/.classpath", false);
+		
+		assertPath("ks-cfg-dbs/ks-lum-db/schema.xml", "ks-cfg-dbs", "ks-lum-db/schema.xml", false);
+		
+		assertPath("deploymentlab/ks-cuke-testing/vendor/rails/activeresource/README", "deploymentlab/ks-cuke-testing", "vendor/rails/activeresource/README", false);
+		
+		assertPath("deploymentlab/UI/ks-cuke-testing/branches/kualim7/features/feature_definitions/culerity/manage_proposals.feature", "deploymentlab/UI/ks-cuke-testing/branches/kualim7", "features/feature_definitions/culerity/manage_proposals.feature", false);
+		
+		assertPath("trunk/.classpath", "trunk", ".classpath", false);
+		
+		assertPath ("poc/personidentity/branches", null, null, true);
+		
+		assertPath("sandbox/searchwidgets/ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/organization/ui/OrgEntry.gwt.xml", "sandbox/searchwidgets", "ks-core-dev/ks-core-ui/src/main/resources/org/kuali/student/core/organization/ui/OrgEntry.gwt.xml", false);
+		
+		assertPath("ks-web/branches/ks-web-dev/ks-web/ks-all/src/main/webapp/WEB-INF/tags/rice-portal", "ks-web/branches/ks-web-dev", "ks-web/ks-all/src/main/webapp/WEB-INF/tags/rice-portal", false);
+		
+		assertPath("enrollment/ks-api/tags/builds/ks-api-2.0/2.0.0-M7-KSAP/build-5/pom.xml", "enrollment/ks-api/tags/builds/ks-api-2.0/2.0.0-M7-KSAP/build-5", "pom.xml", false);
+		
+		assertPath("tags/builds/student-1.3/1.3.0/20120722-build-70/pom.xml", "tags/builds/student-1.3/1.3.0/20120722-build-70", "pom.xml", false);
+		
+		assertPath("enrollment/aggregate/branches/inactive/2.0.0-m8-api-upgrade/pom.xml", "enrollment/aggregate/branches/inactive/2.0.0-m8-api-upgrade",  "pom.xml", false);
+		
+		assertPath("sandbox/team2/ks-rice-standalone/branches/ks-rice-standalone-uberwar/src/main/webapp/WEB-INF/tags/rice-portal", "sandbox/team2/ks-rice-standalone/branches/ks-rice-standalone-uberwar", "src/main/webapp/WEB-INF/tags/rice-portal", false);
+	
+		assertPath("deploymentlab/ks-cuke-testing/vendor/gems/cucumber-0.6.1/examples/dos_line_endings/Rakefile", "deploymentlab/ks-cuke-testing",  "vendor/gems/cucumber-0.6.1/examples/dos_line_endings/Rakefile", false);
+		
+		assertPath("tools/maven-dictionary-generator/one-jar/create-one-jar-for-dictionary.cmd", "tools/maven-dictionary-generator", "one-jar/create-one-jar-for-dictionary.cmd", false);
+		
+		assertPath("deploymentlab/UI/ks-cuke-testing/vendor/rails/activerecord/examples/associations.png", "deploymentlab/UI/ks-cuke-testing", "vendor/rails/activerecord/examples/associations.png", false);
+	
+		assertPath ("deploymentlab/UI/ks-cuke-testing/trunk/vendor/rails/activerecord/examples/associations.png", "deploymentlab/UI/ks-cuke-testing/trunk", "vendor/rails/activerecord/examples/associations.png", false);
+		
+		assertPath("deploymentlab/student/trunk/ks-tools/maven-component-sandbox/trunk/.classpath", "deploymentlab/student/trunk/ks-tools/maven-component-sandbox/trunk", ".classpath", false);
+		
+		assertPath("ks-lum/branches/ks-lum-dev/ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/tools/Tools.gwt.xml", "ks-lum/branches/ks-lum-dev", "ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/tools/Tools.gwt.xml", false);
+	
+		assertPath("trunk", "trunk", "", false);
+		
+		assertPath("branches/trunk", "branches/trunk", "", false);
+	}
+	
+	@Test
+	public void testBranchPaths() {
+		
+		assertPath("deploymentlab/branches/proposalhistory/ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal", "deploymentlab/branches/proposalhistory", "ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal", false);
+		
+		assertPath("tags/ks-old-directory-structure/brms/tags/ks-tags/ks-old-directory-structure/brms-1.1.0-SNAPSHOT/tags/ks-old-directory-structure/brms-ui/src/test/java/org/kuali/student/tags/ks-old-directory-structure", "tags/ks-old-directory-structure/brms/tags/ks-tags/ks-old-directory-structure/brms-1.1.0-SNAPSHOT/tags/ks-old-directory-structure/brms-ui/src/test/java/org/kuali/student/tags/ks-old-directory-structure", "", false);
+		
+	}
+	private void assertPath (String filePath, String expectedBranchPath, String expectedFilePath, boolean expectVeto) {
+		
+		try {
+			BranchData data = GitBranchUtils.parse(filePath);
+			
+			Assert.assertEquals(expectedBranchPath, data.getBranchPath());
+			Assert.assertEquals(expectedFilePath, data.getPath());
+		} catch (VetoBranchException e) {
+			Assert.assertTrue(filePath + "vetoed unexpectantly.", expectVeto);
+		}
+		
+	}
+	
+	private void testPath(String kind, String path) throws VetoBranchException {
+		
+		if ("file".equals(kind)) {
+			BranchData data = GitBranchUtils.parse(path);
+			
+			log.info("path = " + path);
+			log.info("branchPath = " + data.getBranchPath());
+			log.info("");
+		}
+		else if ("dir".equals(kind)) {
+			
+		}
+		else {
+			throw new RuntimeException("invalid kind");
+		}
+		
+	}
+
+}

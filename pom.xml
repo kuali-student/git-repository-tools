@@ -76,6 +76,12 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.3</version>
 		</dependency>
+		<!-- for bzip2 compression/decompression -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-compress</artifactId>
+		    <version>1.7</version>
+		</dependency>
 	</dependencies>
 
 	<build>

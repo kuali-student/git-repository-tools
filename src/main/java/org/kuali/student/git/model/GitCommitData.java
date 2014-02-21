@@ -15,47 +15,32 @@
  */
 package org.kuali.student.git.model;
 
+import org.eclipse.jgit.lib.PersonIdent;
+
 /**
  * @author Kuali Student Team
  *
  */
 public class GitCommitData {
 
-	private String date;
-	
-	private String userName;
-	
 	private String commitMessage;
 
-	/**
-	 * @param branchName
-	 * @param userName
-	 * @param commitMessage
-	 */
-	public GitCommitData(String date, String userName,
-			String commitMessage) {
-		super();
-		this.date = date;
-		this.userName = userName;
+	private PersonIdent personIdent;
+
+
+	public GitCommitData(PersonIdent personIdent, String commitMessage) {
+		this.personIdent = personIdent;
 		this.commitMessage = commitMessage;
 	}
 
 	
 
-	/**
-	 * @return the date
-	 */
-	public String getDate() {
-		return date;
-	}
-
-
 
 	/**
-	 * @return the userName
+	 * @return the personIdent
 	 */
-	public String getUserName() {
-		return userName;
+	public PersonIdent getPersonIdent() {
+		return personIdent;
 	}
 
 	/**

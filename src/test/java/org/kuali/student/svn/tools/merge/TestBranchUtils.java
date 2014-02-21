@@ -63,8 +63,8 @@ public class TestBranchUtils {
 		
 		Assert.assertNotNull(bd);
 		
-		Assert.assertEquals("enumeration/enumeration-impl", bd.getBranchPath());
-		Assert.assertEquals("src/main/java/org/kuali/student/enumeration/entity/ContextDAO.java", bd.getPath());
+		Assert.assertEquals("enumeration", bd.getBranchPath());
+		Assert.assertEquals("enumeration-impl/src/main/java/org/kuali/student/enumeration/entity/ContextDAO.java", bd.getPath());
 		Assert.assertEquals(Long.valueOf(2237L), bd.getRevision());
 	}
 	
@@ -85,6 +85,41 @@ public class TestBranchUtils {
 		
 		Assert.assertEquals("sandbox/team2/lum/branches", bd.getBranchPath());
 		Assert.assertEquals ("", bd.getPath());
+		
+		bd = BranchUtils.parse(2250L, "enumeration/.classpath");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("enumeration", bd.getBranchPath());
+		Assert.assertEquals (".classpath", bd.getPath());
+		
+		bd = BranchUtils.parse(2250L, "sandbox/searchwidgets/.classpath");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("sandbox/searchwidgets", bd.getBranchPath());
+		Assert.assertEquals (".classpath", bd.getPath());
+		
+		bd = BranchUtils.parse(2250L, "sandbox/team2/tools/DataDictionaryExtractor/trunk/.classpath");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("sandbox/team2/tools/DataDictionaryExtractor/trunk", bd.getBranchPath());
+		Assert.assertEquals (".classpath", bd.getPath());
+		
+		bd = BranchUtils.parse(2007L, "dictionary/.classpath");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("dictionary", bd.getBranchPath());
+		Assert.assertEquals (".classpath", bd.getPath());
+		
+		bd = BranchUtils.parse(2007L, "dictionary/dict-services/.classpath");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("dictionary", bd.getBranchPath());
+		Assert.assertEquals ("dict-services/.classpath", bd.getPath());
 		
 	}
 }
