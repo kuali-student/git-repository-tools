@@ -47,6 +47,7 @@ import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.model.util.GitTreeDataUtils;
 import org.kuali.student.git.utils.GitBranchUtils;
+import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
@@ -76,6 +77,7 @@ public class NodeProcessor {
 	private GitTreeProcessor treeProcessor;
 	private GitImporterParseOptions importerParseOptions;
 	private GitCommitData commitData;
+	private ILargeBranchNameProvider largeBranchNameProvider;
 
 	public NodeProcessor(Map<String, GitBranchData> knownBranchMap,
 			PrintWriter vetoLog, PrintWriter copyFromSkippedLog,
@@ -90,6 +92,7 @@ public class NodeProcessor {
 		this.blobLog = blobLog;
 		this.repo = repo;
 		this.revisionMapper = revisionMapper;
+		this.largeBranchNameProvider = revisionMapper;
 		this.importerParseOptions = importerParseOptions;
 
 		this.treeProcessor = new GitTreeProcessor(repo);
@@ -134,7 +137,7 @@ public class NodeProcessor {
 		if (validBranch) {
 			// check that there is actually a branch of this name
 			String canonicalBranchName = GitBranchUtils
-					.getCanonicalBranchName(branchData.getBranchPath());
+					.getCanonicalBranchName(branchData.getBranchPath(), currentRevision, largeBranchNameProvider);
 
 			try {
 				Ref mergeBranchRef = repo.getRef(Constants.R_HEADS
@@ -149,7 +152,7 @@ public class NodeProcessor {
 		GitBranchData data = null;
 
 		if (validBranch) {
-			data = getBranchData(knownBranchMap, GitBranchUtils.getCanonicalBranchName(branchData.getBranchPath()));
+			data = getBranchData(knownBranchMap, GitBranchUtils.getCanonicalBranchName(branchData.getBranchPath(), currentRevision, largeBranchNameProvider), currentRevision);
 		}
 
 		if (currentRevision == 122 || currentRevision == 7406) { 
@@ -227,12 +230,12 @@ public class NodeProcessor {
 	}
 
 	private GitBranchData getBranchData(
-			Map<String, GitBranchData> knownBranchMap, String branchName) {
+			Map<String, GitBranchData> knownBranchMap, String branchName, long revision) {
 
 		GitBranchData data = knownBranchMap.get(branchName);
 
 		if (data == null) {
-			data = new GitBranchData(GitBranchUtils.getBranchPath(branchName));
+			data = new GitBranchData(branchName, revision, largeBranchNameProvider);
 
 			/*
 			 * If the branch already exists lets copy its commit tree as the
@@ -449,7 +452,13 @@ public class NodeProcessor {
 			if (branchName.contains("@"))
 				continue; // skip over archived references
 			
-			String branchPath = GitBranchUtils.getBranchPath(branchName);
+			String largeBranchName = largeBranchNameProvider.getBranchName(branchName, currentRevision);
+			
+			if (largeBranchName != null) {
+				branchName = largeBranchName;
+			}
+			
+			String branchPath = GitBranchUtils.getBranchPath(branchName, currentRevision, largeBranchNameProvider);
 			
 			if (branchPath.startsWith(path)) {
 				
@@ -459,14 +468,22 @@ public class NodeProcessor {
 	}
 
 	private void deleteBranch(String branchName, long currentRevision) throws IOException {
+		
 		Ref existingBranchRef = repo.getRef(Constants.R_HEADS + branchName);
 		
 		String archivedBranchReference = Constants.R_HEADS + branchName + "@" + (currentRevision-1);
+		
+		if (archivedBranchReference.length() >= GitBranchUtils.FILE_SYSTEM_NAME_LIMIT) {
+			archivedBranchReference = Constants.R_HEADS + largeBranchNameProvider.storeLargeBranchName(archivedBranchReference, currentRevision);
+		}
 		
 		RefRename rename = repo.renameRef(existingBranchRef.getName(), archivedBranchReference);
 		
 		rename.setRefLogIdent(commitData.getPersonIdent());
 		rename.setRefLogMessage(commitData.getPersonIdent() + " deleted " + branchName + "renaming the branch");
+		
+		log.info("renamed " + branchName + " to " + archivedBranchReference);
+		
 		Result result = rename.rename();
 		
 		if (result != Result.RENAMED)
@@ -519,7 +536,7 @@ public class NodeProcessor {
 				try {
 					BranchData copyFromBranchData = GitBranchUtils.parse(copyFromPath);
 					
-					String copyFromBranchName = GitBranchUtils.getCanonicalBranchName(copyFromBranchData.getBranchPath());
+					String copyFromBranchName = GitBranchUtils.getCanonicalBranchName(copyFromBranchData.getBranchPath(), copyFromRevision, largeBranchNameProvider);
 					
 					ObjectId copyFromCommitId = revisionMapper.getRevisionBranchHead(copyFromRevision, copyFromBranchName);
 					
@@ -617,10 +634,8 @@ public class NodeProcessor {
 			String currentBranchPath = revMap.getBranchPath();
 			
 			String canonicalCopyFromPath = GitBranchUtils
-					.getCanonicalBranchName(copyFromPath);
+					.getCanonicalBranchName(copyFromPath, copyFromRevision, largeBranchNameProvider);
 
-			String adjustedCanonicalCopyFromPath = Constants.R_HEADS + canonicalCopyFromPath;
-			
 			if (currentBranchPath.startsWith(Constants.R_HEADS + copyFromPath)) {
 				applyCopyFromDirectoryTree(revMap, copyFromPath, path, currentRevision);
 			}
@@ -715,7 +730,7 @@ public class NodeProcessor {
 					return false;
 				}
 
-				GitBranchData currentBranchData = getBranchData(knownBranchMap, GitBranchUtils.getCanonicalBranchName(data.getBranchPath()));
+				GitBranchData currentBranchData = getBranchData(knownBranchMap, GitBranchUtils.getCanonicalBranchName(data.getBranchPath(), currentRevision, largeBranchNameProvider), currentRevision);
 				
 				
 				if (currentBranchData.getParentId() == null)

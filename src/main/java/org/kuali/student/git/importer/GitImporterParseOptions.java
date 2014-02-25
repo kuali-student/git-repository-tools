@@ -28,6 +28,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.eclipse.jgit.api.GarbageCollectCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -47,6 +50,7 @@ import org.kuali.student.git.model.NodeProcessor;
 import org.kuali.student.git.model.NodeProcessor.NodeProcessorCallback;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.svn.tools.AbstractParseOptions;
 import org.kuali.student.svn.tools.model.INodeFilter;
 import org.kuali.student.svn.tools.model.ReadLineData;
@@ -143,6 +147,22 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			
 			flushPendingBranchCommits();
 			
+			if (this.currentRevision != 0 && this.currentRevision % 500 == 0) {
+				// every five hundred revisions garbage collect the repository to keep it fast
+				log.info("Garbage collecting git repository");
+				try {
+					GarbageCollectCommand gc = new Git (repo).gc();
+					
+					// should not matter but anything loose can be collected.
+					gc.setExpire(new Date());
+					
+					gc.call();
+					
+				} catch (GitAPIException e) {
+					
+				}
+				
+			}
 			this.currentRevision = currentRevision;
 
 			log.info("starting on Revision: " + currentRevision);
@@ -281,6 +301,11 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					String fullBranchNameReference = Constants.R_HEADS
 							+ data.getBranchName();
 
+					if (fullBranchNameReference.length() >= GitBranchUtils.FILE_SYSTEM_NAME_LIMIT) {
+						
+						fullBranchNameReference = Constants.R_HEADS + revisionMapper.storeLargeBranchName(fullBranchNameReference, currentRevision);
+					}
+					
 					RefUpdate update = repo
 							.updateRef(fullBranchNameReference);
 
@@ -320,8 +345,9 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 				}
 
-				List<Ref> refs = new ArrayList<Ref>(repo
-						.getAllRefs().values());
+				Map<String, Ref> headRefs = repo.getRefDatabase().getRefs(Constants.R_HEADS);
+				
+				List<Ref> refs = new ArrayList<Ref>(headRefs.values());
 
 				revisionMapper.createRevisionMap(
 						currentRevision, refs);

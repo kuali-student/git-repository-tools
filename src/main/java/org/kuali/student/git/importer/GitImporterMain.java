@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.eclipse.jgit.lib.Repository;
+import org.iq80.snappy.SnappyInputStream;
 import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.slf4j.Logger;
@@ -99,7 +100,7 @@ public class GitImporterMain {
 
 			// extract any known branches from the repository
 			
-			BZip2CompressorInputStream compressedInputStream = new BZip2CompressorInputStream(new FileInputStream (dumpFile));
+			SnappyInputStream compressedInputStream = new SnappyInputStream(new FileInputStream (dumpFile));
 			
 			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl));
 			

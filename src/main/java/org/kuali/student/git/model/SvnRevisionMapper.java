@@ -17,8 +17,11 @@ package org.kuali.student.git.model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,18 +30,20 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.treewalk.TreeWalk;
-import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.kuali.student.git.utils.GitBranchUtils;
-import org.kuali.student.svn.tools.merge.model.BranchData;
+import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
  * @author Kuali Student Team
  *
  */
-public class SvnRevisionMapper {
+public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
+	private static final Logger log = LoggerFactory.getLogger(SvnRevisionMapper.class);
+	
 	public static class SvnRevisionMap {
 		private long revision;
 		private String branchName;
@@ -113,7 +118,11 @@ public class SvnRevisionMapper {
 		PrintWriter pw = new PrintWriter(revisionFile);
 		
 		for (Ref branchHead : branchHeads) {
-			pw.println(branchHead.getName() + "::" + branchHead.getObjectId().name());
+			/*
+			 * Only archive active branches. skip those containing @
+			 */
+			if (!branchHead.getName().contains("\\@"))
+				pw.println(branchHead.getName() + "::" + branchHead.getObjectId().name());
 		}
 		
 		pw.close();
@@ -142,7 +151,7 @@ public class SvnRevisionMapper {
 			
 			String commitId = parts[1];
 			
-			String branchPath = GitBranchUtils.getBranchPath(branchName);
+			String branchPath = GitBranchUtils.getBranchPath(branchName, revision, this);
 			
 			String filteredPath = branchPath.replaceAll("@[0-9]+$", "");
 			
@@ -165,7 +174,7 @@ public class SvnRevisionMapper {
 	public ObjectId getRevisionBranchHead(long revision,
 			String branchPath) throws IOException {
 		
-		String canonicalBranchPath = GitBranchUtils.getCanonicalBranchName(branchPath);
+		String canonicalBranchPath = GitBranchUtils.getCanonicalBranchName(branchPath, revision, this);
 		
 		File revisionFile = new File (revisonMappings, "r" + revision);
 		
@@ -188,5 +197,73 @@ public class SvnRevisionMapper {
 		// if not found it means that the reference can't be found.
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider#getBranchName(java.lang.String, long)
+	 */
+	@Override
+	public String getBranchName(String longBranchId, long revision) {
+		
+		try {
+			File revisionFile = new File (revisonMappings, "r" + revision + "-large-branches");
+			
+			List<String> lines = FileUtils.readLines(revisionFile, "UTF-8");
+			
+			for (String line : lines) {
+				
+				String[] parts = line.split("::");
+				
+				if (parts.length != 2) {
+					continue;
+				}
+				
+				if (parts[0].equals(longBranchId)) {
+					return parts[1].trim();
+				}
+				
+			}
+			
+			// not found
+			return null;
+		} catch (IOException e) {
+			log.warn("failed to find longbranch for id = " + longBranchId);
+			return null;
+		}
+		
+	}
+
+	
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider#storeLargeBranchName(java.lang.String, java.lang.String, long)
+	 */
+	@Override
+	public String storeLargeBranchName(String branchName, long revision) {
+
+		try {
+			ObjectId largeBranchNameId = GitBranchUtils.getBranchNameObjectId(branchName);
+			
+			String existingBranchName = getBranchName(largeBranchNameId.name(), revision);
+			
+			if (existingBranchName != null)
+				return largeBranchNameId.getName();
+			
+			File revisionFile = new File (revisonMappings, "r" + revision + "-large-branches");
+
+			PrintWriter pw = new PrintWriter(new FileOutputStream(revisionFile, true));
+			
+			pw.println(largeBranchNameId.name() + "::" + branchName);
+			
+			pw.flush();
+			pw.close();
+			
+			return largeBranchNameId.name();
+		} catch (FileNotFoundException e) {
+			log.warn("storeLargeBranchName: failed to open r" + revision + "-large-branches");
+			return null;
+		}
+	}
+	
+	
 
 }

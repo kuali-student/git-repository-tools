@@ -73,7 +73,7 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 		GitRepositoryUtils
 				.buildFileRepository(gitRepository, true);
 		
-		GitImporterMain.main(new String [] {"src/test/resources/r1-head.dump.bz2", gitRepository.getAbsolutePath(), "target/git-repo-ks-veto.log", "target/git-repo-ks-copyFrom-skipped.log", "target/blob.log", "https://svn.kuali.org/repos/student"});
+		GitImporterMain.main(new String [] {"src/test/resources/r0%3A15128.dump.snappy", gitRepository.getAbsolutePath(), "target/git-repo-ks-veto.log", "target/git-repo-ks-copyFrom-skipped.log", "target/blob.log", "https://svn.kuali.org/repos/student"});
 		
 	}
 

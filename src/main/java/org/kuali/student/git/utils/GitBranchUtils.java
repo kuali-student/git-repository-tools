@@ -15,7 +15,12 @@
  */
 package org.kuali.student.git.utils;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.kuali.student.svn.tools.merge.tools.BranchUtils;
@@ -26,6 +31,16 @@ import org.kuali.student.svn.tools.merge.tools.BranchUtils.IBranchTagAssist;
  * 
  */
 public class GitBranchUtils {
+
+	/*
+	 * 255 bytes but not sure on the null byte so reducing by one.
+	 */
+	public static final int FILE_SYSTEM_NAME_LIMIT = 254;
+
+	/*
+	 * If a branch name is a long branch name it will be 40 characters long (the length of the sha-1 hash)
+	 */
+	public static final int LONG_BRANCH_NAME_LENGTH = 40;
 
 	private static final String DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY = "deploymentlab/test/branches/proposalhistory";
 
@@ -59,13 +74,94 @@ public class GitBranchUtils {
 	public GitBranchUtils() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	public static interface ILargeBranchNameProvider {
 
-	public static String getCanonicalBranchName(String branchPath) {
-		return branchPath.replaceAll("\\/", "_");
+		/**
+		 * Pass in the sha-1 id of the branch and if known the full branch name will be returned.
+		 * @param longBranchId
+		 * @return
+		 */
+		String getBranchName(String longBranchId, long revision);
+
+		String storeLargeBranchName(String branchName, long revision);
+		
 	}
 
-	public static String getBranchPath(String branchName) {
-		return branchName.replaceAll("_", "/");
+	
+	public static String getCanonicalBranchName(String branchPath, long revision, ILargeBranchNameProvider provider) {
+		
+		
+		String branchName = convertPathToBranchName(branchPath);
+		
+		/*
+		 * Consider the
+		 */
+		if ((Constants.R_HEADS.length() + branchPath.length()) >= FILE_SYSTEM_NAME_LIMIT) {
+			// need to store the long name
+			String shortBranchName = provider.storeLargeBranchName(branchName, revision);
+			
+			return shortBranchName;
+		}
+		else 
+			return branchName;
+
+	}
+	
+	private static String convertPathToBranchName(String branchPath) {
+		if (branchPath.contains("_")) {
+			/*
+			 * Special case we need to convert the underscore to === first. 
+			 */
+			String convertedBranchPath = branchPath.replace("_", "===");
+
+			return convertedBranchPath.replaceAll("\\/", "_");
+		}
+		else
+			return branchPath.replaceAll("\\/", "_");
+	}
+
+	/**
+	 * Compute the objectid of the branch name given.
+	 * 
+	 * @param branchName
+	 * @return
+	 */
+	public static ObjectId getBranchNameObjectId(String branchName) {
+		
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
+			
+			byte[] branchNameBytes = Constants.encode(branchName);
+			
+			md.update(branchNameBytes);		
+			
+			return ObjectId.fromRaw(md.digest());
+		} catch (NoSuchAlgorithmException e) {
+			throw new RuntimeException("failed to get SHA-1 digest Message Digest.", e);
+		}
+	}
+
+	public static String getBranchPath(String branchName, long revision, ILargeBranchNameProvider provider) {
+		
+		if (branchName.length() == LONG_BRANCH_NAME_LENGTH) {
+			// could be a large branch path
+			String longBranchName = provider.getBranchName(branchName, revision);
+			
+			if (longBranchName != null)
+				return convertBranchNameToPath(longBranchName);
+			
+			// else fall through to the logic below
+		}
+		
+		return convertBranchNameToPath(branchName);
+	}
+
+	private static String convertBranchNameToPath(String branchName) {
+		
+		String path = branchName.replaceAll("_", "/").replaceAll("===", "_");
+		
+		return path;
 	}
 
 	public static BranchData parse(String path) throws VetoBranchException {

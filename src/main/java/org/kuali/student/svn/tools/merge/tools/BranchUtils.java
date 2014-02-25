@@ -38,8 +38,6 @@ public final class BranchUtils {
 	private static final Logger log = LoggerFactory
 			.getLogger(BranchUtils.class);
 
-	
-
 	public static final class PathData {
 		private Long addedRevision;
 		private Long deletedRevision;
@@ -70,38 +68,52 @@ public final class BranchUtils {
 	/*
 	 * @param backwards if true search the parts from last to first.
 	 */
-	private static int lastIndexOfKey (String parts[], String key, Set<String>invalidBeforeParts, boolean backwards) {
-		
-		Map<String, Set<String>>invalidBeforePartsMap = new HashMap<String, Set<String>>();
-		
+	private static int lastIndexOfKey(String parts[], String key,
+			Set<String> invalidBeforeParts, boolean backwards) {
+
+		Map<String, Set<String>> invalidBeforePartsMap = new HashMap<String, Set<String>>();
+
 		invalidBeforePartsMap.put(key, invalidBeforeParts);
-		
-		return indexOfKey(parts, new HashSet<String>(Arrays.asList(new String[] {key})), invalidBeforePartsMap, backwards);
+
+		return indexOfKey(parts,
+				new HashSet<String>(Arrays.asList(new String[] { key })),
+				invalidBeforePartsMap, backwards);
 	}
-	
-	private static int indexOfKey (String parts[], Set<String>keys, Map<String, Set<String>>invalidBeforePartsMap, boolean backwards) {
-		
+
+	private static int indexOfKey(String parts[], Set<String> keys,
+			Map<String, Set<String>> invalidBeforePartsMap, boolean backwards) {
+
 		if (backwards) {
-			for (int i = (parts.length-1); i >=0; i--) {
+			for (int i = (parts.length - 1); i >= 0; i--) {
 				String part = parts[i].toLowerCase();
-				
+
 				if (keys.contains(part)) {
-					
-					Set<String>invalidBeforeParts = invalidBeforePartsMap.get(part);
-					
-					if (invalidBeforeParts != null && (i - 1) >= 0) {
-						String beforePart = parts[i-1];
-						
-						if (invalidBeforeParts.contains(beforePart))
-							continue;
-						// else fall through
+
+					Set<String> invalidBeforeParts = invalidBeforePartsMap
+							.get(part);
+
+					if (invalidBeforeParts != null) {
+						String beforePartString = StringUtils.join(parts, '/',
+								0, i);
+
+						boolean invalidBeforePartsFlag = false;
+
+						for (String invalidBeforePart : invalidBeforeParts) {
+
+							if (beforePartString.matches(".*"
+									+ invalidBeforePart + ".*")) {
+								invalidBeforePartsFlag = true;
+								break;
+							}
+						}
+
+						if (invalidBeforePartsFlag)
+							continue; // skip over this part
 					}
-						
 					return i;
 				}
 			}
-		}
-		else {
+		} else {
 			// forward
 			for (int i = 0; i < parts.length; i++) {
 				String part = parts[i].toLowerCase();
@@ -109,46 +121,49 @@ public final class BranchUtils {
 				if (keys.contains(part))
 					return i;
 			}
-		
-		}		
-		
+
+		}
+
 		// failed to find a match case
-		
+
 		return -1;
 	}
+
 	public static interface IBranchTagAssist {
 
-		BranchData parseBranch(Long revision, String path, String[] parts) throws VetoBranchException;
-		
-		
+		BranchData parseBranch(Long revision, String path, String[] parts)
+				throws VetoBranchException;
+
 	}
-	
+
 	/**
 	 * Split the path into the branch part and the file path part.
 	 * 
 	 * @param path
 	 * @return the determined branch data.
-	 * @throws VetoBranchException 
+	 * @throws VetoBranchException
 	 */
-	
-	public static BranchData parse (Long revision, String path) {
+
+	public static BranchData parse(Long revision, String path) {
 		try {
 			return parse(revision, path, null);
 		} catch (VetoBranchException e) {
 			return null;
 		}
 	}
-	public static BranchData parse(Long revision, String path, IBranchTagAssist assist) throws VetoBranchException {
+
+	public static BranchData parse(Long revision, String path,
+			IBranchTagAssist assist) throws VetoBranchException {
 
 		String parts[] = path.trim().split("\\/");
 
 		if (assist != null) {
 			BranchData bd = assist.parseBranch(revision, path, parts);
-		
+
 			if (bd != null)
 				return bd;
 		}
-		
+
 		List<String> branchPathList = new ArrayList<String>();
 		List<String> pathList = new ArrayList<String>();
 
@@ -157,45 +172,56 @@ public final class BranchUtils {
 
 		boolean foundTrunk = false;
 		int beforePathRootIndex = Integer.MAX_VALUE;
-		
-		Set<String>standardBackwardMatchPaths = new HashSet<String>();
+
+		Set<String> invalidBeforeTagPaths = new HashSet<String>();
+
+		invalidBeforeTagPaths.add("WEB-INF");
+		invalidBeforeTagPaths.add("META-INF");
+		invalidBeforeTagPaths.add("src/main/resources");
+		invalidBeforeTagPaths.add("src/test/resources");
+		invalidBeforeTagPaths.add("src/main/java");
+		invalidBeforeTagPaths.add("src/main/webapp");
+		invalidBeforeTagPaths.add("src/test/java");
+
+		Set<String> standardBackwardMatchPaths = new HashSet<String>();
 
 		standardBackwardMatchPaths.add("branches");
-		
-		Set<String>backwardMatchPaths = new HashSet<String>();
-		
-		
+
+		Set<String> backwardMatchPaths = new HashSet<String>();
+
 		backwardMatchPaths.add("sandbox");
 		backwardMatchPaths.add("tools");
 		backwardMatchPaths.add("examples");
-		
-		
-		Set<String>forwardMatchPaths = new HashSet<String>();
-		
+
+		Set<String> forwardMatchPaths = new HashSet<String>();
+
 		forwardMatchPaths.add("poc");
 		forwardMatchPaths.add("enumeration");
 		forwardMatchPaths.add("dictionary");
 		forwardMatchPaths.add("ks-cfg-dbs");
 		forwardMatchPaths.add("deploymentlab");
-		
+
 		beforePathRootIndex = lastIndexOfKey(parts, "trunk", true);
-		
+
 		if (beforePathRootIndex == -1) {
-			beforePathRootIndex = lastIndexOfKey(parts, "tags", "WEB-INF", true);
+			beforePathRootIndex = lastIndexOfKey(parts, "tags",
+					invalidBeforeTagPaths, true);
 		}
-		
+
 		if (beforePathRootIndex == -1) {
-			beforePathRootIndex = lastIndexOfKey(parts, "old-tags", "WEB-INF", true);
+			beforePathRootIndex = lastIndexOfKey(parts, "old-tags",
+					invalidBeforeTagPaths, true);
 		}
-		
+
 		if (beforePathRootIndex == -1) {
-			beforePathRootIndex = indexOfKey(parts, standardBackwardMatchPaths, true);
+			beforePathRootIndex = indexOfKey(parts, standardBackwardMatchPaths,
+					true);
 		}
-		
+
 		if (beforePathRootIndex == -1) {
 			beforePathRootIndex = indexOfKey(parts, backwardMatchPaths, false);
 		}
-		
+
 		if (beforePathRootIndex == -1) {
 			beforePathRootIndex = indexOfKey(parts, forwardMatchPaths, false);
 		}
@@ -215,15 +241,16 @@ public final class BranchUtils {
 			 * on branches the next element is the name of the branch and part
 			 * of the branches path
 			 */
-			
-			String canidatePart = parts[beforePathRootIndex].toLowerCase();
-			
-			if (canidatePart.equals("trunk") || forwardMatchPaths.contains(canidatePart)) {
 
-				parseTrunkParts(beforePathRootIndex, parts, branchPathList, pathList);
-			
-			} 
-			else {
+			String canidatePart = parts[beforePathRootIndex].toLowerCase();
+
+			if (canidatePart.equals("trunk")
+					|| forwardMatchPaths.contains(canidatePart)) {
+
+				parseTrunkParts(beforePathRootIndex, parts, branchPathList,
+						pathList);
+
+			} else {
 				int branchNameIndex = beforePathRootIndex + 1;
 
 				int pathNameStartIndex = branchNameIndex + 1;
@@ -240,8 +267,8 @@ public final class BranchUtils {
 						branchPathList.add(parts[i]);
 					}
 
-					// skips over the branch name? 
-					
+					// skips over the branch name?
+
 					for (int i = pathNameStartIndex; i < parts.length; i++) {
 						pathList.add(parts[i]);
 					}
@@ -263,24 +290,27 @@ public final class BranchUtils {
 
 	private static int indexOfKey(String[] parts,
 			Set<String> standardBackwardMatchPaths, boolean backwards) {
-		return indexOfKey(parts, standardBackwardMatchPaths, new HashMap<String, Set<String>>(), backwards);
+		return indexOfKey(parts, standardBackwardMatchPaths,
+				new HashMap<String, Set<String>>(), backwards);
 	}
 
-	private static int lastIndexOfKey(String[] parts, String key, boolean backwards) {
+	private static int lastIndexOfKey(String[] parts, String key,
+			boolean backwards) {
 		return lastIndexOfKey(parts, key, new HashSet<String>(), backwards);
 	}
 
 	private static int lastIndexOfKey(String[] parts, String part,
 			String disallowedBeforePart, boolean backwards) {
-		
-		Set<String>disallowedBeforePartSet = new HashSet<String>();
-		
+
+		Set<String> disallowedBeforePartSet = new HashSet<String>();
+
 		disallowedBeforePartSet.add(disallowedBeforePart);
-		
+
 		return lastIndexOfKey(parts, part, disallowedBeforePartSet, backwards);
 	}
 
-	private static void parseTrunkParts(int beforePathRootIndex, String[] parts, List<String> branchPathList, List<String> pathList) {
+	private static void parseTrunkParts(int beforePathRootIndex,
+			String[] parts, List<String> branchPathList, List<String> pathList) {
 		int pathNameStartIndex = beforePathRootIndex + 1;
 
 		if (parts.length < pathNameStartIndex) {
@@ -300,7 +330,7 @@ public final class BranchUtils {
 			}
 
 		}
-		
+
 	}
 
 }

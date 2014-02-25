@@ -19,10 +19,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.svn.tools.merge.model.BranchData;
@@ -79,9 +80,17 @@ public class TestGitBranchUtils {
 		
 		String expectedBranchName = "poc_common_brms-dev";
 		
-		String actualBranchName = GitBranchUtils.getCanonicalBranchName(path);
+		String actualBranchName = GitBranchUtils.getCanonicalBranchName(path, 1L, new LargeBranchNameProviderMapImpl());
 		
 		Assert.assertEquals(expectedBranchName, actualBranchName);
+		
+		path = "tags_ks-old-directory-structure_ks-web_tags_tags_ks-old-directory-structure_ks-web-1.1.0-SNAPSHOT_ks-embedded_src_main_webapp_WEB-INF_tags_rice-portal/tags_ks-old-directory-structure_ks-web_tags_tags_ks-old-directory-structure_ks-web-1.1.0-SNAPSHOT_ks-embedded_src_main_webapp_WEB-INF_tags_rice-portal";
+		
+		actualBranchName = GitBranchUtils.getCanonicalBranchName(path, 1L, new LargeBranchNameProviderMapImpl());
+		
+		Assert.assertEquals(40, actualBranchName.length());
+		
+		
 	}
 	
 	@Test
@@ -153,7 +162,27 @@ public class TestGitBranchUtils {
 		
 		assertPath("deploymentlab/branches/proposalhistory/ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal", "deploymentlab/branches/proposalhistory", "ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal", false);
 		
-		assertPath("tags/ks-old-directory-structure/brms/tags/ks-tags/ks-old-directory-structure/brms-1.1.0-SNAPSHOT/tags/ks-old-directory-structure/brms-ui/src/test/java/org/kuali/student/tags/ks-old-directory-structure", "tags/ks-old-directory-structure/brms/tags/ks-tags/ks-old-directory-structure/brms-1.1.0-SNAPSHOT/tags/ks-old-directory-structure/brms-ui/src/test/java/org/kuali/student/tags/ks-old-directory-structure", "", false);
+		assertPath("tags/ks-old-directory-structure/brms/tags/ks-tags/ks-old-directory-structure/brms-1.0.0-m3/ks-tags/ks-old-directory-structure/brms-execution-api/src/main/resources/org/kuali/student/tags/ks-old-directory-structure/pom.xml", "tags/ks-old-directory-structure/brms/tags/ks-tags", "ks-old-directory-structure/brms-1.0.0-m3/ks-tags/ks-old-directory-structure/brms-execution-api/src/main/resources/org/kuali/student/tags/ks-old-directory-structure/pom.xml", false);
+		
+	
+	}
+	
+	@Test
+	public void testUnderscorePath() {
+		
+		String path = "deploymentlab/branches/xapool_43/pom.xml";
+		
+		String branchPath = "deploymentlab/branches/xapool_43";
+		
+		assertPath(path, branchPath, "pom.xml", false);
+		
+		String canonicalName = GitBranchUtils.getCanonicalBranchName(branchPath, 0L, new LargeBranchNameProviderMapImpl());
+		
+		Assert.assertEquals("deploymentlab_branches_xapool+=+43", canonicalName);
+		
+		String branch = GitBranchUtils.getBranchPath(canonicalName, 0, new LargeBranchNameProviderMapImpl());
+		
+		Assert.assertEquals(branchPath, branch);
 		
 	}
 	private void assertPath (String filePath, String expectedBranchPath, String expectedFilePath, boolean expectVeto) {

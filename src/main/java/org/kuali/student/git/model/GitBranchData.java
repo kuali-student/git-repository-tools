@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.eclipse.jgit.errors.LargeObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.Repository;
@@ -31,6 +32,7 @@ import org.kuali.student.git.model.GitTreeData.GitMergeData;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.model.util.GitTreeDataUtils;
 import org.kuali.student.git.utils.GitBranchUtils;
+import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,15 +63,23 @@ public class GitBranchData {
 
 	private boolean created;
 
+	private ILargeBranchNameProvider largeBranchNameProvider;
+
+	private long revision;
+
 	/**
 	 * @param revision
 	 * @param branchPath
+	 * @param revision 
+	 * @param largeBranchNameProvider 
 	 * @param path
 	 * 
 	 */
-	public GitBranchData(String branchPath) {
-		this.branchPath = branchPath;
-		this.branchName = GitBranchUtils.getCanonicalBranchName(branchPath);
+	public GitBranchData(String branchName, long revision, ILargeBranchNameProvider largeBranchNameProvider) {
+		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, largeBranchNameProvider);
+		this.revision = revision;
+		this.largeBranchNameProvider = largeBranchNameProvider;
+		this.branchName = GitBranchUtils.getCanonicalBranchName(this.branchPath, revision, largeBranchNameProvider);
 
 	}
 

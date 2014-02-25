@@ -61,9 +61,9 @@
 			<version>${svn-kit.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>com.springsource.org.junit</artifactId>
-			<version>4.10.0</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -82,6 +82,13 @@
 		    <artifactId>commons-compress</artifactId>
 		    <version>1.7</version>
 		</dependency>
+		
+		<!-- for snappy compression/decompression -->
+		<dependency>
+    		<groupId>org.iq80.snappy</groupId>
+   			<artifactId>snappy</artifactId>
+    		<version>0.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -91,8 +98,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<plugin>
