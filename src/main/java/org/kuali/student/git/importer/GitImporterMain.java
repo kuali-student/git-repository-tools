@@ -45,12 +45,13 @@ public class GitImporterMain {
 	 */
 	public static void main(final String[] args) {
 
-		if (args.length != 5 && args.length != 6) {
-			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> [ <svn repo base url> ]");
+		if (args.length != 5 && args.length != 6 && args.length != 7) {
+			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> [ <svn repo base url> <repo uuid>]");
 			log.error("\t<veto.log> : which paths were veto's as not being a valid branch");
 			log.error("\t<skipped-copy-from.log> : which copy-from-paths were skipped");
 			log.error("\t<blob.log> : issues related to blobs (typically directory copy related)");
 			log.error("\t<svn repo base url> : the svn repo base url to use in the git-svn-id");
+			log.error("\t<repo uuid> : The svn repository uuid to use in the git-svn-id.\n\tIt you are importing from a clone use this to set the field to the real repositories uuid.");
 			System.exit(-1);
 		}
 
@@ -87,10 +88,15 @@ public class GitImporterMain {
 			
 			final boolean printGitSvnIds;
 			String repositoryBaseUrl = null;
+
+			String repositoryUUID = null;
 			
-			if (args.length == 6) {
+			if (args.length == 6 || args.length == 7) {
 				printGitSvnIds = true;
 				repositoryBaseUrl = args[5].trim();
+				
+				if (args.length == 7)
+					repositoryUUID = args[6].trim();
 			}
 			else
 				printGitSvnIds = false;
@@ -102,7 +108,7 @@ public class GitImporterMain {
 			
 			SnappyInputStream compressedInputStream = new SnappyInputStream(new FileInputStream (dumpFile));
 			
-			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl));
+			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl, repositoryUUID));
 			
 			vetoLog.close();
 			copyFromSkippedLog.close();

@@ -90,15 +90,17 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		 * @param repo 
 		 * @param vetoLog 
 		 * @param copyFromSkippedLog 
+		 * @param repositoryUUID2 
 		 * 
 		 */
-		public GitImporterParseOptions(Repository repo, PrintWriter vetoLog, PrintWriter copyFromSkippedLog, PrintWriter blobLog, boolean printGitSvnIds, String repositoryBaseUrl) {
+		public GitImporterParseOptions(Repository repo, PrintWriter vetoLog, PrintWriter copyFromSkippedLog, PrintWriter blobLog, boolean printGitSvnIds, String repositoryBaseUrl, String repositoryUUID) {
 		
 			this.repo = repo;
 			this.vetoLog = vetoLog;
 			this.copyFromSkippedLog = copyFromSkippedLog;
 			this.printGitSvnIds = printGitSvnIds;
 			this.repositoryBaseUrl = repositoryBaseUrl;
+			this.repositoryUUID = repositoryUUID;
 			
 			revisionMapper = new SvnRevisionMapper(repo);
 			nodeProcessor = new NodeProcessor(knownBranchMap, vetoLog, copyFromSkippedLog, blobLog, repo, revisionMapper, this, new NodeProcessorCallback() {
@@ -411,11 +413,17 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		 */
 		@Override
 		public void onUUID(ReadLineData lineData) {
-			String line = lineData.getLine();
 			
-			String parts[] = line.split(":");
+			if (repositoryUUID == null) {
+				// if not specified by the user read it from the dump stream.
+				String line = lineData.getLine();
+				
+				String parts[] = line.split(":");
+				
+				this.repositoryUUID = parts[1].trim();
+				
+			}
 			
-			this.repositoryUUID = parts[1].trim();
 		}
 
 		/* (non-Javadoc)

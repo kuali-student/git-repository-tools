@@ -42,19 +42,31 @@ public final class GitRepositoryUtils {
 	 * @throws IOException
 	 */
 	public static Repository buildFileRepository (File repositoryPath, boolean create) throws IOException {
+		return buildFileRepository(repositoryPath, create, true);
+	}
+	
+	public static Repository buildFileRepository (File repositoryPath, boolean create, boolean bare) throws IOException {
 		
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		
-		builder = builder.setGitDir(repositoryPath);
+		if (bare) {
+			builder = builder.setGitDir(repositoryPath);
+		}
+		else {
+			builder.setWorkTree(repositoryPath);
+		}
+			
 		
 		builder = builder.readEnvironment();
-		
-		builder = builder.findGitDir();
+
+		if (!create)
+			builder = builder.findGitDir();
 		
 		Repository repo = builder.build();
 		
 		if (create)
-			repo.create(false);
+			repo.create(bare);
+		
 		
 		return repo;
 	}

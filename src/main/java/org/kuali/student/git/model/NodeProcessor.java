@@ -323,9 +323,11 @@ public class NodeProcessor {
 			if (!copyFromBranchData.getBranchPath()
 					.equals(data.getBranchPath())) {
 
+				String copyFromBranchName = GitBranchUtils.getCanonicalBranchName(copyFromBranchData.getBranchPath(), copyFromRevision, largeBranchNameProvider);
+				
 				// register the merge
 				ObjectId head = revisionMapper.getRevisionBranchHead(
-						copyFromRevision, copyFromBranchData.getBranchPath());
+						copyFromRevision, copyFromBranchName);
 
 				if (head == null) {
 					/*
@@ -407,9 +409,11 @@ public class NodeProcessor {
 			throws VetoBranchException, IOException {
 
 		final BranchData branchData = GitBranchUtils.parse(path);
+		
+		String branchName = GitBranchUtils.getCanonicalBranchName(branchData.getBranchPath(), revision, largeBranchNameProvider);
 
 		ObjectId head = revisionMapper.getRevisionBranchHead(revision,
-				branchData.getBranchPath());
+				branchName);
 
 		if (head == null) {
 			log.warn("no branch found for branch path = " + branchData.getBranchPath()  + " at " + revision);

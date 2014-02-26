@@ -164,7 +164,11 @@ public class TestGitBranchUtils {
 		
 		assertPath("tags/ks-old-directory-structure/brms/tags/ks-tags/ks-old-directory-structure/brms-1.0.0-m3/ks-tags/ks-old-directory-structure/brms-execution-api/src/main/resources/org/kuali/student/tags/ks-old-directory-structure/pom.xml", "tags/ks-old-directory-structure/brms/tags/ks-tags", "ks-old-directory-structure/brms-1.0.0-m3/ks-tags/ks-old-directory-structure/brms-execution-api/src/main/resources/org/kuali/student/tags/ks-old-directory-structure/pom.xml", false);
 		
+		assertPath("merges/ks-1.3-services-merge-deux/ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ec1Applications.tag", "merges/ks-1.3-services-merge-deux", "ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ec1Applications.tag", false);
 	
+		assertPath("merges", "merges/ks-1.3-services-merge-deux", "ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ec1Applications.tag", true);
+		
+		assertPath("merges/ks-1.3-services-merge-deux", "merges/ks-1.3-services-merge-deux", "", false);
 	}
 	
 	@Test

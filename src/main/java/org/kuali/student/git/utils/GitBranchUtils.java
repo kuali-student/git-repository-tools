@@ -32,6 +32,10 @@ import org.kuali.student.svn.tools.merge.tools.BranchUtils.IBranchTagAssist;
  */
 public class GitBranchUtils {
 
+	private static final String MERGES = "merges";
+
+	private static final String TOOLS = "tools";
+
 	/*
 	 * 255 bytes but not sure on the null byte so reducing by one.
 	 */
@@ -193,7 +197,7 @@ public class GitBranchUtils {
 					if (!(path.startsWith(ENUMERATION)
 							|| path.startsWith(SANDBOX)
 							|| path.startsWith(DICTIONARY) || path
-							.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB) || path.startsWith("tools")))
+							.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB) || path.startsWith(TOOLS) || path.startsWith(MERGES)))
 						throw new VetoBranchException(
 								path
 										+ "vetoed because it does not contain tags, branches or trunk");
@@ -285,7 +289,17 @@ public class GitBranchUtils {
 					// else fall through to return null below
 					
 				}
-				else if ((path.startsWith(ENUMERATION) || path.startsWith(DICTIONARY) || path.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB)) && !isPathValidBranchTagOrTrunk(path)) {
+				else if (path.startsWith(MERGES)) { 
+					int branchNameIndex = 1;
+					
+					if (branchNameIndex < parts.length) {
+					
+						return buildBranchData(revision, path, branchNameIndex+1);
+					}
+					// else fall through and return null
+					
+				}
+				else if ((path.startsWith(ENUMERATION) || path.startsWith(DICTIONARY) || path.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB) ) && !isPathValidBranchTagOrTrunk(path)) {
 					return buildBranchData(revision, path, 1);
 				}
 				
