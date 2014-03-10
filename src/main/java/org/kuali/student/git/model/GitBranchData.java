@@ -29,6 +29,7 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.git.model.GitTreeData.GitMergeData;
+import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.model.util.GitTreeDataUtils;
 import org.kuali.student.git.utils.GitBranchUtils;
@@ -67,6 +68,8 @@ public class GitBranchData {
 
 	private long revision;
 
+	private BranchDetector branchDetector;
+
 	/**
 	 * @param revision
 	 * @param branchPath
@@ -75,7 +78,8 @@ public class GitBranchData {
 	 * @param path
 	 * 
 	 */
-	public GitBranchData(String branchName, long revision, ILargeBranchNameProvider largeBranchNameProvider) {
+	public GitBranchData(String branchName, long revision, ILargeBranchNameProvider largeBranchNameProvider, BranchDetector branchDetector) {
+		this.branchDetector = branchDetector;
 		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, largeBranchNameProvider);
 		this.revision = revision;
 		this.largeBranchNameProvider = largeBranchNameProvider;
@@ -113,7 +117,7 @@ public class GitBranchData {
 
 		blobsAdded.addAndGet(1L);
 
-		BranchData db = GitBranchUtils.parse(path);
+		BranchData db = branchDetector.parseBranch(revision, path);
 
 		String filePath = db.getPath();
 

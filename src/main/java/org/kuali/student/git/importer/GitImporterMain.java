@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.eclipse.jgit.lib.Repository;
 import org.iq80.snappy.SnappyInputStream;
+import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.slf4j.Logger;
@@ -45,11 +46,12 @@ public class GitImporterMain {
 	 */
 	public static void main(final String[] args) {
 
-		if (args.length != 5 && args.length != 6 && args.length != 7) {
-			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> [ <svn repo base url> <repo uuid>]");
+		if (args.length != 8) {
+			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> <gc enabled> <svn repo base url> <repo uuid>");
 			log.error("\t<veto.log> : which paths were veto's as not being a valid branch");
 			log.error("\t<skipped-copy-from.log> : which copy-from-paths were skipped");
 			log.error("\t<blob.log> : issues related to blobs (typically directory copy related)");
+			log.error("\t<gc enabled> : set to 1 (true ever 500 revs) or 0 (false) to disable");
 			log.error("\t<svn repo base url> : the svn repo base url to use in the git-svn-id");
 			log.error("\t<repo uuid> : The svn repository uuid to use in the git-svn-id.\n\tIt you are importing from a clone use this to set the field to the real repositories uuid.");
 			System.exit(-1);
@@ -65,6 +67,8 @@ public class GitImporterMain {
 			SvnDumpFilter filter = applicationContext
 					.getBean(SvnDumpFilter.class);
 
+			BranchDetector branchDetector = applicationContext.getBean("branchDetector", BranchDetector.class);
+			
 			// final MergeDetectorData detectorData = applicationContext
 			// .getBean(MergeDetectorData.class);
 
@@ -86,20 +90,20 @@ public class GitImporterMain {
 			
 			final PrintWriter blobLog = new PrintWriter(args[4]);
 			
-			final boolean printGitSvnIds;
+			boolean gcEnabled = true;
+			
+			final boolean printGitSvnIds = true; // not optional anymore
+			
 			String repositoryBaseUrl = null;
 
 			String repositoryUUID = null;
 			
-			if (args.length == 6 || args.length == 7) {
-				printGitSvnIds = true;
-				repositoryBaseUrl = args[5].trim();
-				
-				if (args.length == 7)
-					repositoryUUID = args[6].trim();
-			}
-			else
-				printGitSvnIds = false;
+			if (args[5].trim().equals("0"))
+				gcEnabled = false;
+			
+			repositoryBaseUrl = args[6].trim();
+			
+			repositoryUUID = args[7].trim();
 				
 			final Repository repo = GitRepositoryUtils.buildFileRepository(
 					gitRepository, false);
@@ -108,7 +112,7 @@ public class GitImporterMain {
 			
 			SnappyInputStream compressedInputStream = new SnappyInputStream(new FileInputStream (dumpFile));
 			
-			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl, repositoryUUID));
+			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl, repositoryUUID, branchDetector, gcEnabled));
 			
 			vetoLog.close();
 			copyFromSkippedLog.close();

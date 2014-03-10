@@ -39,6 +39,7 @@ import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -78,9 +79,17 @@ public class TestSvnRevisionMapper {
 		
 		revisionMapper = new SvnRevisionMapper(repo);
 		
+		revisionMapper.initialize();
+		
 		git = new Git (repo);
 		
 		createFileContentAndCommit ("README", "test content");
+	}
+	
+	@AfterClass
+	public static void tearDown () throws IOException {
+		
+		revisionMapper.shutdown();
 	}
 	
 	private static RevCommit createFileContentAndCommit(String fileName, String fileContent) throws NoWorkTreeException, IOException, NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
@@ -109,14 +118,35 @@ public class TestSvnRevisionMapper {
 		
 		List<Ref> branchHeads = new ArrayList<Ref>(repo.getRefDatabase().getRefs(Constants.R_HEADS).values());
 		
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 500; i++) {
 			createRevision(i, branchHeads);
 		}
 		
 		Random r = new Random();
 		
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 500; i++) {
 		
+			int randomRevision = r.nextInt(499);
+			
+			testRevision(randomRevision, branchHeads);
+			
+		}
+		
+		revisionMapper.repackMapFile();
+		
+		for (int i = 0; i < 500; i++) {
+			
+			int randomRevision = r.nextInt(499);
+			
+			testRevision(randomRevision, branchHeads);
+		}
+		
+		for (int i = 500; i < 1000; i++) {
+			createRevision(i, branchHeads);
+		}
+		
+		for (int i = 0; i < 1000; i++) {
+			
 			int randomRevision = r.nextInt(999);
 			
 			testRevision(randomRevision, branchHeads);
@@ -129,6 +159,33 @@ public class TestSvnRevisionMapper {
 		List<SvnRevisionMap> heads = revisionMapper.getRevisionHeads(650);
 		
 		Assert.assertEquals(1, heads.size());
+		
+		revisionMapper.shutdown();
+		
+		revisionMapper = new SvnRevisionMapper(repo);
+		
+		revisionMapper.initialize();
+
+		for (int i = 0; i < 1000; i++) {
+			
+			int randomRevision = r.nextInt(999);
+			
+			testRevision(randomRevision, branchHeads);
+		}
+		
+		for (int i = 1000; i < 1500; i++) {
+			createRevision(i, branchHeads);
+		}
+
+		revisionMapper.repackMapFile();
+		
+		for (int i = 0; i < 1499; i++) {
+			
+			int randomRevision = r.nextInt(1499);
+			
+			testRevision(randomRevision, branchHeads);
+		}
+		
 		
 	}
 

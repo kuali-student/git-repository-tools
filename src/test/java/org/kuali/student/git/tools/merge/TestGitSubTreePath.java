@@ -15,23 +15,30 @@
  */
 package org.kuali.student.git.tools.merge;
 
-import junit.framework.Assert;
-import junit.framework.TestFailure;
+import javax.annotation.Resource;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
+import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
-import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Kuali Student Team
  *
  */
-public class TestGitSubTreePath {
+
+public class TestGitSubTreePath extends AbstractKualiStudentBranchDetectorTest {
 
 	private static final Logger log = LoggerFactory.getLogger(TestGitSubTreePath.class);
+	
+	
 	
 	/**
 	 * 
@@ -56,7 +63,7 @@ public class TestGitSubTreePath {
 		 * poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast/BinaryTree.java
 		 * 
 		 */
-		String alteredBlobPath = GitBranchUtils.convertToTargetPath(directoryPath, copyFromDirectoryPath, copyFromBlobPath);
+		String alteredBlobPath = GitBranchUtils.convertToTargetPath(directoryPath, 0L, copyFromDirectoryPath, copyFromBlobPath, branchDetector);
 	   
 		Assert.assertEquals("poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast/BinaryTree.java", alteredBlobPath);
 				
@@ -72,7 +79,7 @@ public class TestGitSubTreePath {
 		
 		long copyFromRevision = 12074;
 		
-		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromPath, "impex/pom.xml");
+		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromRevision, copyFromPath, "impex/pom.xml", branchDetector);
 		
 		Assert.assertEquals("deploymentlab/tags/impex-parent-1.0.0/pom.xml", alteredPath);
 		

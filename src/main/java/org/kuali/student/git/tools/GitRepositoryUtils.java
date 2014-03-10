@@ -59,9 +59,6 @@ public final class GitRepositoryUtils {
 		
 		builder = builder.readEnvironment();
 
-		if (!create)
-			builder = builder.findGitDir();
-		
 		Repository repo = builder.build();
 		
 		if (create)

@@ -47,8 +47,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.GitCommitData;
 import org.kuali.student.git.model.NodeProcessor;
-import org.kuali.student.git.model.NodeProcessor.NodeProcessorCallback;
 import org.kuali.student.git.model.SvnRevisionMapper;
+import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.svn.tools.AbstractParseOptions;
@@ -85,15 +85,18 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		private boolean printGitSvnIds;
 
 		private String repositoryBaseUrl;
+
+		private boolean gcEnabled;
 		
 		/**
 		 * @param repo 
 		 * @param vetoLog 
 		 * @param copyFromSkippedLog 
+		 * @param branchDetector 
 		 * @param repositoryUUID2 
 		 * 
 		 */
-		public GitImporterParseOptions(Repository repo, PrintWriter vetoLog, PrintWriter copyFromSkippedLog, PrintWriter blobLog, boolean printGitSvnIds, String repositoryBaseUrl, String repositoryUUID) {
+		public GitImporterParseOptions(Repository repo, PrintWriter vetoLog, PrintWriter copyFromSkippedLog, PrintWriter blobLog, boolean printGitSvnIds, String repositoryBaseUrl, String repositoryUUID, BranchDetector branchDetector, boolean gcEnabled) {
 		
 			this.repo = repo;
 			this.vetoLog = vetoLog;
@@ -101,10 +104,10 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			this.printGitSvnIds = printGitSvnIds;
 			this.repositoryBaseUrl = repositoryBaseUrl;
 			this.repositoryUUID = repositoryUUID;
+			this.gcEnabled = gcEnabled;
 			
 			revisionMapper = new SvnRevisionMapper(repo);
-			nodeProcessor = new NodeProcessor(knownBranchMap, vetoLog, copyFromSkippedLog, blobLog, repo, revisionMapper, this, new NodeProcessorCallback() {
-			});
+			nodeProcessor = new NodeProcessor(knownBranchMap, vetoLog, copyFromSkippedLog, blobLog, repo, revisionMapper, this, branchDetector);
 			
 		}
 		
@@ -130,6 +133,12 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			// that are pending.
 
 			flushPendingBranchCommits();
+			
+			try {
+				revisionMapper.shutdown();
+			} catch (IOException e) {
+				log.error("failed to shutdown revision mapper: ", e);
+			}
 
 		}
 
@@ -149,7 +158,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			
 			flushPendingBranchCommits();
 			
-			if (this.currentRevision != 0 && this.currentRevision % 500 == 0) {
+			if (gcEnabled && this.currentRevision != 0 && this.currentRevision % 500 == 0) {
 				// every five hundred revisions garbage collect the repository to keep it fast
 				log.info("Garbage collecting git repository");
 				try {
@@ -165,6 +174,16 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				}
 				
 			}
+			
+			if (this.currentRevision != 0 && this.currentRevision % 10000 == 0) {
+				// repack the revision map file every 10000 revs
+				try {
+					revisionMapper.repackMapFile();
+				} catch (IOException e) {
+					throw new RuntimeException("failed to repack revision mapper", e);
+				}
+			}
+			
 			this.currentRevision = currentRevision;
 
 			log.info("starting on Revision: " + currentRevision);
@@ -413,6 +432,12 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		 */
 		@Override
 		public void onUUID(ReadLineData lineData) {
+			
+			try {
+				revisionMapper.initialize();
+			} catch (IOException e) {
+				throw new RuntimeException("revision mapper failed to initialize", e);
+			}
 			
 			if (repositoryUUID == null) {
 				// if not specified by the user read it from the dump stream.

@@ -16,6 +16,7 @@
 package org.kuali.student.git.model;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,22 +24,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.file.Files;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.BoundedInputStream;
-import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.util.io.CountingOutputStream;
-import org.iq80.snappy.SnappyInputStream;
-import org.iq80.snappy.SnappyOutputStream;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.slf4j.Logger;
@@ -114,12 +115,60 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		}
 
 	}
+	
+	private static class RevisionMapOffset {
+		private long revision;
+		private long startBtyeOffset;
+		private long totalBytes;
+		/**
+		 * @param revision
+		 * @param startBtyeOffset
+		 * @param totalBytes
+		 */
+		public RevisionMapOffset(long revision, long startBtyeOffset,
+				long totalBytes) {
+			super();
+			this.revision = revision;
+			this.startBtyeOffset = startBtyeOffset;
+			this.totalBytes = totalBytes;
+		}
+		/**
+		 * @return the revision
+		 */
+		public long getRevision() {
+			return revision;
+		}
+		/**
+		 * @return the startBtyeOffset
+		 */
+		public long getStartBtyeOffset() {
+			return startBtyeOffset;
+		}
+		/**
+		 * @return the totalBytes
+		 */
+		public long getTotalBytes() {
+			return totalBytes;
+		}
+		
+		
+	}
 
 	private File revisonMappings;
 	private Repository repo;
 
-	private InputStream revisionMapInputStream;
+	private TreeMap<String, RevisionMapOffset>revisionMap = new TreeMap<>();
 
+	private File revisionMapDataFile;
+
+	private File revisionMapIndexFile;
+
+	private PrintWriter revisionMapIndexWriter;
+
+	private RandomAccessFile revisionMapDataRandomAccessFile;
+
+	private long endOfRevisionMapDataFileInBytes;
+	
 	/**
 	 * 
 	 */
@@ -130,87 +179,129 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 		revisonMappings.mkdirs();
 
+		revisionMapDataFile = new File(revisonMappings, REVISION_MAP_FILE_NAME);
+		
+		revisionMapIndexFile = new File(revisonMappings, REVISION_MAP_INDEX_FILE_NAME);
+		
+	}
+	
+	public void initialize () throws IOException {
+		
+		revisionMapDataRandomAccessFile = new RandomAccessFile(revisionMapDataFile, "rws");
+		
+		if (revisionMapIndexFile.exists()) {
+			// load in any existing data.
+			loadIndexData();
+		}
+		
+		endOfRevisionMapDataFileInBytes = revisionMapDataFile.length();
+		
+		revisionMapIndexWriter = new PrintWriter(new FileOutputStream(revisionMapIndexFile, true));
+		
+		
+	}
+	public void shutdown() throws IOException {
+		
+		revisionMapIndexWriter.flush();
+		revisionMapIndexWriter.close();
+		
+		revisionMapDataRandomAccessFile.close();
+		
+		
+	}
+
+	private void loadIndexData() throws IOException {
+		
+		BufferedReader indexReader = new BufferedReader(new InputStreamReader(
+				new FileInputStream(revisionMapIndexFile)));
+
+
+		while (true) {
+
+			String line = indexReader.readLine();
+
+			if (line == null)
+				break;
+
+				String parts[] = line.split("::");
+
+				if (parts.length != 3)
+					continue;
+
+				long revision = Long.parseLong(parts[0]);
+				long byteStartOffset = Long.parseLong(parts[1]);
+				long totalbytes = Long.parseLong(parts[2]);
+				
+				revisionMap.put(parts[0], new RevisionMapOffset(revision, byteStartOffset, totalbytes));
+
+
+		}
+
+		indexReader.close();
+		
+	}
+	
+	private void createRevisionMapEntry (long revision, List<String>branchHeadLines) throws IOException {
+		
+		OutputStream revisionMappingStream = null;
+		
+		ByteArrayOutputStream bytesOut;
+		
+		revisionMappingStream = 
+					new BZip2CompressorOutputStream(bytesOut = new ByteArrayOutputStream());
+
+		PrintWriter pw = new PrintWriter(revisionMappingStream);
+
+		IOUtils.writeLines(branchHeadLines, "\n", pw);
+
+		pw.flush();
+		
+		pw.close();
+		
+		byte[] data = bytesOut.toByteArray();
+		
+		revisionMapDataRandomAccessFile.seek(endOfRevisionMapDataFileInBytes);
+
+		revisionMapDataRandomAccessFile.write(data);
+		
+		/*
+		 * Write the number of bytes written for this revision.
+		 */
+
+		updateRevisionIndex(revision, endOfRevisionMapDataFileInBytes, data.length);
+		
+		endOfRevisionMapDataFileInBytes += data.length;
+		
 	}
 
 	public void createRevisionMap(long revision, List<Ref> branchHeads)
 			throws IOException {
 
-		File actual = new File(revisonMappings, REVISION_MAP_FILE_NAME);
-
-		File temporary = new File(revisonMappings, REVISION_MAP_FILE_NAME
-				+ ".tmp");
-
-		boolean firstRevision = false;
-
-		if (!actual.exists())
-			firstRevision = true;
-
-		long revisionStartByteIndex = -1;
-
-		CountingOutputStream revisionMappingStream = null;
-		CountingInputStream countingInputStream = null;
+		List<String>branchHeadLines = new ArrayList<>(branchHeads.size());
 		
-		if (!firstRevision) {
-
-			
-			countingInputStream = new CountingInputStream(
-					new SnappyInputStream(new FileInputStream(actual)));
-
-			revisionMappingStream = new CountingOutputStream(
-					new SnappyOutputStream(new FileOutputStream(temporary)));
-
-			long copied = IOUtils.copyLarge(countingInputStream,
-					revisionMappingStream);
-
-			revisionStartByteIndex = copied;
-
-		} else {
-			// first revision
-			revisionStartByteIndex = 0L;
-			revisionMappingStream = new CountingOutputStream(
-					new SnappyOutputStream(new FileOutputStream(actual)));
-		}
-
-		PrintWriter pw = new PrintWriter(revisionMappingStream);
-
 		for (Ref branchHead : branchHeads) {
 			/*
 			 * Only archive active branches. skip those containing @
 			 */
-			if (!branchHead.getName().contains("\\@"))
-				pw.println(revision + "::" + branchHead.getName() + "::"
+			if (!branchHead.getName().contains("@"))
+				branchHeadLines.add(revision + "::" + branchHead.getName() + "::"
 						+ branchHead.getObjectId().name());
 		}
+		
+		
+		createRevisionMapEntry(revision, branchHeadLines);
+		
+	}
 
-		pw.flush();
-		pw.close();
+	private void updateRevisionIndex(long revision, long revisionStartByteIndex, long bytesWritten) {
+		
+		revisionMap.put(String.valueOf(revision), new RevisionMapOffset(revision, revisionStartByteIndex, bytesWritten));
+		
+		revisionMapIndexWriter.println(revision + "::" + revisionStartByteIndex + "::"
+				+ bytesWritten);
 
-		if (!firstRevision) {
-			
-			countingInputStream.close();
-			
-			try {
-				Files.delete(actual.toPath());
-				
-				FileUtils.moveFile(temporary, actual);
-			} catch (Exception e) {
-				log.warn("", e);
-			}
-		}
-
-		/*
-		 * Write the number of bytes written for this revision.
-		 */
-		pw = new PrintWriter(new FileOutputStream(new File(revisonMappings,
-				REVISION_MAP_INDEX_FILE_NAME), true));
-
-		long totalBytesWritten = revisionMappingStream.getCount()
-				- revisionStartByteIndex;
-
-		pw.println(revision + "::" + revisionStartByteIndex + "::"
-				+ totalBytesWritten);
-
-		pw.close();
+		revisionMapIndexWriter.flush();
+		
 	}
 
 	/**
@@ -224,12 +315,13 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 			throws IOException {
 
 		InputStream inputStream = getRevisionInputStream(revision);
+		
+		if (inputStream == null)
+			return null;
 
 		List<String> lines = IOUtils.readLines(inputStream, "UTF-8");
 		
 		inputStream.close();
-		
-		revisionMapInputStream.close();
 		
 		String revisionString = String.valueOf(revision);
 
@@ -251,10 +343,8 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 			String branchPath = GitBranchUtils.getBranchPath(branchName,
 					revision, this);
 
-			String filteredPath = branchPath.replaceAll("@[0-9]+$", "");
-
 			revisionHeads.add(new SvnRevisionMap(revision, branchName,
-					filteredPath, commitId));
+					branchPath, commitId));
 
 		}
 
@@ -265,52 +355,20 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 	private InputStream getRevisionInputStream(long revision)
 			throws IOException {
 
-		BufferedReader indexReader = new BufferedReader(new InputStreamReader(
-				new FileInputStream(new File(revisonMappings,
-						REVISION_MAP_INDEX_FILE_NAME))));
-
 		String revString = String.valueOf(revision);
+		
+		RevisionMapOffset revisionOffset = revisionMap.get(revString);
 
-		long byteStartOffset = -1;
-		long totalbytes = -1;
-
-		while (true) {
-
-			String line = indexReader.readLine();
-
-			if (line == null)
-				break;
-
-			if (line.startsWith(revString)) {
-
-				String parts[] = line.split("::");
-
-				if (parts.length != 3)
-					continue;
-
-				if (parts[0].trim().equals(revString)) {
-					byteStartOffset = Long.parseLong(parts[1]);
-					totalbytes = Long.parseLong(parts[2]);
-					break;
-				}
-
-			}
-
-		}
-
-		indexReader.close();
-
-		if (byteStartOffset == -1)
+		if (revisionOffset == null)
 			return null;
 
-		File actual = new File(revisonMappings, REVISION_MAP_FILE_NAME);
+		byte[] data = new byte[(int) revisionOffset.getTotalBytes()];
+		
+		revisionMapDataRandomAccessFile.seek(revisionOffset.getStartBtyeOffset());
+		
+		revisionMapDataRandomAccessFile.readFully(data);
 
-		revisionMapInputStream = new SnappyInputStream(
-				new FileInputStream(actual));
-
-		revisionMapInputStream.skip(byteStartOffset);
-
-		return new BoundedInputStream(revisionMapInputStream, totalbytes);
+		return new BZip2CompressorInputStream(new ByteArrayInputStream(data));
 
 	}
 
@@ -327,13 +385,14 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 			throws IOException {
 
 		InputStream inputStream = getRevisionInputStream(revision);
+		
+		if (inputStream == null)
+			return null;
 
 		List<String> lines = IOUtils.readLines(inputStream, "UTF-8");
 		
 		inputStream.close();
 		
-		revisionMapInputStream.close();
-
 		String revisionString = String.valueOf(revision);
 		
 		for (String line : lines) {
@@ -433,6 +492,82 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 					+ "-large-branches");
 			return null;
 		}
+	}
+
+	public void repackMapFile() throws IOException {
+		
+		// close the data file
+		revisionMapDataRandomAccessFile.close();
+		
+		
+		// close the index file
+		revisionMapIndexWriter.close();
+		
+		revisionMapIndexFile.delete();
+		
+		endOfRevisionMapDataFileInBytes = 0L;
+		
+		revisionMapIndexWriter = new PrintWriter(new FileOutputStream(new File(revisonMappings,
+				REVISION_MAP_INDEX_FILE_NAME), true));
+		
+		// clear the in memory index
+		revisionMap.clear();
+		
+		File copy = new File(revisonMappings, "repack-source.dat");
+		
+		FileUtils.copyFile(revisionMapDataFile, copy);
+		
+		revisionMapDataFile.delete();
+		
+		revisionMapDataRandomAccessFile = new RandomAccessFile(revisionMapDataFile, "rws");
+		
+		BufferedReader reader = new BufferedReader (new InputStreamReader(new BZip2CompressorInputStream(new FileInputStream(copy), true)));
+		
+		String currentRevision = null;
+		
+		List<String>currentRevisionHeads = new ArrayList<String>();
+		
+		while (true) {
+
+			String line = reader.readLine();
+			
+			if (line == null) {
+				if (currentRevision != null) {
+					// archive the last revision
+					createRevisionMapEntry(Long.parseLong(currentRevision), currentRevisionHeads);
+					
+				}
+				break;
+			}
+		
+			String parts[] = line.split ("::");
+			
+			String revisionString = parts[0];
+			
+			if (currentRevision == null)
+				currentRevision = revisionString;
+			
+			if (!currentRevision.equals(revisionString)) {
+				
+				// write the revision data and update the index file
+				createRevisionMapEntry(Long.parseLong(currentRevision), currentRevisionHeads);
+				
+				currentRevision = revisionString;
+				
+				currentRevisionHeads.clear();
+				
+			}
+			
+			currentRevisionHeads.add(line);
+			
+			
+		}
+		
+		reader.close();
+		
+		copy.delete();
+		
+		
 	}
 
 }

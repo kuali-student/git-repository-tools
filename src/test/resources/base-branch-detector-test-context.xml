@@ -18,20 +18,7 @@
 
 	<context:annotation-config/>
 	
-	<bean id="svnDumpFilter" class="org.kuali.student.svn.tools.SvnDumpFilter" />
-	
-	<bean id="branchDetector" class="org.kuali.student.git.model.branch.BranchDetectorSequencer">
-		<property name="detectors">
-			<list>
-				<ref bean="kualiStudentBranchDetector" />
-				<ref bean="baseBranchDetector" />
-			</list>
-		</property>
-	</bean>
-	
-	<bean id="kualiStudentBranchDetector" class="org.kuali.student.git.model.branch.KualiStudentBranchDetectorImpl"  />
-	 
-	<bean id="baseBranchDetector" class="org.kuali.student.git.model.branch.BranchDetectorImpl">
+	<bean id="branchDetector" class="org.kuali.student.git.model.branch.BranchDetectorImpl">
 	
 		<!-- a tag won't be detected where these paths are located anywhere in front of it -->
 		<property name="invalidBeforeTagPaths">

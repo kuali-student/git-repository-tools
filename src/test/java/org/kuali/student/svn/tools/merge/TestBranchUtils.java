@@ -19,15 +19,21 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
+import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.kuali.student.svn.tools.merge.tools.BranchUtils;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Kuali Student Team
  *
  */
-@RunWith(BlockJUnit4ClassRunner.class)
-public class TestBranchUtils {
+// TODO: split in two for base branch tests and kuali student base branch tests
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:base-branch-detector-test-context.xml"})
+public class TestBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 
 	/**
 	 * 
@@ -37,9 +43,9 @@ public class TestBranchUtils {
 
 	
 	@Test
-	public void testBranchUtils() {
+	public void testBranchUtils() throws VetoBranchException {
 		
-		BranchData bd = BranchUtils.parse(123456L, "poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java");
+		BranchData bd = branchDetector.parseBranch(123456L, "poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java");
 	
 		Assert.assertNotNull(bd);
 		
@@ -49,7 +55,7 @@ public class TestBranchUtils {
 		
 		
 		
-		bd = BranchUtils.parse(123456L, "deploymentlab/trunk/1.0.x/ks-cfg-dbs/ks-embedded-db/src/main/impex/KREN_CHNL_PRODCR_T.xml");
+		bd = branchDetector.parseBranch(123456L, "deploymentlab/trunk/1.0.x/ks-cfg-dbs/ks-embedded-db/src/main/impex/KREN_CHNL_PRODCR_T.xml");
 		
 		Assert.assertNotNull(bd);
 		
@@ -59,7 +65,7 @@ public class TestBranchUtils {
 		
 
 	
-	bd = BranchUtils.parse(2237L, "enumeration/enumeration-impl/src/main/java/org/kuali/student/enumeration/entity/ContextDAO.java");
+	bd = branchDetector.parseBranch(2237L, "enumeration/enumeration-impl/src/main/java/org/kuali/student/enumeration/entity/ContextDAO.java");
 		
 		Assert.assertNotNull(bd);
 		
@@ -69,52 +75,52 @@ public class TestBranchUtils {
 	}
 	
 	@Test 
-	public void testMissingDataCase() {
+	public void testMissingDataCase() throws VetoBranchException {
 		// 2249:2250::sandbox/team2/branches:branches:lum
 
-		BranchData bd = BranchUtils.parse(2249L, "branches");
+		BranchData bd = branchDetector.parseBranch(2249L, "branches");
 		
 		Assert.assertNotNull(bd);
 		
 		Assert.assertEquals("branches", bd.getBranchPath());
 		Assert.assertEquals ("", bd.getPath());
 		
-		bd = BranchUtils.parse(2250L, "sandbox/team2/lum/branches");
+		bd = branchDetector.parseBranch(2250L, "sandbox/team2/lum/branches");
 		
 		Assert.assertNotNull(bd);
 		
 		Assert.assertEquals("sandbox/team2/lum/branches", bd.getBranchPath());
 		Assert.assertEquals ("", bd.getPath());
 		
-		bd = BranchUtils.parse(2250L, "enumeration/.classpath");
+		bd = branchDetector.parseBranch(2250L, "enumeration/.classpath");
 		
 		Assert.assertNotNull(bd);
 		
 		Assert.assertEquals("enumeration", bd.getBranchPath());
 		Assert.assertEquals (".classpath", bd.getPath());
 		
-		bd = BranchUtils.parse(2250L, "sandbox/searchwidgets/.classpath");
+		bd = branchDetector.parseBranch(2250L, "sandbox/searchwidgets/.classpath");
 		
 		Assert.assertNotNull(bd);
 		
 		Assert.assertEquals("sandbox/searchwidgets", bd.getBranchPath());
 		Assert.assertEquals (".classpath", bd.getPath());
 		
-		bd = BranchUtils.parse(2250L, "sandbox/team2/tools/DataDictionaryExtractor/trunk/.classpath");
+		bd = branchDetector.parseBranch(2250L, "sandbox/team2/tools/DataDictionaryExtractor/trunk/.classpath");
 		
 		Assert.assertNotNull(bd);
 		
 		Assert.assertEquals("sandbox/team2/tools/DataDictionaryExtractor/trunk", bd.getBranchPath());
 		Assert.assertEquals (".classpath", bd.getPath());
 		
-		bd = BranchUtils.parse(2007L, "dictionary/.classpath");
+		bd = branchDetector.parseBranch(2007L, "dictionary/.classpath");
 		
 		Assert.assertNotNull(bd);
 		
 		Assert.assertEquals("dictionary", bd.getBranchPath());
 		Assert.assertEquals (".classpath", bd.getPath());
 		
-		bd = BranchUtils.parse(2007L, "dictionary/dict-services/.classpath");
+		bd = branchDetector.parseBranch(2007L, "dictionary/dict-services/.classpath");
 		
 		Assert.assertNotNull(bd);
 		

@@ -13,49 +13,31 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.svn.tools.merge.model;
+package org.kuali.student.git.model;
+
+import javax.annotation.Resource;
+
+import org.junit.runner.RunWith;
+import org.kuali.student.git.model.branch.BranchDetector;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Kuali Student Team
  *
  */
-public class BranchData {
-	Long revision;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:kuali-student-branch-detector-test-context.xml"})
+public abstract class AbstractKualiStudentBranchDetectorTest {
 
-	String branchPath;
-	String path;
-
-	/**
-	 * @param branchPath
-	 * @param path
-	 */
-	public BranchData(Long revision, String branchPath, String path) {
-		super();
-		this.revision = revision;
-		this.branchPath = branchPath;
-		this.path = path;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public String getBranchPath() {
-		return branchPath;
-	}
-
-	/**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @return the revision
-	 */
-	public Long getRevision() {
-		return revision;
-	}
-
+	@Resource (name="branchDetector")
+	protected BranchDetector branchDetector;
 	
+	/**
+	 * 
+	 */
+	public AbstractKualiStudentBranchDetectorTest() {
+		// TODO Auto-generated constructor stub
+	}
+
 }

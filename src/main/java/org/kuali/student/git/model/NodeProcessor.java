@@ -44,6 +44,8 @@ import org.eclipse.jgit.util.TemporaryBuffer.LocalFile;
 import org.kuali.student.git.importer.GitImporterParseOptions;
 import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
+import org.kuali.student.git.model.branch.BranchDetector;
+import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.model.util.GitTreeDataUtils;
 import org.kuali.student.git.utils.GitBranchUtils;
@@ -62,11 +64,6 @@ public class NodeProcessor {
 	private static final Logger log = LoggerFactory
 			.getLogger(NodeProcessor.class);
 
-	public static interface NodeProcessorCallback {
-
-	}
-
-	private List<NodeProcessorCallback> callbackList = new ArrayList<NodeProcessor.NodeProcessorCallback>();
 	private PrintWriter vetoLog;
 	private Map<String, GitBranchData> knownBranchMap;
 	private Repository repo;
@@ -79,12 +76,14 @@ public class NodeProcessor {
 	private GitCommitData commitData;
 	private ILargeBranchNameProvider largeBranchNameProvider;
 
+	private BranchDetector branchDetector;
+
 	public NodeProcessor(Map<String, GitBranchData> knownBranchMap,
 			PrintWriter vetoLog, PrintWriter copyFromSkippedLog,
-			PrintWriter blobLog,
-			Repository repo, SvnRevisionMapper revisionMapper,
+			PrintWriter blobLog, Repository repo,
+			SvnRevisionMapper revisionMapper,
 			GitImporterParseOptions importerParseOptions,
-			NodeProcessor.NodeProcessorCallback callback) {
+			BranchDetector branchDetector) {
 		super();
 		this.knownBranchMap = knownBranchMap;
 		this.vetoLog = vetoLog;
@@ -94,18 +93,14 @@ public class NodeProcessor {
 		this.revisionMapper = revisionMapper;
 		this.largeBranchNameProvider = revisionMapper;
 		this.importerParseOptions = importerParseOptions;
+		this.branchDetector = branchDetector;
 
 		this.treeProcessor = new GitTreeProcessor(repo);
 
-		registerCallback(callback);
 	}
 
 	private InputStream getInputStream() {
 		return importerParseOptions.getInputStream();
-	}
-	
-	public void registerCallback(NodeProcessor.NodeProcessorCallback callback) {
-		callbackList.add(callback);
 	}
 
 	public void processNode(String path, long currentRevision,
@@ -120,13 +115,14 @@ public class NodeProcessor {
 
 		String kind = nodeProperties.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_KIND);
 
-		String action = nodeProperties.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_ACTION);
+		String action = nodeProperties
+				.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_ACTION);
 
 		boolean validBranch = true;
 
 		BranchData branchData = null;
 		try {
-			branchData = GitBranchUtils.parse(path);
+			branchData = branchDetector.parseBranch(currentRevision, path);
 		} catch (VetoBranchException e) {
 			vetoLog.println(String
 					.format("invalid branch (OnAfterNode) CurrentRevision: %s, Path: %s",
@@ -136,8 +132,9 @@ public class NodeProcessor {
 
 		if (validBranch) {
 			// check that there is actually a branch of this name
-			String canonicalBranchName = GitBranchUtils
-					.getCanonicalBranchName(branchData.getBranchPath(), currentRevision, largeBranchNameProvider);
+			String canonicalBranchName = GitBranchUtils.getCanonicalBranchName(
+					branchData.getBranchPath(), currentRevision,
+					largeBranchNameProvider);
 
 			try {
 				Ref mergeBranchRef = repo.getRef(Constants.R_HEADS
@@ -152,14 +149,18 @@ public class NodeProcessor {
 		GitBranchData data = null;
 
 		if (validBranch) {
-			data = getBranchData(knownBranchMap, GitBranchUtils.getCanonicalBranchName(branchData.getBranchPath(), currentRevision, largeBranchNameProvider), currentRevision);
+			data = getBranchData(knownBranchMap,
+					GitBranchUtils.getCanonicalBranchName(
+							branchData.getBranchPath(), currentRevision,
+							largeBranchNameProvider), currentRevision);
 		}
 
-		if (currentRevision == 122 || currentRevision == 7406) { 
+		if (currentRevision == 255 || currentRevision == 7446
+				|| currentRevision == 7447) {
 			// this is faster than the eclipse dynamic breakpoint
 			log.info("");
 		}
-		
+
 		if ("add".equals(action)) {
 
 			if ("file".equals(kind)) {
@@ -230,12 +231,14 @@ public class NodeProcessor {
 	}
 
 	private GitBranchData getBranchData(
-			Map<String, GitBranchData> knownBranchMap, String branchName, long revision) {
+			Map<String, GitBranchData> knownBranchMap, String branchName,
+			long revision) {
 
 		GitBranchData data = knownBranchMap.get(branchName);
 
 		if (data == null) {
-			data = new GitBranchData(branchName, revision, largeBranchNameProvider);
+			data = new GitBranchData(branchName, revision,
+					largeBranchNameProvider, branchDetector);
 
 			/*
 			 * If the branch already exists lets copy its commit tree as the
@@ -252,19 +255,23 @@ public class NodeProcessor {
 					// load some existing data like the
 					// current parent sha1.
 					parentId = ref.getObjectId();
- 
+
 					GitTreeData existingTreeData = extractExistingTreeData(parentId);
-					
-					int existingBlobCount = GitTreeDataUtils.countBlobs(existingTreeData);
+
+					int existingBlobCount = GitTreeDataUtils
+							.countBlobs(existingTreeData);
 
 					data.mergeOntoExistingTreeData(existingTreeData);
 
 					int mergedBlobCount = data.getBlobCount();
-					
-					if (existingBlobCount  != mergedBlobCount) {
-						throw new RuntimeException("data loss existing count = " + existingBlobCount + ", merged count = " + mergedBlobCount);
+
+					if (existingBlobCount != mergedBlobCount) {
+						throw new RuntimeException(
+								"data loss existing count = "
+										+ existingBlobCount
+										+ ", merged count = " + mergedBlobCount);
 					}
-					
+
 					data.setParentId(parentId);
 
 				}
@@ -308,7 +315,8 @@ public class NodeProcessor {
 
 			BranchData copyFromBranchData;
 			try {
-				copyFromBranchData = GitBranchUtils.parse(copyFromPath);
+				copyFromBranchData = branchDetector.parseBranch(
+						copyFromRevision, copyFromPath);
 			} catch (VetoBranchException e1) {
 				log.warn(copyFromPath + " vetoed");
 				vetoLog.println(String
@@ -323,8 +331,11 @@ public class NodeProcessor {
 			if (!copyFromBranchData.getBranchPath()
 					.equals(data.getBranchPath())) {
 
-				String copyFromBranchName = GitBranchUtils.getCanonicalBranchName(copyFromBranchData.getBranchPath(), copyFromRevision, largeBranchNameProvider);
-				
+				String copyFromBranchName = GitBranchUtils
+						.getCanonicalBranchName(
+								copyFromBranchData.getBranchPath(),
+								copyFromRevision, largeBranchNameProvider);
+
 				// register the merge
 				ObjectId head = revisionMapper.getRevisionBranchHead(
 						copyFromRevision, copyFromBranchName);
@@ -355,15 +366,13 @@ public class NodeProcessor {
 				+ ", at revision " + currentRevision);
 
 		ObjectId id = storeBlob(data, path, nodeProperties);
-		
+
 		if (id != null) {
 			data.addBlob(path, id.getName(), blobLog);
-		}
-		else {
-			
+		} else {
+
 			log.warn("failed to store blob at path = " + path);
 		}
-		
 
 	}
 
@@ -394,10 +403,10 @@ public class NodeProcessor {
 					.get(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH);
 
 			long contentLength = Long.parseLong(contentLengthProperty);
-			
+
 			long propContentLength = 0L;
-			
-			if (propContentLengthProperty != null) 
+
+			if (propContentLengthProperty != null)
 				propContentLength = Long.parseLong(propContentLengthProperty);
 
 			return storeBlob(data, path, contentLength, propContentLength);
@@ -408,15 +417,18 @@ public class NodeProcessor {
 	private ObjectId getBlobId(String path, long revision)
 			throws VetoBranchException, IOException {
 
-		final BranchData branchData = GitBranchUtils.parse(path);
-		
-		String branchName = GitBranchUtils.getCanonicalBranchName(branchData.getBranchPath(), revision, largeBranchNameProvider);
+		final BranchData branchData = branchDetector
+				.parseBranch(revision, path);
+
+		String branchName = GitBranchUtils.getCanonicalBranchName(
+				branchData.getBranchPath(), revision, largeBranchNameProvider);
 
 		ObjectId head = revisionMapper.getRevisionBranchHead(revision,
 				branchName);
 
 		if (head == null) {
-			log.warn("no branch found for branch path = " + branchData.getBranchPath()  + " at " + revision);
+			log.warn("no branch found for branch path = "
+					+ branchData.getBranchPath() + " at " + revision);
 			return null;
 		}
 		/*
@@ -446,58 +458,74 @@ public class NodeProcessor {
 
 	}
 
-	private void deleteBranches(GitBranchData data, String path, long currentRevision) throws IOException {
+	private void deleteBranches(GitBranchData data, String path,
+			long currentRevision) throws IOException {
 
-		Map<String, Ref> heads = repo.getRefDatabase().getRefs(Constants.R_HEADS);
+		Map<String, Ref> heads = repo.getRefDatabase().getRefs(
+				Constants.R_HEADS);
 
-		for (Map.Entry<String, Ref>entry : heads.entrySet()) {
+		for (Map.Entry<String, Ref> entry : heads.entrySet()) {
 			String branchName = entry.getKey();
-			
+
 			if (branchName.contains("@"))
 				continue; // skip over archived references
-			
-			String largeBranchName = largeBranchNameProvider.getBranchName(branchName, currentRevision);
-			
+
+			String largeBranchName = largeBranchNameProvider.getBranchName(
+					branchName, currentRevision);
+
 			if (largeBranchName != null) {
 				branchName = largeBranchName;
 			}
-			
-			String branchPath = GitBranchUtils.getBranchPath(branchName, currentRevision, largeBranchNameProvider);
-			
-			if (branchPath.startsWith(path)) {
-				
+
+			String branchPath = GitBranchUtils.getBranchPath(branchName,
+					currentRevision, largeBranchNameProvider);
+
+			if (branchPath.equals(path) || branchPath.startsWith(path + "/")) {
+
+				/*
+				 * require the last element to totally match:
+				 * 
+				 * ks-1.3, ks-1.3-ec1 if we delete ks-1.3 we only want ks-1.3 to be deleted.  Without the trailing "/" ks-1.3-ec1 was also being deleted.
+				 */
 				deleteBranch(branchName, currentRevision);
 			}
 		}
 	}
 
-	private void deleteBranch(String branchName, long currentRevision) throws IOException {
-		
+	private void deleteBranch(String branchName, long currentRevision)
+			throws IOException {
+
 		Ref existingBranchRef = repo.getRef(Constants.R_HEADS + branchName);
-		
-		String archivedBranchReference = Constants.R_HEADS + branchName + "@" + (currentRevision-1);
-		
+
+		String archivedBranchReference = Constants.R_HEADS + branchName + "@"
+				+ (currentRevision - 1);
+
 		if (archivedBranchReference.length() >= GitBranchUtils.FILE_SYSTEM_NAME_LIMIT) {
-			archivedBranchReference = Constants.R_HEADS + largeBranchNameProvider.storeLargeBranchName(archivedBranchReference, currentRevision);
+			archivedBranchReference = Constants.R_HEADS
+					+ largeBranchNameProvider.storeLargeBranchName(
+							archivedBranchReference, currentRevision);
 		}
-		
-		RefRename rename = repo.renameRef(existingBranchRef.getName(), archivedBranchReference);
-		
+
+		RefRename rename = repo.renameRef(existingBranchRef.getName(),
+				archivedBranchReference);
+
 		rename.setRefLogIdent(commitData.getPersonIdent());
-		rename.setRefLogMessage(commitData.getPersonIdent() + " deleted " + branchName + "renaming the branch");
-		
+		rename.setRefLogMessage(commitData.getPersonIdent() + " deleted "
+				+ branchName + "renaming the branch");
+
 		log.info("renamed " + branchName + " to " + archivedBranchReference);
-		
+
 		Result result = rename.rename();
-		
+
 		if (result != Result.RENAMED)
-			log.warn("problems renaming branch = " + branchName + " to " + archivedBranchReference);
+			log.warn("problems renaming branch = " + branchName + " to "
+					+ archivedBranchReference);
 		else {
 			log.info("renamed " + branchName + " to " + archivedBranchReference);
 		}
-		
+
 		// also remove this branch from the known branches
-		knownBranchMap.remove(branchName);		
+		knownBranchMap.remove(branchName);
 	}
 
 	private void applyDirectoryAdd(final GitBranchData data, final String path,
@@ -510,112 +538,158 @@ public class NodeProcessor {
 		 * the path in relationship to the branches that it matches and apply
 		 * the blobs accordingly.
 		 * 
-		 * It can also take place within an existing branch in which case we need to navigate the subtree to find the blobs.
-		 * 
+		 * It can also take place within an existing branch in which case we
+		 * need to navigate the subtree to find the blobs.
 		 */
 
-		final String copyFromPath = nodeProperties.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_PATH);
+		final String copyFromPath = nodeProperties
+				.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_PATH);
 
 		if (copyFromPath != null) {
+
+			if (copyFromPath.isEmpty()) {
+				log.warn("copyfrom path is empty which implies a copy of the repository root.  this is not supported right now.");
+				return;
+			}
 
 			long copyFromRevision = Long.valueOf(nodeProperties
 					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_REV));
 
 			try {
-				
+
 				/*
-				 * Cases
-				 * 1. branch copy
-				 * 2. above branch level (find the branches to which it applies)
-				 * 3. within a branch level (subtree directory copy)
+				 * Cases 1. branch copy 2. above branch level (find the branches
+				 * to which it applies) 3. within a branch level (subtree
+				 * directory copy)
 				 */
-				
+
 				if (data == null) {
 					// this is an above branch level copy
-					applyCopyFromAboveBranchLevel(copyFromRevision, copyFromPath, path, currentRevision);
+					applyCopyFromAboveBranchLevel(copyFromRevision,
+							copyFromPath, path, currentRevision);
 					log.info("applyDirectoryAdd: data is null so attempting copy from above the branch level.");
 					return;
 				}
-				
+
 				try {
-					BranchData copyFromBranchData = GitBranchUtils.parse(copyFromPath);
-					
-					String copyFromBranchName = GitBranchUtils.getCanonicalBranchName(copyFromBranchData.getBranchPath(), copyFromRevision, largeBranchNameProvider);
-					
-					ObjectId copyFromCommitId = revisionMapper.getRevisionBranchHead(copyFromRevision, copyFromBranchName);
-					
+					BranchData copyFromBranchData = branchDetector.parseBranch(
+							copyFromRevision, copyFromPath);
+
+					String copyFromBranchName = GitBranchUtils
+							.getCanonicalBranchName(
+									copyFromBranchData.getBranchPath(),
+									copyFromRevision, largeBranchNameProvider);
+
+					ObjectId copyFromCommitId = revisionMapper
+							.getRevisionBranchHead(copyFromRevision,
+									copyFromBranchName);
+
 					if (copyFromCommitId == null) {
-						log.warn("no commit found for copyfromBranch=" + copyFromBranchName + " at revision " + copyFromRevision);
-						// nothing we can do if there is no source data.
-						// this may indicate a bug in our branch detection logic.
+						
+						List<BranchData> copyFromBranches = parseBranches(
+								copyFromRevision, copyFromPath);
+
+							for (BranchData copyFromBranch : copyFromBranches) {
+								
+								/*
+								 * the changes should apply properly
+								 */
+								
+								ObjectId currentCopyFromHeadId = revisionMapper.getRevisionBranchHead(copyFromRevision, GitBranchUtils.getCanonicalBranchName(copyFromBranch.getBranchPath(), copyFromRevision, largeBranchNameProvider));
+								
+								applyCopyFromDirectoryTree(currentCopyFromHeadId.name(), copyFromBranch.getBranchPath(), copyFromBranch.getPath(), path, currentRevision);
+								
+							}
+						
+						
 						return;
 					}
-					
-					if (data.getBranchPath().equals(path) && copyFromBranchData.getBranchPath().equals(copyFromPath)) {
+
+					if (data.getBranchPath().equals(path)
+							&& copyFromBranchData.getBranchPath().equals(
+									copyFromPath)) {
 
 						// branch copy case
-						
+
 						/*
-						 * If the target branch exists then what we are in effect doing is a delete followed by an add.
+						 * If the target branch exists then what we are in
+						 * effect doing is a delete followed by an add.
 						 */
 						if (data.getParentId() != null) {
-							
+
 							deleteBranch(data.getBranchName(), currentRevision);
-							
+
 							data.reset();
 						}
-						
-						
-						
+
 						// copy from the entire source tree.
-						
+
 						GitTreeData copyFromTreeData = null;
-						
+
 						copyFromTreeData = extractExistingTreeData(copyFromCommitId);
-						
-						int copyFromTreeSize = GitTreeDataUtils.countBlobs(copyFromTreeData);
-						
+
+						int copyFromTreeSize = GitTreeDataUtils
+								.countBlobs(copyFromTreeData);
+
 						data.mergeOntoExistingTreeData(copyFromTreeData);
-						
+
 						int actual = data.getBlobCount();
-						
+
 						if (copyFromTreeSize != actual) {
-								throw new RuntimeException("data loss copy from count = " + copyFromTreeSize + ", copied count = " + actual);
+							throw new RuntimeException(
+									"data loss copy from count = "
+											+ copyFromTreeSize
+											+ ", copied count = " + actual);
 						}
 
 						data.setParentId(copyFromCommitId);
-						
+
 						data.setCreated(true);
-					}
-					else {
-						
+					} else {
+
 						if (data.getBranchPath().equals(path)) {
-							// target is a branch but the source is a subtree within an existing branch.
-							
+							// target is a branch but the source is a subtree
+							// within an existing branch.
+
 							if (data.getParentId() != null) {
-								
-								deleteBranch(data.getBranchName(), currentRevision);
-								
+
+								deleteBranch(data.getBranchName(),
+										currentRevision);
+
 								data.reset();
 							}
-							
+
 							data.setParentId(copyFromCommitId);
-							
+
 							data.setCreated(true);
-							
+
 							// fall through and run the subtree copy
 						}
-						
-						// target is a subtree of a branch and source is a subtree within another branch (possibly the same one)
-						applyCopyFromDirectorySubTree(data, copyFromCommitId, copyFromPath, path, currentRevision);
+
+						if (copyFromBranchData.getPath().isEmpty()) {
+							// target is a directory of a branch
+							// source is a branch itself.
+
+							applyCopyFromDirectoryTree(copyFromCommitId.name(),
+									copyFromBranchData.getBranchPath(), copyFromPath,
+									path, currentRevision);
+
+						} else {
+							// target is a subtree of a branch and source is a
+							// subtree within another branch (possibly the same
+							// one)
+							applyCopyFromDirectorySubTree(data,
+									copyFromCommitId, copyFromPath, path,
+									currentRevision, copyFromRevision);
+						}
 					}
-					
+
 				} catch (VetoBranchException e) {
-					
+
 					// this is an above branch level copy
-					applyCopyFromAboveBranchLevel(copyFromRevision, copyFromPath, path, currentRevision);
+					applyCopyFromAboveBranchLevel(copyFromRevision,
+							copyFromPath, path, currentRevision);
 				}
-				
 
 			} catch (IOException e) {
 				throw new RuntimeException(
@@ -626,153 +700,288 @@ public class NodeProcessor {
 
 	}
 
-	private void applyCopyFromAboveBranchLevel(long copyFromRevision, String copyFromPath, String path, long currentRevision) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
+	private void applyCopyFromAboveBranchLevel(long copyFromRevision,
+			String copyFromPath, String path, long currentRevision)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
+
 		List<SvnRevisionMap> heads = revisionMapper
 				.getRevisionHeads(copyFromRevision);
 
 		for (SvnRevisionMap revMap : heads) {
 
-			final String currentBranchName = revMap.getBranchName();
-
 			String currentBranchPath = revMap.getBranchPath();
-			
-			String canonicalCopyFromPath = GitBranchUtils
-					.getCanonicalBranchName(copyFromPath, copyFromRevision, largeBranchNameProvider);
 
 			if (currentBranchPath.startsWith(Constants.R_HEADS + copyFromPath)) {
-				applyCopyFromDirectoryTree(revMap, copyFromPath, path, currentRevision);
+				applyCopyFromDirectoryTree(revMap, copyFromPath, path,
+						currentRevision);
 			}
-			
-			
+
 		}
-		
+
 	}
 
-	private void applyCopyFromDirectorySubTree(final GitBranchData data, final ObjectId copyFromCommitId, final String copyFromPath, final String path, final long currentRevision) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-	
-		try {
-			final BranchData copyFromBranch = GitBranchUtils.parse(copyFromPath);
-			
+	private void applyCopyFromDirectorySubTree(final GitBranchData data,
+			final ObjectId copyFromCommitId, final String copyFromPath,
+			final String path, final long currentRevision,
+			final long copyFromRevision) throws MissingObjectException,
+			IncorrectObjectTypeException, IOException {
+
+		/*
+		 * The copy from branch could be a single discrete branch.
+		 * 
+		 * However it could also be a prefix leading to several branches.
+		 * 
+		 * We need to allow for that posibility where we might find
+		 */
+		final List<BranchData> copyFromBranches = parseBranches(
+				copyFromRevision, copyFromPath);
+
+		if (copyFromBranches.size() == 1) {
+
+			BranchData copyFromBranch = copyFromBranches.get(0);
+
 			TreeFilter pathFilter = null;
-			
-			if (!copyFromBranch.getBranchPath().equals(copyFromPath)) {
+
+			if (!copyFromBranch.getBranchPath().equals(copyFromPath) && copyFromBranch.getPath().length() > 0) {
 				/*
-				 * So long as the copyFromPath is deeper than the copyFromBranch we should use a path filter.
+				 * So long as the copyFromPath is deeper than the copyFromBranch
+				 * we should use a path filter.
 				 */
 				pathFilter = PathFilter.create(copyFromBranch.getPath());
 			}
-			
+
 			data.addMergeParentId(copyFromCommitId);
-						
-			treeProcessor.visitBlobs(copyFromCommitId, new GitTreeBlobVisitor() {
-				
-				@Override
-				public boolean visitBlob(ObjectId blobId, String blobPath, String name) {
-					
-					try {
-						
-						String alteredBlobPath = GitBranchUtils.convertToTargetPath(path, copyFromPath, blobPath);
-						
-						data.addBlob(alteredBlobPath,
-								blobId.getName(), blobLog);
-						
-						
-					} catch (VetoBranchException e) {
-						vetoLog.println(String
-								.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s",
-										String.valueOf(currentRevision),
-										data.getBranchName(), path));
-						// intentionally continue
-						
-					}
-					
-					// visit all of the blobs
-					return true;
-				}
-			}, pathFilter);
-			
-			
-			
-			
-		} catch (VetoBranchException e) {
-			vetoLog.println("vetoed copyfrom branch for " + copyFromPath);
-		}
+
+			treeProcessor.visitBlobs(copyFromCommitId,
+					new GitTreeBlobVisitor() {
+
+						@Override
+						public boolean visitBlob(ObjectId blobId,
+								String blobPath, String name) {
+
+							try {
+
+								String alteredBlobPath = GitBranchUtils
+										.convertToTargetPath(path,
+												copyFromRevision, copyFromPath,
+												blobPath, branchDetector);
+
+								/*
+								 * In most cases this blob path will live in the
+								 * branch identified as data.
+								 * 
+								 * But in some cases the branch could be
+								 * different. i.e. the full blob path shows a
+								 * different branch.
+								 * 
+								 * Detect the branch path and if different from
+								 * data then record this blob separately.
+								 */
+
+								BranchData alteredData = null;
+								try {
+
+									alteredData = branchDetector.parseBranch(
+											currentRevision, alteredBlobPath);
+
+								} catch (VetoBranchException e1) {
+									vetoLog.print("vetoed alteredBlobPath = "
+											+ alteredBlobPath);
+									return false;
+								}
+
+								if (alteredData.getBranchPath().equals(
+										data.getBranchPath())) {
+									// same branch
+									data.addBlob(alteredBlobPath,
+											blobId.getName(), blobLog);
+								} else {
+									// a different branch
+									GitBranchData alteredBranchData = getBranchData(
+											knownBranchMap,
+											GitBranchUtils.getCanonicalBranchName(
+													alteredData.getBranchPath(),
+													currentRevision,
+													largeBranchNameProvider),
+											currentRevision);
+
+									alteredBranchData.addBlob(alteredBlobPath,
+											blobId.getName(), blobLog);
+
+									// TODO: should a merge happen here
+								}
+
+							} catch (VetoBranchException e) {
+								vetoLog.println(String
+										.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s",
+												String.valueOf(currentRevision),
+												data.getBranchName(), path));
+								// intentionally continue
+
+							}
+
+							// visit all of the blobs
+							return true;
+						}
+					}, pathFilter);
+
+		} 
+
 	}
-	
-	private void applyCopyFromDirectoryTree(final SvnRevisionMap revMap, final String copyFromPath, final String path, final long currentRevision) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
-		final String commitId = revMap.getCommitId();
-		
-		treeProcessor.visitBlobs(ObjectId.fromString(commitId), new GitTreeBlobVisitor() {
 
-			/* (non-Javadoc)
-			 * @see org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor#visitBlob(org.eclipse.jgit.lib.ObjectId, java.lang.String)
-			 */
-			@Override
-			public boolean visitBlob(ObjectId blobId, String blobPath, String name) {
-				
-				StringBuilder alteredBlobPathBuilder = new StringBuilder(revMap.getBranchPath());
-				
-				alteredBlobPathBuilder.append("/");
-				alteredBlobPathBuilder.append(blobPath);
+	private List<BranchData> parseBranches(long copyFromRevision,
+			String copyFromPath) throws IOException {
 
-				String alteredBlobPath = alteredBlobPathBuilder.toString();
-				
-				if (alteredBlobPath.startsWith(Constants.R_HEADS)) {
-					alteredBlobPath = alteredBlobPath.replace(Constants.R_HEADS, "");
-				}
-				
-				alteredBlobPath = alteredBlobPath.replace(copyFromPath, path);
-				
-				BranchData data = null;
-				try {
-				
-					data = GitBranchUtils.parse(alteredBlobPath);
-				} catch (VetoBranchException e1) {
-					vetoLog.print("vetoed alteredBlobPath = " + alteredBlobPathBuilder);
-					return false;
-				}
+		ArrayList<BranchData> branches = new ArrayList<>();
 
-				GitBranchData currentBranchData = getBranchData(knownBranchMap, GitBranchUtils.getCanonicalBranchName(data.getBranchPath(), currentRevision, largeBranchNameProvider), currentRevision);
-				
-				
-				if (currentBranchData.getParentId() == null)
-					currentBranchData.setParentId(ObjectId.fromString(commitId));
-				else 
-					currentBranchData.addMergeParentId(ObjectId.fromString(commitId));
+		List<SvnRevisionMap> heads = revisionMapper
+				.getRevisionHeads(copyFromRevision);
+
+		for (SvnRevisionMap revMap : heads) {
+
+			String currentBranchPath = revMap.getBranchPath();
+
+			if (currentBranchPath.startsWith(Constants.R_HEADS + copyFromPath)) {
 
 				try {
-					currentBranchData.addBlob(alteredBlobPath,
-							blobId.getName(), blobLog);
-					
-					
+					BranchData currentData = branchDetector.parseBranch(
+							copyFromRevision, currentBranchPath);
+
+					branches.add(currentData);
+
 				} catch (VetoBranchException e) {
-					vetoLog.println(String
-							.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s, New Branch Path: %s",
-									String.valueOf(currentRevision),
-									currentBranchData.getBranchName(), path,
-									alteredBlobPath));
-					// intentionally continue
-					
+					log.warn("parseBranches: skipping " + currentBranchPath);
+					continue;
 				}
-				
-				// visit all of the blobs
-				return true;
+
 			}
 
-			
-		});
-		
+		}
+
+		return branches;
+	}
+
+	private void applyCopyFromDirectoryTree(final SvnRevisionMap revMap,
+			final String copyFromPath, final String path,
+			final long currentRevision) throws MissingObjectException,
+			IncorrectObjectTypeException, IOException {
+
+		applyCopyFromDirectoryTree(revMap.getCommitId(),
+				revMap.getBranchPath(), copyFromPath, path, currentRevision);
+	}
+
+	private void applyCopyFromDirectoryTree(final String commitId,
+			final String copyFromBranchPath, final String copyFromPath,
+			final String path, final long currentRevision)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
+
+		treeProcessor.visitBlobs(ObjectId.fromString(commitId),
+				new GitTreeBlobVisitor() {
+
+					/*
+					 * (non-Javadoc)
+					 * 
+					 * @see org.kuali.student.git.model.GitTreeProcessor.
+					 * GitTreeBlobVisitor
+					 * #visitBlob(org.eclipse.jgit.lib.ObjectId,
+					 * java.lang.String)
+					 */
+					@Override
+					public boolean visitBlob(ObjectId blobId, String blobPath,
+							String name) {
+
+						StringBuilder alteredBlobPathBuilder = new StringBuilder(path);
+						
+						String alteredCopyFromPath = null;
+						
+						if (copyFromBranchPath.startsWith(Constants.R_HEADS))
+							alteredCopyFromPath = copyFromBranchPath.substring(Constants.R_HEADS.length() + copyFromPath.length());
+						else
+							alteredCopyFromPath = copyFromBranchPath.substring(copyFromPath.length());
+						
+						if (alteredBlobPathBuilder.charAt(alteredBlobPathBuilder.length()-1) != '/' && (alteredCopyFromPath.length() == 0 || alteredCopyFromPath.charAt(0) != '/')) {
+
+							alteredBlobPathBuilder.append("/");
+							
+						}
+						
+						
+						alteredBlobPathBuilder.append(alteredCopyFromPath);
+						
+						if (alteredBlobPathBuilder.charAt(alteredBlobPathBuilder.length()-1) != '/' && blobPath.charAt(0) != '/') {
+
+							alteredBlobPathBuilder.append("/");
+							
+						}
+						
+						alteredBlobPathBuilder.append(blobPath);
+
+						String alteredBlobPath = alteredBlobPathBuilder
+								.toString();
+
+						if (alteredBlobPath.startsWith(Constants.R_HEADS)) {
+							alteredBlobPath = alteredBlobPath.replace(
+									Constants.R_HEADS, "");
+						}
+
+						BranchData data = null;
+						
+						try {
+
+							data = branchDetector.parseBranch(currentRevision,
+									alteredBlobPath);
+
+						} catch (VetoBranchException e1) {
+							vetoLog.print("vetoed alteredBlobPath = " + alteredBlobPath);
+							return false;
+						}
+
+						GitBranchData currentBranchData = getBranchData(
+								knownBranchMap, GitBranchUtils
+										.getCanonicalBranchName(
+												data.getBranchPath(),
+												currentRevision,
+												largeBranchNameProvider),
+								currentRevision);
+
+						if (currentBranchData.getParentId() == null)
+							currentBranchData.setParentId(ObjectId
+									.fromString(commitId));
+						else
+							currentBranchData.addMergeParentId(ObjectId
+									.fromString(commitId));
+
+						try {
+							currentBranchData.addBlob(alteredBlobPath,
+									blobId.getName(), blobLog);
+
+						} catch (VetoBranchException e) {
+							vetoLog.println(String
+									.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s, New Branch Path: %s",
+											String.valueOf(currentRevision),
+											currentBranchData.getBranchName(),
+											path, alteredBlobPath));
+							
+							// intentionally continue
+
+						}
+
+						// visit all of the blobs
+						return true;
+					}
+
+				});
+
 	}
 
 	private void deletePath(GitBranchData data, long currentRevision,
 			String path) throws IOException {
-		
+
 		if (path.equals(data.getBranchPath())) {
 			deleteBranches(data, path, currentRevision);
-		}
-		else {
+		} else {
 
 			data.deletePath(path, currentRevision);
 		}
@@ -796,15 +1005,12 @@ public class NodeProcessor {
 
 			ObjectInserter objectInserter = repo.newObjectInserter();
 
-
 			ObjectId id = objectInserter.insert(Constants.OBJ_BLOB,
-					adjustedContentLength, new BoundedInputStream(getInputStream(),
-							adjustedContentLength));
+					adjustedContentLength, new BoundedInputStream(
+							getInputStream(), adjustedContentLength));
 
 			objectInserter.flush();
 			objectInserter.release();
-
-			
 
 			return id;
 
@@ -820,28 +1026,27 @@ public class NodeProcessor {
 			CorruptObjectException, IOException {
 
 		final GitTreeData treeData = new GitTreeData();
-		
+
 		treeProcessor.visitBlobs(parentId, new GitTreeBlobVisitor() {
-			
+
 			@Override
 			public boolean visitBlob(ObjectId blobId, String path, String name) {
-				
+
 				treeData.addBlob(path, blobId.name());
-				
+
 				// visit all of the blobs.
 				return true;
-			
+
 			}
 		});
-		
+
 		return treeData;
-		
-		
+
 	}
 
 	public void setCommitData(GitCommitData commitData) {
 		this.commitData = commitData;
-		
+
 	}
 
 }

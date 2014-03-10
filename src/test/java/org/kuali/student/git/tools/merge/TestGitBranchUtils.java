@@ -20,10 +20,13 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.junit.Assert;
-
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
 import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
+import org.kuali.student.git.model.NodeProcessor;
+import org.kuali.student.git.model.branch.BranchDetectorImpl;
+import org.kuali.student.git.model.branch.KualiStudentBranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.svn.tools.merge.model.BranchData;
@@ -36,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Kuali Student Team
  *
  */
-public class TestGitBranchUtils {
+public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 
 	private static final Logger log = LoggerFactory.getLogger(TestGitBranchUtils.class);
 	
@@ -100,7 +103,7 @@ public class TestGitBranchUtils {
 		
 		boolean exception = false;
 		try {
-			GitBranchUtils.parse(path);
+			branchDetector.parseBranch(0L, path);
 		} catch (VetoBranchException e) {
 			exception = true;
 		}
@@ -169,6 +172,10 @@ public class TestGitBranchUtils {
 		assertPath("merges", "merges/ks-1.3-services-merge-deux", "ks-web/ks-embedded/src/main/webapp/WEB-INF/tags/rice-portal/channel/main/ec1Applications.tag", true);
 		
 		assertPath("merges/ks-1.3-services-merge-deux", "merges/ks-1.3-services-merge-deux", "", false);
+		
+		assertPath ("enrollment/ks-api/trunk/pom.xml", "enrollment/ks-api/trunk", "pom.xml", false);
+		
+		assertPath ("enrollment/aggregate/branches/KSAP/pom.xml", "enrollment/aggregate/branches/KSAP", "pom.xml", false);
 	}
 	
 	@Test
@@ -182,17 +189,50 @@ public class TestGitBranchUtils {
 		
 		String canonicalName = GitBranchUtils.getCanonicalBranchName(branchPath, 0L, new LargeBranchNameProviderMapImpl());
 		
-		Assert.assertEquals("deploymentlab_branches_xapool+=+43", canonicalName);
+		Assert.assertEquals("deploymentlab_branches_xapool===43", canonicalName);
 		
 		String branch = GitBranchUtils.getBranchPath(canonicalName, 0, new LargeBranchNameProviderMapImpl());
 		
 		Assert.assertEquals(branchPath, branch);
 		
 	}
+	
+	@Test
+	public void testTargetBranchPathFromBranchDirectoryAdd () throws VetoBranchException {
+		/*
+		 * From ks revisoin 43095
+		 * 
+		 * 
+		 * Node-path: contrib/myplan/tags/ks-myplan-1.1.2/ks-myplan/new_branch
+		 * Node-kind: dir
+		 * Node-action: add
+		 * Node-copyfrom-rev: 43095
+		 * Node-copyfrom-path: contrib/myplan/tags/ks-myplan-1.1.2
+		 */
+		
+		String path = "contrib/myplan/tags/ks-myplan-1.1.2/ks-myplan/new_branch";
+		
+		String copyFromPath = "contrib/myplan/tags/ks-myplan-1.1.2";
+		
+		String convertedPath = GitBranchUtils.convertToTargetPath(path, 1L, copyFromPath, "pom.xml", new BranchDetectorImpl());
+		
+		Assert.assertEquals(path + "/pom.xml", convertedPath);
+		
+		path = "contrib/myplan/tags/ks-myplan-1.1.2/ks-myplan/new_branch";
+		
+		copyFromPath = "contrib/myplan/tags/ks-myplan-1.1.2";
+		
+		convertedPath = GitBranchUtils.convertToTargetPath(path, 1L, copyFromPath, "another-directory/pom.xml", new BranchDetectorImpl());
+		
+		Assert.assertEquals(path + "/another-directory/pom.xml", convertedPath);
+		
+		log.info("");
+		
+	}
 	private void assertPath (String filePath, String expectedBranchPath, String expectedFilePath, boolean expectVeto) {
 		
 		try {
-			BranchData data = GitBranchUtils.parse(filePath);
+			BranchData data = branchDetector.parseBranch(0L, filePath);
 			
 			Assert.assertEquals(expectedBranchPath, data.getBranchPath());
 			Assert.assertEquals(expectedFilePath, data.getPath());
@@ -205,7 +245,7 @@ public class TestGitBranchUtils {
 	private void testPath(String kind, String path) throws VetoBranchException {
 		
 		if ("file".equals(kind)) {
-			BranchData data = GitBranchUtils.parse(path);
+			BranchData data = branchDetector.parseBranch(0L, path);
 			
 			log.info("path = " + path);
 			log.info("branchPath = " + data.getBranchPath());

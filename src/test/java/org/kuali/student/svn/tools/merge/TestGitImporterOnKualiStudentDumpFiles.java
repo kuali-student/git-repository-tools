@@ -25,6 +25,7 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kuali.student.git.importer.GitImporterMain;
 import org.kuali.student.git.tools.GitRepositoryUtils;
@@ -64,6 +65,7 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 	}
 	
 	@Test
+	@Ignore
 	public void testR1toR989() throws IOException {
 		
 		File gitRepository = new File ("target/git-repo-ks");

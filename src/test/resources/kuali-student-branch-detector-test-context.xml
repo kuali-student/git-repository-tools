@@ -18,8 +18,6 @@
 
 	<context:annotation-config/>
 	
-	<bean id="svnDumpFilter" class="org.kuali.student.svn.tools.SvnDumpFilter" />
-	
 	<bean id="branchDetector" class="org.kuali.student.git.model.branch.BranchDetectorSequencer">
 		<property name="detectors">
 			<list>

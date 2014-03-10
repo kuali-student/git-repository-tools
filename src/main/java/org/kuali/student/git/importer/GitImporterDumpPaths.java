@@ -26,6 +26,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.iq80.snappy.SnappyInputStream;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
+import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
@@ -73,6 +74,8 @@ public class GitImporterDumpPaths {
 			SvnDumpFilter filter = applicationContext
 					.getBean(SvnDumpFilter.class);
 
+			final BranchDetector branchDetector = applicationContext.getBean("branchDetector", BranchDetector.class);
+			
 			// final MergeDetectorData detectorData = applicationContext
 			// .getBean(MergeDetectorData.class);
 
@@ -168,12 +171,12 @@ public class GitImporterDumpPaths {
 				private void storeBranchData(long revision, String path) {
 
 					try {
-						BranchData branchData = GitBranchUtils.parse(path);
+						BranchData branchData = branchDetector.parseBranch(revision, path);
 						
 						String branchName = GitBranchUtils.getCanonicalBranchName(branchData.getBranchPath(), revision, largeBranchNameProvider);
 						
 						if (!knownBranchesMap.containsKey(branchName)) {
-							GitBranchData data = new GitBranchData(branchName, revision, largeBranchNameProvider);
+							GitBranchData data = new GitBranchData(branchName, revision, largeBranchNameProvider, branchDetector);
 							
 							knownBranchesMap.put(branchName, data);
 						}
