@@ -47,6 +47,10 @@ public class Main {
 
 		try {
 
+			if (args.length < 1) {
+				usage();
+			}
+			
 			ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 					"svn/applicationContext.xml");
 

@@ -23,13 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.iq80.snappy.SnappyInputStream;
 import org.kuali.student.git.model.GitBranchData;
+import org.kuali.student.git.model.GitTreeProcessor;
 import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
-import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.svn.tools.AbstractParseOptions;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.kuali.student.svn.tools.merge.model.BranchData;
@@ -91,7 +90,7 @@ public class GitImporterDumpPaths {
 			
 			// extract any known branches from the repository
 			
-			SnappyInputStream compressedInputStream = new SnappyInputStream(new FileInputStream (dumpFile));
+			BZip2CompressorInputStream compressedInputStream = new BZip2CompressorInputStream(new FileInputStream (dumpFile));
 			
 			filter.parseDumpFile(compressedInputStream, new AbstractParseOptions() {
 
@@ -176,7 +175,7 @@ public class GitImporterDumpPaths {
 						String branchName = GitBranchUtils.getCanonicalBranchName(branchData.getBranchPath(), revision, largeBranchNameProvider);
 						
 						if (!knownBranchesMap.containsKey(branchName)) {
-							GitBranchData data = new GitBranchData(branchName, revision, largeBranchNameProvider, branchDetector);
+							GitBranchData data = new GitBranchData(branchName, revision, largeBranchNameProvider, new GitTreeProcessor(null), branchDetector);
 							
 							knownBranchesMap.put(branchName, data);
 						}

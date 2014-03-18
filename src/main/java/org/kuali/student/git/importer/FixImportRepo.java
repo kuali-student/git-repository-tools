@@ -16,16 +16,10 @@
 package org.kuali.student.git.importer;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -33,21 +27,11 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
-import org.iq80.snappy.SnappyInputStream;
-import org.kuali.student.git.model.GitBranchData;
-import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.model.SvnRevisionMapper;
+import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
 import org.kuali.student.git.tools.GitRepositoryUtils;
-import org.kuali.student.git.utils.GitBranchUtils;
-import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
-import org.kuali.student.svn.tools.AbstractParseOptions;
-import org.kuali.student.svn.tools.SvnDumpFilter;
-import org.kuali.student.svn.tools.merge.model.BranchData;
-import org.kuali.student.svn.tools.model.INodeFilter;
-import org.kuali.student.svn.tools.model.ReadLineData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Kuali Student Team
@@ -90,70 +74,33 @@ public class FixImportRepo {
 
 			String revision = args[1];
 			
-			File revisionHeads = new File (new File (gitRepository, "jsvn"), "r" + revision);
+			SvnRevisionMapper mapper = new SvnRevisionMapper(repo);
 			
-			List<String> lines = FileUtils.readLines(revisionHeads, "UTF-8");
+			mapper.initialize();
 			
 			Map<String, Ref>allRefs = new HashMap<String, Ref>();
+
+			Map<String, Ref> existingRefs = repo.getRefDatabase().getRefs(Constants.R_HEADS);
 			
-			for (Map.Entry<String, Ref> entry : repo.getAllRefs().entrySet()) {
-				String key = entry.getKey();
+			for (SvnRevisionMap entry : mapper.getRevisionHeads(Long.parseLong(revision))) {
 				
-				/*
-				 * only care about active ref's
-				 */
-				if (!key.contains("@"))
-					allRefs.put(entry.getKey(), entry.getValue());
+				updateRef(repo, entry.getBranchName(), revision, ObjectId.fromString(entry.getCommitId()));
+			
+				existingRefs.remove(entry.getBranchName());
 			}
 
-			for (String line : lines) {
-				
-				String parts[] = line.split("::");
-				
-				if (parts.length != 2)
-					continue;
-				
-				String branchName = parts[0];
-				
-				if (branchName.contains("@"))
-					continue;
-				
-				String branchStringId = parts[1];
-				
-				ObjectId branchId = ObjectId.fromString(branchStringId);
-				
-				Ref branchRef = repo.getRef(branchName);
-				
-				if (branchRef == null) {
-					// create the reference
-					updateRef(repo, branchName, revision, branchId);
-				}
-				else if (!branchRef.getObjectId().equals(branchId)) {
-					// exists but is pointing at the wrong object id.
-					// move the reference
-					
-					updateRef(repo, branchName, revision, branchId);
-					
-					
-				}
-				else {
-					
-					log.info("skipped " + branchName + " as it correctly pointed at " + branchStringId);
-				}
-				allRefs.remove(branchName);
-				
-			}
 			
 			if (allRefs.size() > 0) {
-				// should we delete these refs
-				log.info("should we delete these?");
-				
+				// delete all of the left over refs that weren't updated.
 				for (Ref ref : allRefs.values()) {
 					
 					deleteRef(repo, ref.getName(), revision);
 					
 				}
 			}
+			
+			mapper.shutdown();
+			
 		} catch (Exception e) {
 			log.error("Processing failed", e);
 		}

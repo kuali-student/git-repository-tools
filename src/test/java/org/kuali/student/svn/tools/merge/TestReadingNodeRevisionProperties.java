@@ -20,9 +20,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.common.io.exceptions.InvalidKeyLineException;
 import org.kuali.student.svn.tools.model.ReadLineData;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
  *         Test how to read in the revision properties from the svn dump stream.
  * 
  */
+@RunWith(BlockJUnit4ClassRunner.class)
 public class TestReadingNodeRevisionProperties {
 
 	private static final Logger log = LoggerFactory.getLogger(TestReadingNodeRevisionProperties.class);
@@ -134,7 +136,7 @@ public class TestReadingNodeRevisionProperties {
 				break;
 			}
 
-			log.info(lineData.getLine());
+//			log.info(lineData.getLine());
 			
 			if (!lineData.startsWith("Content-length:")) {
 
@@ -171,5 +173,53 @@ public class TestReadingNodeRevisionProperties {
 		Assert.assertTrue(revProps.containsKey("svn:date"));
 		Assert.assertTrue(revProps.containsKey("svn:log"));
 	
+	}
+	
+	@Test
+	public void testRice15812SvnAdmin() throws InvalidKeyLineException, IOException {
+		
+		FileInputStream inputStream = new FileInputStream("src/test/resources/rice-r15812-svnadmin.dump");
+		
+		test15812(inputStream);
+		
+		
+	}
+	
+	@Test
+	public void testRice15812SvnKit() throws InvalidKeyLineException, IOException {
+		
+		
+		FileInputStream inputStream = new FileInputStream("src/test/resources/rice-r15812-svnkit.dump");
+		
+		test15812(inputStream);
+		
+		
+	}
+
+	private void test15812(FileInputStream inputStream) throws InvalidKeyLineException, IOException {
+
+		Map<String, String> nodeProperties = new HashMap<>();
+		
+		while (org.kuali.student.common.io.IOUtils.readKeyAndValuePair(inputStream, nodeProperties));
+		
+		String author = nodeProperties.get("svn:author");
+		
+		Assert.assertNotNull(author);
+		
+		Assert.assertEquals("jkneal", author);
+		
+		String date = nodeProperties.get("svn:date");
+		
+		Assert.assertNotNull(date);
+		
+		Assert.assertEquals("2011-02-21T14:55:36.976704Z", date);
+		
+		String commitMessage = nodeProperties.get("svn:log");
+		
+		Assert.assertNotNull(commitMessage);
+		
+		Assert.assertEquals(637, commitMessage.getBytes().length);
+		
+		log.info("");
 	}
 }

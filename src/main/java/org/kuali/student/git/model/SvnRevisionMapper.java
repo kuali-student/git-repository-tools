@@ -28,7 +28,12 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
@@ -36,12 +41,14 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +65,13 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 	private static final String REVISION_MAP_FILE_NAME = "revisions.map";
 
 	private static final String REVISION_MAP_INDEX_FILE_NAME = "revisions.idx";
+	
+	private static final String REVISION_BRANCH_MERGE_FILE_NAME = "merge.map";
 
+	private static final String REVISION_BRANCH_MERGE_INDEX_FILE_NAME = "merge.idx";
+
+	
+	
 	public static class SvnRevisionMap {
 		private long revision;
 		private String branchName;
@@ -155,8 +168,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 	}
 
 	private File revisonMappings;
-	private Repository repo;
-
+	
 	private TreeMap<String, RevisionMapOffset>revisionMap = new TreeMap<>();
 
 	private File revisionMapDataFile;
@@ -169,12 +181,29 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 	private long endOfRevisionMapDataFileInBytes;
 	
+	private File revisionBranchMergeDataFile;
+	private File revisionBranchMergeIndexFile;
+	
+	private PrintWriter revisionBranchMergeIndexWriter;
+
+	private RandomAccessFile revisionBranchMergeDataRandomAccessFile;
+
+	private long endOfRevisionBranchMergeDataFileInBytes;
+	
+	private TreeMap<String, Map<String, RevisionMapOffset>>revionMergeMap = new TreeMap<>();
+
+	private GitTreeProcessor treeProcessor;
+
+	
+
+	
 	/**
 	 * 
 	 */
 	public SvnRevisionMapper(Repository repo) {
+		
+		treeProcessor = new GitTreeProcessor(repo);
 
-		this.repo = repo;
 		revisonMappings = new File(repo.getDirectory(), "jsvn");
 
 		revisonMappings.mkdirs();
@@ -183,20 +212,39 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		
 		revisionMapIndexFile = new File(revisonMappings, REVISION_MAP_INDEX_FILE_NAME);
 		
+		revisionBranchMergeDataFile = new File(revisonMappings, REVISION_BRANCH_MERGE_FILE_NAME);
+		
+		revisionBranchMergeIndexFile = new File(revisonMappings, REVISION_BRANCH_MERGE_INDEX_FILE_NAME);
+		
+		
 	}
 	
 	public void initialize () throws IOException {
 		
+		// tracks the branch heads at each revision
 		revisionMapDataRandomAccessFile = new RandomAccessFile(revisionMapDataFile, "rws");
 		
 		if (revisionMapIndexFile.exists()) {
 			// load in any existing data.
-			loadIndexData();
+			loadRevisionMapIndexData();
 		}
 		
 		endOfRevisionMapDataFileInBytes = revisionMapDataFile.length();
 		
 		revisionMapIndexWriter = new PrintWriter(new FileOutputStream(revisionMapIndexFile, true));
+		
+		// tracks the merge info of each branch at each revision
+		// used so we can compute the delta.
+		revisionBranchMergeDataRandomAccessFile = new RandomAccessFile(revisionBranchMergeDataFile, "rws");
+		
+		if (revisionBranchMergeIndexFile.exists()) {
+			// load in any existing data.
+			loadRevisionMergeIndexData();
+		}
+		
+		endOfRevisionBranchMergeDataFileInBytes = revisionBranchMergeDataFile.length();
+		
+		revisionBranchMergeIndexWriter = new PrintWriter(new FileOutputStream(revisionBranchMergeIndexFile, true));
 		
 		
 	}
@@ -207,10 +255,61 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		
 		revisionMapDataRandomAccessFile.close();
 		
+		revisionBranchMergeIndexWriter.flush();
+		revisionBranchMergeIndexWriter.close();
+		
+		revisionBranchMergeDataRandomAccessFile.close();
+		
 		
 	}
 
-	private void loadIndexData() throws IOException {
+	private void loadRevisionMergeIndexData () throws IOException {
+		
+		BufferedReader indexReader = new BufferedReader(new InputStreamReader(
+				new FileInputStream(revisionBranchMergeIndexFile)));
+
+
+		while (true) {
+
+			String line = indexReader.readLine();
+
+			if (line == null)
+				break;
+
+				String parts[] = line.split("::");
+
+				if (parts.length != 3)
+					continue;
+
+				long revision = Long.parseLong(parts[0]);
+				String targetBranch = parts[1];
+				long byteStartOffset = Long.parseLong(parts[2]);
+				long totalbytes = Long.parseLong(parts[3]);
+				
+				Map<String, RevisionMapOffset> targetBranchOffsetMap = getRevisionMergeDataByTargetBranch (parts[0], true);
+				
+				targetBranchOffsetMap.put(targetBranch, new RevisionMapOffset(revision, byteStartOffset, totalbytes));
+
+
+		}
+
+		indexReader.close();
+	}
+	
+	
+	private Map<String, RevisionMapOffset> getRevisionMergeDataByTargetBranch(String revisionString, boolean createIfDoesNotExist) {
+
+		Map<String, RevisionMapOffset>targetBranchOffsetMap = revionMergeMap.get(revisionString);
+		
+		if (targetBranchOffsetMap == null && createIfDoesNotExist) {
+			targetBranchOffsetMap = new HashMap<String, SvnRevisionMapper.RevisionMapOffset>();
+			revionMergeMap.put(revisionString, targetBranchOffsetMap);
+		}
+		
+		return targetBranchOffsetMap;
+	}
+
+	private void loadRevisionMapIndexData() throws IOException {
 		
 		BufferedReader indexReader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(revisionMapIndexFile)));
@@ -241,7 +340,10 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		
 	}
 	
-	private void createRevisionMapEntry (long revision, List<String>branchHeadLines) throws IOException {
+	/*
+	 * returns the total number of bytes written to the data file
+	 */
+	private long createRevisionEntry (RandomAccessFile dataFile, long endOfDataFileOffset, long revision, List<String>revisionLines) throws IOException {
 		
 		OutputStream revisionMappingStream = null;
 		
@@ -252,7 +354,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 		PrintWriter pw = new PrintWriter(revisionMappingStream);
 
-		IOUtils.writeLines(branchHeadLines, "\n", pw);
+		IOUtils.writeLines(revisionLines, "\n", pw);
 
 		pw.flush();
 		
@@ -260,17 +362,25 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		
 		byte[] data = bytesOut.toByteArray();
 		
-		revisionMapDataRandomAccessFile.seek(endOfRevisionMapDataFileInBytes);
+		dataFile.seek(endOfDataFileOffset);
 
-		revisionMapDataRandomAccessFile.write(data);
+		dataFile.write(data);
+		
+		return data.length;
+	}
+	
+	private void createRevisionMapEntry (long revision, List<String>branchHeadLines) throws IOException {
+		
+		long bytesWritten = createRevisionEntry(revisionMapDataRandomAccessFile, endOfRevisionMapDataFileInBytes, revision, branchHeadLines);
 		
 		/*
 		 * Write the number of bytes written for this revision.
 		 */
 
-		updateRevisionIndex(revision, endOfRevisionMapDataFileInBytes, data.length);
+		updateRevisionMapIndex(revision, endOfRevisionMapDataFileInBytes, bytesWritten);
 		
-		endOfRevisionMapDataFileInBytes += data.length;
+		endOfRevisionMapDataFileInBytes += bytesWritten;
+		
 		
 	}
 
@@ -293,7 +403,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		
 	}
 
-	private void updateRevisionIndex(long revision, long revisionStartByteIndex, long bytesWritten) {
+	private void updateRevisionMapIndex(long revision, long revisionStartByteIndex, long bytesWritten) {
 		
 		revisionMap.put(String.valueOf(revision), new RevisionMapOffset(revision, revisionStartByteIndex, bytesWritten));
 		
@@ -301,6 +411,29 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 				+ bytesWritten);
 
 		revisionMapIndexWriter.flush();
+	}
+	
+	private void updateMergeDataIndex(long revision, String targetBranchName, List<BranchMergeInfo> mergeInfo, long revisionStartByteIndex, long bytesWritten) {
+		
+		String revisionString = String.valueOf(revision);
+		
+		Map<String, RevisionMapOffset> targetRevisionMap = getRevisionMergeDataByTargetBranch(revisionString, true);
+		
+		targetRevisionMap.put(targetBranchName, new RevisionMapOffset(revision, revisionStartByteIndex, bytesWritten));
+		
+		revisionBranchMergeIndexWriter.println(revision + "::" + targetBranchName + "::" + revisionStartByteIndex + "::"
+				+ bytesWritten);
+
+		revisionBranchMergeIndexWriter.flush();
+	}
+	
+	private void updateIndex(Map<String, RevisionMapOffset>revisionMap, PrintWriter indexWriter, long revision, long revisionStartByteIndex, long bytesWritten) {
+		revisionMap.put(String.valueOf(revision), new RevisionMapOffset(revision, revisionStartByteIndex, bytesWritten));
+		
+		indexWriter.println(revision + "::" + revisionStartByteIndex + "::"
+				+ bytesWritten);
+
+		indexWriter.flush();
 		
 	}
 
@@ -351,22 +484,54 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		return revisionHeads;
 
 	}
-
-	private InputStream getRevisionInputStream(long revision)
+	
+	private InputStream getRevisionInputStream(final long revision)
 			throws IOException {
 
-		String revString = String.valueOf(revision);
+		return getInputStream(new RevisionMapOffsetProvider() {
+			
+			@Override
+			public RevisionMapOffset getRevisionMapOffset() {
+				
+				return revisionMap.get(String.valueOf(revision));
+			}
+		}, revisionMapDataRandomAccessFile);
 		
-		RevisionMapOffset revisionOffset = revisionMap.get(revString);
+	}
+	
+	private InputStream getMergeDataInputStream(final long revision, final String targetBranch) throws IOException {
+		return getInputStream(new RevisionMapOffsetProvider() {
+			
+			@Override
+			public RevisionMapOffset getRevisionMapOffset() {
+				
+				Map<String, RevisionMapOffset> map = revionMergeMap.get(String.valueOf(revision));
+				
+				if (map == null)
+					return null;
+				
+				return map.get(targetBranch);
+				
+			}
+		}, revisionBranchMergeDataRandomAccessFile);
+	}
+	
+	private static interface RevisionMapOffsetProvider {
+		public RevisionMapOffset getRevisionMapOffset ();
+	};
+	
+	private InputStream getInputStream (RevisionMapOffsetProvider offsetProvider, RandomAccessFile dataFile) throws IOException {
+		
+		RevisionMapOffset revisionOffset = offsetProvider.getRevisionMapOffset();
 
 		if (revisionOffset == null)
 			return null;
 
 		byte[] data = new byte[(int) revisionOffset.getTotalBytes()];
 		
-		revisionMapDataRandomAccessFile.seek(revisionOffset.getStartBtyeOffset());
+		dataFile.seek(revisionOffset.getStartBtyeOffset());
 		
-		revisionMapDataRandomAccessFile.readFully(data);
+		dataFile.readFully(data);
 
 		return new BZip2CompressorInputStream(new ByteArrayInputStream(data));
 
@@ -417,7 +582,120 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		// if not found it means that the reference can't be found.
 		return null;
 	}
+	
+	/*
+	 * When we compute the list of revisions for a path its useful to know what the matched subpath was.
+	 */
+	public static class SvnRevisionMapResults {
+		
+		public SvnRevisionMapResults(SvnRevisionMap revMap) {
+			this (revMap, "");
+		}
+		
+		public SvnRevisionMapResults (SvnRevisionMap revMap, String subPath) {
+			this.revMap = revMap;
+			this.subPath = subPath;
+		}
 
+		private final SvnRevisionMap revMap;
+		
+		private final String subPath;
+
+		/**
+		 * @return the revMap
+		 */
+		public SvnRevisionMap getRevMap() {
+			return revMap;
+		}
+
+		/**
+		 * @return the subPath
+		 */
+		public String getSubPath() {
+			return subPath;
+		}
+
+	
+		
+	}
+
+	public List<SvnRevisionMapResults> getRevisionBranches(long targetRevision,
+			String targetPath) throws IOException {
+
+		ArrayList<SvnRevisionMapResults> branches = new ArrayList<>();
+
+		List<SvnRevisionMap> heads = this
+				.getRevisionHeads(targetRevision);
+		
+		if (heads == null)
+			return branches;
+
+		for (SvnRevisionMap revMap : heads) {
+
+			SvnRevisionMapResults results = findResults(revMap, targetPath);
+			
+			if (results != null)
+				branches.add(results);
+
+		}
+
+		return branches;
+	}
+
+	private SvnRevisionMapResults findResults(SvnRevisionMap revMap, String copyFromPath) {
+
+		/*
+		 * In most cases the match is because the copyFromPath is an actual branch.
+		 * 
+		 * In other cases it is a prefix that can match several branches
+		 * 
+		 * In a few cases it will refer to a branch and then a subpath within it it.
+		 * 
+		 */
+		String candidateBranchPath = revMap.getBranchPath().substring(Constants.R_HEADS.length());
+		
+		if (candidateBranchPath.startsWith(copyFromPath))
+			return new SvnRevisionMapResults (revMap); // the common case
+		
+		String candidateBranchParts[] = candidateBranchPath.split("\\/");
+		
+		String copyFromPathParts[] = copyFromPath.split("\\/");
+		
+		int smallestLength = Math.min(candidateBranchParts.length, copyFromPathParts.length);
+		
+		boolean allEquals = true;
+		
+		for (int i = 0; i < smallestLength; i++) {
+			
+			String candidatePart = candidateBranchParts[i];
+			String copyFromPart = copyFromPathParts[i];
+			
+			if (!copyFromPart.equals(candidatePart)) {
+				allEquals = false;
+				break;
+			}
+			
+		}
+		
+		if (allEquals && copyFromPathParts.length > smallestLength) {
+			// check inside of the branch for the rest of the path
+			ObjectId commitId = ObjectId.fromString(revMap.getCommitId());
+			
+			String insidePath = StringUtils.join(copyFromPathParts, "/", smallestLength, copyFromPathParts.length);
+			
+			try {
+				if (treeProcessor.treeContainsPath(commitId, insidePath)) {
+					return new SvnRevisionMapResults(revMap, insidePath);
+				}
+				// fall through
+			} catch (Exception e) {
+				log.error("Failed to find paths for commit {}", commitId);
+				// fall through
+			}
+		}
+		
+		return null;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -567,6 +845,126 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		
 		copy.delete();
 		
+		
+	}
+
+	public void createMergeData(long revision, String targetBranch, List<BranchMergeInfo>mergeInfo) throws IOException {
+		
+		List<String>dataLines = new LinkedList<>();
+		/*
+		 * Format: revision :: target branch name :: merge branch name :: revision_1 , revision_2, .. revision_n.
+		 */
+		for (BranchMergeInfo bmi : mergeInfo) {
+		
+			List<String>lineParts = new LinkedList<>();
+			
+			lineParts.add(String.valueOf (revision));
+			
+			lineParts.add(targetBranch);
+			
+			lineParts.add(bmi.getBranchName());
+			
+			lineParts.add(StringUtils.join(bmi.getMergedRevisions().iterator(), ","));
+			
+			dataLines.add(StringUtils.join(lineParts, "::"));
+			
+			
+		}
+		
+		
+		long bytesWritten = createRevisionEntry(revisionBranchMergeDataRandomAccessFile, endOfRevisionBranchMergeDataFileInBytes, revision, dataLines);
+		
+		/*
+		 * Write the number of bytes written for this revision.
+		 */
+
+		updateMergeDataIndex(revision, targetBranch, mergeInfo, endOfRevisionBranchMergeDataFileInBytes, bytesWritten);
+		
+		endOfRevisionBranchMergeDataFileInBytes += bytesWritten;
+		
+	}
+	
+	private BranchMergeInfo extractBranchMergeInfoFromLine (String branchName, String revisionParts[]) {
+
+		BranchMergeInfo bmi = new BranchMergeInfo(branchName);
+		
+		for (String revisionString : revisionParts) {
+			
+			bmi.addMergeRevision(Long.valueOf(revisionString));
+		}
+		
+		return bmi;
+		
+	}
+
+	/**
+	 * Get the list of branch merge info for the revision and target branch given.
+	 * @param revision
+	 * @param targetBranch
+	 * @return
+	 * @throws IOException
+	 */
+	public List<BranchMergeInfo>getMergeBranches(long revision, String targetBranch) throws IOException {
+		
+		List<BranchMergeInfo>bmiList = new LinkedList<>();
+		
+		InputStream inputStream = getMergeDataInputStream(revision, targetBranch);
+		
+		if (inputStream == null)
+			return null;
+
+		List<String> lines = IOUtils.readLines(inputStream, "UTF-8");
+		
+		inputStream.close();
+		
+		String revisionString = String.valueOf(revision);
+
+		for (String line : lines) {
+
+			String[] parts = line.split("::");
+			
+			if (!parts[0].equals(revisionString)) {
+				log.warn(parts[0] + " is not a line for " + revisionString);
+				continue;
+			}
+
+			String targetBranchName = parts[1];
+			
+			
+			if (targetBranch.equals(targetBranchName)) {
+				
+				String mergeBranchName = parts[2];
+		
+				String mergedRevisionStrings[] = parts[3].split(",");
+				
+				BranchMergeInfo bmi = extractBranchMergeInfoFromLine(mergeBranchName, mergedRevisionStrings);
+
+				bmiList.add(bmi);
+				
+			}
+			else {
+				log.warn(line + " is not a valid line for revision {} and target branch {}", revision, targetBranch);
+			}
+				
+		}
+
+		return bmiList;
+
+	}
+	
+	public Set<Long> getMergeBranchRevisions(long revision, String targetBranch, String mergeBranch) throws IOException {
+		
+		List<BranchMergeInfo> bmiList = getMergeBranches(revision, targetBranch);
+		
+		for (BranchMergeInfo bmi : bmiList) {
+			
+			if (bmi.getBranchName().equals(mergeBranch)) {
+				return bmi.getMergedRevisions();
+			}
+		}
+		
+		// no matches found.
+		return new HashSet<>();
 		
 	}
 

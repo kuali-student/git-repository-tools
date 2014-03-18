@@ -1,0 +1,23 @@
+
+K 10
+svn:author
+V 6
+jkneal
+K 8
+svn:date
+V 27
+2011-02-21T14:55:36.976704Z
+K 7
+svn:log
+V 638
+KULRICE-4717 - Cleanup and javadocs:
+•	Took ‘name’ property off of the component interface
+o	Created ‘viewName’ for view component
+o	Created ‘propertyName’ for AttributeField and CollectionGroup (also added getPropertyName() to BindingInfo)
+o	Changed sequenceAttributeName to sequencePropertyName on TableLayoutManager
+•	Renamed the ‘performUpdate’ method to ‘performApplyModel’ on ViewHelperService, Component, & LayoutManager
+•	Changed align, valign, and width settings to set the CSS style instead of html attribute
+•	Separated out the base component xml files by their type (View/Page, Field, Groups, …)
+
+PROPS-END
+

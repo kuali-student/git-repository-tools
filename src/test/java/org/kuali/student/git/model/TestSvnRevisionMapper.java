@@ -16,11 +16,12 @@
 package org.kuali.student.git.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.AddCommand;
@@ -39,9 +40,9 @@ import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
 import org.kuali.student.git.tools.GitRepositoryUtils;
@@ -57,9 +58,9 @@ public class TestSvnRevisionMapper {
 	private static final Logger log = LoggerFactory.getLogger(TestSvnRevisionMapper.class);
 	
 	private static final File JSVN_DIR = new File ("target", "revision-mapper-test-repo");
-	private static SvnRevisionMapper revisionMapper;
-	private static Repository repo;
-	private static Git git;
+	private SvnRevisionMapper revisionMapper;
+	private Repository repo;
+	private Git git;
 	
 	/**
 	 * 
@@ -67,8 +68,8 @@ public class TestSvnRevisionMapper {
 	public TestSvnRevisionMapper() {
 	}
 	
-	@BeforeClass
-	public static void setup() throws IOException, NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
+	@Before
+	public void setup() throws IOException, NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
 		
 		FileUtils.deleteDirectory(JSVN_DIR);
 		
@@ -86,13 +87,13 @@ public class TestSvnRevisionMapper {
 		createFileContentAndCommit ("README", "test content");
 	}
 	
-	@AfterClass
-	public static void tearDown () throws IOException {
+	@After
+	public void tearDown () throws IOException {
 		
 		revisionMapper.shutdown();
 	}
 	
-	private static RevCommit createFileContentAndCommit(String fileName, String fileContent) throws NoWorkTreeException, IOException, NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
+	private RevCommit createFileContentAndCommit(String fileName, String fileContent) throws NoWorkTreeException, IOException, NoHeadException, NoMessageException, UnmergedPathsException, ConcurrentRefUpdateException, WrongRepositoryStateException, GitAPIException {
 
 		FileUtils.write(new File (repo.getWorkTree(), fileName), fileContent);
 		
@@ -112,6 +113,56 @@ public class TestSvnRevisionMapper {
 		
 	}
 
+	private BranchMergeInfo createBranchMergeInfo (String branchName, long ... revisions) {
+		
+		BranchMergeInfo bmi = new BranchMergeInfo(branchName);
+		
+		for (long revision : revisions) {
+			bmi.addMergeRevision(revision);
+		}
+		
+		return bmi;
+	}
+	
+	@Test
+	public void testMergeInfo() throws IOException {
+		
+		List<BranchMergeInfo> mergeDataList = new ArrayList<>();
+		
+		mergeDataList.add(createBranchMergeInfo("feature_1", 2L));
+		
+		revisionMapper.createMergeData(5L, "trunk", mergeDataList);
+		
+		Set<Long>mergedRevisions = revisionMapper.getMergeBranchRevisions(5L, "trunk", "feature_1");
+		
+		Assert.assertNotNull(mergedRevisions);
+		Assert.assertArrayEquals(new Long[] {2L}, mergedRevisions.toArray(new Long[] {}));
+		
+		revisionMapper.createMergeData(5L, "master", Arrays.asList(new BranchMergeInfo[] { createBranchMergeInfo("feature_2", 3L, 4L) } ));
+		
+		mergedRevisions = revisionMapper.getMergeBranchRevisions(5L, "master", "feature_2");
+		
+		Assert.assertNotNull(mergedRevisions);
+		Assert.assertArrayEquals(new Long[] {3L, 4L}, mergedRevisions.toArray(new Long[] {}));
+
+		revisionMapper.shutdown();
+		
+		revisionMapper.initialize();
+		
+		mergedRevisions = revisionMapper.getMergeBranchRevisions(5L, "trunk", "feature_1");
+		
+		Assert.assertNotNull(mergedRevisions);
+		Assert.assertArrayEquals(new Long[] {2L}, mergedRevisions.toArray(new Long[] {}));
+		
+		mergedRevisions = revisionMapper.getMergeBranchRevisions(5L, "master", "feature_2");
+		
+		Assert.assertNotNull(mergedRevisions);
+		Assert.assertArrayEquals(new Long[] {3L, 4L}, mergedRevisions.toArray(new Long[] {}));
+		
+		
+	}
+	
+	
 	@Test
 	public void testTwoRevisions () throws IOException {
 		
@@ -188,6 +239,8 @@ public class TestSvnRevisionMapper {
 		
 		
 	}
+	
+	
 
 	private void createRevision(long revision, List<Ref> branchHeads) throws IOException {
 		

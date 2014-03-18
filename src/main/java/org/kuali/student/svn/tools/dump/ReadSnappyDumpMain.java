@@ -17,11 +17,9 @@ package org.kuali.student.svn.tools.dump;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.iq80.snappy.SnappyInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +43,7 @@ public class ReadSnappyDumpMain {
 		
 		
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new SnappyInputStream(new FileInputStream(args[0]))));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new BZip2CompressorInputStream(new FileInputStream(args[0]))));
 			
 			while (true) {
 				

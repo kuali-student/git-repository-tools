@@ -15,7 +15,7 @@
  */
 package org.kuali.student.git.model.branch;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.svn.tools.merge.model.BranchData;
 
@@ -47,6 +47,9 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 	private static final String TRUNK = "trunk";
 	private static final String BRANCHES = "branches";
 	private static final String TAGS = "tags";
+	private static final String OLD_TAGS = "old-tags";
+	private static final String OLD_BUILD_TAGS = "old-build-tags";
+	private static final String KS_OLD_DIRECTORY_STRUCTURE = "old-directory-structure";
 	private static final String DEPLOYMENTLAB = "deploymentlab";
 	
 	private static final String TOOLS_MAVEN_DICTIONARY_GENERATOR = "tools/maven-dictionary-generator";
@@ -76,8 +79,13 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		
 		String lastPart = parts[parts.length-1];
 		
-		if (BRANCHES.equals(lastPart) || TAGS.equals(lastPart))
+		if (BRANCHES.equals(lastPart) || TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
 			throw new VetoBranchException(path + " vetoed because it is incomplete.");
+		
+		
+		if (TAGS.equals(parts[0]) && KS_OLD_DIRECTORY_STRUCTURE.equals(lastPart))
+			throw new VetoBranchException (TAGS + "/" + KS_OLD_DIRECTORY_STRUCTURE + " is not a valid branch by itself, its children are valid individually.");
+		
 
 		if (!(isPathValidBranchTagOrTrunk(path))) {
 
@@ -104,29 +112,37 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 			
 			return buildBranchData(revision, path, KS_WEB_BRANCHES_KS_WEB_DEV);
 		}
-		else if (path.startsWith(DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY)) {
-			return buildBranchData(revision, path, DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY);
+		else if (path.startsWith(DEPLOYMENTLAB)) {
+			
+			if (path.contains(TRUNK))
+				return null; // let the default logic pick this up.
+			
+			if (path.startsWith(DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY)) {
+				return buildBranchData(revision, path, DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY);
+			}
+			else if (path.startsWith(DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY)) {
+				return buildBranchData (revision, path, DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY);
+			}
+			else if (path.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING) && !isPathValidBranchTagOrTrunk(path)) {
+				return buildBranchData(revision, path, DEPLOYMENTLAB_UI_KS_CUKE_TESTING);
+			}
+			else if (path.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK)) {
+				
+				return buildBranchData(revision, path, DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK);
+			}
+			else if (path.startsWith(DEPLOYMENTLAB_KS_CUKE_TESTING)) {
+				return buildBranchData(revision, path, DEPLOYMENTLAB_KS_CUKE_TESTING);
+			}
+			else if (path.startsWith(DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK)) {
+				return buildBranchData(revision, path, DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK);
+			}
 		}
-		else if (path.startsWith(DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY)) {
-			return buildBranchData (revision, path, DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY);
-		}
+		
 		else if (path.startsWith(SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR)) {
 		
 			return buildBranchData(revision, path, SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR);
 		}
-		else if (path.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING) && !isPathValidBranchTagOrTrunk(path)) {
-			return buildBranchData(revision, path, DEPLOYMENTLAB_UI_KS_CUKE_TESTING);
-		}
-		else if (path.startsWith(DEPLOYMENTLAB_KS_CUKE_TESTING)) {
-			return buildBranchData(revision, path, DEPLOYMENTLAB_KS_CUKE_TESTING);
-		}
-		else if (path.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK)) {
-			
-			return buildBranchData(revision, path, DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK);
-		}
-		else if (path.startsWith(DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK)) {
-			return buildBranchData(revision, path, DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK);
-		}
+		
 		else if (path.startsWith(TOOLS_MAVEN_DICTIONARY_GENERATOR) && !isPathValidBranchTagOrTrunk(path)) {
 			/*
 			 * BranchUtils.parse can find the trunk if it exists.

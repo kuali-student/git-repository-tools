@@ -175,6 +175,7 @@ public class ConvertOldBranchesToTagsMain {
 				}
 			}
 			
+			rw.release();
 			
 			objectInserter.flush();
 			objectInserter.release();
@@ -185,6 +186,9 @@ public class ConvertOldBranchesToTagsMain {
 		}
 	}
 
+	/*
+	 * In the future if the commit has no changes from the parent we may apply the tag to the parent instead.
+	 */
 	private static boolean commitContainsChangesToParent(Git git, Repository repo, AnyObjectId commitTreeId, AnyObjectId parentTreeId) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException, GitAPIException {
 		DiffCommand diffCommand = git.diff();
 		

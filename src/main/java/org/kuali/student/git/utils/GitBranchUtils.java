@@ -93,7 +93,7 @@ public class GitBranchUtils {
 			/*
 			 * And convert any spaces to ---
 			 */
-			convertedBranchPath = branchPath.replace(" ", "---");
+			convertedBranchPath = convertedBranchPath.replace(" ", "---");
 
 			return convertedBranchPath.replaceAll("\\/", "_");
 		}
@@ -158,6 +158,12 @@ public class GitBranchUtils {
 		 */
 		if (alteredBlobPrefixPath.charAt(alteredBlobPrefixPath.length()-1) != '/')
 			alteredBlobPrefixPath.append("/");
+		
+		/*
+		 * Within the branch the blob path may have directory nesting.
+		 * 
+		 * This needs to be stripped off so that the altered blob is rooted in the target path.
+		 */
 		
 		StringBuilder alteredBlobSuffixPath = new StringBuilder(blobPath.substring(copyFromBranch.getPath().length()));
 		

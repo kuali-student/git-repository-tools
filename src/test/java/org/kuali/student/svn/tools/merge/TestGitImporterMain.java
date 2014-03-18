@@ -19,9 +19,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.lib.Repository;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.importer.GitImporterMain;
 import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.slf4j.Logger;
@@ -33,6 +35,8 @@ import org.tmatesoft.svn.core.SVNURL;
  * @author Kuali Student Team
  *
  */
+@RunWith(BlockJUnit4ClassRunner.class)
+@Ignore
 public class TestGitImporterMain {
 	
 	private static final String R1_DUMP_FILE = "target/r1.dump";

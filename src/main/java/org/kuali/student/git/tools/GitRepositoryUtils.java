@@ -18,7 +18,6 @@ package org.kuali.student.git.tools;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 

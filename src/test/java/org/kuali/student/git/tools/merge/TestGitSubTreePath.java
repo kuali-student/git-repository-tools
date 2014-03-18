@@ -15,19 +15,14 @@
  */
 package org.kuali.student.git.tools.merge;
 
-import javax.annotation.Resource;
-
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
-import org.kuali.student.git.model.branch.BranchDetector;
+import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Kuali Student Team
@@ -83,6 +78,38 @@ public class TestGitSubTreePath extends AbstractKualiStudentBranchDetectorTest {
 		
 		Assert.assertEquals("deploymentlab/tags/impex-parent-1.0.0/pom.xml", alteredPath);
 		
+	}
+	
+	@Test
+	public void testKsRevision100() throws VetoBranchException {
+		
+		String path = "poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast";
+		
+		String brachSubPath = "inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast";
+		
+		String copyFromPath = "poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/ast";
+		
+		String copyFromBranchSubPath = "inspect-rule-failure/src/main/java/org/kuali/student/rules/ast";
+		
+		String blobPath = "inspect-rule-failure/src/main/java/org/kuali/student/rules/ast/BinaryTree.java";
+		
+		String alteredPath = GitBranchUtils.convertToTargetPath(path, 100L, copyFromPath, blobPath, branchDetector);
+		
+		Assert.assertEquals("poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast/BinaryTree.java", alteredPath);
+	}
+	
+	@Test
+	public void testRevision7563 () throws VetoBranchException {
+		
+		String targetPath = "deploymentlab/branches/1.0.0-m3/performance";
+		
+		String copyFromPath = "deploymentlab/performance/tsung/trunk";
+		
+		long copyFromRevision = 7562;
+		
+		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromRevision, copyFromPath, ".project", branchDetector);
+		
+		Assert.assertEquals("deploymentlab/branches/1.0.0-m3/performance/.project", alteredPath);
 	}
 
 }

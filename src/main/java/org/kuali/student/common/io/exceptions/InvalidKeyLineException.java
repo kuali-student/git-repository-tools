@@ -24,6 +24,11 @@ public class InvalidKeyLineException extends Exception {
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 
+	 */
 	public InvalidKeyLineException() {
 		// TODO Auto-generated constructor stub
 	}

@@ -18,11 +18,9 @@ package org.kuali.student.svn.tools.merge;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.svn.tools.merge.model.BranchData;
-import org.kuali.student.svn.tools.merge.tools.BranchUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

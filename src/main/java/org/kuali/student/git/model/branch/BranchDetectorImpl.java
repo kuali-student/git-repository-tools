@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.svn.tools.merge.model.BranchData;
 
@@ -33,10 +33,12 @@ import org.kuali.student.svn.tools.merge.model.BranchData;
  */
 public class BranchDetectorImpl implements BranchDetector {
 
-	private Set<String> invalidBeforeTagPaths = new HashSet<String>();;
+	private Set<String> invalidBeforeTagPaths = new HashSet<String>();
 	private Set<String> standardBackwardMatchPaths = new HashSet<String>();
-	private Set<String> backwardMatchPaths = new HashSet<String>();;
-	private Set<String> forwardMatchPaths = new HashSet<String>();;
+	private Set<String> backwardMatchPaths = new HashSet<String>();
+	private Set<String> forwardMatchPaths = new HashSet<String>();
+	
+	private List<String>alternateTagNames = new ArrayList<String>();
 
 	/**
 	 * 
@@ -82,6 +84,16 @@ public class BranchDetectorImpl implements BranchDetector {
 	}
 
 
+	
+
+	/**
+	 * @param alternateTagNames the alternateTagNames to set
+	 */
+	public void setAlternateTagNames(List<String> alternateTagNames) {
+		this.alternateTagNames = alternateTagNames;
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see org.kuali.student.git.model.branch.BranchDetector#parseBranch(java.lang.Long, java.lang.String, java.lang.String[])
@@ -95,11 +107,6 @@ public class BranchDetectorImpl implements BranchDetector {
 		List<String> branchPathList = new ArrayList<String>();
 		List<String> pathList = new ArrayList<String>();
 
-		boolean foundBranch = false;
-		boolean onPath = false;
-
-		boolean foundTrunk = false;
-		
 		int beforePathRootIndex = Integer.MAX_VALUE;
 
 		beforePathRootIndex = lastIndexOfKey(parts, "trunk", true);
@@ -110,10 +117,21 @@ public class BranchDetectorImpl implements BranchDetector {
 		}
 
 		if (beforePathRootIndex == -1) {
-			beforePathRootIndex = lastIndexOfKey(parts, "old-tags",
-					invalidBeforeTagPaths, true);
-		}
+			int alternateTagIndex = 0;
 
+			while (alternateTagIndex < alternateTagNames.size()) {
+
+				String alternateTag = alternateTagNames.get(alternateTagIndex);
+
+				beforePathRootIndex = lastIndexOfKey(parts, alternateTag,
+						invalidBeforeTagPaths, true);
+
+				if (beforePathRootIndex != -1)
+					break;
+				else
+					alternateTagIndex++;
+			}
+		}
 		if (beforePathRootIndex == -1) {
 			beforePathRootIndex = indexOfKey(parts, standardBackwardMatchPaths,
 					true);

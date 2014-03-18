@@ -22,7 +22,6 @@ import java.io.PrintWriter;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.eclipse.jgit.lib.Repository;
-import org.iq80.snappy.SnappyInputStream;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.kuali.student.svn.tools.SvnDumpFilter;
@@ -46,14 +45,15 @@ public class GitImporterMain {
 	 */
 	public static void main(final String[] args) {
 
-		if (args.length != 8) {
-			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> <gc enabled> <svn repo base url> <repo uuid>");
+		if (args.length != 8 && args.length != 9) {
+			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> <gc enabled> <svn repo base url> <repo uuid> [<git command path>]");
 			log.error("\t<veto.log> : which paths were veto's as not being a valid branch");
 			log.error("\t<skipped-copy-from.log> : which copy-from-paths were skipped");
 			log.error("\t<blob.log> : issues related to blobs (typically directory copy related)");
 			log.error("\t<gc enabled> : set to 1 (true ever 500 revs) or 0 (false) to disable");
 			log.error("\t<svn repo base url> : the svn repo base url to use in the git-svn-id");
 			log.error("\t<repo uuid> : The svn repository uuid to use in the git-svn-id.\n\tIt you are importing from a clone use this to set the field to the real repositories uuid.");
+			log.error("\t<git command path> : the path to a native git to use for gc's which occur every 500 revs");
 			System.exit(-1);
 		}
 
@@ -104,18 +104,25 @@ public class GitImporterMain {
 			repositoryBaseUrl = args[6].trim();
 			
 			repositoryUUID = args[7].trim();
-				
+			
+			String nativeGitCommandPath = null;
+			
+			if (args.length == 9)
+				nativeGitCommandPath = args[8].trim();
+			
 			final Repository repo = GitRepositoryUtils.buildFileRepository(
 					gitRepository, false);
 
 			// extract any known branches from the repository
 			
-			SnappyInputStream compressedInputStream = new SnappyInputStream(new FileInputStream (dumpFile));
+			BZip2CompressorInputStream compressedInputStream = new BZip2CompressorInputStream(new FileInputStream (dumpFile));
 			
-			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl, repositoryUUID, branchDetector, gcEnabled));
+			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl, repositoryUUID, branchDetector, gcEnabled, nativeGitCommandPath));
 			
 			vetoLog.close();
 			copyFromSkippedLog.close();
+			
+			compressedInputStream.close();
 
 		} catch (Exception e) {
 			log.error("Processing failed", e);

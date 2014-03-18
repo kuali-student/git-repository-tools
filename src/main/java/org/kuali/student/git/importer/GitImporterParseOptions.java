@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -40,18 +41,23 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.GitCommitData;
 import org.kuali.student.git.model.NodeProcessor;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.tools.SvnMergeInfoUtils;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.svn.tools.AbstractParseOptions;
+import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.kuali.student.svn.tools.model.INodeFilter;
 import org.kuali.student.svn.tools.model.ReadLineData;
 import org.slf4j.Logger;
@@ -87,16 +93,21 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		private String repositoryBaseUrl;
 
 		private boolean gcEnabled;
+
+		private BranchDetector branchDetector;
+
+		private String externalGitCommandPath;
 		
 		/**
 		 * @param repo 
 		 * @param vetoLog 
 		 * @param copyFromSkippedLog 
 		 * @param branchDetector 
+		 * @param gcEnabled 
 		 * @param repositoryUUID2 
 		 * 
 		 */
-		public GitImporterParseOptions(Repository repo, PrintWriter vetoLog, PrintWriter copyFromSkippedLog, PrintWriter blobLog, boolean printGitSvnIds, String repositoryBaseUrl, String repositoryUUID, BranchDetector branchDetector, boolean gcEnabled) {
+		public GitImporterParseOptions(Repository repo, PrintWriter vetoLog, PrintWriter copyFromSkippedLog, PrintWriter blobLog, boolean printGitSvnIds, String repositoryBaseUrl, String repositoryUUID, BranchDetector branchDetector, boolean gcEnabled, String nativeGitCommandPath) {
 		
 			this.repo = repo;
 			this.vetoLog = vetoLog;
@@ -104,6 +115,8 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			this.printGitSvnIds = printGitSvnIds;
 			this.repositoryBaseUrl = repositoryBaseUrl;
 			this.repositoryUUID = repositoryUUID;
+			this.branchDetector = branchDetector;
+			this.externalGitCommandPath = nativeGitCommandPath;
 			this.gcEnabled = gcEnabled;
 			
 			revisionMapper = new SvnRevisionMapper(repo);
@@ -158,31 +171,53 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			
 			flushPendingBranchCommits();
 			
-			if (gcEnabled && this.currentRevision != 0 && this.currentRevision % 500 == 0) {
-				// every five hundred revisions garbage collect the repository to keep it fast
-				log.info("Garbage collecting git repository");
+		if (gcEnabled && this.currentRevision != 0 && this.currentRevision % 500 == 0) {
+			// every five hundred revisions garbage collect the repository to
+			// keep it fast
+			log.info("Garbage collecting git repository");
+
+			if (externalGitCommandPath != null) {
 				try {
-					GarbageCollectCommand gc = new Git (repo).gc();
+					String command = String.format("%s --git-dir %s gc",
+							externalGitCommandPath, repo.getDirectory()
+									.getAbsolutePath());
+
+					log.info("invoking external garbage collection : " + command);
 					
+					Process p = Runtime.getRuntime().exec(command);
+
+					p.waitFor();
+					
+				} catch (IOException e) {
+
+				} catch (InterruptedException e) {
+
+				}
+			}
+
+			else {
+				try {
+					GarbageCollectCommand gc = new Git(repo).gc();
+
 					// should not matter but anything loose can be collected.
 					gc.setExpire(new Date());
-					
+
 					gc.call();
-					
+
 				} catch (GitAPIException e) {
-					
+
 				}
-				
 			}
+		}
 			
-			if (this.currentRevision != 0 && this.currentRevision % 10000 == 0) {
-				// repack the revision map file every 10000 revs
-				try {
-					revisionMapper.repackMapFile();
-				} catch (IOException e) {
-					throw new RuntimeException("failed to repack revision mapper", e);
-				}
-			}
+//			if (gcEnabled && this.currentRevision != 0 && this.currentRevision % 10000 == 0) {
+//				// repack the revision map file every 10000 revs
+//				try {
+//					revisionMapper.repackMapFile();
+//				} catch (IOException e) {
+//					throw new RuntimeException("failed to repack revision mapper", e);
+//				}
+//			}
 			
 			this.currentRevision = currentRevision;
 
@@ -207,9 +242,6 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				String commitMessage = revisionProperties
 						.get("svn:log");
 
-				// read out the svn:mergeinfo to make sure we
-				// are making a merge commit.
-
 				String userName = author;
 
 				if (userName == null)
@@ -233,7 +265,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				// also consider copyfrom or other details that
 				// suggest a merge at this point.
 
-			} catch (IOException e) {
+			} catch (Exception e) {
 				throw new RuntimeException(
 						"onRevisionContentLength failed to read revision properties.",
 						e);
@@ -244,6 +276,9 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		private void flushPendingBranchCommits() {
 
 			try {
+				
+				RevWalk rw = new RevWalk(repo);
+				
 				for (Map.Entry<String, GitBranchData> entry : knownBranchMap
 						.entrySet()) {
 					
@@ -267,23 +302,39 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					// create the commit
 					CommitBuilder commitBuilder = new CommitBuilder();
 
-					ObjectInserter inserter;
+					ObjectInserter inserter  = repo
+							.newObjectInserter();
 
 					// create the tree
-					ObjectId treeId = data
-							.buildTree(inserter = repo
-									.newObjectInserter());
-
-					log.debug("tree id = " + treeId.name());
+					ObjectId treeId = null;
+					
+					ObjectId parentId = data.getParentId();
+					
+					if (data.getBlobsAdded() == 0 && parentId != null) {
+						
+						RevCommit parentCommit = rw.parseCommit(parentId);
+						
+						treeId = parentCommit.getTree().getId();
+						
+						log.debug("reuse parent tree id = " + treeId.name());
+					}
+					else {
+						treeId = data
+							.buildTree(inserter);
+						
+						log.debug("create new tree id = " + treeId.name());
+					}
+					
+					
 
 					commitBuilder.setTreeId(treeId);
-
-					ObjectId parentId = data.getParentId();
 
 					Set<ObjectId> parentSet = new HashSet<ObjectId>();
 					
 					if (parentId != null)
 						parentSet.add(parentId);
+					
+					parentSet.addAll(computeSvnMergeInfoParentIds(currentRevision, data));
 					
 					parentSet.addAll(data.getMergeParentIds());
 					
@@ -374,6 +425,8 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 						currentRevision, refs);
 
 				knownBranchMap.clear();
+				
+				rw.release();
 
 			} catch (IOException e) {
 				throw new RuntimeException(
@@ -381,6 +434,69 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 								+ currentRevision, e);
 			}
 		}
+
+		private Set<ObjectId> computeSvnMergeInfoParentIds(
+				long currentRevision, GitBranchData data) {
+		
+			Set<ObjectId>mergeInfoParentIds = new HashSet<>();
+			
+			try {
+				
+				List<BranchMergeInfo> currentMergeInfo = revisionMapper.getMergeBranches(currentRevision, data.getBranchPath());
+				
+				List<BranchMergeInfo> sourceMergeInfo = revisionMapper.getMergeBranches(currentRevision-1, data.getBranchPath());
+				
+				if (currentMergeInfo == null || (sourceMergeInfo == null && currentMergeInfo == null))
+					return mergeInfoParentIds; // if there is no merge info then return no parent commits.
+				
+				List<BranchMergeInfo> deltas = null;
+				
+				if (sourceMergeInfo == null && currentMergeInfo != null) {
+					// there was no merge info but now there is so take everything in current merge info
+					deltas = currentMergeInfo;
+				}
+				else {
+					// source and current exist so compute the difference
+					deltas = SvnMergeInfoUtils.computeDifference(sourceMergeInfo, currentMergeInfo);
+				}
+				
+				for (BranchMergeInfo delta : deltas) {
+					
+					String mergedBranchPath = delta.getBranchName();
+					
+					try {
+						BranchData mergedBranchData = branchDetector.parseBranch(0L, mergedBranchPath);
+						
+						for (Long mergedRevision : delta.getMergedRevisions()) {
+							
+							ObjectId mergeBranchHeadId = revisionMapper.getRevisionBranchHead(mergedRevision, GitBranchUtils.getCanonicalBranchName(mergedBranchData.getBranchPath(), mergedRevision, revisionMapper));
+							
+							if (mergeBranchHeadId == null) {
+								log.warn(String.format("failed to merge %s into %s at revision %d", mergedBranchPath, data.getBranchName(), mergedRevision));
+							}
+							else {
+								mergeInfoParentIds.add(mergeBranchHeadId);
+								log.info(String.format("merged %s at revision %d into branch %s", mergedBranchPath, mergedRevision, data.getBranchName()));
+							}
+						}
+					} catch (VetoBranchException e) {
+						// skip over if the path is not a known branch
+						continue;
+					}
+					
+				}
+				
+			} catch (IOException e) {
+				
+				// fall through
+			}
+			
+			
+			
+			return mergeInfoParentIds;
+			
+		}
+
 
 		/*
 		 * Constructs a git-svn-id that looks the way git-svn expects.

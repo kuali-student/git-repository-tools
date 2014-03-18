@@ -115,6 +115,8 @@ public class GitExtractor {
 		Ref tag = tags.get(tagName);
 
 		RevTree target = walk.parseTree(tag.getObjectId());
+		
+		walk.release();
 
 		return target;
 	}

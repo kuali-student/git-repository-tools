@@ -28,7 +28,6 @@ import java.util.Map;
 
 import modifier.PathRevisionAndMD5AndSHA1;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.io.IOUtils;
 import org.kuali.student.svn.tools.model.INodeFilter;
 import org.kuali.student.svn.tools.model.ReadLineData;

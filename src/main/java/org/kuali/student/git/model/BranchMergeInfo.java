@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 The Kuali Foundation
+ * Copyright 2014 The Kuali Foundation
  * 
  * Licensed under the Educational Community License, Version 1.0 (the
  * "License"); you may not use this file except in compliance with the License.
@@ -13,29 +13,46 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.svn.tools.merge.tools;
+package org.kuali.student.git.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Kuali Student Team
- * 
+ *
  */
-public final class BranchUtils {
+public class BranchMergeInfo {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(BranchUtils.class);
-
+	private String branchName;
 	
-
+	private Set<Long>mergedRevisions = new HashSet<Long>();
+	
 	/**
 	 * 
 	 */
-	private BranchUtils() {
-		// TODO Auto-generated constructor stub
+	public BranchMergeInfo(String branchName) {
+		this.branchName = branchName;
+	}
+	
+	public void addMergeRevision(long revision) {
+		this.mergedRevisions.add(revision);
 	}
 
+	/**
+	 * @return the branchName
+	 */
+	public String getBranchName() {
+		return branchName;
+	}
+
+	/**
+	 * @return the mergedRevisions
+	 */
+	public Set<Long> getMergedRevisions() {
+		return mergedRevisions;
+	}
+	
 	
 
 }

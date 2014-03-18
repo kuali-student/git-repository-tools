@@ -15,10 +15,17 @@
  */
 package org.kuali.student.git.model.util;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.jgit.errors.CorruptObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.lib.ObjectId;
 import org.kuali.student.git.model.GitTreeData;
 import org.kuali.student.git.model.GitTreeData.GitTreeDataVisitor;
+import org.kuali.student.git.model.GitTreeProcessor;
+import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
 
 /**
  * @author Kuali Student Team
@@ -63,5 +70,29 @@ public final class GitTreeDataUtils {
 		
 		return visitor.getCounter().intValue();
 	}
+	
+	public static GitTreeData extractExistingTreeData(GitTreeProcessor treeProcessor, ObjectId parentId)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			CorruptObjectException, IOException {
+
+		final GitTreeData treeData = new GitTreeData();
+
+		treeProcessor.visitBlobs(parentId, new GitTreeBlobVisitor() {
+
+			@Override
+			public boolean visitBlob(ObjectId blobId, String path, String name) {
+
+				treeData.addBlob(path, blobId.name());
+
+				// visit all of the blobs.
+				return true;
+
+			}
+		});
+
+		return treeData;
+
+	}
+
 
 }

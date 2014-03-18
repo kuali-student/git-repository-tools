@@ -86,7 +86,7 @@ public final class IOUtils {
 	 * @throws IOException
 	 * @throws InvalidKeyLineException
 	 */
-	public static boolean readKeyAndValuePair(FileInputStream inputStream,
+	public static boolean readKeyAndValuePair(InputStream inputStream,
 			Map<String, String> nodeProperties) throws InvalidKeyLineException,
 			IOException {
 
@@ -104,7 +104,7 @@ public final class IOUtils {
 		return true;
 	}
 
-	private static String readValue(FileInputStream inputStream)
+	private static String readValue(InputStream inputStream)
 			throws InvalidKeyLineException, IOException {
 
 		String value = readLinePair("V", inputStream);
@@ -116,17 +116,17 @@ public final class IOUtils {
 
 	}
 
-	private static String readKey(FileInputStream inputStream)
+	private static String readKey(InputStream inputStream)
 			throws InvalidKeyLineException, IOException {
 		return readLinePair("K", inputStream);
 	}
 
 	private static String readLinePair(String startsWithCharacter,
-			FileInputStream inputStream) throws InvalidKeyLineException,
+			InputStream inputStream) throws InvalidKeyLineException,
 			IOException {
 
 		while (true) {
-		String lengthLine = readLine(inputStream, "UTF-8").replace("\r", "");
+		String lengthLine = readLine(inputStream, "UTF-8");
 
 		if (lengthLine != null && lengthLine.length() == 0)
 			continue;
@@ -224,82 +224,17 @@ public final class IOUtils {
 
 	public static Map<String, String> extractRevisionProperties(
 			InputStream inputStream, long propContentLength, long contentLength)
-			throws IOException {
+			throws IOException, InvalidKeyLineException {
 		
 		return extractRevisionProperties(inputStream, (int)propContentLength, (int)contentLength);
 	}
 	public static Map<String, String> extractRevisionProperties(
 			InputStream inputStream, int propContentLength, int contentLength)
-			throws IOException {
+			throws IOException, InvalidKeyLineException {
 
 		Map<String, String> revisionProperties = new LinkedHashMap<String, String>();
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
-
-		org.apache.commons.io.IOUtils.copyLarge(inputStream, out, 0,
-				propContentLength);
-
-		String revProperties = new String(out.toByteArray());
-
-		String[] revPropItems = revProperties.split("\\n");
-
-		for (int i = 0; i < revPropItems.length; i++) {
-
-			String item = revPropItems[i];
-
-			String key = null;
-			StringBuilder valueBuilder = new StringBuilder();
-
-			if (item.startsWith("K")) {
-				key = revPropItems[i + 1];
-
-				String valueLengthString = revPropItems[i + 2];
-
-				String lengthParts[] = valueLengthString.split(" ");
-
-				int valueLength = Integer.parseInt(lengthParts[1].trim());
-
-				int charactersRead = 0;
-
-				i += 2;
-				
-				boolean secondPass = false;
-
-				while (charactersRead < valueLength) {
-
-					if (secondPass) {
-						valueBuilder.append("\n");
-						log.debug("second pass");
-					}
-					i++;
-
-					String valueLine = revPropItems[i];
-
-					valueBuilder.append(valueLine);
-
-					// account for the \n that was stripped.
-					charactersRead += valueLine.length() + 1;
-
-					secondPass = true;
-				}
-
-				revisionProperties.put(key, valueBuilder.toString());
-			}
-
-		}
-
-		if (contentLength > propContentLength) {
-			// need to skip bytes
-			int skipBytes = contentLength - propContentLength + 1;
-
-			log.debug("neeed to skip " + skipBytes);
-
-			inputStream.skip(skipBytes);
-		} else {
-			// skip over 1
-			inputStream.skip(1);
-		}
-
+		while (org.kuali.student.common.io.IOUtils.readKeyAndValuePair(inputStream, revisionProperties));
 		
 		return revisionProperties;
 

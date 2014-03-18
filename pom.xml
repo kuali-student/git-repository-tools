@@ -11,6 +11,8 @@
 		<spring.version>3.1.0.RELEASE</spring.version>
 		<jgit.version>3.2.0.201312181205-r</jgit.version>
 		<svn-kit.version>1.7.8</svn-kit.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -72,9 +74,9 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
@@ -88,12 +90,6 @@
 		    <version>1.7</version>
 		</dependency>
 		
-		<!-- for snappy compression/decompression -->
-		<dependency>
-    		<groupId>org.iq80.snappy</groupId>
-   			<artifactId>snappy</artifactId>
-    		<version>0.3</version>
-		</dependency>
 	</dependencies>
 
 	<build>

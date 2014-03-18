@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.commons.compress.compressors.snappy.SnappyCompressorInputStream;
-import org.iq80.snappy.SnappyOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
@@ -113,7 +111,7 @@ public class DumpMain {
 		}
 		
 		try {
-			SnappyOutputStream out = new SnappyOutputStream(new BufferedOutputStream(
+			BZip2CompressorOutputStream out = new BZip2CompressorOutputStream(new BufferedOutputStream(
 					new FileOutputStream(args[1])));
 
 			SVNClientManager manager = SVNClientManager.newInstance(null, username,

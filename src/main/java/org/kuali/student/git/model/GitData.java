@@ -15,8 +15,6 @@
  */
 package org.kuali.student.git.model;
 
-import org.eclipse.jgit.lib.AnyObjectId;
-
 /**
  * @author Kuali Student Team
  *

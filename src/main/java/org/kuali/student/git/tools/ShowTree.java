@@ -18,7 +18,6 @@ package org.kuali.student.git.tools;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.TreeWalk;

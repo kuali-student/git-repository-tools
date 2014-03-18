@@ -24,9 +24,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
 import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
-import org.kuali.student.git.model.NodeProcessor;
 import org.kuali.student.git.model.branch.BranchDetectorImpl;
-import org.kuali.student.git.model.branch.KualiStudentBranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.svn.tools.merge.model.BranchData;
@@ -158,6 +156,8 @@ public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 		assertPath("trunk", "trunk", "", false);
 		
 		assertPath("branches/trunk", "branches/trunk", "", false);
+		
+		assertPath("deploymentlab/ks-cuke-testing/trunk/pom.xml", "deploymentlab/ks-cuke-testing/trunk", "pom.xml", false);
 	}
 	
 	@Test
@@ -176,6 +176,8 @@ public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 		assertPath ("enrollment/ks-api/trunk/pom.xml", "enrollment/ks-api/trunk", "pom.xml", false);
 		
 		assertPath ("enrollment/aggregate/branches/KSAP/pom.xml", "enrollment/aggregate/branches/KSAP", "pom.xml", false);
+		
+		assertPath("builds/old-build-tags/ks-1.0.0-rc2/ks-brms-1.0.0-rc2/.classpath", "builds/old-build-tags/ks-1.0.0-rc2", "ks-brms-1.0.0-rc2/.classpath", false);
 	}
 	
 	@Test

@@ -2,8 +2,6 @@ package org.kuali.student.git.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.eclipse.jgit.lib.ObjectId;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;

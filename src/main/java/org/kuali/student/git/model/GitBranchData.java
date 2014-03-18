@@ -17,18 +17,17 @@ package org.kuali.student.git.model;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.eclipse.jgit.errors.LargeObjectException;
+import org.eclipse.jgit.errors.CorruptObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
-import org.eclipse.jgit.lib.Repository;
-import org.kuali.student.git.model.GitTreeData.GitMergeData;
+import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.model.util.GitTreeDataUtils;
@@ -70,6 +69,10 @@ public class GitBranchData {
 
 	private BranchDetector branchDetector;
 
+	private GitTreeProcessor treeProcessor;
+
+	private boolean alreadyInitialized = false;
+
 	/**
 	 * @param revision
 	 * @param branchPath
@@ -78,7 +81,8 @@ public class GitBranchData {
 	 * @param path
 	 * 
 	 */
-	public GitBranchData(String branchName, long revision, ILargeBranchNameProvider largeBranchNameProvider, BranchDetector branchDetector) {
+	public GitBranchData(String branchName, long revision, ILargeBranchNameProvider largeBranchNameProvider, GitTreeProcessor treeProcessor, BranchDetector branchDetector) {
+		this.treeProcessor = treeProcessor;
 		this.branchDetector = branchDetector;
 		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, largeBranchNameProvider);
 		this.revision = revision;
@@ -106,7 +110,7 @@ public class GitBranchData {
 	}
 
 	public void addBlob(String path, String blobSha1, PrintWriter blobLog)
-			throws VetoBranchException {
+			throws VetoBranchException, MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 
 		if (!path.startsWith(this.branchPath)) {
 			String errorMessage = String.format("blob absolute path(%s) does not match this branch (%s)", path, this.branchName);
@@ -115,6 +119,8 @@ public class GitBranchData {
 			return;
 		}
 
+		initialize();
+		
 		blobsAdded.addAndGet(1L);
 
 		BranchData db = branchDetector.parseBranch(revision, path);
@@ -161,7 +167,9 @@ public class GitBranchData {
 		return GitTreeDataUtils.countBlobs(branchRoot);
 	}
 
-	public void deletePath(String path, long currentRevision) {
+	public void deletePath(String path, long currentRevision) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		initialize();
 		
 		// should we strip of the branch name part of the path and only pass
 		// through the
@@ -181,6 +189,33 @@ public class GitBranchData {
 			log.warn("invalid branch");
 		}
 
+	}
+
+	
+	
+	private void initialize() throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		if (alreadyInitialized || parentId == null)
+			return;
+		
+		alreadyInitialized = true;
+		
+		GitTreeData existingTreeData = GitTreeDataUtils.extractExistingTreeData(treeProcessor, parentId);
+
+		int existingBlobCount = GitTreeDataUtils
+				.countBlobs(existingTreeData);
+
+		mergeOntoExistingTreeData(existingTreeData);
+
+		int mergedBlobCount = getBlobCount();
+
+		if (existingBlobCount != mergedBlobCount) {
+			throw new RuntimeException(
+					"data loss existing count = "
+							+ existingBlobCount
+							+ ", merged count = " + mergedBlobCount);
+		}
+		
 	}
 
 	public Set<ObjectId> getMergeParentIds() {

@@ -1,0 +1,24 @@
+* text=auto
+*.dump -text
+
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+*.cs     text diff=csharp
+*.java   text diff=java
+*.html   text diff=html
+*.css    text
+*.js     text
+*.sql    text
+
+*.csproj text merge=union
+*.sln    text merge=union eol=crlf
+
+*.docx   diff=astextplain
+*.DOCX   diff=astextplain
+
+# do not adjust svn dump files
+src/test/resources/rice-r15812-svnadmin.dump -text
+src/test/resources/rice-r15812-svnkit.dump -text
+src/test/resources/revision-properties.dat -text
+src/test/resources/revision-properties-no-log.dat -text

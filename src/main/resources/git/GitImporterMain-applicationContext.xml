@@ -18,58 +18,10 @@
 
 	<context:annotation-config/>
 	
+	<import resource="classpath:git/git-branch-detection-beans.xml"/>
+	
 	<bean id="svnDumpFilter" class="org.kuali.student.svn.tools.SvnDumpFilter" />
 	
-	<bean id="branchDetector" class="org.kuali.student.git.model.branch.BranchDetectorSequencer">
-		<property name="detectors">
-			<list>
-				<ref bean="kualiStudentBranchDetector" />
-				<ref bean="baseBranchDetector" />
-			</list>
-		</property>
-	</bean>
 	
-	<bean id="kualiStudentBranchDetector" class="org.kuali.student.git.model.branch.KualiStudentBranchDetectorImpl"  />
-	 
-	<bean id="baseBranchDetector" class="org.kuali.student.git.model.branch.BranchDetectorImpl">
-	
-		<!-- a tag won't be detected where these paths are located anywhere in front of it -->
-		<property name="invalidBeforeTagPaths">
-			<set>
-				<value>WEB-INF</value>
-				<value>META-INF</value>
-				<value>src/main/resources</value>
-				<value>src/test/resources</value>
-				<value>src/main/java</value>
-				<value>src/main/webapp</value>
-				<value>src/test/java</value>
-			</set>
-		</property>
-		
-		<!-- search the path from last element to first for these values -->
-		<property name="standardBackwardMatchPaths">
-			<set>
-				<value>branches</value>
-			</set>
-		</property>
-		
-		<property name="backwardMatchPaths">
-			<set>
-				<value>sandbox</value>
-				<value>tools</value>
-				<value>examples</value>
-			</set>
-		</property>
-		
-		<property name="forwardMatchPaths">
-			<set>
-				<value>poc</value>
-				<value>enumeration</value>
-				<value>dictionary</value>
-				<value>ks-cfg-dbs</value>
-				<value>deploymentlab</value>
-			</set>
-		</property>
-	</bean>
 	
  </beans>

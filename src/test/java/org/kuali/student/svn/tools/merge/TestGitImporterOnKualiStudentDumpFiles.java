@@ -18,7 +18,6 @@ package org.kuali.student.svn.tools.merge;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
 import org.joda.time.DateTime;
@@ -27,6 +26,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.importer.GitImporterMain;
 import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.slf4j.Logger;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Kuali Student Team
  *
  */
+@RunWith(BlockJUnit4ClassRunner.class)
 public class TestGitImporterOnKualiStudentDumpFiles {
 	
 	private static final Logger log = LoggerFactory.getLogger(TestGitImporterOnKualiStudentDumpFiles.class);
@@ -60,6 +62,22 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 	
 		Date d = ldt.toDate();
 		
+		dateString = "2011-02-21T14:55:36.976704Z";
+		
+		dt = formatter.parseDateTime(dateString);
+
+		ldt = new LocalDateTime (dt);
+	
+		d = ldt.toDate();
+		
+		dateString = "2011-02-21T15:59:54.387299Z";
+		
+		dt = formatter.parseDateTime(dateString);
+
+		ldt = new LocalDateTime (dt);
+	
+		d = ldt.toDate();
+
 		
 		log.info("");
 	}

@@ -21,8 +21,6 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.kuali.student.svn.tools.AbstractParseOptions;
 import org.kuali.student.svn.tools.SvnDumpFilter;
 import org.kuali.student.svn.tools.model.ReadLineData;

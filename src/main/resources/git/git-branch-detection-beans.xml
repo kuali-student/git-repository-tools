@@ -16,8 +16,64 @@
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-	<context:annotation-config/>
+
+<bean id="branchDetector" class="org.kuali.student.git.model.branch.BranchDetectorSequencer">
+		<property name="detectors">
+			<list>
+				<ref bean="kualiStudentBranchDetector" />
+				<ref bean="baseBranchDetector" />
+			</list>
+		</property>
+	</bean>
 	
-	<import resource="classpath:git-branch-detection-beans.xml"/>
+	<bean id="kualiStudentBranchDetector" class="org.kuali.student.git.model.branch.KualiStudentBranchDetectorImpl"  />
+	 
+	<bean id="baseBranchDetector" class="org.kuali.student.git.model.branch.BranchDetectorImpl">
 	
- </beans>
+		<property name="alternateTagNames">
+			<list>
+				<value>old-tags</value>
+				<value>old-build-tags</value>
+			</list>
+		</property>
+		
+		<!-- a tag won't be detected where these paths are located anywhere in front of it -->
+		<property name="invalidBeforeTagPaths">
+			<set>
+				<value>WEB-INF</value>
+				<value>META-INF</value>
+				<value>src/main/resources</value>
+				<value>src/main/java</value>
+				<value>src/main/webapp</value>
+				<value>src/test/java</value>
+				<value>src/test/resources</value>
+			</set>
+		</property>
+		
+		<!-- search the path from last element to first for these values -->
+		<property name="standardBackwardMatchPaths">
+			<set>
+				<value>branches</value>
+			</set>
+		</property>
+		
+		<property name="backwardMatchPaths">
+			<set>
+				<value>sandbox</value>
+				<value>tools</value>
+				<value>examples</value>
+			</set>
+		</property>
+		
+		<property name="forwardMatchPaths">
+			<set>
+				<value>poc</value>
+				<value>enumeration</value>
+				<value>dictionary</value>
+				<value>ks-cfg-dbs</value>
+				<value>deploymentlab</value>
+			</set>
+		</property>
+	</bean>
+	
+</beans>
