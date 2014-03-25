@@ -577,14 +577,18 @@ public class SvnDumpFilter {
 	
 	private String[] splitLine(String line) {
 
-		String parts[] = line.split(":");
-
-		if (parts.length != 2) {
+		int indexOfFirstColon = line.indexOf(':');
+		
+		String firstPart = line.substring(0, indexOfFirstColon).trim();
+		
+		if (indexOfFirstColon >= line.length()) {
 			log.error("Format Error: key and value are required: " + line);
 			System.exit(-1);
 		}
 
-		return new String[] { parts[0], parts[1].trim() };
+		String secondPart = line.substring(indexOfFirstColon+1).trim();
+		
+		return new String[] { firstPart, secondPart };
 
 	}
 

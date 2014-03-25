@@ -63,8 +63,6 @@ public class GitBranchData {
 
 	private boolean created;
 
-	private ILargeBranchNameProvider largeBranchNameProvider;
-
 	private long revision;
 
 	private BranchDetector branchDetector;
@@ -86,7 +84,6 @@ public class GitBranchData {
 		this.branchDetector = branchDetector;
 		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, largeBranchNameProvider);
 		this.revision = revision;
-		this.largeBranchNameProvider = largeBranchNameProvider;
 		this.branchName = GitBranchUtils.getCanonicalBranchName(this.branchPath, revision, largeBranchNameProvider);
 
 	}
@@ -112,6 +109,7 @@ public class GitBranchData {
 	public void addBlob(String path, String blobSha1, PrintWriter blobLog)
 			throws VetoBranchException, MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 
+		
 		if (!path.startsWith(this.branchPath)) {
 			String errorMessage = String.format("blob absolute path(%s) does not match this branch (%s)", path, this.branchName);
 			log.error(errorMessage);
@@ -128,7 +126,7 @@ public class GitBranchData {
 		String filePath = db.getPath();
 
 		if (filePath.length() == 0) {
-			String errorMessage = String.format ("trying to index an empty file path.  Path = %s, File Path = %s, blobId = %s, ", path, filePath, blobSha1);
+			String errorMessage = String.format ("trying to index an empty file path.  Revision = %d, Path = %s, File Path = %s, blobId = %s, ", revision, path, filePath, blobSha1);
 			
 			log.warn(errorMessage);
 			blobLog.println(errorMessage);

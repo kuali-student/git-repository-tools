@@ -18,6 +18,7 @@ package org.kuali.student.git.tools;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -30,7 +31,10 @@ import org.kuali.student.common.io.IOUtils;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.BranchDetectorImpl;
+import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.svn.tools.merge.model.BranchData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 
 /**
@@ -39,6 +43,7 @@ import org.springframework.util.CollectionUtils;
  */
 public class SvnMergeInfoUtils {
 	
+	private static final Logger log = LoggerFactory.getLogger(SvnMergeInfoUtils.class);
 	
 	
 	/**
@@ -50,7 +55,7 @@ public class SvnMergeInfoUtils {
 	 * @return the list of brance merge info
 	 * @throws IOException
 	 */
-	public static List<BranchMergeInfo>extractBranchMergeInfoFromInputStream (InputStream inputStream) throws IOException {
+	public static List<BranchMergeInfo>extractBranchMergeInfoFromInputStream (BranchDetector branchDetector, InputStream inputStream) throws IOException {
 		
 		StringBuilder builder = new StringBuilder();
 		
@@ -67,10 +72,10 @@ public class SvnMergeInfoUtils {
 			builder.append(line).append("\n");
 		}
 		
-		return extractBranchMergeInfoFromString(builder.toString());
+		return extractBranchMergeInfoFromString(branchDetector, builder.toString());
 	}
 	
-	public static List<BranchMergeInfo>extractBranchMergeInfoFromString (String inputString) {
+	public static List<BranchMergeInfo>extractBranchMergeInfoFromString (BranchDetector branchDetector, String inputString) {
 	
 		List<BranchMergeInfo>bmiList = new LinkedList<>();
 		
@@ -92,8 +97,19 @@ public class SvnMergeInfoUtils {
 				// trim the leading slash if it exists.
 				branchPath = branchPath.substring(1);
 			}
+
+			BranchData bd = null;
 			
-			BranchMergeInfo bmi = new BranchMergeInfo(branchPath);
+			try {
+				bd = branchDetector.parseBranch(0L, branchPath);
+				
+			} catch (VetoBranchException e) {
+				log.warn("failed to detect a branch on " + branchPath);
+				continue; // skip to the next line
+			}
+			
+			
+			BranchMergeInfo bmi = new BranchMergeInfo(bd.getBranchPath());
 			
 			String revisions = parts[1].trim();
 			
@@ -134,6 +150,49 @@ public class SvnMergeInfoUtils {
 		return bmiList;
 	}
 
+	public static void consolidateConsecutiveRanges(
+			List<BranchMergeInfo> deltas) {
+		
+		for (BranchMergeInfo delta : deltas) {
+			
+			List<Long>orderedRevisions = new ArrayList<>(delta.getMergedRevisions());
+			
+			delta.clearMergedRevisions();
+			
+			Collections.sort(orderedRevisions);
+			
+			long logicalNextRevision = -1;
+			
+			for (int i = 0; i < orderedRevisions.size(); i++) {
+				
+				Long rev = orderedRevisions.get(i);
+				
+				if (logicalNextRevision == -1 || logicalNextRevision != rev) {
+					// range ends
+					
+					int endOfRange = i-1;
+					
+					if (endOfRange >= 0) {
+						
+						delta.addMergeRevision(orderedRevisions.get(endOfRange));
+					}
+					
+					
+				}
+				else {
+					// range continues
+				}
+				
+				logicalNextRevision = rev + 1L;
+			}
+			
+			Long lastRev = orderedRevisions.get(orderedRevisions.size()-1);
+			
+			delta.addMergeRevision(lastRev);
+			
+		}
+		
+	}	
 	/**
 	 * Computes the difference, what has been added to the target that is not in the source,  between the two sets of merge info and returns the difference out.
 	 * @param sourceData
@@ -147,7 +206,7 @@ public class SvnMergeInfoUtils {
 		// branch name to bmi
 		HashMap<String, BranchMergeInfo> sourceBmiMap = new HashMap<String, BranchMergeInfo>();
 		
-		for (BranchMergeInfo sourceBmi : targetData) {
+		for (BranchMergeInfo sourceBmi : sourceData) {
 			sourceBmiMap.put(sourceBmi.getBranchName(), sourceBmi);
 		}
 		

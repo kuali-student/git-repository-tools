@@ -24,6 +24,39 @@ import org.kuali.student.svn.tools.merge.model.BranchData;
  *
  */
 public class KualiStudentBranchDetectorImpl implements BranchDetector {
+	
+
+	private static final String CONTRIB_CM_AGGREGATE = "contrib/CM/aggregate";
+
+	private static final String CONTRIB_CM_KS_LUM = "contrib/CM/ks-lum";
+
+	private static final String CONTRIB_CM_KS_CORE = "contrib/CM/ks-core";
+
+	private static final String CONTRIB_CM_KS_API = "contrib/CM/ks-api";
+
+	private static final String CONTRIB_CM_KS_DEPLOYMENTS = "contrib/CM/ks-deployments";
+
+	private static final String TEST_FUNCTIONAL_AUTOMATION_SAMBAL_RICE_2_3_M2_AFT_BRANCH = "test/functional-automation/sambal/rice_2_3_m2_AFT_branch";
+
+	private static final String SANDBOX_DEPLOYMENTLAB = "sandbox/deploymentlab";
+
+	private static final String POC_SRC = "poc/src";
+
+	private static final String EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT = "examples/training/cm-myschool-config-project";
+
+	private static final String EXAMPLES_SAMPLE_CONFIG_PROJECT = "examples/sample-config-project";
+
+	private static final String EXAMPLES_KS_CORE_TUTORIAL = "examples/ks-core-tutorial";
+
+	private static final String EXAMPLES = "examples";
+
+	private static final String SUSHIK_COMPONENT_MANUAL_IMPL = "sushik-component-manual-impl";
+
+	protected static final String DATE_STAMP_SVN_REVISION_BUILD_TAG_NAME_PATTERN = "[0-9]{8}-r[0-9]+"; 
+
+	private static final String DEPLOYMENTLAB_KS_1_1_DB_MAVEN_SITE_PLUGIN = "deploymentlab/ks-1.1-db/maven-site-plugin";
+
+	private static final String DEPLOYMENTLAB_KS_1_1_DB_1_0_X = "deploymentlab/ks-1.1-db/1.0.x";
 
 	private static final String MERGES = "merges";
 
@@ -89,16 +122,38 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 
 		if (!(isPathValidBranchTagOrTrunk(path))) {
 
+			if (path.startsWith(SUSHIK_COMPONENT_MANUAL_IMPL)) {
+				return buildBranchData(revision, path, 1);
+			}
+			
+			if (path.startsWith(POC_SRC)) {
+				
+				/*
+				 * Create poc branch where there is a src directory directly under it.
+				 * See at r30766
+				 */
+				return buildBranchData(revision, path, 1);
+			}
+			
+			if (path.startsWith(TEST_FUNCTIONAL_AUTOMATION_SAMBAL_RICE_2_3_M2_AFT_BRANCH)) {
+				return buildBranchData(revision, path, TEST_FUNCTIONAL_AUTOMATION_SAMBAL_RICE_2_3_M2_AFT_BRANCH);
+			}
+			
+			BranchData bd = handleContribCMRoots(revision, path, parts);
+			
+			if (bd != null)
+				return bd;
+			
 			/*
 			 * If it starts with enumeration allow it to be treated as a
 			 * branch.
 			 * 
 			 * sandbox is also a special case.
 			 */
-			if (!(path.startsWith(ENUMERATION)
+			if (!(path.startsWith(ENUMERATION) 
 					|| path.startsWith(SANDBOX)
 					|| path.startsWith(DICTIONARY) || path
-					.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB) || path.startsWith(TOOLS) || path.startsWith(MERGES)))
+					.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB) || path.startsWith(TOOLS) || path.startsWith(MERGES) || path.startsWith(EXAMPLES)))
 				throw new VetoBranchException(
 						path
 								+ "vetoed because it does not contain tags, branches or trunk");
@@ -114,35 +169,24 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		}
 		else if (path.startsWith(DEPLOYMENTLAB)) {
 			
-			if (path.contains(TRUNK))
-				return null; // let the default logic pick this up.
+			BranchData bd = handleStartsWithDeploymentlab(revision, path, parts);
 			
-			if (path.startsWith(DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY)) {
-				return buildBranchData(revision, path, DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY);
-			}
-			else if (path.startsWith(DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY)) {
-				return buildBranchData (revision, path, DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY);
-			}
-			else if (path.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING) && !isPathValidBranchTagOrTrunk(path)) {
-				return buildBranchData(revision, path, DEPLOYMENTLAB_UI_KS_CUKE_TESTING);
-			}
-			else if (path.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK)) {
-				
-				return buildBranchData(revision, path, DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK);
-			}
-			else if (path.startsWith(DEPLOYMENTLAB_KS_CUKE_TESTING)) {
-				return buildBranchData(revision, path, DEPLOYMENTLAB_KS_CUKE_TESTING);
-			}
-			else if (path.startsWith(DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK)) {
-				return buildBranchData(revision, path, DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK);
-			}
+			if (bd != null)
+				return bd;
 		}
-		
-		else if (path.startsWith(SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR)) {
-		
-			return buildBranchData(revision, path, SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR);
+		if (path.startsWith(SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR)) {
+
+			return buildBranchData(revision, path,
+					SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR);
+		} else if (path.startsWith(SANDBOX_DEPLOYMENTLAB)) {
+
+			BranchData bd = handleStartsWithDeploymentlab(revision, path,
+					parts, SANDBOX.length() + 1);
+
+			if (bd != null)
+				return bd;
+
 		}
-		
 		else if (path.startsWith(TOOLS_MAVEN_DICTIONARY_GENERATOR) && !isPathValidBranchTagOrTrunk(path)) {
 			/*
 			 * BranchUtils.parse can find the trunk if it exists.
@@ -155,11 +199,11 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 			
 			int partContainingBuildNameIndex = -1;
 			
-			for (int i = parts.length-1; i >= 0; i--) {
+			for (int i = parts.length-1; i >= 0; i--) { 
 				
-				String canidatePart = parts[i];
+				String candidatePart = parts[i];
 				
-				if (canidatePart.contains(BUILD_DASH)) {
+				if ((candidatePart.contains(BUILD_DASH) && !candidatePart.equals("build-details.xml")) || candidatePart.matches(DATE_STAMP_SVN_REVISION_BUILD_TAG_NAME_PATTERN)) {
 					partContainingBuildNameIndex = i;
 					break;
 				}
@@ -208,12 +252,96 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 			// else fall through and return null
 			
 		}
+		else if (path.startsWith(EXAMPLES)) {
+			
+			if (path.startsWith(EXAMPLES_KS_CORE_TUTORIAL)) {
+				return buildBranchData(revision, path, EXAMPLES_KS_CORE_TUTORIAL);
+			}
+			else if (path.startsWith(EXAMPLES_SAMPLE_CONFIG_PROJECT)) {
+				return buildBranchData(revision, path, EXAMPLES_SAMPLE_CONFIG_PROJECT);
+			}
+			else if (path.startsWith(EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT)) {
+				return buildBranchData(revision, path, EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT);
+			}
+			// else fall through
+		}
 		else if ((path.startsWith(ENUMERATION) || path.startsWith(DICTIONARY) || path.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB) ) && !isPathValidBranchTagOrTrunk(path)) {
 			return buildBranchData(revision, path, 1);
 		}
 		
 		return null;
 	}
+
+	private BranchData handleContribCMRoots(Long revision, String path, String[] parts) {
+		
+		if (path.startsWith(CONTRIB_CM_KS_DEPLOYMENTS)) {
+			return buildBranchData(revision, path, CONTRIB_CM_KS_DEPLOYMENTS);
+		}
+		else if (path.startsWith(CONTRIB_CM_KS_API)) {
+			return buildBranchData(revision, path, CONTRIB_CM_KS_API);
+		}
+		else if (path.startsWith(CONTRIB_CM_KS_CORE)) {
+			return buildBranchData(revision, path, CONTRIB_CM_KS_CORE);
+		}
+		else if (path.startsWith(CONTRIB_CM_KS_LUM)) {
+			return buildBranchData(revision, path, CONTRIB_CM_KS_LUM);
+		}
+		else if (path.startsWith(CONTRIB_CM_AGGREGATE)) {
+			return buildBranchData(revision, path, CONTRIB_CM_AGGREGATE);
+		}
+		else
+			return null;
+	}
+
+
+	private BranchData handleStartsWithDeploymentlab(Long revision,
+			String path, String[] parts) {
+		return handleStartsWithDeploymentlab(revision, path, parts, 0);
+	}
+
+
+	/*
+	 * The pathStartOffset allows the same matching code to be found for both ^deploymentlab and ^sandbox/deploymentlab
+	 * 
+	 */
+	private BranchData handleStartsWithDeploymentlab(Long revision, String path, String[] parts, int pathStartOffset) {
+		
+		String prefixPath = path.substring(0, pathStartOffset);
+		String offsetPath = path.substring(pathStartOffset);
+		
+		if (offsetPath.contains(TRUNK))
+			return null; // let the default logic pick this up.
+		
+		if (offsetPath.startsWith(DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY)) {
+			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY);
+		}
+		else if (offsetPath.startsWith(DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY)) {
+			return buildBranchData (revision, path, prefixPath + DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY);
+		}
+		else if (offsetPath.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING) && !isPathValidBranchTagOrTrunk(path)) {
+			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_UI_KS_CUKE_TESTING);
+		}
+		else if (offsetPath.startsWith(DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK)) {
+			
+			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK);
+		}
+		else if (offsetPath.startsWith(DEPLOYMENTLAB_KS_CUKE_TESTING)) {
+			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_KS_CUKE_TESTING);
+		}
+		else if (offsetPath.startsWith(DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK)) {
+			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK);
+		}
+		else if (offsetPath.startsWith(DEPLOYMENTLAB_KS_1_1_DB_1_0_X)) {
+			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_KS_1_1_DB_1_0_X);
+		}
+		else if (offsetPath.startsWith(DEPLOYMENTLAB_KS_1_1_DB_MAVEN_SITE_PLUGIN)) {
+			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_KS_1_1_DB_MAVEN_SITE_PLUGIN);
+		}
+		
+		// else
+		return null;
+	}
+
 
 	private BranchData buildBranchData(Long revision, String path, int filePathStartIndex) {
 

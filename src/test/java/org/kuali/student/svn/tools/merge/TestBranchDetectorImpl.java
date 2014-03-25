@@ -18,6 +18,7 @@ package org.kuali.student.svn.tools.merge;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kuali.student.git.model.AbstractBranchDetectorTest;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.svn.tools.merge.model.BranchData;
@@ -28,15 +29,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  * @author Kuali Student Team
  *
  */
-// TODO: split in two for base branch tests and kuali student base branch tests
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:base-branch-detector-test-context.xml"})
-public class TestBranchUtils extends AbstractKualiStudentBranchDetectorTest {
+public class TestBranchDetectorImpl extends AbstractBranchDetectorTest {
 
 	/**
 	 * 
 	 */
-	public TestBranchUtils() {
+	public TestBranchDetectorImpl() {
 	}
 
 	

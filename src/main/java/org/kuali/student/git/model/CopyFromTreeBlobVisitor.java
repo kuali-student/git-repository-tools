@@ -68,6 +68,8 @@ public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 		public boolean visitBlob(ObjectId blobId,
 				String blobPath, String name) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 
+			String alteredBlobPath = null;
+			
 			try {
 
 				
@@ -79,7 +81,7 @@ public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 					adjustedCopyFromBranchPath = adjustedCopyFromBranchPath + "/" + copyFromBranchSubPath;
 				}
 				
-				String alteredBlobPath = GitBranchUtils
+				alteredBlobPath = GitBranchUtils
 						.convertToTargetPath(path,
 								copyFromRevisionMapResults.getRevMap().getRevision(), adjustedCopyFromBranchPath,
 								blobPath, branchDetector);
@@ -133,7 +135,7 @@ public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 				vetoLog.println(String
 						.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s",
 								String.valueOf(currentRevision),
-								targetBranch.getBranchName(), path));
+								targetBranch.getBranchName(), alteredBlobPath));
 				// intentionally continue
 
 			}

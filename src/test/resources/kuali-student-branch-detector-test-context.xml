@@ -20,4 +20,17 @@
 	
 	<import resource="classpath:git-branch-detection-beans.xml"/>
 	
+	<alias name="branchDetectorSequencer" alias="branchDetector"/>
+	
+	<bean id="branchDetectorSequencer" class="org.kuali.student.git.model.branch.BranchDetectorSequencer">
+		<property name="detectors">
+			<list>
+				<ref bean="kualiStudentBranchDetector" />
+				<ref bean="baseBranchDetector" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="kualiStudentBranchDetector" class="org.kuali.student.git.model.branch.KualiStudentBranchDetectorImpl"  />
+	
  </beans>

@@ -15,6 +15,7 @@
  */
 package org.kuali.student.git.model;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +51,12 @@ public class BranchMergeInfo {
 	 * @return the mergedRevisions
 	 */
 	public Set<Long> getMergedRevisions() {
-		return mergedRevisions;
+		return Collections.unmodifiableSet(mergedRevisions);
+	}
+
+	public void clearMergedRevisions() {
+
+		this.mergedRevisions.clear();
 	}
 	
 	

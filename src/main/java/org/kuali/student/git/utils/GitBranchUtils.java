@@ -32,6 +32,10 @@ public class GitBranchUtils {
 
 	
 
+	private static final String SPACE_REPLACEMENT = "---";
+
+	private static final String UNDERSCORE_REPLACEMENT = "===";
+
 	/*
 	 * 255 bytes but not sure on the null byte so reducing by one.
 	 */
@@ -84,21 +88,24 @@ public class GitBranchUtils {
 	}
 	
 	private static String convertPathToBranchName(String branchPath) {
+		
+		String convertedBranchPath = branchPath;
+		
 		if (branchPath.contains("_")) {
 			/*
 			 * Special case we need to convert the underscore to === first. 
 			 */
-			String convertedBranchPath = branchPath.replace("_", "===");
-			
+			convertedBranchPath = convertedBranchPath.replace("_", UNDERSCORE_REPLACEMENT);
+		}
+		
+		if (branchPath.contains(" ")) {
 			/*
 			 * And convert any spaces to ---
 			 */
-			convertedBranchPath = convertedBranchPath.replace(" ", "---");
-
-			return convertedBranchPath.replaceAll("\\/", "_");
+			convertedBranchPath = convertedBranchPath.replace(" ", SPACE_REPLACEMENT);
 		}
-		else
-			return branchPath.replaceAll("\\/", "_");
+		
+		return convertedBranchPath.replaceAll("\\/", "_");
 	}
 
 	/**
@@ -139,7 +146,7 @@ public class GitBranchUtils {
 
 	private static String convertBranchNameToPath(String branchName) {
 		
-		String path = branchName.replaceAll("_", "/").replaceAll("===", "_").replaceAll(" ", "---");
+		String path = branchName.replaceAll("_", "/").replaceAll(UNDERSCORE_REPLACEMENT, "_").replaceAll(SPACE_REPLACEMENT, " ");
 		
 		return path;
 	}

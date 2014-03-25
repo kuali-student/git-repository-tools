@@ -65,9 +65,13 @@ public final class IOUtils {
 		while ((r = in.read()) != '\n') {
 
 			if (r == -1) {
-				// String out = decode(decoder, byteBuffer.toByteArray());
+				
+				String out = decode(decoder, byteBuffer.toByteArray());
 
-				return null;
+				if (out == null || out.isEmpty())
+					return null;
+				else
+					return out;
 
 			}
 

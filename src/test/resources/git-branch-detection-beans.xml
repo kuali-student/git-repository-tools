@@ -16,17 +16,7 @@
                            http://www.springframework.org/schema/aop
                            http://www.springframework.org/schema/aop/spring-aop-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-
-<bean id="branchDetector" class="org.kuali.student.git.model.branch.BranchDetectorSequencer">
-		<property name="detectors">
-			<list>
-				<ref bean="kualiStudentBranchDetector" />
-				<ref bean="baseBranchDetector" />
-			</list>
-		</property>
-	</bean>
-	
-	<bean id="kualiStudentBranchDetector" class="org.kuali.student.git.model.branch.KualiStudentBranchDetectorImpl"  />
+	<alias name="baseBranchDetector" alias="branchDetector"/>
 	 
 	<bean id="baseBranchDetector" class="org.kuali.student.git.model.branch.BranchDetectorImpl">
 	

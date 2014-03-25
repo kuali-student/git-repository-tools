@@ -60,6 +60,18 @@ import org.slf4j.LoggerFactory;
  */
 public class NodeProcessor implements IGitBranchDataProvider {
 
+	private static final String SVN_MERGEINFO_PROPERTY_KEY = "svn:mergeinfo";
+
+	private static final String DELETE_ACTION = "delete";
+
+	private static final String CHANGE_ACTION = "change";
+
+	private static final String DIR_KIND = "dir";
+
+	private static final String FILE_KIND = "file";
+
+	private static final String ADD_ACTION = "add";
+
 	private static final Logger log = LoggerFactory
 			.getLogger(NodeProcessor.class);
 
@@ -123,9 +135,6 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		try {
 			branchData = branchDetector.parseBranch(currentRevision, path);
 		} catch (VetoBranchException e) {
-			vetoLog.println(String
-					.format("invalid branch (OnAfterNode) CurrentRevision: %s, Path: %s",
-							String.valueOf(currentRevision), path));
 			validBranch = false;
 		}
 
@@ -154,15 +163,9 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					currentRevision);
 		}
 
-		if (currentRevision == 7563 || currentRevision == 7446
-				|| currentRevision == 7447) {
-			// this is faster than the eclipse dynamic breakpoint
-			log.info("");
-		}
+		if (ADD_ACTION.equals(action)) {
 
-		if ("add".equals(action)) {
-
-			if ("file".equals(kind)) {
+			if (FILE_KIND.equals(kind)) {
 
 				/*
 				 * No content length means we add the blob from the copy from
@@ -175,7 +178,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					log.info("skipping non branch containing path: " + path);
 				}
 
-			} else if ("dir".equals(kind)) {
+			} else if (DIR_KIND.equals(kind)) {
 				
 				/*
 				 * We care if the directory was copied from somewhere else
@@ -189,13 +192,13 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				// skip this case
 			}
 
-		} else if ("change".equals(action)) {
+		} else if (CHANGE_ACTION.equals(action)) {
 
 			/*
 			 * This can happen I think for property changes Not sure if we are
 			 * doing the right thing here.
 			 */
-			if ("file".equals(kind)) {
+			if (FILE_KIND.equals(kind)) {
 
 				if (validBranch)
 					applyBlobAdd(data, path, currentRevision, nodeProperties);
@@ -203,13 +206,13 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					log.info("skipping non branch containing path: " + path);
 				}
 
-			} else if ("dir".equals(kind)) {
+			} else if (DIR_KIND.equals(kind)) {
 				loadMergeInfo(currentRevision, data, path, nodeProperties);
 			} else {
 				// skip this case
 			}
 
-		} else if ("delete".equals(action)) {
+		} else if (DELETE_ACTION.equals(action)) {
 			/*
 			 * We make no distinction between file and directory deletes.
 			 * 
@@ -251,16 +254,16 @@ public class NodeProcessor implements IGitBranchDataProvider {
 							propContentLength,
 							contentLength);
 			
-			if (revisionProperties.containsKey("svn:mergeinfo")) {
+			if (revisionProperties.containsKey(SVN_MERGEINFO_PROPERTY_KEY)) {
 				//debugging breakpoint
 				log.debug("");
 				
 				if (data != null) {
 					
-					String mergeInfoString = revisionProperties.get("svn:mergeinfo");
+					String mergeInfoString = revisionProperties.get(SVN_MERGEINFO_PROPERTY_KEY);
 					
 					if (mergeInfoString.length() > 0)
-						revisionMapper.createMergeData(revision, data.getBranchPath(), SvnMergeInfoUtils.extractBranchMergeInfoFromString(mergeInfoString));
+						revisionMapper.createMergeData(revision, data.getBranchPath(), SvnMergeInfoUtils.extractBranchMergeInfoFromString(branchDetector, mergeInfoString));
 				}
 			}
 			
@@ -818,9 +821,10 @@ public class NodeProcessor implements IGitBranchDataProvider {
 						public boolean visitBlob(ObjectId blobId,
 								String blobPath, String name) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 
+							String alteredBlobPath = null;
 							try {
 
-								String alteredBlobPath = GitBranchUtils
+								alteredBlobPath = GitBranchUtils
 										.convertToTargetPath(path,
 												copyFromRevision, copyFromBranch.getPath(),
 												blobPath, branchDetector);
@@ -872,7 +876,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 								vetoLog.println(String
 										.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s",
 												String.valueOf(currentRevision),
-												data.getBranchName(), path));
+												data.getBranchName(), alteredBlobPath));
 								// intentionally continue
 
 							}

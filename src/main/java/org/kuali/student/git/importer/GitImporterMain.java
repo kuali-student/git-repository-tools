@@ -121,6 +121,7 @@ public class GitImporterMain {
 			
 			vetoLog.close();
 			copyFromSkippedLog.close();
+			blobLog.close();
 			
 			compressedInputStream.close();
 

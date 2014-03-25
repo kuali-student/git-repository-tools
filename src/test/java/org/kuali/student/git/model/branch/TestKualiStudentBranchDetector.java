@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.tools.merge;
+package org.kuali.student.git.model.branch;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -37,14 +37,14 @@ import org.slf4j.LoggerFactory;
  * @author Kuali Student Team
  *
  */
-public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
+public class TestKualiStudentBranchDetector extends AbstractKualiStudentBranchDetectorTest {
 
-	private static final Logger log = LoggerFactory.getLogger(TestGitBranchUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(TestKualiStudentBranchDetector.class);
 	
 	/**
 	 * 
 	 */
-	public TestGitBranchUtils() {
+	public TestKualiStudentBranchDetector() {
 	}
 	
 	@Test
@@ -158,6 +158,34 @@ public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 		assertPath("branches/trunk", "branches/trunk", "", false);
 		
 		assertPath("deploymentlab/ks-cuke-testing/trunk/pom.xml", "deploymentlab/ks-cuke-testing/trunk", "pom.xml", false);
+		
+		assertPath("deploymentlab/ks-1.1-db/1.0.x/ks-lum/ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/tools/Tools.gwt.xml", "deploymentlab/ks-1.1-db/1.0.x", "ks-lum/ks-lum-ui/src/main/resources/org/kuali/student/lum/lu/ui/tools/Tools.gwt.xml", false);
+		
+		assertPath("deploymentlab/ks-1.1-db/maven-site-plugin/src/site/apt/examples/creatingskins.apt", "deploymentlab/ks-1.1-db/maven-site-plugin", "src/site/apt/examples/creatingskins.apt", false);
+
+		assertPath("sandbox/enrollment/ks-deployments/tags/builds/ks-deployments-2.0/2.0.0/20120921-r36420/ks-web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/build-details.xml", "sandbox/enrollment/ks-deployments/tags/builds/ks-deployments-2.0/2.0.0/20120921-r36420", "ks-web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/build-details.xml", false);
+		
+		assertPath("enrollment/ks-deployments/tags/builds/ks-deployments-2.0/2.0.0-M6/build-143/ks-web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/build-details.xml", "enrollment/ks-deployments/tags/builds/ks-deployments-2.0/2.0.0-M6/build-143", "ks-web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/build-details.xml", false);
+	
+//		assertPath("", "", "", false);
+		
+		assertPath("enrollment/ks-deployments/tags/builds/ks-deployments-2.0/2.0.0-KD-DEMO/build-13/ks-web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/build-details.xml", "enrollment/ks-deployments/tags/builds/ks-deployments-2.0/2.0.0-KD-DEMO/build-13", "ks-web/ks-embedded/src/main/resources/org/kuali/rice/standalone/config/build-details.xml", false);
+
+		assertPath("examples/sample-config-project/src/main/resources/ks-sample-courseInfo-dictionary-context.xml", "examples/sample-config-project", "src/main/resources/ks-sample-courseInfo-dictionary-context.xml", false);
+		
+		assertPath("examples/training/cm-myschool-config-project/src/main/java/edu/kuali/config/lum/lu/ui/client/course/configuration/SampleCourseProposalConfigurer.java", "examples/training/cm-myschool-config-project", "src/main/java/edu/kuali/config/lum/lu/ui/client/course/configuration/SampleCourseProposalConfigurer.java", false);
+		
+		assertPath("sandbox/deploymentlab/ks-1.1-db/maven-site-plugin/src/site/apt/examples/creatingskins.apt", "sandbox/deploymentlab/ks-1.1-db/maven-site-plugin", "src/site/apt/examples/creatingskins.apt", false);
+	
+		assertPath("test/functional-automation/sambal/rice_2_3_m2_AFT_branch/lib/sambal-kuali/pages/enrollment_page.rb", "test/functional-automation/sambal/rice_2_3_m2_AFT_branch", "lib/sambal-kuali/pages/enrollment_page.rb", false);
+		
+		assertPath("contrib/CM/ks-deployments/trunk/ks-web/pom.xml", "contrib/CM/ks-deployments/trunk", "ks-web/pom.xml", false);
+		
+		assertPath("contrib/CM/ks-deployments/branches/feature1/ks-web/pom.xml", "contrib/CM/ks-deployments/branches/feature1", "ks-web/pom.xml", false);
+		
+		assertPath("contrib/CM/ks-deployments/ks-web/pom.xml", "contrib/CM/ks-deployments", "ks-web/pom.xml", false);
+		
+		assertPath("contrib/CM/aggregate/pom.xml", "contrib/CM/aggregate", "pom.xml", false);
 	}
 	
 	@Test
@@ -178,6 +206,10 @@ public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 		assertPath ("enrollment/aggregate/branches/KSAP/pom.xml", "enrollment/aggregate/branches/KSAP", "pom.xml", false);
 		
 		assertPath("builds/old-build-tags/ks-1.0.0-rc2/ks-brms-1.0.0-rc2/.classpath", "builds/old-build-tags/ks-1.0.0-rc2", "ks-brms-1.0.0-rc2/.classpath", false);
+		
+		assertPath("tags/ks-old-directory-structure/ks-lum/tags/ks-lum-1.0.0-m3/ks-lum-api/src/main/java/org/kuali/student/lum/lo/dto/LoInfo.java", "tags/ks-old-directory-structure/ks-lum/tags/ks-lum-1.0.0-m3", "ks-lum-api/src/main/java/org/kuali/student/lum/lo/dto/LoInfo.java", false);
+	
+		assertPath ("sushik-component-manual-impl/src/main/java/org/sushik/client/component/impl/base/ui/ErrorLoggerImpl.java", "sushik-component-manual-impl", "src/main/java/org/sushik/client/component/impl/base/ui/ErrorLoggerImpl.java", false);
 	}
 	
 	@Test
@@ -192,6 +224,25 @@ public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 		String canonicalName = GitBranchUtils.getCanonicalBranchName(branchPath, 0L, new LargeBranchNameProviderMapImpl());
 		
 		Assert.assertEquals("deploymentlab_branches_xapool===43", canonicalName);
+		
+		String branch = GitBranchUtils.getBranchPath(canonicalName, 0, new LargeBranchNameProviderMapImpl());
+		
+		Assert.assertEquals(branchPath, branch);
+		
+	}
+	
+	@Test
+	public void testSpacePath() {
+		
+		String path = "contrib/myplan/branches/cm 2.0/ks-bundled-bootstrap-db/src/main/impex/KRIM_ENT_NM_TYP_T.xml";
+		
+		String branchPath = "contrib/myplan/branches/cm 2.0";
+		
+		assertPath(path, branchPath, "ks-bundled-bootstrap-db/src/main/impex/KRIM_ENT_NM_TYP_T.xml", false);
+		
+		String canonicalName = GitBranchUtils.getCanonicalBranchName(branchPath, 0L, new LargeBranchNameProviderMapImpl());
+		
+		Assert.assertEquals("contrib_myplan_branches_cm---2.0", canonicalName);
 		
 		String branch = GitBranchUtils.getBranchPath(canonicalName, 0, new LargeBranchNameProviderMapImpl());
 		
@@ -230,6 +281,16 @@ public class TestGitBranchUtils extends AbstractKualiStudentBranchDetectorTest {
 		
 		log.info("");
 		
+	}
+	
+	@Test
+	public void testDateRevisionFormatRegex () {
+		
+		String target ="20120921-r36420";
+		
+		Assert.assertEquals(true, target.matches (KualiStudentBranchDetectorImpl.DATE_STAMP_SVN_REVISION_BUILD_TAG_NAME_PATTERN));
+				
+				
 	}
 	private void assertPath (String filePath, String expectedBranchPath, String expectedFilePath, boolean expectVeto) {
 		

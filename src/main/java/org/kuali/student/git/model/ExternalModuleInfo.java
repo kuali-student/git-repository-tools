@@ -15,28 +15,51 @@
  */
 package org.kuali.student.git.model;
 
-import javax.annotation.Resource;
-
-import org.junit.runner.RunWith;
-import org.kuali.student.git.model.branch.BranchDetector;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 /**
  * @author Kuali Student Team
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:kuali-student-branch-detector-test-context.xml"})
-public abstract class AbstractKualiStudentBranchDetectorTest extends AbstractBranchDetectorTest {
+public class ExternalModuleInfo {
 
+	private String moduleName;
 	
+	private String branchPath;
 	
+	private long revision;
+
 	/**
-	 * 
+	 * @param moduleName
+	 * @param branchPath
+	 * @param revision
 	 */
-	public AbstractKualiStudentBranchDetectorTest() {
+	public ExternalModuleInfo(String moduleName, String branchPath,
+			long revision) {
 		super();
+		this.moduleName = moduleName;
+		this.branchPath = branchPath;
+		this.revision = revision;
 	}
 
+	/**
+	 * @return the moduleName
+	 */
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	/**
+	 * @return the branchPath
+	 */
+	public String getBranchPath() {
+		return branchPath;
+	}
+
+	/**
+	 * @return the revision
+	 */
+	public long getRevision() {
+		return revision;
+	}
+	
+	
 }

@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -97,6 +98,8 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		private BranchDetector branchDetector;
 
 		private String externalGitCommandPath;
+
+		private PrintWriter blobLog;
 		
 		/**
 		 * @param repo 
@@ -112,6 +115,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			this.repo = repo;
 			this.vetoLog = vetoLog;
 			this.copyFromSkippedLog = copyFromSkippedLog;
+			this.blobLog = blobLog;
 			this.printGitSvnIds = printGitSvnIds;
 			this.repositoryBaseUrl = repositoryBaseUrl;
 			this.repositoryUUID = repositoryUUID;
@@ -164,11 +168,13 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				long currentRevision, long contentLength,
 				long propContentLength, ReadLineData lineData) {
 
-			// for each branch that has commit data update to
+			// flush logs for the last revision
 
-			vetoLog.flush();
+			blobLog.flush();
 			copyFromSkippedLog.flush();
+			vetoLog.flush();
 			
+			// for any branch with a blob added create a git commit object pointing at the git tree for the change.
 			flushPendingBranchCommits();
 			
 		if (gcEnabled && this.currentRevision != 0 && this.currentRevision % 500 == 0) {
@@ -460,9 +466,14 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					deltas = SvnMergeInfoUtils.computeDifference(sourceMergeInfo, currentMergeInfo);
 				}
 				
+				SvnMergeInfoUtils.consolidateConsecutiveRanges (deltas);
+				
 				for (BranchMergeInfo delta : deltas) {
 					
 					String mergedBranchPath = delta.getBranchName();
+					
+					if (mergedBranchPath.equals(data.getBranchPath()))
+						continue; // don't apply self merge revisions.
 					
 					try {
 						BranchData mergedBranchData = branchDetector.parseBranch(0L, mergedBranchPath);
@@ -496,6 +507,14 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			return mergeInfoParentIds;
 			
 		}
+
+
+		/*
+		 * For consecutive ranges within a branch we want to pick the top one and forget about the others.
+		 * 
+		 * We will still merge everything just not as many merges if there is a sequential range.
+		 */
+		
 
 
 		/*

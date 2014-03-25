@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
@@ -47,87 +46,6 @@ public class GitTreeData {
 		public void visitBlob (String path, String objectId);
 		
 	}
-	/*
-	 * Git Tree's require that the tree's and blobs are sorted alphabetically.
-	 * 
-	 * http://git.661346.n2.nabble.com/In-tree-object-Must-the-td7446900.html
-	 */
-	public static class JGitTreeData {
-		
-		private byte[] byteName;
-		
-		private String name;
-		private FileMode fileMode;
-		private ObjectId objectId;
-		/**
-		 * @param name
-		 * @param fileMode
-		 * @param objectId
-		 */
-		public JGitTreeData(String name, FileMode fileMode, ObjectId objectId) {
-			super();
-			this.name = name;
-			this.byteName = getByteName(name, fileMode);
-			this.fileMode = fileMode;
-			this.objectId = objectId;
-		}
-		private byte[] getByteName(String name, FileMode fileMode) {
-			
-			StringBuilder nameBuilder = new StringBuilder(name);
-			
-			if (fileMode == FileMode.TREE)
-				nameBuilder.append("/");
-			
-			return Constants.encode(nameBuilder.toString());
-			
-			
-		}
-		/**
-		 * @return the name
-		 */
-		public String getName() {
-			return name;
-		}
-		/**
-		 * @return the fileMode
-		 */
-		public FileMode getFileMode() {
-			return fileMode;
-		}
-		/**
-		 * @return the objectId
-		 */
-		public ObjectId getObjectId() {
-			return objectId;
-		}
-		
-		
-		/**
-		 * @return the byteName
-		 */
-		public byte[] getByteName() {
-			return byteName;
-		}
-		/* (non-Javadoc)
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			StringBuilder builder = new StringBuilder();
-			builder.append("JGitTreeData [name=");
-			builder.append(name);
-			builder.append(", fileMode=");
-			builder.append(fileMode);
-			builder.append(", objectId=");
-			builder.append(objectId);
-			builder.append("]");
-			return builder.toString();
-		}
-		
-		
-		
-	}
-	
 	public static class GitTreeNodeData {
 		
 		private String name;
@@ -278,13 +196,13 @@ public class GitTreeData {
 			
 			TreeFormatter tree = new TreeFormatter();
 			
-			List<JGitTreeData>treeDataList = new ArrayList<GitTreeData.JGitTreeData>();
+			List<JGitTreeData>treeDataList = new ArrayList<JGitTreeData>();
 			
 			for (Map.Entry<String, String> entry : this.blobReferences.entrySet()) {
 				String name = entry.getKey();
 				String sha1 = entry.getValue();
 				
-				treeDataList.add(new GitTreeData.JGitTreeData(name, FileMode.REGULAR_FILE, ObjectId.fromString(sha1)));
+				treeDataList.add(new JGitTreeData(name, FileMode.REGULAR_FILE, ObjectId.fromString(sha1)));
 				
 				log.debug(String.format("added entry (name=%s, sha1=%s", name, sha1));
 				
@@ -299,7 +217,7 @@ public class GitTreeData {
 				
 				ObjectId subTreeId = inserter.insert(subTree);
 				
-				treeDataList.add(new GitTreeData.JGitTreeData(name, FileMode.TREE, subTreeId));
+				treeDataList.add(new JGitTreeData(name, FileMode.TREE, subTreeId));
 				
 				log.debug(String.format("added tree (name=%s, sha1=%s", name, subTreeId));
 			}
@@ -308,69 +226,9 @@ public class GitTreeData {
 			 * Compare the string sort vs byte sort
 			 */
 			
-			List<GitTreeData.JGitTreeData>byteSortedList = new ArrayList<GitTreeData.JGitTreeData>(treeDataList);
+			Collections.sort(treeDataList, JGitTreeData.GIT_SORT_ORDERING);
 			
-			Collections.sort(treeDataList, new Comparator<GitTreeData.JGitTreeData>() {
-
-				private String getName (JGitTreeData data) {
-					if (data.getFileMode() == FileMode.TREE)
-						return data.getName() + "/";
-					else
-						return data.getName();
-						
-				}
-				/* (non-Javadoc)
-				 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-				 */
-				@Override
-				public int compare(JGitTreeData o1, JGitTreeData o2) {
-					
-					String name1 = getName (o1);
-					
-					String name2 = getName(o2);
-					
-					return name1.compareTo(name2);
-				}
-				 
-			});
-			
-			Collections.sort(byteSortedList, new Comparator<GitTreeData.JGitTreeData>() {
-
-				// copied from JGit version 3 DirCache
-				int cmp(final byte[] aPath, final int aLen, final byte[] bPath,
-						final int bLen) {
-					for (int cPos = 0; cPos < aLen && cPos < bLen; cPos++) {
-						final int cmp = (aPath[cPos] & 0xff) - (bPath[cPos] & 0xff);
-						if (cmp != 0)
-							return cmp;
-					}
-					return aLen - bLen;
-				}
-				/* (non-Javadoc)
-				 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-				 */
-				@Override
-				public int compare(JGitTreeData o1, JGitTreeData o2) {
-					
-					byte[] byteName1 = o1.getByteName();
-					byte[] byteName2 = o2.getByteName();
-					
-					return cmp(byteName1, byteName1.length, byteName2, byteName2.length);
-					
-				}
-
-			});
-			
-			for (int i = 0; i < treeDataList.size(); i++) {
-				JGitTreeData stringSortedData = treeDataList.get(i);
-				JGitTreeData byteSortedData = byteSortedList.get(i);
-				
-				if (!stringSortedData.equals(byteSortedData)) {
-					log.warn("byte sort order different from string sort order");
-				}
-			}
-			
-			for (JGitTreeData treeData : byteSortedList) {
+			for (JGitTreeData treeData : treeDataList) {
 				
 				tree.append(treeData.getName(), treeData.getFileMode(), treeData.getObjectId());
 			}
