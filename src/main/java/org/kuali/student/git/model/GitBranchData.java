@@ -17,8 +17,12 @@ package org.kuali.student.git.model;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -27,7 +31,6 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
-import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.model.util.GitTreeDataUtils;
@@ -69,7 +72,11 @@ public class GitBranchData {
 
 	private GitTreeProcessor treeProcessor;
 
+	private Map<String, BranchMergeInfo>branchPathToMergeInfoMap = new HashMap<String, BranchMergeInfo>();
+	
 	private boolean alreadyInitialized = false;
+
+	private boolean blobsDeleted = false;
 
 	/**
 	 * @param revision
@@ -104,6 +111,15 @@ public class GitBranchData {
 
 	public long getBlobsAdded() {
 		return blobsAdded.get();
+	}
+	
+	
+
+	/**
+	 * @return the blobsDeleted
+	 */
+	public boolean isBlobsDeleted() {
+		return blobsDeleted;
 	}
 
 	public void addBlob(String path, String blobSha1, PrintWriter blobLog)
@@ -182,7 +198,11 @@ public class GitBranchData {
 			if (withinBranchPath.charAt(0) == '/')
 				withinBranchPath.deleteCharAt(0);
 
-			branchRoot.deletePath(withinBranchPath.toString());
+			boolean deletedBlob = branchRoot.deletePath(withinBranchPath.toString());
+			
+			if (deletedBlob && !blobsDeleted)
+				blobsDeleted = true;
+			
 		} else {
 			log.warn("invalid branch");
 		}
@@ -258,6 +278,33 @@ public class GitBranchData {
 		mergeParentIdSet.clear();
 		parentId = null;
 
+	}
+
+	public List<BranchMergeInfo>getAccumulatedBranchMergeData() {
+		return new ArrayList<BranchMergeInfo>(this.branchPathToMergeInfoMap.values());
+	}
+	
+	public void accumulateMergeInfo(
+			List<BranchMergeInfo> extractBranchMergeInfoFromString) {
+		
+		for (BranchMergeInfo branchMergeInfo : extractBranchMergeInfoFromString) {
+			
+			BranchMergeInfo existingMergeInfo = this.branchPathToMergeInfoMap.get(branchMergeInfo.getBranchName());
+			
+			if (existingMergeInfo == null) {
+				this.branchPathToMergeInfoMap.put(branchMergeInfo.getBranchName(), branchMergeInfo);
+			}
+			else {
+				Set<Long>mergedRevisions = new HashSet<>();
+				
+				mergedRevisions.addAll(existingMergeInfo.getMergedRevisions());
+				mergedRevisions.addAll(branchMergeInfo.getMergedRevisions());
+				
+				existingMergeInfo.setMergedRevisions(mergedRevisions);
+			}
+			
+		}
+		
 	}
 
 }

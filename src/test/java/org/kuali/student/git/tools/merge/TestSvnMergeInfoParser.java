@@ -19,23 +19,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import javax.swing.plaf.ListUI;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.model.AbstractBranchDetectorTest;
-import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
 import org.kuali.student.git.model.BranchMergeInfo;
-import org.kuali.student.git.model.branch.BranchDetector;
+import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
 import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.tools.SvnMergeInfoUtils;
+import org.kuali.student.git.tools.SvnMergeInfoUtils.BranchRangeDataProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,7 +88,18 @@ public class TestSvnMergeInfoParser extends AbstractBranchDetectorTest {
 		
 		List<BranchMergeInfo> deltas = SvnMergeInfoUtils.computeDifference(sourceBmi, mergeBmi);
 		
-		SvnMergeInfoUtils.consolidateConsecutiveRanges(deltas);
+		SvnMergeInfoUtils.consolidateConsecutiveRanges(new BranchRangeDataProvider() {
+			
+			@Override
+			public boolean areCommitsAdjacent(String branchName, long firstRevision,
+					long secondRevision) {
+				if ((firstRevision + 1L) == secondRevision)
+					return true;
+				else
+					return false;
+			}
+			
+		}, branchDetector, new LargeBranchNameProviderMapImpl(), deltas);
 		
 		assertDeltaRanges (deltas, "enrollment/ks-lum/branches/2.0.0-m8-api-upgrade", new Long[] {54996L});
 		
@@ -101,6 +107,8 @@ public class TestSvnMergeInfoParser extends AbstractBranchDetectorTest {
 		
 	}
 
+	
+	
 	@Test
 	public void testSubPathMergeBranchDetection() throws IOException {
 		

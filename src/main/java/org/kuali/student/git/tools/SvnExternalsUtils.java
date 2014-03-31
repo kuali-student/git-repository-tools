@@ -17,17 +17,10 @@ package org.kuali.student.git.tools;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.swing.plaf.ListUI;
-
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -42,19 +35,13 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.kuali.student.common.io.IOUtils;
-import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.ExternalModuleInfo;
 import org.kuali.student.git.model.JGitTreeData;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMapResults;
-import org.kuali.student.git.model.branch.BranchDetector;
-import org.kuali.student.git.model.branch.BranchDetectorImpl;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.model.tree.JGitTreeUtils;
-import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author Kuali Student Team

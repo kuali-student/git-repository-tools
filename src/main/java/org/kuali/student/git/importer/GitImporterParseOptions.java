@@ -20,8 +20,6 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -49,6 +47,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.git.model.BranchMergeInfo;
+import org.kuali.student.git.model.BranchRangeDataProviderImpl;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.GitCommitData;
 import org.kuali.student.git.model.NodeProcessor;
@@ -124,7 +123,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			this.gcEnabled = gcEnabled;
 			
 			revisionMapper = new SvnRevisionMapper(repo);
-			nodeProcessor = new NodeProcessor(knownBranchMap, vetoLog, copyFromSkippedLog, blobLog, repo, revisionMapper, this, branchDetector);
+			nodeProcessor = new NodeProcessor(knownBranchMap, vetoLog, copyFromSkippedLog, blobLog, repo, revisionMapper, this, branchDetector, repositoryBaseUrl);
 			
 		}
 		
@@ -291,10 +290,11 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					String branchName = entry.getKey();
 					GitBranchData data = entry.getValue();
 
-					if (data.getBlobsAdded() == 0 && !data.isCreated()) {
+					if (data.getBlobsAdded() == 0 && !data.isBlobsDeleted() && !data.isCreated()) {
+						
 						/*
 						 * Directory changes can cause a branch data object
-						 * to be created but we really only want to save it if blob's have been added.
+						 * to be created but we really only want to save it if blob's have been added or deleted.
 						 */
 						log.info("skipped commit on branch " + branchName + " at " + currentRevision + " due to no blob changes present.");
 						continue;
@@ -421,6 +421,11 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 								+ branchName);
 					}
 
+					List<BranchMergeInfo> accumulatedMergeData = data.getAccumulatedBranchMergeData();
+
+					if (accumulatedMergeData.size() > 0)
+						revisionMapper.createMergeData(currentRevision, data.getBranchPath(), accumulatedMergeData);
+					
 				}
 
 				Map<String, Ref> headRefs = repo.getRefDatabase().getRefs(Constants.R_HEADS);
@@ -429,7 +434,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 				revisionMapper.createRevisionMap(
 						currentRevision, refs);
-
+				
 				knownBranchMap.clear();
 				
 				rw.release();
@@ -466,7 +471,11 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					deltas = SvnMergeInfoUtils.computeDifference(sourceMergeInfo, currentMergeInfo);
 				}
 				
-				SvnMergeInfoUtils.consolidateConsecutiveRanges (deltas);
+				RevWalk rw = new RevWalk(repo);
+				
+				SvnMergeInfoUtils.consolidateConsecutiveRanges (new BranchRangeDataProviderImpl(revisionMapper, rw), branchDetector, revisionMapper, deltas);
+				
+				rw.release();
 				
 				for (BranchMergeInfo delta : deltas) {
 					
@@ -509,11 +518,6 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		}
 
 
-		/*
-		 * For consecutive ranges within a branch we want to pick the top one and forget about the others.
-		 * 
-		 * We will still merge everything just not as many merges if there is a sequential range.
-		 */
 		
 
 

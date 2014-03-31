@@ -186,6 +186,8 @@ public class TestKualiStudentBranchDetector extends AbstractKualiStudentBranchDe
 		assertPath("contrib/CM/ks-deployments/ks-web/pom.xml", "contrib/CM/ks-deployments", "ks-web/pom.xml", false);
 		
 		assertPath("contrib/CM/aggregate/pom.xml", "contrib/CM/aggregate", "pom.xml", false);
+		
+		assertPath("contrib/CM/ks-deployments/ks-web/ks-with-rice-bundled/src/main/webapp/WEB-INF/tags/rice-portal/portalTabs.tag", "contrib/CM/ks-deployments", "ks-web/ks-with-rice-bundled/src/main/webapp/WEB-INF/tags/rice-portal/portalTabs.tag", false);
 	}
 	
 	@Test

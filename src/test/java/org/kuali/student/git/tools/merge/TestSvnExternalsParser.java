@@ -16,28 +16,15 @@
 package org.kuali.student.git.tools.merge;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import javax.swing.plaf.ListUI;
-
-import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.model.AbstractBranchDetectorTest;
-import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
-import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.ExternalModuleInfo;
-import org.kuali.student.git.model.branch.BranchDetector;
-import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.tools.SvnExternalsUtils;
-import org.kuali.student.git.tools.SvnMergeInfoUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

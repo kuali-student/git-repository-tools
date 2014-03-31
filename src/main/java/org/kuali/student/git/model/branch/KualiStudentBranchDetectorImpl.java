@@ -26,6 +26,8 @@ import org.kuali.student.svn.tools.merge.model.BranchData;
 public class KualiStudentBranchDetectorImpl implements BranchDetector {
 	
 
+	private static final String CONTRIB_CM = "contrib/CM";
+
 	private static final String CONTRIB_CM_AGGREGATE = "contrib/CM/aggregate";
 
 	private static final String CONTRIB_CM_KS_LUM = "contrib/CM/ks-lum";
@@ -268,11 +270,22 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		else if ((path.startsWith(ENUMERATION) || path.startsWith(DICTIONARY) || path.startsWith(KS_CFG_DBS) || path.startsWith(DEPLOYMENTLAB) ) && !isPathValidBranchTagOrTrunk(path)) {
 			return buildBranchData(revision, path, 1);
 		}
+		else if (path.startsWith(CONTRIB_CM)) {
+			return handleContribCMRoots(revision, path, parts);
+		}
 		
 		return null;
 	}
 
 	private BranchData handleContribCMRoots(Long revision, String path, String[] parts) {
+		
+		if (parts.length < 4)
+			return null;
+		
+		String nextPart = parts[3];
+		
+		if (nextPart.equals(TRUNK) || nextPart.equals(BRANCHES) || nextPart.equals(TAGS))
+			return null;  // let the base branch detector handle these.
 		
 		if (path.startsWith(CONTRIB_CM_KS_DEPLOYMENTS)) {
 			return buildBranchData(revision, path, CONTRIB_CM_KS_DEPLOYMENTS);

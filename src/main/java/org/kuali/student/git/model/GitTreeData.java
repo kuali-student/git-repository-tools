@@ -18,7 +18,6 @@ package org.kuali.student.git.model;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,18 +65,18 @@ public class GitTreeData {
 			this.nodePath = nodePath;
 		}
 
-		public void deletePath(String path) {
+		public boolean deletePath(String path) {
 			
 			// remove all the blobs contained in the path given.
 			
 			String[] parts = path.split("/");
 			
-			deletePath(parts, 0);
+			return deletePath(parts, 0);
 		}
 		
 		
 		
-		private void deletePath(String[] parts, int partOffset) {
+		private boolean deletePath(String[] parts, int partOffset) {
 
 			int difference = (parts.length - partOffset);
 			
@@ -108,6 +107,11 @@ public class GitTreeData {
 					if (lastPart.contains("\\."))
 						log.warn("failed to delete any tree or blob for " + name);
 				}
+				
+				if (blobReference || treeReference) 
+					return true;
+				else
+					return false;
 			}
 			else {
 				// > 1
@@ -122,9 +126,12 @@ public class GitTreeData {
 				}
 				else {
 				
-					leaf.deletePath(parts, partOffset+1);
+					return leaf.deletePath(parts, partOffset+1);
 				}
 			}
+			
+			return false;
+			
 		}
 
 		public void addBlob(String filePath, String blobSha1) {
@@ -361,10 +368,11 @@ public class GitTreeData {
 
 	/**
 	 * @param path
+	 * @return true if one or more blob(s) were deleted.
 	 * @see org.kuali.student.git.model.GitTreeData.GitTreeNodeData#deletePath(java.lang.String)
 	 */
-	public void deletePath(String path) {
-		root.deletePath(path);
+	public boolean deletePath(String path) {
+		return root.deletePath(path);
 	}
 
 	public void visit(GitTreeDataVisitor vistor) {

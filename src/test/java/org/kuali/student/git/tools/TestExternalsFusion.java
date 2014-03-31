@@ -19,8 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -46,6 +48,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.ExternalModuleInfo;
 import org.kuali.student.git.model.GitTreeData;
 import org.kuali.student.git.model.GitTreeProcessor;
@@ -59,80 +62,40 @@ import org.slf4j.LoggerFactory;
  *
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class TestExternalsFusion  {
+public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 
 	private static Logger log = LoggerFactory.getLogger(TestExternalsFusion.class);
 	
-	private Repository repo;
+	
 	private SvnRevisionMapper revisionMapper;
 
 	/**
 	 * 
 	 */
 	public TestExternalsFusion() {
-		
+		super ("externals-fusion");
 	}
 
-	@Before
-	public void before() throws IOException {
+	
 		
-		File gitRepository = new File ("target/externals-fusion/git-repo");
+	
 		
-		FileUtils.deleteDirectory(gitRepository);
-		
-		gitRepository.mkdirs();
-		
-		repo = GitRepositoryUtils
-				.buildFileRepository(gitRepository, true, false);
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.tools.AbstractGitRespositoryTestCase#onBefore()
+	 */
+	@Override
+	protected void onBefore() throws IOException {
 		
 		revisionMapper = new SvnRevisionMapper(repo);
-		
 		revisionMapper.initialize();
-		
 	}
-	
-	@After
-	public void after() throws IOException {
-		
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.tools.AbstractGitRespositoryTestCase#onAfter()
+	 */
+	@Override
+	protected void onAfter() throws Exception {
 		revisionMapper.shutdown();
-	}
-	
-	private Result createBranch(ObjectId objectId, String branchName) throws IOException {
-
-		RefUpdate update = repo.updateRef(Constants.R_HEADS + branchName);
-		
-		update.setNewObjectId(objectId);
-		
-		update.setForceUpdate(true);
-		
-		return update.update();
-	}
-
-	private ObjectId commit(ObjectInserter inserter, GitTreeData branch, String commitMessage) throws IOException {
-
-		ObjectId treeId = branch.buildTree(inserter);
-		
-		CommitBuilder cb = new CommitBuilder();
-		
-		cb.setMessage(commitMessage);
-		
-		PersonIdent pid = new PersonIdent("admin", "admin@admin.com");
-		
-		cb.setAuthor(pid);
-		
-		cb.setCommitter(pid);
-
-		cb.setTreeId(treeId);
-		
-		return inserter.insert(cb);
-	}
-
-	private void storeFile(ObjectInserter inserter, GitTreeData branch, String path, String fileContent) throws IOException {
-
-		ObjectId blobSha1 = inserter.insert(Constants.OBJ_BLOB, fileContent.getBytes());
-		
-		branch.addBlob(path, blobSha1.name());
-		
 	}
 
 	@Test

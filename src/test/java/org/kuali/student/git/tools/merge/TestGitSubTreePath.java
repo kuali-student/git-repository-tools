@@ -18,7 +18,6 @@ package org.kuali.student.git.tools.merge;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
-import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.slf4j.Logger;

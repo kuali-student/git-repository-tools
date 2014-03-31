@@ -18,10 +18,7 @@ package org.kuali.student.git.model.tree;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -32,7 +29,6 @@ import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.TreeFormatter;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.kuali.student.git.model.GitTreeData.GitTreeNodeData;
 import org.kuali.student.git.model.JGitTreeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

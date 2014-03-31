@@ -54,6 +54,14 @@ public class BranchMergeInfo {
 		return Collections.unmodifiableSet(mergedRevisions);
 	}
 
+	
+	/**
+	 * @param mergedRevisions the mergedRevisions to set
+	 */
+	public void setMergedRevisions(Set<Long> mergedRevisions) {
+		this.mergedRevisions = mergedRevisions;
+	}
+
 	public void clearMergedRevisions() {
 
 		this.mergedRevisions.clear();

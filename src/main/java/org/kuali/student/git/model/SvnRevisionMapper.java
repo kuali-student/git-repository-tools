@@ -48,7 +48,6 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.git.utils.GitBranchUtils;
 import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
-import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -728,7 +727,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 			// not found
 			return null;
 		} catch (IOException e) {
-			log.warn("failed to find longbranch for id = " + longBranchId);
+			log.debug("failed to find longbranch for id = {}",longBranchId);
 			return null;
 		}
 
@@ -870,7 +869,6 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 			
 			
 		}
-		
 		
 		long bytesWritten = createRevisionEntry(revisionBranchMergeDataRandomAccessFile, endOfRevisionBranchMergeDataFileInBytes, revision, dataLines);
 		

@@ -20,22 +20,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-
-import javax.swing.plaf.ListUI;
-
 import org.kuali.student.common.io.IOUtils;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.branch.BranchDetector;
-import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.utils.GitBranchUtils;
+import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.svn.tools.merge.model.BranchData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.CollectionUtils;
 
 /**
  * @author Kuali Student Team
@@ -115,14 +110,20 @@ public class SvnMergeInfoUtils {
 			
 			String revParts[] = revisions.split(",");
 			
+			/*
+			 * A star (*) suffix on a number is used to indicate that the revision was record only merged.
+			 * 
+			 * We strip the value and treat all merged revisions the same.
+			 * 
+			 */
 			for (String revString : revParts) {
 				
 				if (revString.contains("-")) {
 					// a range
 					String rangeParts[] = revString.split("-");
 					
-					long rangeStart = Long.parseLong(rangeParts[0].trim());
-					long rangeEndInclusive = Long.parseLong(rangeParts[1].trim());
+					long rangeStart = Long.parseLong(rangeParts[0].trim().replaceAll("\\*", ""));
+					long rangeEndInclusive = Long.parseLong(rangeParts[1].trim().replaceAll("\\*", ""));
 					
 					long low = rangeStart;
 					long highInclusive = rangeEndInclusive;
@@ -140,7 +141,7 @@ public class SvnMergeInfoUtils {
 				else {
 					// a single value
 				
-					bmi.addMergeRevision(Long.valueOf(revString));
+					bmi.addMergeRevision(Long.valueOf(revString.replaceAll("\\*", "")));
 				}
 			}
 			
@@ -150,32 +151,38 @@ public class SvnMergeInfoUtils {
 		return bmiList;
 	}
 
-	public static void consolidateConsecutiveRanges(
-			List<BranchMergeInfo> deltas) {
+	public static interface BranchRangeDataProvider {
+		
+		public boolean areCommitsAdjacent(String branchName, long firstRevision, long secondRevision);
+		
+	}
+	public static void consolidateConsecutiveRanges(BranchRangeDataProvider rangeDataProvider, BranchDetector branchDetector,
+			ILargeBranchNameProvider provider, List<BranchMergeInfo> deltas) {
 		
 		for (BranchMergeInfo delta : deltas) {
 			
 			List<Long>orderedRevisions = new ArrayList<>(delta.getMergedRevisions());
+
+			if (orderedRevisions.size() < 2)
+				continue;
 			
 			delta.clearMergedRevisions();
 			
 			Collections.sort(orderedRevisions);
 			
-			long logicalNextRevision = -1;
 			
-			for (int i = 0; i < orderedRevisions.size(); i++) {
+			long previousRevision = orderedRevisions.get(0);
+			
+			for (int i = 1; i < orderedRevisions.size(); i++) {
 				
 				Long rev = orderedRevisions.get(i);
 				
-				if (logicalNextRevision == -1 || logicalNextRevision != rev) {
+				String branchName = GitBranchUtils.getCanonicalBranchName(delta.getBranchName(), 1L, provider);
+				
+				if (!rangeDataProvider.areCommitsAdjacent(branchName, previousRevision, rev)) {
 					// range ends
 					
-					int endOfRange = i-1;
-					
-					if (endOfRange >= 0) {
-						
-						delta.addMergeRevision(orderedRevisions.get(endOfRange));
-					}
+					delta.addMergeRevision(previousRevision);
 					
 					
 				}
@@ -183,12 +190,11 @@ public class SvnMergeInfoUtils {
 					// range continues
 				}
 				
-				logicalNextRevision = rev + 1L;
+				previousRevision = rev;
 			}
 			
-			Long lastRev = orderedRevisions.get(orderedRevisions.size()-1);
-			
-			delta.addMergeRevision(lastRev);
+			// always store the last revision
+			delta.addMergeRevision(previousRevision); 
 			
 		}
 		

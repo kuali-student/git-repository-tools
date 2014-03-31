@@ -222,4 +222,18 @@ public class TestReadingNodeRevisionProperties {
 		
 		log.info("");
 	}
+	
+	@Test
+	public void testStripStarFromRevision() {
+		
+		String recordOnlyChange = "123456*";
+		
+		Long revision = Long.parseLong(recordOnlyChange.replaceAll("\\*", ""));
+		
+		Assert.assertNotNull(revision);
+		
+		long expected = 123456L;
+		
+		Assert.assertEquals(expected, revision.longValue());
+	}
 }
