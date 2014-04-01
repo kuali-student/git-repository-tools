@@ -25,6 +25,7 @@
 		<module>repository-tools-common</module>
 		<module>git-importer-plugin-api</module>
 		<module>git-importer-student-plugin</module>
+		<module>git-importer-foundation-plugin</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>

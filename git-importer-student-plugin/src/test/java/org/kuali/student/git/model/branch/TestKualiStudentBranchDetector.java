@@ -295,18 +295,7 @@ public class TestKualiStudentBranchDetector extends AbstractKualiStudentBranchDe
 				
 				
 	}
-	private void assertPath (String filePath, String expectedBranchPath, String expectedFilePath, boolean expectVeto) {
-		
-		try {
-			BranchData data = branchDetector.parseBranch(0L, filePath);
-			
-			Assert.assertEquals(expectedBranchPath, data.getBranchPath());
-			Assert.assertEquals(expectedFilePath, data.getPath());
-		} catch (VetoBranchException e) {
-			Assert.assertTrue(filePath + "vetoed unexpectantly.", expectVeto);
-		}
-		
-	}
+	
 	
 	private void testPath(String kind, String path) throws VetoBranchException {
 		

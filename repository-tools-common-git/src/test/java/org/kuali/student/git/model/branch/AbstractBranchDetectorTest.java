@@ -17,8 +17,11 @@ package org.kuali.student.git.model.branch;
 
 import javax.annotation.Resource;
 
+import org.junit.Assert;
 import org.junit.runner.RunWith;
+import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.branch.BranchDetector;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -38,6 +41,19 @@ public abstract class AbstractBranchDetectorTest {
 	 */
 	public AbstractBranchDetectorTest() {
 		super();
+	}
+	
+	protected void assertPath (String filePath, String expectedBranchPath, String expectedFilePath, boolean expectVeto) {
+		
+		try {
+			BranchData data = branchDetector.parseBranch(0L, filePath);
+			
+			Assert.assertEquals(expectedBranchPath, data.getBranchPath());
+			Assert.assertEquals(expectedFilePath, data.getPath());
+		} catch (VetoBranchException e) {
+			Assert.assertTrue(filePath + "vetoed unexpectantly.", expectVeto);
+		}
+		
 	}
 	
 	
