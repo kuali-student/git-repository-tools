@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.kuali.student.repository</groupId>
 	<artifactId>repository-tools</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Respository Tools - Parent</name>
 	<description>Subversion and Git Respository Tools</description>
 	<packaging>pom</packaging>
