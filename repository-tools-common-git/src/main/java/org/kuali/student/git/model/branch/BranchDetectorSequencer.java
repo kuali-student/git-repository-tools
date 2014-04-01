@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kuali.student.branch.model.BranchData;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 
 /**
  * @author Kuali Student Team

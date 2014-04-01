@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.utils;
+package org.kuali.student.git.model.branch.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -22,7 +22,7 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.branch.BranchDetector;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 
 /**
  * @author Kuali Student Team

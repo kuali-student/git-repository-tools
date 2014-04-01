@@ -23,6 +23,8 @@
 		<module>fusion-maven-plugin</module>
 		<module>repository-tools-common-svn</module>
 		<module>repository-tools-common</module>
+		<module>git-importer-plugin-api</module>
+		<module>git-importer-student-plugin</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>

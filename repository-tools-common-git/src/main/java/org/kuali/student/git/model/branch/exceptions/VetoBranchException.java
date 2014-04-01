@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.model.exceptions;
+package org.kuali.student.git.model.branch.exceptions;
 
 /**
  * @author Kuali Student Team

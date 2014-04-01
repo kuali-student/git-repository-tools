@@ -27,9 +27,9 @@ import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.common.io.IOUtils;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.branch.BranchDetector;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
-import org.kuali.student.git.utils.GitBranchUtils;
-import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -18,8 +18,8 @@ package org.kuali.student.git.tools.merge;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.branch.model.BranchData;
-import org.kuali.student.git.model.AbstractBranchDetectorTest;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.AbstractBranchDetectorTest;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 
 /**
  * @author Kuali Student Team

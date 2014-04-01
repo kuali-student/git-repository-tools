@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.model;
+package org.kuali.student.git.model.branch;
 
 import javax.annotation.Resource;
 

@@ -24,9 +24,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
-import org.kuali.student.git.model.LargeBranchNameProviderMapImpl;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
-import org.kuali.student.git.utils.GitBranchUtils;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

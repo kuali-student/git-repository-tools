@@ -13,13 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.tools.merge;
+package org.kuali.student.git.model.branch;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
-import org.kuali.student.git.utils.GitBranchUtils;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

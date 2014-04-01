@@ -17,7 +17,7 @@ package org.kuali.student.git.model.branch;
 
 import org.apache.commons.lang3.StringUtils;
 import org.kuali.student.branch.model.BranchData;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 
 /**
  * @author Kuali Student Team

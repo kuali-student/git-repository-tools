@@ -90,8 +90,23 @@
   	</dependency>
   	
   	<dependency>
+			<groupId>org.kuali.student.repository</groupId>
+			<artifactId>git-importer-plugin-api</artifactId>
+			<version>${project.version}</version>
+  	</dependency>
+  	
+  	<dependency>
       <groupId>org.kuali.student.repository</groupId>
 	  <artifactId>repository-tools-common-svn</artifactId>
+	  <version>${project.version}</version>
+
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.kuali.student.repository</groupId>
+	  <artifactId>repository-tools-common-git</artifactId>
 	  <version>${project.version}</version>
 
       <type>test-jar</type>

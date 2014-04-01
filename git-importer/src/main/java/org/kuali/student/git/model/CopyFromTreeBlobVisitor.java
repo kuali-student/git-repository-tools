@@ -27,9 +27,9 @@ import org.kuali.student.git.model.CopyFromOperation.OperationType;
 import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMapResults;
 import org.kuali.student.git.model.branch.BranchDetector;
-import org.kuali.student.git.model.exceptions.VetoBranchException;
-import org.kuali.student.git.utils.GitBranchUtils;
-import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 
 /**
  * @author Kuali Student Team

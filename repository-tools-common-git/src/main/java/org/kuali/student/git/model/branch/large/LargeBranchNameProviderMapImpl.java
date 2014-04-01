@@ -1,10 +1,11 @@
-package org.kuali.student.git.model;
+package org.kuali.student.git.model.branch.large;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.jgit.lib.ObjectId;
-import org.kuali.student.git.utils.GitBranchUtils;
-import org.kuali.student.git.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 
 public class LargeBranchNameProviderMapImpl implements ILargeBranchNameProvider {
 
