@@ -18,10 +18,10 @@
 *.DOCX   diff=astextplain
 
 # do not adjust svn dump files
-src/test/resources/rice-r15812-svnadmin.dump -text
-src/test/resources/rice-r15812-svnkit.dump -text
-src/test/resources/revision-properties.dat -text
-src/test/resources/revision-properties-no-log.dat -text
+repository-tools-common-svn/src/test/resources/rice-r15812-svnadmin.dump -text
+repository-tools-common-svn/src/test/resources/rice-r15812-svnkit.dump -text
+repository-tools-common-svn/src/test/resources/revision-properties.dat -text
+repository-tools-common-svn/src/test/resources/revision-properties-no-log.dat -text
 
-src/test/resources/svn-mergeinfo-ks-at-r57863 -text
-src/test/resources/svn-mergeinfo-ks-at-r57864 -text
+git-importer/src/test/resources/svn-mergeinfo-ks-at-r57863 -text
+git-importer/src/test/resources/svn-mergeinfo-ks-at-r57864 -text
