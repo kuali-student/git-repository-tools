@@ -17,7 +17,15 @@ package org.kuali.student.git.model.branch.utils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.kuali.student.branch.model.BranchData;
@@ -31,11 +39,70 @@ import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 public class GitBranchUtils {
 
 	
+	protected static final String SPACE_CHARACTER = " ";
+	protected static final String TILDE_CHARACTER = "~";
+	protected static final String CARET_CHARACTER = "^";
+	protected static final String COLON_CHARACTER = ":";
+	protected static final String QUESTION_MARK_CHARACTER = "?";
+	protected static final String OPEN_SQUARE_BRACE_CHARACTER = "[";
+	protected static final String STAR_CHARACTER = "*";
+	protected static final String BACKSLASH_CHARACTER = "\\";
+	
+	protected static final String FORWARD_SLASH_CHARACTER="/";
+	protected static final String UNDERSCORE_CHARACTER="_";
+	
+	// allowed
+	protected static final String FORWARD_SLASH_REPLACEMENT="_";
+	
+	// replacements for not allowed characters in a branch name
+	protected static final String SPACE_REPLACEMENT = "---";
 
-	private static final String SPACE_REPLACEMENT = "---";
+	protected static final String UNDERSCORE_REPLACEMENT = "===";
 
-	private static final String UNDERSCORE_REPLACEMENT = "===";
+	protected static final String COLON_REPLACEMENT = "--=";
+	
+	protected static final String TILDE_REPLACEMENT = "-==";
+	
+	protected static final String CARET_REPLACEMENT = "--+";
 
+	protected static final String QUESTION_MARK_REPLACEMENT = "-++";
+	
+	protected static final String OPEN_SQUARE_BRACE_REPLACEMENT = "+++";
+
+	protected static final String STAR_REPLACEMENT = "++=";
+	
+	protected static final String BACKSLASH_REPLACEMENT = "+==";
+	
+	protected static final List<String>sizeOrderedReplacements = Arrays.asList(new String[] {OPEN_SQUARE_BRACE_REPLACEMENT, STAR_REPLACEMENT, BACKSLASH_REPLACEMENT, TILDE_REPLACEMENT, CARET_REPLACEMENT, QUESTION_MARK_REPLACEMENT, SPACE_REPLACEMENT, UNDERSCORE_REPLACEMENT, COLON_REPLACEMENT} );
+	
+	protected static final Map<String, String>CHARACTER_TO_REPLACEMENT_MAP = new HashMap<>();
+	
+	static {
+		CHARACTER_TO_REPLACEMENT_MAP.put(SPACE_CHARACTER, SPACE_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(TILDE_CHARACTER, TILDE_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(CARET_CHARACTER, CARET_REPLACEMENT );
+		CHARACTER_TO_REPLACEMENT_MAP.put(COLON_CHARACTER, COLON_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(QUESTION_MARK_CHARACTER, QUESTION_MARK_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(OPEN_SQUARE_BRACE_CHARACTER, OPEN_SQUARE_BRACE_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(STAR_CHARACTER, STAR_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(BACKSLASH_CHARACTER, BACKSLASH_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(FORWARD_SLASH_CHARACTER, FORWARD_SLASH_REPLACEMENT);
+		CHARACTER_TO_REPLACEMENT_MAP.put(UNDERSCORE_CHARACTER, UNDERSCORE_REPLACEMENT);
+		
+	}
+	
+	protected static final Map<String, String>REPLACEMENT_TO_CHARACTER_MAP = new HashMap<>();
+	
+	static {
+		
+		for (Map.Entry<String, String> entry : CHARACTER_TO_REPLACEMENT_MAP.entrySet()) {
+			String character = entry.getKey();
+			String replacement = entry.getValue();
+			
+			REPLACEMENT_TO_CHARACTER_MAP.put(replacement, character);
+			
+		}
+	}
 	/*
 	 * 255 bytes but not sure on the null byte so reducing by one.
 	 */
@@ -87,25 +154,46 @@ public class GitBranchUtils {
 
 	}
 	
-	private static String convertPathToBranchName(String branchPath) {
+	// protected for test purposes
+	protected static String convertPathToBranchName(String branchPath) {
 		
-		String convertedBranchPath = branchPath;
 		
-		if (branchPath.contains("_")) {
-			/*
-			 * Special case we need to convert the underscore to === first. 
-			 */
-			convertedBranchPath = convertedBranchPath.replace("_", UNDERSCORE_REPLACEMENT);
+		
+		StringBuilder convertedPathBuilder = new StringBuilder();
+		
+		Map<String, String>characterToReplacementMap = new HashMap<>(CHARACTER_TO_REPLACEMENT_MAP);
+		
+		/*
+		 * Replace spaces first
+		 */
+		characterToReplacementMap.remove(SPACE_CHARACTER);
+		
+		String modifiedBranchPath = branchPath.replaceAll(SPACE_REPLACEMENT, SPACE_CHARACTER);
+		
+		/*
+		 * Replace underscores first
+		 */
+		
+		characterToReplacementMap.remove(UNDERSCORE_CHARACTER);
+		
+		modifiedBranchPath = branchPath.replaceAll(UNDERSCORE_REPLACEMENT, UNDERSCORE_CHARACTER);
+		
+		char[] charArray = modifiedBranchPath.toCharArray();
+		
+		
+		for (int i = 0; i < charArray.length; i++) {
+			
+			String character = new Character (charArray[i]).toString();
+			
+			String replacement = CHARACTER_TO_REPLACEMENT_MAP.get(character);
+			
+			if (replacement != null)
+				convertedPathBuilder.append(replacement);
+			else
+				convertedPathBuilder.append(character);
 		}
-		
-		if (branchPath.contains(" ")) {
-			/*
-			 * And convert any spaces to ---
-			 */
-			convertedBranchPath = convertedBranchPath.replace(" ", SPACE_REPLACEMENT);
-		}
-		
-		return convertedBranchPath.replaceAll("\\/", "_");
+				
+		return convertedPathBuilder.toString();
 	}
 
 	/**
@@ -144,11 +232,80 @@ public class GitBranchUtils {
 		return convertBranchNameToPath(branchName);
 	}
 
-	private static String convertBranchNameToPath(String branchName) {
+	// protected for test purposes
+	protected static String convertBranchNameToPath(String branchName) {
 		
-		String path = branchName.replaceAll("_", "/").replaceAll(UNDERSCORE_REPLACEMENT, "_").replaceAll(SPACE_REPLACEMENT, " ");
+		String convertedBranchPath = branchName;
 		
-		return path;
+		Map<String,String>replacementToCharacterMap = new HashMap<>(REPLACEMENT_TO_CHARACTER_MAP);
+		
+		/*
+		 * Handle forward slashes first
+		 */
+		replacementToCharacterMap.remove(FORWARD_SLASH_REPLACEMENT);
+		
+		convertedBranchPath = convert (convertedBranchPath, FORWARD_SLASH_REPLACEMENT, FORWARD_SLASH_CHARACTER);
+		
+		int startIndex = 0;
+		
+		StringBuilder convertedBranchPathBuilder = new StringBuilder();
+
+		while ((startIndex + 3) <= convertedBranchPath.length()) {
+			
+			String targetCharacters = convertedBranchPath.substring(startIndex, (startIndex+3));
+			
+			String character = replacementToCharacterMap.get(targetCharacters);
+			
+			if (character == null) {
+				convertedBranchPathBuilder.append(targetCharacters.substring(0, 1));
+				startIndex++;
+			}
+			else {
+				convertedBranchPathBuilder.append(character);
+				startIndex += 3;
+			}
+			
+			
+		}
+		
+		if (startIndex < convertedBranchPath.length()) {
+			convertedBranchPathBuilder.append(convertedBranchPath.substring(startIndex));
+		}
+		return convertedBranchPathBuilder.toString();
+	}
+
+	private static String convert(String reference, String target,
+			String replacement) {
+		
+		StringBuilder convertedBranchPathBuilder = new StringBuilder();
+		
+		int startIndex = 0;
+		
+		while (true) {
+			
+			int nextIndex = reference.indexOf(target, startIndex);
+			
+			if (nextIndex == -1) {
+				break;
+			}
+			else {
+				if (startIndex < nextIndex) {
+					convertedBranchPathBuilder.append(reference.substring(startIndex, nextIndex));
+					
+					startIndex = nextIndex;
+				}
+				convertedBranchPathBuilder.append(replacement);
+				startIndex += target.length();
+				
+			}
+			
+		}
+		
+		if (startIndex < reference.length())
+			convertedBranchPathBuilder.append(reference.substring(startIndex));
+		
+		return convertedBranchPathBuilder.toString();
+		
 	}
 
 	public static String convertToTargetPath(String path, long copyFromRevision, String copyFromPath, String blobPath, BranchDetector branchDetector) throws VetoBranchException {
