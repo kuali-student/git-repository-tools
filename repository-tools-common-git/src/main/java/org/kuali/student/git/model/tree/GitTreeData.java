@@ -60,6 +60,10 @@ public class GitTreeData {
 		private Map<String, String>blobReferences = new HashMap<String, String>();
 		
 		private Map<String, GitTreeNodeData>subTreeReferences = new HashMap<String, GitTreeData.GitTreeNodeData>();
+
+		private ObjectId originalTreeObjectId;
+		
+		private boolean dirty = false;
 		
 		/**
 		 * @param string 
@@ -78,8 +82,7 @@ public class GitTreeData {
 			String[] parts = path.split("/");
 			
 			return deletePath(parts, 0);
-		}
-		
+		}		
 		
 		
 		private boolean deletePath(String[] parts, int partOffset) {
@@ -101,10 +104,12 @@ public class GitTreeData {
 				if (blobReferences.containsKey(name)) {
 					blobReferences.remove(name);
 					blobReference = true;
+					setDirty(true);
 				}
 				else if (subTreeReferences.containsKey(name)) {
 					subTreeReferences.remove(name);
 					treeReference = true;
+					setDirty(true);
 				}
 				
 				if (blobReference == false && treeReference == false) {
@@ -132,29 +137,57 @@ public class GitTreeData {
 				}
 				else {
 				
-					return leaf.deletePath(parts, partOffset+1);
+					/*
+					 * bubble up the dirty flag to the root along the deleted path.
+					 */
+					if (leaf.deletePath(parts, partOffset+1)) {
+						setDirty(true);
+						
+						return true;
+					}
+					else
+						return false;
 				}
 			}
 			
 			return false;
 			
 		}
+		
+		
 
-		public void addBlob(String filePath, String blobSha1) {
+		/**
+		 * @return the dirty
+		 */
+		public boolean isDirty() {
+			
+			return dirty;
+			
+		}
+
+		/**
+		 * @param dirty the dirty to set
+		 */
+		public void setDirty(boolean dirty) {
+			this.dirty = dirty;
+		}
+
+		public boolean addBlob(String filePath, String blobSha1) {
 			
 			String[] parts = filePath.split("\\/");
 
 			
 			if (parts.length > 0) {
-				this.addBlob (parts, 0, blobSha1);
+				return this.addBlob (parts, 0, blobSha1);
 			}
 			else {
 				log.info("failed to add blob");
+				return false;
 			}
 			
 		}
 		
-		public void addBlob(String []parts, int partOffset, String blobSha1) {
+		public boolean addBlob(String []parts, int partOffset, String blobSha1) {
 			
 			int difference = (parts.length - partOffset);
 			
@@ -174,6 +207,8 @@ public class GitTreeData {
 				// add the blob here
 				String existing = blobReferences.put(name, blobSha1);
 				
+				this.setDirty(true);
+				
 				if (existing != null) {
 					/*
 					 * This is normally ok.  This would typically be a change to a file that existed in the previous commit.
@@ -182,6 +217,8 @@ public class GitTreeData {
 					 */
 					log.debug("overwriting blob = " + name);
 				}
+				
+				return true;
 			}
 			else {
 				// > 1
@@ -193,7 +230,12 @@ public class GitTreeData {
 					subTreeReferences.put(name, leaf);
 				}
 				
-				leaf.addBlob(parts, partOffset+1, blobSha1);
+				if (leaf.addBlob(parts, partOffset+1, blobSha1)) {
+					setDirty(true);
+					return true;
+				}
+				else
+					return false;
 			}
 		}
 
@@ -203,9 +245,16 @@ public class GitTreeData {
 			return joinedPath;
 		}
 
-		public TreeFormatter buildTree(ObjectInserter inserter) throws IOException {
+		public ObjectId buildTree(ObjectInserter inserter) throws IOException {
 			
 			log.debug("buildTree: starting");
+			
+			if (!isDirty() && originalTreeObjectId != null) {
+				
+					return originalTreeObjectId;
+			}
+
+			// else we need to recompute the tree at this level.
 			
 			TreeFormatter tree = new TreeFormatter();
 			
@@ -226,9 +275,7 @@ public class GitTreeData {
 				String name = entry.getKey();
 				GitTreeNodeData nodeData = entry.getValue();
 				
-				TreeFormatter subTree = nodeData.buildTree(inserter);
-				
-				ObjectId subTreeId = inserter.insert(subTree);
+				ObjectId subTreeId = nodeData.buildTree(inserter);
 				
 				treeDataList.add(new JGitTreeData(name, FileMode.TREE, subTreeId));
 				
@@ -247,7 +294,8 @@ public class GitTreeData {
 			}
 			
 			log.debug("buildTree: finished");
-			return tree;
+			
+			return inserter.insert(tree);
 		}
 
 		public void visit(GitTreeDataVisitor vistor) {
@@ -272,6 +320,79 @@ public class GitTreeData {
 				return name;
 			else
 				return this.nodePath + "/" + name;
+		}
+
+		public void setGitTreeObjectId(ObjectId id) {
+			this.originalTreeObjectId = id;			
+		}
+		
+		public void resetDirtyFlag() {
+			
+			// can only not be dirty if there is an original
+			// always dirty if there is no original
+			if (this.originalTreeObjectId != null)
+				this.setDirty(false);
+			
+			for (GitTreeNodeData subTreeData : this.subTreeReferences.values()) {
+				
+				subTreeData.resetDirtyFlag();
+			}
+		}
+
+		public void addTree(String path, ObjectId treeId) {
+			
+			String[] parts = path.split("\\/");
+
+			if (parts.length > 0) {
+				this.addTree (parts, 0, treeId);
+			}
+			else {
+				log.info("failed to add tree");
+			}
+			
+		}
+		
+		public void addTree(String []parts, int partOffset, ObjectId treeId) {
+			
+			int difference = (parts.length - partOffset);
+			
+			if (difference == 0) {
+				// should never occur
+				throw new RuntimeException("too deep");
+			}
+			
+			String name = parts[partOffset];
+			
+			if (name.isEmpty()) {
+				log.info("name is empty at partOffset= " + partOffset + ", treeId= " + treeId);
+				
+			}
+			
+			if (difference == 1) {
+				// add the tree here
+				
+				GitTreeNodeData existing = subTreeReferences.get(name);
+
+				if (existing == null) {
+					existing = new GitTreeNodeData(name, getNodePath (name, parts, partOffset));
+					subTreeReferences.put(name, existing);
+				}
+				
+				existing.setGitTreeObjectId(treeId);
+				
+			}
+			else {
+				// > 1
+				// need to get down a level.
+				GitTreeNodeData leaf = subTreeReferences.get(name);
+				
+				if (leaf == null) {
+					leaf = new GitTreeNodeData(name, getNodePath (name, parts, partOffset));
+					subTreeReferences.put(name, leaf);
+				}
+				
+				leaf.addTree(parts, partOffset+1, treeId);
+			}
 		}
 		
 	}
@@ -344,34 +465,10 @@ public class GitTreeData {
 	
 	public ObjectId buildTree(ObjectInserter inserter) throws IOException {
 		
-		TreeFormatter tf = root.buildTree(inserter);
-		
-		ObjectId treeId = inserter.insert(tf);
-		
-		return treeId;
-	}
-
-	/**
-	 * Merge ourself onto the existing data.
-	 * 
-	 * That means keep our version instead of their version.
-	 * 
-	 * keep there version unless we have a delete that covers their path.
-	 * 
-	 * @param existingTreeData
-	 */
-	public void mergeOntoExisting(GitTreeData existingTreeData) {
-		
-		existingTreeData.visit(new GitTreeDataVisitor() {
-			
-			@Override
-			public boolean visitBlob(String path, String objectId) {
-				GitTreeData.this.root.addBlob(path, objectId);
-				return true;
-			}
-		});
+		return root.buildTree(inserter);
 		
 	}
+	
 
 	/**
 	 * @param path
@@ -386,5 +483,25 @@ public class GitTreeData {
 		root.visit(vistor);
 		
 	}
+
+	public void setGitTreeObjectId(ObjectId id) {
+		this.root.setGitTreeObjectId(id);
+		
+	}
+
+	public void addTree(String path, ObjectId treeId) {
+		
+		this.root.addTree(path, treeId);
+		
+	}
+
+	/**
+	 * 
+	 * @see org.kuali.student.git.model.tree.GitTreeData.GitTreeNodeData#resetDirtyFlag()
+	 */
+	public void resetDirtyFlag() {
+		root.resetDirtyFlag();
+	}
+	
 	
 }

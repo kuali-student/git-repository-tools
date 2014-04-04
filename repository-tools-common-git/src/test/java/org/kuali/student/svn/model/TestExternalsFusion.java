@@ -25,6 +25,7 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.ObjectReader;
@@ -113,7 +114,11 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		inserter.flush();
 		
 		// a fused commit
-		GitTreeData fusedAggregate = GitTreeDataUtils.extractExistingTreeData(new GitTreeProcessor(repo), aggregateId);
+		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
+		
+		GitTreeData fusedAggregate = treeProcessor.extractExistingTreeData(aggregateId);
+		
+		fusedAggregate.resetDirtyFlag();
 
 		String fusedAPath = "branch1/src/main/resources/fusedA.txt";
 		storeFile(inserter, fusedAggregate, fusedAPath, "fusedA content");
@@ -123,11 +128,19 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		// not sure if we need to split the aggregate so don't for now.
 		
+		ObjectId originalAggregateId = aggregateId;
+		
 		aggregateId = commit (inserter, fusedAggregate, "fusion commit to the aggregate");
+		
+		/*
+		 * Check that original tree ids were used in the new tree.
+		 */
+		checkTrees (originalAggregateId, aggregateId);
 		
 		result = createBranch(aggregateId, "aggregate");
 		
 		Assert.assertEquals(Result.FORCED, result);
+		
 		
 		ObjectReader objectReader = repo.newObjectReader();
 		RevWalk rw = new RevWalk(objectReader);
@@ -163,6 +176,47 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 	}
 	
+	/*
+	 * Check that where the trees are aligned that they share the same object id.
+	 */
+	private void checkTrees(ObjectId originalAggregateId, ObjectId aggregateId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		
+		RevWalk rw = new RevWalk(repo);
+		
+		RevCommit originalAggregateCommit = rw.parseCommit(originalAggregateId);
+		
+		RevCommit aggregateCommit = rw.parseCommit(aggregateId);
+		
+		TreeWalk tw = new TreeWalk(repo);
+		
+		tw.addTree(originalAggregateCommit.getTree().getId());
+		tw.addTree(aggregateCommit.getTree().getId());
+		
+		tw.setRecursive(false);
+		
+		while (tw.next()) {
+			
+			FileMode originalMode = tw.getFileMode(0);
+			
+			FileMode fileMode = tw.getFileMode(1);
+			
+			if (originalMode.equals(FileMode.TYPE_MISSING) || fileMode.equals(FileMode.TYPE_MISSING))
+				continue; // skip where one side or the other does not exist.
+			
+			String name = tw.getNameString();
+			
+			ObjectId originalObjectId = tw.getObjectId(0);
+			ObjectId currentObjectId = tw.getObjectId(1);
+			
+			Assert.assertTrue(originalObjectId + " is not equals to " + currentObjectId + " for " + name, originalObjectId.equals(currentObjectId));
+			
+		}
+		
+		tw.release();
+		
+		rw.release();
+	}
+
 	@Test
 	public void testFusion() throws IOException {
 		

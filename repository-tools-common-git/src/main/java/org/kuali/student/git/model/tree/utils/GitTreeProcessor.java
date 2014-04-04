@@ -29,9 +29,11 @@ import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
+import org.kuali.student.git.model.tree.GitTreeData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -196,6 +198,64 @@ public class GitTreeProcessor {
 		ObjectLoader loader = getBlob(blobId);
 		
 		return IOUtils.readLines(loader.openStream());
+		
+	}
+
+	/**
+	 * Extract the existing Git Tree Data for the commit indicated.
+	 * 
+	 * We index the blob's but also note the object id's of the tree's so that we can optimize
+	 * creation of the new tree data at the end.
+	 * 
+	 * i.e. only have to create new trees for the data that has changed.
+	 * 
+	 * @param parentId
+	 * @return the fully constructed mutable GitTreeData structure representing the tree committed in the indicated parent commit.
+	 * @throws MissingObjectException
+	 * @throws IncorrectObjectTypeException
+	 * @throws IOException
+	 */
+	public GitTreeData extractExistingTreeData(ObjectId parentId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		
+		GitTreeData treeData = new GitTreeData();
+
+		RevWalk rw = new RevWalk(repo);
+		
+		RevCommit parentCommit = rw.parseCommit(parentId);
+		
+		if (parentCommit == null)
+			return treeData;
+
+		TreeWalk tw = new TreeWalk(repo);
+		
+		tw.setRecursive(false);
+		
+		tw.addTree(parentCommit.getTree().getId());
+		
+		while (tw.next()) {
+			
+			FileMode fileMode = tw.getFileMode(0);
+			
+			String path = tw.getPathString();
+			
+			ObjectId objectId = tw.getObjectId(0);
+			
+			if (fileMode.equals(FileMode.TREE)) {
+				
+				treeData.addTree(path, objectId);
+				
+				tw.enterSubtree();
+			}
+			else if (fileMode.equals(FileMode.REGULAR_FILE)) {
+				treeData.addBlob(path, objectId.name());
+			}
+		}
+		
+		tw.release();
+		rw.release();
+		
+
+		return treeData;
 		
 	}
 

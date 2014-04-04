@@ -176,15 +176,6 @@ public class GitBranchData {
 
 	}
 
-	/**
-	 * Apply our from the dump tree data onto the existing data
-	 * 
-	 * @param existingTreeData
-	 */
-	public void mergeOntoExistingTreeData(GitTreeData existingTreeData) {
-		branchRoot.mergeOntoExisting(existingTreeData);
-	}
-
 	public int getBlobCount() {
 		return GitTreeDataUtils.countBlobs(branchRoot);
 	}
@@ -226,22 +217,10 @@ public class GitBranchData {
 		
 		alreadyInitialized = true;
 		
-		GitTreeData existingTreeData = GitTreeDataUtils.extractExistingTreeData(treeProcessor, parentId);
+		this.branchRoot = treeProcessor.extractExistingTreeData (parentId);
 
-		int existingBlobCount = GitTreeDataUtils
-				.countBlobs(existingTreeData);
+		this.branchRoot.resetDirtyFlag();
 
-		mergeOntoExistingTreeData(existingTreeData);
-
-		int mergedBlobCount = getBlobCount();
-
-		if (existingBlobCount != mergedBlobCount) {
-			throw new RuntimeException(
-					"data loss existing count = "
-							+ existingBlobCount
-							+ ", merged count = " + mergedBlobCount);
-		}
-		
 		// load up any existing svn:mergeinfo data
 		List<BranchMergeInfo> existingMergeInfo = revisionMapper.getMergeBranches(this.revision-1L, this.branchName);
 		
@@ -251,7 +230,7 @@ public class GitBranchData {
 		final List<ExternalModuleInfo> existingExternals = new ArrayList<>(5); 
 		
 		// load up any existing svn:externals data
-		existingTreeData.visit(new GitTreeDataVisitor() {
+		this.branchRoot.visit(new GitTreeDataVisitor() {
 			
 			@Override
 			public boolean visitBlob(String path, String objectId) {

@@ -72,28 +72,5 @@ public final class GitTreeDataUtils {
 		return visitor.getCounter().intValue();
 	}
 	
-	public static GitTreeData extractExistingTreeData(GitTreeProcessor treeProcessor, ObjectId parentId)
-			throws MissingObjectException, IncorrectObjectTypeException,
-			CorruptObjectException, IOException {
-
-		final GitTreeData treeData = new GitTreeData();
-
-		treeProcessor.visitBlobs(parentId, new GitTreeBlobVisitor() {
-
-			@Override
-			public boolean visitBlob(ObjectId blobId, String path, String name) {
-
-				treeData.addBlob(path, blobId.name());
-
-				// visit all of the blobs.
-				return true;
-
-			}
-		});
-
-		return treeData;
-
-	}
-
 
 }
