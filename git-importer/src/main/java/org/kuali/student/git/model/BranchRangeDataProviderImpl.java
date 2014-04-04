@@ -22,7 +22,7 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.kuali.student.git.tools.SvnMergeInfoUtils.BranchRangeDataProvider;
+import org.kuali.student.git.model.SvnMergeInfoUtils.BranchRangeDataProvider;
 
 /**
  * @author Kuali Student Team

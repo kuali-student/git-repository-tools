@@ -13,38 +13,35 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.tools;
+package org.kuali.student.git.model;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.AnyObjectId;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.kuali.student.common.io.IOUtils;
-import org.kuali.student.git.model.ExternalModuleInfo;
-import org.kuali.student.git.model.GitBranchData;
-import org.kuali.student.git.model.JGitTreeData;
-import org.kuali.student.git.model.SvnRevisionMapper;
-import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMapResults;
-import org.kuali.student.git.model.tree.JGitTreeUtils;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.tree.JGitTreeData;
+import org.kuali.student.git.model.tree.utils.JGitTreeUtils;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,77 +87,52 @@ public class SvnExternalsUtils {
 		return extractExternalModuleInfoFromString(revision, repositoryPrefixPath, builder.toString());
 	}
 	
-	private static int indexOf (List<GitBranchData>list, String targetBranchPath) {
-		for (int i = 0; i < list.size(); i++) {
+	public static String createFusionMavenPluginDataFileString(long currentRevision, Repository repo, 
+			List<ExternalModuleInfo> externals, ILargeBranchNameProvider largeBranchNameProvider) {
+		
+		StringBuilder builder = new StringBuilder();
+		
+		for (ExternalModuleInfo external : externals) {
+			
+			String externalModule = external.getModuleName();
+			String externalBranchPath = external.getBranchPath();
+			long externalRevision = external.getRevision();
+			
+			builder.append("# module = " + externalModule + " branch Path = " + externalBranchPath + " revision = " + externalRevision + "\n");
+			
+			String branchName = GitBranchUtils.getCanonicalBranchName(externalBranchPath, externalRevision, largeBranchNameProvider);
+			
+			ObjectId branchHead = null;
+			
+			try {
 
-			GitBranchData data = list.get(i);
-			
-			if (data.getBranchPath().equals(targetBranchPath))
-				return i;
-		}
-		
-		return -1;
-	}
-	
-	
-	/**
-	 * Reorder the unordered list so that branches that have externals dependencies will be placed after them in the list.
-	 * 
-	 * This is needed so that when we write the externals data they refer to the latest commit id's in the external branches.
-	 * 
-	 * @param unorderedList
-	 * @return
-	 */
-	public static List<GitBranchData> computeExternalsAwareOrdering(Collection<GitBranchData>unorderedList) {
-		
-		List<GitBranchData> results = new ArrayList<> (unorderedList.size());
-		
-		results.addAll(unorderedList);
-		
-		for (GitBranchData data : unorderedList) {
-			
-			List<ExternalModuleInfo> externals = data.getExternals();
-			
-			if (externals.size() > 0) {
-				
-				for (ExternalModuleInfo external : externals) {
-					
-					external.getBranchPath();
-					
-					int indexOfDependentBranch = indexOf(results, data.getBranchPath());						
-					
-					int indexOfCurrentExternal = indexOf (results, external.getBranchPath());
-					
-					if (indexOfDependentBranch < indexOfCurrentExternal) {
-						// remove the dependent branch and insert it after the current external.
-						
-						if ((indexOfCurrentExternal + 1) == results.size()) {
-							// adding at the end of the list
-							GitBranchData obj = results.remove(indexOfDependentBranch);
-							
-							results.add(obj);
-						}
-						else {
-							
-							/*
-							 * Add after the external.
-							 */
-							GitBranchData obj = results.get(indexOfDependentBranch);
-							
-							results.add(indexOfCurrentExternal+1, obj);
-							
-							// remove after the add so as to not mess up the indexing.
-							results.remove(indexOfDependentBranch);
-						}
-					}
+				// use the branch head
+				Ref branchRef = repo.getRef(Constants.R_HEADS + branchName);
+
+				if (branchRef != null)
+					branchHead = branchRef.getObjectId();
+				else {
+					log.warn(
+							"createFusionMavenPliginDataFileString failed to resolve branch for: {}",
+							branchName);
 				}
+				
+			} catch (IOException e) {
+				// intentionally fall through
 			}
 			
+			if (branchHead != null) {
+				// store the branch head		
+				external.setBranchHeadId(branchHead);
+			}
+			
+			builder.append(externalModule + "::" + branchName + "::" + (branchHead==null?"UNKNOWN":branchHead.name()) + "\n");
+			
 		}
 		
-		
-		return results;
+		return builder.toString();
 	}
+	
 	
 	public static List<ExternalModuleInfo>extractExternalModuleInfoFromString (long revision, String repositoryPrefixPath, String inputString) {
 	
@@ -169,7 +141,10 @@ public class SvnExternalsUtils {
 			securePrefixPath = true;
 		}
 		
-		List<ExternalModuleInfo>bmiList = new LinkedList<>();
+		List<ExternalModuleInfo>externalsList = new LinkedList<>();
+		
+		if (inputString == null)
+			return externalsList;
 		
 		String lines[] = inputString.split("\\n");
 		
@@ -208,10 +183,10 @@ public class SvnExternalsUtils {
 			
 			ExternalModuleInfo external = new ExternalModuleInfo(moduleName, branchPath, revision);
 			
-			bmiList.add(external);
+			externalsList.add(external);
 	}
 		
-		return bmiList;
+		return externalsList;
 	}
 
 	/**
@@ -232,7 +207,7 @@ public class SvnExternalsUtils {
 	 */
 	public static AnyObjectId createFusedTree(ObjectReader objectReader,
 			ObjectInserter inserter, RevWalk rw, RevCommit commit,
-			List<ExternalModuleInfo> externals, SvnRevisionMapper revisionMapper) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+			List<ExternalModuleInfo> externals) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 		
 		
 		List<JGitTreeData> baseData = JGitTreeUtils.extractBaseTreeLevel(objectReader, commit);
@@ -241,75 +216,18 @@ public class SvnExternalsUtils {
 			
 			String moduleName = externalModuleInfo.getModuleName();
 			
-			// find the commit that aligns with the path given at the current revision
+			ObjectId referencedCommitId = externalModuleInfo.getBranchHeadId();
 			
-			List<SvnRevisionMapResults> revisionBranches = revisionMapper.getRevisionBranches(externalModuleInfo.getRevision(), externalModuleInfo.getBranchPath());
+			if (referencedCommitId != null) {
 			
-			if (revisionBranches.size() != 1) {
-				throw new RuntimeException("can only fuse to a single branch but " + externalModuleInfo.getBranchPath() + " matches " + revisionBranches.size());
+				RevCommit referencedCommit = rw.parseCommit(referencedCommitId);
+			
+				ObjectId sourceTreeId = referencedCommit.getTree().getId();
+			
+				baseData.add(new JGitTreeData(moduleName, FileMode.TREE, sourceTreeId));
 			}
-			
-			SvnRevisionMapResults match = revisionBranches.get(0);
-			
-			ObjectId referencedCommitId = ObjectId.fromString(match.getRevMap().getCommitId());
-			
-			RevCommit referencedCommit = rw.parseCommit(referencedCommitId);
-			
-			ObjectId sourceTreeId = null;
-			
-			if (match.getSubPath().length() > 0) {
-				
-				String matchName = null;
-				
-				// referenced path is a subtree within a known commit
-				
-				TreeWalk tw = new TreeWalk (objectReader);
-				
-				tw.addTree(referencedCommit.getTree().getId());
-				
-				String pathParts[] = match.getSubPath().split("\\/");
-				
-				if (pathParts.length == 1) {
-					// look in the top level commit tree for the subtree
-					matchName = pathParts[0];
-				}
-				else {
-					// create a filter to find the tree above and then find the tree we want at that level.
-					
-					String aboveLevelPath = StringUtils.join(pathParts, '/', 0, pathParts.length-1);
-					
-					tw.setFilter(PathFilter.create(aboveLevelPath));
-					
-					matchName = pathParts[pathParts.length-1];
-					
-				}
-				
-				
-				if (tw.next()) {
-					
-					if (!tw.getFileMode(0).equals(FileMode.TREE))
-						continue;
-					
-					String candidateName = tw.getNameString();
-					
-					if (candidateName.equals(matchName)) {
-						// found the subtree
-						sourceTreeId = tw.getObjectId(0);
-						break;
-					}
-					
-				}
-				
-				tw.release();
-			}
-			else {
-				// use the top level commit tree
-				sourceTreeId = referencedCommit.getTree().getId();
-			}
-			
-			// then make a sub directory using that tree id.
-			
-			baseData.add(new JGitTreeData(moduleName, FileMode.TREE, sourceTreeId));
+			else 
+				log.warn("unknown branch head object id for module {}", moduleName);
 			
 			
 		}

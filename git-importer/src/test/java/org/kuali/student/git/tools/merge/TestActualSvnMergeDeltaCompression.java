@@ -31,14 +31,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.BranchRangeDataProviderImpl;
-import org.kuali.student.git.model.GitTreeData;
+import org.kuali.student.git.model.SvnMergeInfoUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
+import org.kuali.student.git.model.SvnMergeInfoUtils.BranchRangeDataProvider;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
-import org.kuali.student.git.tools.AbstractGitRespositoryTestCase;
-import org.kuali.student.git.tools.SvnMergeInfoUtils;
-import org.kuali.student.git.tools.SvnMergeInfoUtils.BranchRangeDataProvider;
+import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.svn.model.AbstractGitRespositoryTestCase;
 
 /**
  * @author Kuali Student Team

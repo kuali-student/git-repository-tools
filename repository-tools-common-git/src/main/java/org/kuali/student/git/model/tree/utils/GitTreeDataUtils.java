@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.model.util;
+package org.kuali.student.git.model.tree.utils;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,10 +22,9 @@ import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.kuali.student.git.model.GitTreeData;
-import org.kuali.student.git.model.GitTreeData.GitTreeDataVisitor;
-import org.kuali.student.git.model.GitTreeProcessor;
-import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
+import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.GitTreeData.GitTreeDataVisitor;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
 
 /**
  * @author Kuali Student Team

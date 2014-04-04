@@ -38,16 +38,16 @@ import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.importer.GitImporterParseOptions;
 import org.kuali.student.git.model.CopyFromOperation.OperationType;
-import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMapResults;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
-import org.kuali.student.git.tools.SvnExternalsUtils;
-import org.kuali.student.git.tools.SvnMergeInfoUtils;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
 import org.kuali.student.subversion.SvnDumpFilter;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +136,10 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		BranchData branchData = null;
 		try {
 			branchData = branchDetector.parseBranch(currentRevision, path);
+			
+			if (kind != null && kind.equals(FILE_KIND) && branchData.getPath().length() == 0)
+				throw new VetoBranchException("A file add or change requires part of the path to be a subpath in the branch.");
+			
 		} catch (VetoBranchException e) {
 			validBranch = false;
 		}
@@ -304,6 +308,19 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				List<ExternalModuleInfo> externals = SvnExternalsUtils.extractExternalModuleInfoFromString(revision, repositoryBaseUrl, externalString);
 				
 				if (externals.size() > 0) {
+					
+					if (data == null) {
+						
+						/*
+						 * not detected as a branch but externals makes it a branch
+						 */
+						String branchName = GitBranchUtils.getCanonicalBranchName(path, revision, largeBranchNameProvider);
+						
+						data = getBranchData(branchName, revision);
+						
+						data.setCreated(true);
+						
+					}
 					
 					data.setExternals(externals);
 					

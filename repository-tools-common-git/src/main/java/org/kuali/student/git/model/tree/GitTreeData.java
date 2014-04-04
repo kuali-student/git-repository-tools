@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.model;
+package org.kuali.student.git.model.tree;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -369,7 +369,7 @@ public class GitTreeData {
 	/**
 	 * @param path
 	 * @return true if one or more blob(s) were deleted.
-	 * @see org.kuali.student.git.model.GitTreeData.GitTreeNodeData#deletePath(java.lang.String)
+	 * @see org.kuali.student.git.model.tree.GitTreeData.GitTreeNodeData#deletePath(java.lang.String)
 	 */
 	public boolean deletePath(String path) {
 		return root.deletePath(path);

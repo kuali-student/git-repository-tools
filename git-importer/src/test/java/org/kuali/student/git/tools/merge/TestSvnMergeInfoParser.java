@@ -25,12 +25,12 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.git.model.BranchMergeInfo;
+import org.kuali.student.git.model.SvnMergeInfoUtils;
+import org.kuali.student.git.model.SvnMergeInfoUtils.BranchRangeDataProvider;
 import org.kuali.student.git.model.branch.AbstractBranchDetectorTest;
 import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
-import org.kuali.student.git.tools.SvnMergeInfoUtils;
-import org.kuali.student.git.tools.SvnMergeInfoUtils.BranchRangeDataProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

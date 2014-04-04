@@ -22,8 +22,8 @@ import java.io.PrintWriter;
 
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.eclipse.jgit.lib.Repository;
+import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.branch.BranchDetector;
-import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.kuali.student.subversion.SvnDumpFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

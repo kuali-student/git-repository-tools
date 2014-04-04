@@ -18,12 +18,10 @@ package org.kuali.student.git.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
@@ -38,8 +36,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.importer.GitImporterMain;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
-import org.kuali.student.git.tools.GitRepositoryUtils;
-import org.kuali.student.git.tools.SvnExternalsUtils;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 
 /**
  * 
@@ -132,7 +129,7 @@ public class TestKSRevision27974 {
 		
 		List<GitBranchData> unorderedList = Arrays.asList(new GitBranchData[] {B, A});
 		
-		List<GitBranchData> orderedList = SvnExternalsUtils.computeExternalsAwareOrdering(unorderedList);
+		List<GitBranchData> orderedList = ExternalsUtils.computeExternalsAwareOrdering(unorderedList);
 		
 		Assert.assertEquals(orderedList.size(), unorderedList.size());
 		
@@ -146,7 +143,7 @@ public class TestKSRevision27974 {
 		// intentional typo on the path
 		B.setExternals(Arrays.asList(new ExternalModuleInfo [] {new ExternalModuleInfo("A", "a", 10)}));
 		
-		orderedList = SvnExternalsUtils.computeExternalsAwareOrdering(unorderedList);
+		orderedList = ExternalsUtils.computeExternalsAwareOrdering(unorderedList);
 		
 		Assert.assertEquals(orderedList.size(), unorderedList.size());
 		
@@ -160,7 +157,7 @@ public class TestKSRevision27974 {
 		
 		A.setExternals(Arrays.asList(new ExternalModuleInfo [] {new ExternalModuleInfo("C", "C", 10)}));
 		
-		orderedList = SvnExternalsUtils.computeExternalsAwareOrdering(unorderedList);
+		orderedList = ExternalsUtils.computeExternalsAwareOrdering(unorderedList);
 		
 		Assert.assertEquals(orderedList.size(), unorderedList.size());
 		

@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.model;
+package org.kuali.student.svn.model;
+
+import org.eclipse.jgit.lib.ObjectId;
 
 /**
  * @author Kuali Student Team
@@ -26,6 +28,8 @@ public class ExternalModuleInfo {
 	private String branchPath;
 	
 	private long revision;
+	
+	private ObjectId branchHeadId;
 
 	/**
 	 * @param moduleName
@@ -33,11 +37,17 @@ public class ExternalModuleInfo {
 	 * @param revision
 	 */
 	public ExternalModuleInfo(String moduleName, String branchPath,
-			long revision) {
+			long revision, ObjectId branchHeadId) {
 		super();
 		this.moduleName = moduleName;
 		this.branchPath = branchPath;
 		this.revision = revision;
+		this.branchHeadId = branchHeadId;
+	}
+
+	public ExternalModuleInfo(String moduleName, String branchPath,
+			long revision) {
+		this (moduleName, branchPath, revision, null);
 	}
 
 	/**
@@ -60,6 +70,23 @@ public class ExternalModuleInfo {
 	public long getRevision() {
 		return revision;
 	}
+
+	/**
+	 * @return the branchHeadId
+	 */
+	public ObjectId getBranchHeadId() {
+		return branchHeadId;
+	}
+
+	/**
+	 * @param branchHeadId the branchHeadId to set
+	 */
+	public void setBranchHeadId(ObjectId branchHeadId) {
+		this.branchHeadId = branchHeadId;
+	}
+	
+	
+	
 	
 	
 }

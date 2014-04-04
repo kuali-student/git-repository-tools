@@ -20,18 +20,22 @@ import java.io.FileInputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.kuali.student.git.model.ExternalModuleInfo;
+import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.kuali.student.git.model.GitRepositoryUtils;
+import org.kuali.student.git.model.SvnExternalsUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
-import org.kuali.student.git.tools.GitRepositoryUtils;
-import org.kuali.student.git.tools.SvnExternalsUtils;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,10 +128,28 @@ public class ModuleMergeToolMain {
 				
 				RevCommit commit = rw.parseCommit(ObjectId.fromString(reference));
 				
+				
+				TreeWalk tw = new TreeWalk(repo);
+				
+				tw.setRecursive(false);
+
+				while (tw.next()) {
+					
+					if (tw.getNameString().equals("fusion-maven-plugin.dat")) {
+						ObjectId blobId = tw.getObjectId(0);
+						
+						ObjectLoader loader = repo.newObjectReader().open(blobId, Constants.OBJ_BLOB);
+						
+						List<String> lines = IOUtils.readLines(loader.openStream());
+						
+						// pull out and use the sha1's from the stream to fuse the externals.
+						
+					}
+				}
 				CommitBuilder commitBuilder = new CommitBuilder();
 				
 				ObjectReader or;
-				commitBuilder.setTreeId(SvnExternalsUtils.createFusedTree (or = repo.newObjectReader(), inserter, rw, commit, externals, revisionMapper));
+				commitBuilder.setTreeId(SvnExternalsUtils.createFusedTree (or = repo.newObjectReader(), inserter, rw, commit, externals));
 
 				List<ObjectId>parentIds = new LinkedList<>();
 				

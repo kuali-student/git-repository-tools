@@ -21,12 +21,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -44,24 +42,21 @@ import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.common.io.ReadLineData;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.BranchRangeDataProviderImpl;
-import org.kuali.student.git.model.ExternalModuleInfo;
+import org.kuali.student.git.model.ExternalsUtils;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.GitCommitData;
 import org.kuali.student.git.model.NodeProcessor;
+import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.SvnMergeInfoUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
-import org.kuali.student.git.tools.SvnExternalsUtils;
-import org.kuali.student.git.tools.SvnMergeInfoUtils;
+import org.kuali.student.git.utils.GitImporterDateUtils;
 import org.kuali.student.subversion.AbstractParseOptions;
 import org.kuali.student.subversion.model.INodeFilter;
 import org.slf4j.Logger;
@@ -259,15 +254,13 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				String emailAddress = userName
 						+ "@kuali.org";
 
-				Date actualCommitDate = convertDate(commitDate);
+				Date actualCommitDate = GitImporterDateUtils.convertDateString(commitDate);
 
-				// TODO parse out the time zone correctly.
-
-				;
+				TimeZone tz = GitImporterDateUtils.extractTimeZone(actualCommitDate);
 				
 				commitData = new GitCommitData(new PersonIdent(
 						userName, emailAddress, actualCommitDate,
-						TimeZone.getTimeZone("EDT")), commitMessage);
+						tz), commitMessage);
 				
 				nodeProcessor.setCommitData (commitData);
 
@@ -282,51 +275,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 		}
 
-		private String createFusionMavenPluginDataFileString(
-				List<ExternalModuleInfo> externals) {
-			
-			StringBuilder builder = new StringBuilder();
-			
-			for (ExternalModuleInfo external : externals) {
-				
-				String externalModule = external.getModuleName();
-				String externalBranchPath = external.getBranchPath();
-				long externalRevision = external.getRevision();
-				
-				builder.append("# module = " + externalModule + " branch Path = " + externalBranchPath + " revision = " + externalRevision + "\n");
-				
-				String branchName = GitBranchUtils.getCanonicalBranchName(externalBranchPath, externalRevision, revisionMapper);
-				
-				ObjectId branchHead = null;
-				
-				try {
-					
-					if (externalRevision == currentRevision) {
-						// use the branch head
-						Ref branchRef = repo.getRef(Constants.R_HEADS + branchName);
-						
-						if (branchRef != null)
-							branchHead = branchRef.getObjectId();
-						else {
-							log.warn("createFusionMavenPliginDataFileString failed to resolve branch for: {}", branchName);
-						}
-					}
-					else {
-						// use the revision map
-						branchHead = revisionMapper.getRevisionBranchHead(externalRevision, branchName);
-						
-					}
-					
-				} catch (IOException e) {
-					// intentionally fall through
-				}
-				
-				builder.append(externalModule + "::" + branchName + "::" + (branchHead==null?"UNKNOWN":branchHead.name()) + "\n");
-				
-			}
-			
-			return builder.toString();
-		}
+		
 		
 		private void flushPendingBranchCommits() {
 
@@ -334,14 +283,14 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				
 				RevWalk rw = new RevWalk(repo);
 				
-				for (GitBranchData data : SvnExternalsUtils.computeExternalsAwareOrdering(knownBranchMap.values())) {
+				for (GitBranchData data : ExternalsUtils.computeExternalsAwareOrdering(knownBranchMap.values())) {
 					
 					String branchName = data.getBranchName();
 					
 					if (data.getExternals().size() > 0) {
 						ObjectInserter objectInserter = repo.newObjectInserter();
 
-						ObjectId id = objectInserter.insert(Constants.OBJ_BLOB, createFusionMavenPluginDataFileString(data.getExternals()).getBytes());
+						ObjectId id = objectInserter.insert(Constants.OBJ_BLOB, SvnExternalsUtils.createFusionMavenPluginDataFileString(currentRevision, repo, data.getExternals(), revisionMapper).getBytes());
 						
 						try {
 							data.addBlob(data.getBranchPath() + "/" + "fusion-maven-plugin.dat", id.name(), blobLog);
@@ -621,18 +570,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			
 		}
 
-		private static DateTimeFormatter SvnDumpDateFormatter = DateTimeFormat
-				.forPattern("YYYY-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
-
-		private Date convertDate(String date) {
-
-			LocalDateTime ldt = SvnDumpDateFormatter
-					.parseLocalDateTime(date);
-
-			Date d = ldt.toDate();
-
-			return d;
-		}
+		
 
 		
 		

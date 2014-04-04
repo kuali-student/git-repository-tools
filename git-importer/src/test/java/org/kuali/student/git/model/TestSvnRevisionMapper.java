@@ -45,7 +45,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
-import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -21,10 +21,10 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.kuali.student.git.model.ExternalModuleInfo;
+import org.kuali.student.git.model.SvnExternalsUtils;
 import org.kuali.student.git.model.branch.AbstractBranchDetectorTest;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
-import org.kuali.student.git.tools.SvnExternalsUtils;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

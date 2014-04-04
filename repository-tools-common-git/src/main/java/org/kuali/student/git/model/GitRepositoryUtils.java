@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.tools;
+package org.kuali.student.git.model;
 
 import java.io.File;
 import java.io.IOException;

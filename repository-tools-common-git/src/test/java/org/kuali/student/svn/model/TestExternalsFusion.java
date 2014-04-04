@@ -13,47 +13,35 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.tools;
+package org.kuali.student.svn.model;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.AnyObjectId;
-import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.ObjectReader;
-import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.RefUpdate.Result;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-import org.kuali.student.git.model.BranchMergeInfo;
-import org.kuali.student.git.model.ExternalModuleInfo;
-import org.kuali.student.git.model.GitTreeData;
-import org.kuali.student.git.model.GitTreeProcessor;
-import org.kuali.student.git.model.SvnRevisionMapper;
-import org.kuali.student.git.model.util.GitTreeDataUtils;
+import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,36 +54,11 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 
 	private static Logger log = LoggerFactory.getLogger(TestExternalsFusion.class);
 	
-	
-	private SvnRevisionMapper revisionMapper;
-
 	/**
 	 * 
 	 */
 	public TestExternalsFusion() {
 		super ("externals-fusion");
-	}
-
-	
-		
-	
-		
-	/* (non-Javadoc)
-	 * @see org.kuali.student.git.tools.AbstractGitRespositoryTestCase#onBefore()
-	 */
-	@Override
-	protected void onBefore() throws IOException {
-		
-		revisionMapper = new SvnRevisionMapper(repo);
-		revisionMapper.initialize();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.kuali.student.git.tools.AbstractGitRespositoryTestCase#onAfter()
-	 */
-	@Override
-	protected void onAfter() throws Exception {
-		revisionMapper.shutdown();
 	}
 
 	@Test
@@ -248,11 +211,8 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		inserter.flush();
 		
-
-		revisionMapper.createRevisionMap(1L, new ArrayList<Ref>(repo.getRefDatabase().getRefs(Constants.R_HEADS).values()));
-		
-		ExternalModuleInfo branch1Externals = new ExternalModuleInfo("branch1", "branch1", 1);
-		ExternalModuleInfo branch2Externals = new ExternalModuleInfo("branch2", "branch2", 1);
+		ExternalModuleInfo branch1Externals = new ExternalModuleInfo("branch1", "branch1", 1, b1Id);
+		ExternalModuleInfo branch2Externals = new ExternalModuleInfo("branch2", "branch2", 1, b2Id);
 		
 		
 		ObjectReader objectReader = repo.newObjectReader();
@@ -260,7 +220,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		RevCommit aggregateCommit = rw.parseCommit(aggregateId);
 		
-		AnyObjectId fusedTreeId = SvnExternalsUtils.createFusedTree(objectReader, inserter, rw, aggregateCommit, Arrays.asList(new ExternalModuleInfo[] {branch1Externals, branch2Externals}), revisionMapper);
+		AnyObjectId fusedTreeId = SvnExternalsUtils.createFusedTree(objectReader, inserter, rw, aggregateCommit, Arrays.asList(new ExternalModuleInfo[] {branch1Externals, branch2Externals}));
 		
 		TreeWalk tw = new TreeWalk (objectReader);
 		

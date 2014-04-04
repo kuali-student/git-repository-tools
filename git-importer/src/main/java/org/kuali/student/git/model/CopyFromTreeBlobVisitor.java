@@ -24,12 +24,12 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.CopyFromOperation.OperationType;
-import org.kuali.student.git.model.GitTreeProcessor.GitTreeBlobVisitor;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMapResults;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
 
 /**
  * @author Kuali Student Team

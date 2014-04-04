@@ -1,4 +1,4 @@
-package org.kuali.student.git.model;
+package org.kuali.student.git.model.tree;
 
 import java.util.Comparator;
 

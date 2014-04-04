@@ -21,6 +21,7 @@ import java.io.IOException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.TreeWalk;
+import org.kuali.student.git.model.GitRepositoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

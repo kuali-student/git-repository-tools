@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
@@ -27,9 +28,9 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
+import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
-import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

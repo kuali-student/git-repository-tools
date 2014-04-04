@@ -36,7 +36,10 @@ import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
-import org.kuali.student.git.model.util.GitTreeDataUtils;
+import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -163,7 +166,7 @@ public class GitBranchData {
 	 * @param inserter
 	 * @return
 	 * @throws IOException
-	 * @see org.kuali.student.git.model.GitTreeData#buildTree(org.eclipse.jgit.lib.ObjectInserter)
+	 * @see org.kuali.student.git.model.tree.GitTreeData#buildTree(org.eclipse.jgit.lib.ObjectInserter)
 	 */
 	public ObjectId buildTree(ObjectInserter inserter) throws IOException {
 		return branchRoot.buildTree(inserter);

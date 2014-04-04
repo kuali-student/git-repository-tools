@@ -44,9 +44,9 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.kuali.student.git.model.BranchMergeInfo;
+import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
-import org.kuali.student.git.tools.GitRepositoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

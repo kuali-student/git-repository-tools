@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.tools;
+package org.kuali.student.svn.model;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,8 @@ import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
 import org.junit.After;
 import org.junit.Before;
-import org.kuali.student.git.model.GitTreeData;
+import org.kuali.student.git.model.GitRepositoryUtils;
+import org.kuali.student.git.model.tree.GitTreeData;
 
 /**
  * 

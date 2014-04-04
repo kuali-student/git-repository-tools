@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.importer.GitImporterMain;
-import org.kuali.student.git.tools.GitRepositoryUtils;
+import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.subversion.merge.SVNRepositoryUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

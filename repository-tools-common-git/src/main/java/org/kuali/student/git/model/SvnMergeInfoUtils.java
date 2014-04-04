@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.tools;
+package org.kuali.student.git.model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.common.io.IOUtils;
-import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
