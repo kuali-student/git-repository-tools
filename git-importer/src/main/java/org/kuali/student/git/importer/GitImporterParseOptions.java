@@ -626,10 +626,8 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 		private Date convertDate(String date) {
 
-			DateTime dt = SvnDumpDateFormatter
-					.parseDateTime(date);
-
-			LocalDateTime ldt = new LocalDateTime(dt);
+			LocalDateTime ldt = SvnDumpDateFormatter
+					.parseLocalDateTime(date);
 
 			Date d = ldt.toDate();
 

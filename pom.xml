@@ -20,7 +20,6 @@
 		<module>svn-history-tools</module>
 		<module>git-importer</module>
 		<module>repository-tools-common-git</module>
-		<module>fusion-maven-plugin</module>
 		<module>repository-tools-common-svn</module>
 		<module>repository-tools-common</module>
 		<module>git-importer-plugin-api</module>
