@@ -42,7 +42,13 @@ public class GitTreeData {
 
 	public static interface GitTreeDataVisitor {
 		
-		public void visitBlob (String path, String objectId);
+		/**
+		 * 
+		 * @param path
+		 * @param objectId
+		 * @return false if no more blobs should be visted
+		 */
+		public boolean visitBlob (String path, String objectId);
 		
 	}
 	public static class GitTreeNodeData {
@@ -359,8 +365,9 @@ public class GitTreeData {
 		existingTreeData.visit(new GitTreeDataVisitor() {
 			
 			@Override
-			public void visitBlob(String path, String objectId) {
+			public boolean visitBlob(String path, String objectId) {
 				GitTreeData.this.root.addBlob(path, objectId);
+				return true;
 			}
 		});
 		

@@ -16,12 +16,17 @@
 package org.kuali.student.git.model.tree.utils;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -40,11 +45,15 @@ public class GitTreeProcessor {
 	
 	private Repository repo;
 
+	private ObjectReader objectReader;
+
 	/**
 	 * 
 	 */
 	public GitTreeProcessor(Repository repo) {
 		this.repo = repo;
+		this.objectReader = repo.newObjectReader();
+		
 	}
 	
 	public static interface GitTreeBlobVisitor {
@@ -174,6 +183,19 @@ public class GitTreeProcessor {
 		}
 		
 		return false;
+		
+	}
+	
+	public ObjectLoader getBlob(ObjectId blobId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		
+		return objectReader.open(blobId, Constants.OBJ_BLOB);
+	}
+	
+	public List<String> getBlobAsStringLines(ObjectId blobId) throws MissingObjectException, IOException {
+		
+		ObjectLoader loader = getBlob(blobId);
+		
+		return IOUtils.readLines(loader.openStream());
 		
 	}
 

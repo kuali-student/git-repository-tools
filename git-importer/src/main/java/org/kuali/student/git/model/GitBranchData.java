@@ -35,8 +35,8 @@ import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
-import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.GitTreeData.GitTreeDataVisitor;
 import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.svn.model.ExternalModuleInfo;
@@ -83,6 +83,8 @@ public class GitBranchData {
 
 	private List<ExternalModuleInfo> externals = new ArrayList<>();
 
+	private SvnRevisionMapper revisionMapper;
+
 	/**
 	 * @param revision
 	 * @param branchPath
@@ -91,12 +93,13 @@ public class GitBranchData {
 	 * @param path
 	 * 
 	 */
-	public GitBranchData(String branchName, long revision, ILargeBranchNameProvider largeBranchNameProvider, GitTreeProcessor treeProcessor, BranchDetector branchDetector) {
+	public GitBranchData(String branchName, long revision, SvnRevisionMapper revisionMapper, GitTreeProcessor treeProcessor, BranchDetector branchDetector) {
+		this.revisionMapper = revisionMapper;
 		this.treeProcessor = treeProcessor;
 		this.branchDetector = branchDetector;
-		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, largeBranchNameProvider);
+		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, revisionMapper);
 		this.revision = revision;
-		this.branchName = GitBranchUtils.getCanonicalBranchName(this.branchPath, revision, largeBranchNameProvider);
+		this.branchName = GitBranchUtils.getCanonicalBranchName(this.branchPath, revision, revisionMapper);
 
 	}
 
@@ -239,6 +242,48 @@ public class GitBranchData {
 							+ ", merged count = " + mergedBlobCount);
 		}
 		
+		// load up any existing svn:mergeinfo data
+		List<BranchMergeInfo> existingMergeInfo = revisionMapper.getMergeBranches(this.revision-1L, this.branchName);
+		
+		if (existingMergeInfo != null && existingMergeInfo.size() > 0)
+			accumulateMergeInfo(existingMergeInfo);
+		
+		final List<ExternalModuleInfo> existingExternals = new ArrayList<>(5); 
+		
+		// load up any existing svn:externals data
+		existingTreeData.visit(new GitTreeDataVisitor() {
+			
+			@Override
+			public boolean visitBlob(String path, String objectId) {
+				
+				if (path.contains("/")) {
+					// only look in the base tree
+					return false;
+				}
+				
+				if (path.equals("fusion-maven-plugin.dat")) {
+				
+					try {
+						List<String> existingData = treeProcessor.getBlobAsStringLines(ObjectId.fromString(objectId));
+						
+						existingExternals.addAll(SvnExternalsUtils.extractFusionMavenPluginData(existingData));
+					} catch (MissingObjectException e) {
+						log.warn("failed to load fusion-maven-plugin.dat at ", e);
+					} catch (IOException e) {
+						log.warn("failed to load fusion-maven-plugin.dat at ", e);
+					}
+					
+					return false;
+					
+				}
+				else
+					return true;
+				
+			}
+		});
+
+		this.externals.addAll(existingExternals);
+		
 	}
 
 	public Set<ObjectId> getMergeParentIds() {
@@ -321,6 +366,17 @@ public class GitBranchData {
 	 */
 	public List<ExternalModuleInfo> getExternals() {
 		return Collections.unmodifiableList(externals);
+	}
+
+	public void clearMergeInfo() {
+
+		this.branchPathToMergeInfoMap.clear();
+	}
+
+	public void clearExternals() {
+		
+		this.externals.clear();
+		
 	}
 	
 	

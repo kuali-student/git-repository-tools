@@ -15,8 +15,10 @@
  */
 package org.kuali.student.git.model;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -87,7 +89,41 @@ public class SvnExternalsUtils {
 		return extractExternalModuleInfoFromString(revision, repositoryPrefixPath, builder.toString());
 	}
 	
-	public static String createFusionMavenPluginDataFileString(long currentRevision, Repository repo, 
+	public static interface IBranchHeadProvider {
+		
+		public ObjectId getBranchHeadObjectId(String branchName);
+		
+	}
+	
+	public static String createFusionMavenPluginDataFileString (long currentRevision, final Repository repo, List<ExternalModuleInfo>externals, ILargeBranchNameProvider largeBranchNameProvider) {
+		return createFusionMavenPluginDataFileString(currentRevision, new IBranchHeadProvider() {
+			
+			@Override
+			public ObjectId getBranchHeadObjectId(String branchName) {
+				
+				ObjectId branchHead = null;
+				try {
+
+					// use the branch head
+					Ref branchRef = repo.getRef(Constants.R_HEADS + branchName);
+
+					if (branchRef != null)
+						branchHead = branchRef.getObjectId();
+					else {
+						log.warn(
+								"createFusionMavenPliginDataFileString failed to resolve branch for: {}",
+								branchName);
+					}
+					
+				} catch (IOException e) {
+					// intentionally fall through
+				}
+				
+				return branchHead;
+			}
+		}, externals, largeBranchNameProvider);
+	}
+	public static String createFusionMavenPluginDataFileString(long currentRevision, IBranchHeadProvider branchHeadProvider, 
 			List<ExternalModuleInfo> externals, ILargeBranchNameProvider largeBranchNameProvider) {
 		
 		StringBuilder builder = new StringBuilder();
@@ -102,24 +138,7 @@ public class SvnExternalsUtils {
 			
 			String branchName = GitBranchUtils.getCanonicalBranchName(externalBranchPath, externalRevision, largeBranchNameProvider);
 			
-			ObjectId branchHead = null;
-			
-			try {
-
-				// use the branch head
-				Ref branchRef = repo.getRef(Constants.R_HEADS + branchName);
-
-				if (branchRef != null)
-					branchHead = branchRef.getObjectId();
-				else {
-					log.warn(
-							"createFusionMavenPliginDataFileString failed to resolve branch for: {}",
-							branchName);
-				}
-				
-			} catch (IOException e) {
-				// intentionally fall through
-			}
+			ObjectId branchHead = branchHeadProvider.getBranchHeadObjectId(branchName);
 			
 			if (branchHead != null) {
 				// store the branch head		
@@ -133,7 +152,58 @@ public class SvnExternalsUtils {
 		return builder.toString();
 	}
 	
+	public static List<ExternalModuleInfo> extractFusionMavenPluginData(InputStream input) throws IOException {
+		
+		List<String>lines = org.apache.commons.io.IOUtils.readLines(input);
+		
+		return extractFusionMavenPluginData(lines);
+		
+	}
+	public static List<ExternalModuleInfo> extractFusionMavenPluginData(List<String>lines) {
+		
+		List<ExternalModuleInfo>externals = new ArrayList<>();
+
+		for (int i = 0; i < lines.size(); i += 2) {
+			
+			String commentLine = lines.get(i);
+			
+			String commentParts[] = commentLine.split("revision = ");
+			
+			String branchPathParts[] = commentParts[0].split("branch Path = ");
+			
+			String branchPath = branchPathParts[1].trim();
+			
+			String revisionString = commentParts[1].trim();
+			
+			String dataLine = lines.get(i+1);
+			
+			String dataParts[] = dataLine.split("::");
+			
+			String moduleName = dataParts[0].trim();
+			
+			String branchHeadObjectId = dataParts[2];
+			
+			ExternalModuleInfo emi = new ExternalModuleInfo(moduleName, branchPath, Long.parseLong(revisionString));
+			
+			if (!branchHeadObjectId.equals("UNKNOWN")) {
+				emi.setBranchHeadId(ObjectId.fromString(branchHeadObjectId));	
+			}
+			
+			externals.add(emi);
+		}
+		
+		return externals;
+		
+	}
 	
+	/**
+	 * Extract from the svn:externals format string
+	 * 
+	 * @param revision
+	 * @param repositoryPrefixPath
+	 * @param inputString
+	 * @return
+	 */
 	public static List<ExternalModuleInfo>extractExternalModuleInfoFromString (long revision, String repositoryPrefixPath, String inputString) {
 	
 		boolean securePrefixPath = false;

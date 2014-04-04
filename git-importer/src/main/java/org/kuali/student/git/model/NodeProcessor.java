@@ -259,6 +259,21 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			return null;
 		}
 		
+		/*
+		 * Check if there are any known branches that contain this path.
+		 * 
+		 * One case if the svn:externals exists on the path so we create a branch.
+		 * 
+		 * The branch detector will still veto for blob adds so we just do a quick check before defaulting to the first part branch naming strategy.
+		 */
+		
+		for (GitBranchData data : this.knownBranchMap.values()) {
+			
+			if (path.startsWith(data.getBranchPath())) {
+				return data;
+			}
+		}
+		
 		String firstPart = path.substring(0, firstSlashIndex);
 		
 		String branchName = GitBranchUtils.getCanonicalBranchName(firstPart, currentRevision, largeBranchNameProvider);
@@ -288,8 +303,6 @@ public class NodeProcessor implements IGitBranchDataProvider {
 							contentLength);
 			
 			if (revisionProperties.containsKey(SVN_MERGEINFO_PROPERTY_KEY)) {
-				//debugging breakpoint
-				log.debug("");
 				
 				if (data != null) {
 					
@@ -297,6 +310,9 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					
 					if (mergeInfoString.length() > 0)
 						data.accumulateMergeInfo(SvnMergeInfoUtils.extractBranchMergeInfoFromString(branchDetector, mergeInfoString));
+					else {
+						data.clearMergeInfo();
+					}
 				}
 			}
 			
@@ -312,7 +328,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					if (data == null) {
 						
 						/*
-						 * not detected as a branch but externals makes it a branch
+						 * not detected as a branch but externals makes it a branch.
+						 * 
 						 */
 						String branchName = GitBranchUtils.getCanonicalBranchName(path, revision, largeBranchNameProvider);
 						
@@ -325,7 +342,12 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					data.setExternals(externals);
 					
 				}
+				else {
+					if (data != null)
+						data.clearExternals();
+				}
 			}
+			
 			
 			nodeProperties.putAll(revisionProperties);
 			
@@ -344,7 +366,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 		if (data == null) {
 			data = new GitBranchData(branchName, revision,
-					largeBranchNameProvider, treeProcessor, branchDetector);
+					revisionMapper, treeProcessor, branchDetector);
 
 			/*
 			 * If the branch already exists lets copy its commit tree as the

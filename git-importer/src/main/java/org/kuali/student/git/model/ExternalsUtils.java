@@ -57,11 +57,12 @@ public class ExternalsUtils {
 				
 				for (ExternalModuleInfo external : externals) {
 					
-					external.getBranchPath();
-					
 					int indexOfDependentBranch = indexOf(results, data.getBranchPath());						
 					
 					int indexOfCurrentExternal = indexOf (results, external.getBranchPath());
+					
+					if (indexOfDependentBranch == -1 || indexOfCurrentExternal == -1)
+						continue; // skip over any case where the external isn't represented in the current branches to be committed.
 					
 					if (indexOfDependentBranch < indexOfCurrentExternal) {
 						// remove the dependent branch and insert it after the current external.

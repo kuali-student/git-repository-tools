@@ -1,0 +1,10 @@
+# module = http://svn.kuali.org/repos/student/enrollment/ks-api/branches/services branch Path = ks-api revision = 35680
+http://svn.kuali.org/repos/student/enrollment/ks-api/branches/services::ks-api::UNKNOWN
+# module = http://svn.kuali.org/repos/student/enrollment/ks-core/branches/services branch Path = ks-core revision = 35680
+http://svn.kuali.org/repos/student/enrollment/ks-core/branches/services::ks-core::UNKNOWN
+# module = http://svn.kuali.org/repos/student/enrollment/ks-lum/branches/services branch Path = ks-lum revision = 35680
+http://svn.kuali.org/repos/student/enrollment/ks-lum/branches/services::ks-lum::UNKNOWN
+# module = http://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/services branch Path = ks-enroll revision = 35680
+http://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/services::ks-enroll::UNKNOWN
+# module = http://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/services branch Path = ks-deployments revision = 35680
+http://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/services::ks-deployments::UNKNOWN

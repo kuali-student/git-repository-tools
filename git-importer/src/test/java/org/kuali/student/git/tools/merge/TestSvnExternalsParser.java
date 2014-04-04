@@ -17,13 +17,18 @@ package org.kuali.student.git.tools.merge;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.SvnExternalsUtils.IBranchHeadProvider;
 import org.kuali.student.git.model.branch.AbstractBranchDetectorTest;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,10 +69,44 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 		
 		Assert.assertEquals(43000, external.getRevision());
 		
-		log.debug("");
+		String reversedFusionDataFile = SvnExternalsUtils.createFusionMavenPluginDataFileString(43000L, new IBranchHeadProvider() {
+			
+			@Override
+			public ObjectId getBranchHeadObjectId(String branchName) {
+				return null;
+			}
+		}, externalsList, new LargeBranchNameProviderMapImpl());
+
+		List<ExternalModuleInfo> reversedExternals = SvnExternalsUtils.extractFusionMavenPluginData(Arrays.asList(reversedFusionDataFile.split("\\n")));
 		
+		Assert.assertEquals(externalsList.size(), reversedExternals.size());
+		
+		for (int i = 0; i < externalsList.size(); i++) {
+			
+			ExternalModuleInfo expectedExternal = externalsList.get(i);
+			
+			ExternalModuleInfo actualExternal = reversedExternals.get(i);
+			
+			Assert.assertEquals(expectedExternal.getBranchPath(), actualExternal.getBranchPath());
+			Assert.assertEquals(expectedExternal.getModuleName(), actualExternal.getModuleName());
+			Assert.assertEquals(expectedExternal.getRevision(), actualExternal.getRevision());
+		}
 		
 	}
 	
+	
+	@Test
+	public void testParseFusionMavenPluginsDat () throws IOException {
+		
+		FileInputStream input = new FileInputStream("src/test/resources/fusion-maven-plugin.dat");
+
+		List<ExternalModuleInfo> externalsList = SvnExternalsUtils.extractFusionMavenPluginData(input);
+		
+		Assert.assertNotNull("externals are null", externalsList);
+		
+		Assert.assertEquals(5, externalsList.size());
+		
+		
+	}
 
 }

@@ -46,8 +46,10 @@ public final class GitTreeDataUtils {
 		 * @see org.kuali.student.git.model.GitTreeData.GitTreeDataVisitor#visitBlob(java.lang.String, java.lang.String)
 		 */
 		@Override
-		public void visitBlob(String name, String objectId) {
+		public boolean visitBlob(String name, String objectId) {
 			counter.addAndGet(1);
+			
+			return true;
 		}
 
 		/**
