@@ -333,7 +333,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					
 					ObjectId parentId = data.getParentId();
 					
-					if (data.getBlobsAdded() == 0 && parentId != null) {
+					if (data.getBlobsAdded() == 0 && !data.isBlobsDeleted() && parentId != null) {
 						
 						RevCommit parentCommit = rw.parseCommit(parentId);
 						
