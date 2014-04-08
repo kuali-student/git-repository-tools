@@ -90,6 +90,13 @@ public class TestGitTreeData extends AbstractGitRespositoryTestCase {
 		
 		storeFile(inserter, nextCommitBase, "src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeDefinition.java", Double.valueOf(Math.random()).toString());
 		
+		String blobId = nextCommitBase.find("src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeDefinition.java");
+		
+		Assert.assertNotNull(blobId);
+		
+		blobId = nextCommitBase.find("src/main/java/org/kuali/student/poc/xsd/personidentity/person");
+		
+		Assert.assertNull(blobId);
 
 		storeFile(inserter, nextCommitBase, "src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java", Double.valueOf(Math.random()).toString());
 		

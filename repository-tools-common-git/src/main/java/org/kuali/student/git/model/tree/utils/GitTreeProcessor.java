@@ -215,7 +215,12 @@ public class GitTreeProcessor {
 	 * @throws IncorrectObjectTypeException
 	 * @throws IOException
 	 */
+	
 	public GitTreeData extractExistingTreeData(ObjectId parentId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		return extractExistingTreeData(parentId, false);
+	}
+	
+	public GitTreeData extractExistingTreeData(ObjectId parentId, boolean shallow) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		
 		GitTreeData treeData = new GitTreeData();
 
@@ -242,9 +247,13 @@ public class GitTreeProcessor {
 			
 			if (fileMode.equals(FileMode.TREE)) {
 				
-				treeData.addTree(path, objectId);
+				if (!shallow) {
 				
-				tw.enterSubtree();
+					treeData.addTree(path, objectId);
+				
+					tw.enterSubtree();
+				
+				}
 			}
 			else if (fileMode.equals(FileMode.REGULAR_FILE)) {
 				treeData.addBlob(path, objectId.name());

@@ -394,6 +394,35 @@ public class GitTreeData {
 				leaf.addTree(parts, partOffset+1, treeId);
 			}
 		}
+
+		public String find(String path) {
+			
+			String parts[] = path.split("/");
+			
+			GitTreeNodeData currentNode = this;
+			
+			int uptoFile = parts.length-1;
+			
+			for (int i = 0; i < uptoFile; i++) {
+				
+				String name = parts[i];
+				
+				GitTreeNodeData nextNode = currentNode.subTreeReferences.get(name);
+				
+				if (nextNode == null) {
+					return null;
+				}
+				else
+					currentNode = nextNode;
+
+			}
+
+			String filePart = parts[uptoFile];
+			
+			return currentNode.blobReferences.get(filePart);
+			
+		}
+		
 		
 	}
 	
@@ -501,6 +530,10 @@ public class GitTreeData {
 	 */
 	public void resetDirtyFlag() {
 		root.resetDirtyFlag();
+	}
+
+	public String find(String path) {
+		return root.find(path);
 	}
 	
 	

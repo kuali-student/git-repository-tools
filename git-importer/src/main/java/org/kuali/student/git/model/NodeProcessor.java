@@ -44,8 +44,10 @@ import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
+import org.kuali.student.git.model.util.GitBranchDataUtils;
 import org.kuali.student.subversion.SvnDumpFilter;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
@@ -678,6 +680,25 @@ public class NodeProcessor implements IGitBranchDataProvider {
 						deleteBranch(data.getBranchName(), currentRevision);
 
 						data.reset();
+					}
+					
+					if (copyFromBranches.size() == 1) {
+						// this is a new branch copied from the old branch
+						// copy the svn:externals and svn:mergeinfo data aswell.
+						SvnRevisionMapResults results = copyFromBranches.get(0);
+						
+						if (results != null && results.getSubPath() != null && results.getSubPath().length() == 0) {
+							
+							GitBranchDataUtils.extractAndStoreBranchMerges(results.getRevMap().getRevision(), results.getRevMap().getBranchName(), data, revisionMapper);
+							
+							ObjectId parentId = ObjectId.fromString(results.getRevMap().getCommitId());
+							
+							// make a shallow copy of the parent tree.  only the blobs in the root directory
+							GitTreeData parentTreeData = treeProcessor.extractExistingTreeData(parentId, true);
+							
+							GitBranchDataUtils.extractExternalModules(parentTreeData, data, treeProcessor);
+							
+						}
 					}
 					
 				}

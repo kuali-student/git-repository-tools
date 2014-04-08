@@ -31,14 +31,13 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
-import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
-import org.kuali.student.git.model.tree.GitTreeData.GitTreeDataVisitor;
 import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
+import org.kuali.student.git.model.util.GitBranchDataUtils;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,11 +143,12 @@ public class GitBranchData {
 		initialize();
 		
 		blobsAdded.addAndGet(1L);
-
-		BranchData db = branchDetector.parseBranch(revision, path);
-
-		String filePath = db.getPath();
-
+		
+		String filePath = path.substring(this.branchPath.length());
+		
+		if (filePath.startsWith("/"));
+			filePath = filePath.substring(1);
+			
 		if (filePath.length() == 0) {
 			String errorMessage = String.format ("trying to index an empty file path.  Revision = %d, Path = %s, File Path = %s, blobId = %s, ", revision, path, filePath, blobSha1);
 			
@@ -221,49 +221,13 @@ public class GitBranchData {
 
 		this.branchRoot.resetDirtyFlag();
 
-		// load up any existing svn:mergeinfo data
-		List<BranchMergeInfo> existingMergeInfo = revisionMapper.getMergeBranches(this.revision-1L, this.branchName);
+		GitBranchDataUtils.extractAndStoreBranchMerges(this.revision-1L, this.branchName, this, revisionMapper);
 		
-		if (existingMergeInfo != null && existingMergeInfo.size() > 0)
-			accumulateMergeInfo(existingMergeInfo);
-		
-		final List<ExternalModuleInfo> existingExternals = new ArrayList<>(5); 
-		
-		// load up any existing svn:externals data
-		this.branchRoot.visit(new GitTreeDataVisitor() {
-			
-			@Override
-			public boolean visitBlob(String path, String objectId) {
-				
-				if (path.contains("/")) {
-					// only look in the base tree
-					return false;
-				}
-				
-				if (path.equals("fusion-maven-plugin.dat")) {
-				
-					try {
-						List<String> existingData = treeProcessor.getBlobAsStringLines(ObjectId.fromString(objectId));
-						
-						existingExternals.addAll(SvnExternalsUtils.extractFusionMavenPluginData(existingData));
-					} catch (MissingObjectException e) {
-						log.warn("failed to load fusion-maven-plugin.dat at ", e);
-					} catch (IOException e) {
-						log.warn("failed to load fusion-maven-plugin.dat at ", e);
-					}
-					
-					return false;
-					
-				}
-				else
-					return true;
-				
-			}
-		});
-
-		this.externals.addAll(existingExternals);
+		GitBranchDataUtils.extractExternalModules(this.branchRoot, this, treeProcessor);
 		
 	}
+	
+	
 
 	public Set<ObjectId> getMergeParentIds() {
 

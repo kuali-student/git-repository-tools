@@ -642,6 +642,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			} catch (IOException e) {
 				throw new RuntimeException("onNodeContentLength: exception", e);
 			} catch (VetoBranchException e) {
+				log.warn("onNodeContentLength: vetoed: ", e);
 				vetoLog.println(String.format("onNodeContentLength: vetoed %s at %d", path, currentRevision));
 			}
 			
