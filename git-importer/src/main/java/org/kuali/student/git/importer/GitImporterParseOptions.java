@@ -56,6 +56,7 @@ import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
+import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.utils.GitImporterDateUtils;
 import org.kuali.student.subversion.AbstractParseOptions;
 import org.kuali.student.subversion.model.INodeFilter;
@@ -401,31 +402,14 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 						fullBranchNameReference = Constants.R_HEADS + revisionMapper.storeLargeBranchName(fullBranchNameReference, currentRevision);
 					}
 					
-					RefUpdate update = repo
-							.updateRef(fullBranchNameReference);
-
-					update.setNewObjectId(commitId);
-					update.setRefLogMessage(
-							"created new branch "
-									+ fullBranchNameReference,
-							true);
+					
 
 					if (repo.getRefDatabase().isNameConflicting(fullBranchNameReference)) {
 						log.warn(fullBranchNameReference  + " is conflicting with an existing reference.");
 					}
 					
-					Result result = update.forceUpdate();
-
-					if (result == null
-							|| !(result.equals(Result.NEW)
-									|| result
-											.equals(Result.FORCED) || result
-										.equals(Result.FAST_FORWARD))) {
-						throw new RuntimeException(
-								"failed to create new branch: "
-										+ fullBranchNameReference);
-					}
-					Ref ref = repo.getRef(fullBranchNameReference);
+					
+					Ref ref = GitRefUtils.createOrUpdateBranch(repo, fullBranchNameReference, commitId);
 
 					ObjectId refObjectId = ref.getObjectId();
 

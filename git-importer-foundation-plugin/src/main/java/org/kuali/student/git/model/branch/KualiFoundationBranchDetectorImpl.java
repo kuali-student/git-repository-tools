@@ -19,6 +19,7 @@ package org.kuali.student.git.model.branch;
 import org.apache.commons.lang3.StringUtils;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 
 
 
@@ -67,7 +68,7 @@ public class KualiFoundationBranchDetectorImpl implements BranchDetector {
 
 		if (!(isPathValidBranchTagOrTrunk(path))) {
 			
-			if (path.startsWith(RICE_IMPEX_RICE_IMPEX_MASTER_1_0_3)) {
+			if (GitBranchUtils.startsWith(path, RICE_IMPEX_RICE_IMPEX_MASTER_1_0_3)) {
 				return buildBranchData(revision, path, RICE_IMPEX_RICE_IMPEX_MASTER_1_0_3);
 			}
 

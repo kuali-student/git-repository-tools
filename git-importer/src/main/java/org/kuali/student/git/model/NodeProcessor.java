@@ -432,6 +432,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				copyFromBranchData = branchDetector.parseBranch(
 						copyFromRevision, copyFromPath);
 			} catch (VetoBranchException e1) {
+				
+				// check the default branch
 				log.warn(copyFromPath + " vetoed");
 				vetoLog.println(String
 						.format("detect merge vetoed CurrentRevision: %s, Branch: %s, CopyFromRevision: %s",

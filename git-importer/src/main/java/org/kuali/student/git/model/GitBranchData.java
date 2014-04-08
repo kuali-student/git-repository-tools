@@ -133,7 +133,7 @@ public class GitBranchData {
 			throws VetoBranchException, MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 
 		
-		if (!path.startsWith(this.branchPath)) {
+		if (!path.startsWith(this.branchPath + "/")) {
 			String errorMessage = String.format("blob absolute path(%s) does not match this branch (%s)", path, this.branchName);
 			log.error(errorMessage);
 			blobLog.println(errorMessage);

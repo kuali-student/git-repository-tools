@@ -121,6 +121,35 @@ public class GitBranchUtils {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Parts based comparison to make sure that whole parts from path match whole parts from the prefix.
+	 * 
+	 * @param path
+	 * @param prefix
+	 * @return
+	 */
+	public static boolean startsWith (String path, String prefix) {
+		
+		String[] pathParts = path.split("\\/");
+		String[] prefixParts = prefix.split("\\/");
+		
+		if (pathParts.length < prefixParts.length)
+			return false;
+		
+		// prefixParts.length can be < pathParts.length just not the other way.
+		
+		for (int i = 0; i < prefixParts.length; i++) {
+			
+			String pathPart = pathParts[i];
+			String prefixPart = prefixParts[i];
+			
+			if (!pathPart.equals(prefixPart))
+				return false;
+		}
+		
+		
+		return true;
+	}
 	public static interface ILargeBranchNameProvider {
 
 		/**
