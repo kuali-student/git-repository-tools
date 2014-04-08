@@ -63,7 +63,7 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 		
 		Date d = GitImporterDateUtils.convertDateString(dateString);
 		
-		assertDateEquals (d, 2008, 03, 26, 14, 40);
+		assertDateEquals (d, 2008, 03, 26, 10, 40);
 		
 		Assert.assertEquals("EDT", GitImporterDateUtils.getTimeZoneShortFormName(d));
 		
@@ -71,7 +71,7 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 		
 		 d = GitImporterDateUtils.convertDateString(dateString);
 			
-		assertDateEquals (d, 2011, 02, 21, 14, 55);
+		assertDateEquals (d, 2011, 02, 21, 9, 55);
 		
 		Assert.assertEquals("EST", GitImporterDateUtils.getTimeZoneShortFormName(d));
 		
@@ -79,7 +79,7 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 		
 		d = GitImporterDateUtils.convertDateString(dateString);
 			
-		assertDateEquals (d, 2011, 02, 21, 15, 59);
+		assertDateEquals (d, 2011, 02, 21, 10, 59);
 		
 		Assert.assertEquals("EST", GitImporterDateUtils.getTimeZoneShortFormName(d));
 
@@ -87,7 +87,15 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 		
 		d = GitImporterDateUtils.convertDateString(dateString);
 		
-		assertDateEquals (d, 2014, 04, 01, 18, 04);
+		assertDateEquals (d, 2014, 04, 01, 14, 04);
+		
+		Assert.assertEquals("EDT", GitImporterDateUtils.getTimeZoneShortFormName(d));
+		
+		dateString = "2013-07-12T09:31:34.833911Z";
+		
+		d = GitImporterDateUtils.convertDateString(dateString);
+		
+		assertDateEquals (d, 2013, 07, 12, 05, 31);
 		
 		Assert.assertEquals("EDT", GitImporterDateUtils.getTimeZoneShortFormName(d));
 		

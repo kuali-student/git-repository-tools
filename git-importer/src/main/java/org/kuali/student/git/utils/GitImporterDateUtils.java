@@ -12,6 +12,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.tz.DateTimeZoneBuilder;
 
 /**
  * @author ocleirig
@@ -31,7 +32,9 @@ public final class GitImporterDateUtils {
 		
 		LocalDateTime ldt = formatter.parseLocalDateTime(svnDumpDateFormattedString);
 
-		Date d = ldt.toDate();
+		DateTime dt = ldt.toDateTime(DateTimeZone.UTC).toDateTime(DateTimeZone.getDefault());
+		
+		Date d = dt.toDate();
 		
 		return d;
 	}
