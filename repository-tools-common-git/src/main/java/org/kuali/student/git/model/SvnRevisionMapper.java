@@ -28,6 +28,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -190,12 +192,50 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 	private long endOfRevisionBranchMergeDataFileInBytes;
 	
-	private TreeMap<String, Map<String, RevisionMapOffset>>revionMergeMap = new TreeMap<>();
+	private TreeMap<String, Map<String, RevisionMapOffset>>revisionMergeMap = new TreeMap<>();
 
 	private GitTreeProcessor treeProcessor;
 
-	
+	private static Comparator<? super String> STRING_LONG_VALUE_COMPARATOR = new Comparator<String>() {
 
+		@Override
+		public int compare(String o1, String o2) {
+			Long l1 = Long.valueOf(o1);
+			Long l2 = Long.valueOf(o2);
+			
+			return l1.compareTo(l2);
+		}
+		
+		
+	};
+
+	private class MergeDataOffsetProvider implements RevisionMapOffsetProvider {
+
+		private long revision;
+		private String targetBranch;
+
+		/**
+		 * 
+		 */
+		public MergeDataOffsetProvider(long revision, String targetBranch) {
+			super();
+			this.revision = revision;
+			this.targetBranch = targetBranch;
+		}
+		
+		@Override
+		public RevisionMapOffset getRevisionMapOffset() {
+			
+			Map<String, RevisionMapOffset> map = revisionMergeMap.get(String.valueOf(revision));
+			
+			if (map == null)
+				return null;
+			
+			return map.get(targetBranch);
+			
+		}
+		
+	}
 	
 	/**
 	 * 
@@ -299,11 +339,11 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 	
 	private Map<String, RevisionMapOffset> getRevisionMergeDataByTargetBranch(String revisionString, boolean createIfDoesNotExist) {
 
-		Map<String, RevisionMapOffset>targetBranchOffsetMap = revionMergeMap.get(revisionString);
+		Map<String, RevisionMapOffset>targetBranchOffsetMap = revisionMergeMap.get(revisionString);
 		
 		if (targetBranchOffsetMap == null && createIfDoesNotExist) {
 			targetBranchOffsetMap = new HashMap<String, SvnRevisionMapper.RevisionMapOffset>();
-			revionMergeMap.put(revisionString, targetBranchOffsetMap);
+			revisionMergeMap.put(revisionString, targetBranchOffsetMap);
 		}
 		
 		return targetBranchOffsetMap;
@@ -500,20 +540,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 	}
 	
 	private InputStream getMergeDataInputStream(final long revision, final String targetBranch) throws IOException {
-		return getInputStream(new RevisionMapOffsetProvider() {
-			
-			@Override
-			public RevisionMapOffset getRevisionMapOffset() {
-				
-				Map<String, RevisionMapOffset> map = revionMergeMap.get(String.valueOf(revision));
-				
-				if (map == null)
-					return null;
-				
-				return map.get(targetBranch);
-				
-			}
-		}, revisionBranchMergeDataRandomAccessFile);
+		return getInputStream(new MergeDataOffsetProvider(revision, targetBranch), revisionBranchMergeDataRandomAccessFile);
 	}
 	
 	private static interface RevisionMapOffsetProvider {
@@ -654,7 +681,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		 */
 		String candidateBranchPath = revMap.getBranchPath().substring(Constants.R_HEADS.length());
 		
-		if (candidateBranchPath.startsWith(copyFromPath))
+		if (GitBranchUtils.startsWith (candidateBranchPath, copyFromPath))
 			return new SvnRevisionMapResults (revMap); // the common case
 		
 		String candidateBranchParts[] = candidateBranchPath.split("\\/");
@@ -964,6 +991,74 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		
 		// no matches found.
 		return new HashSet<>();
+		
+	}
+
+	public void truncateTo(long longRevision) throws IOException {
+		
+		Map<String, RevisionMapOffset> branchOffsets = revisionMergeMap.get(longRevision);
+		
+		long maxEndOfFile = endOfRevisionBranchMergeDataFileInBytes;
+		
+		if (branchOffsets != null) {
+			for (RevisionMapOffset candidateOffset : branchOffsets.values()) {
+				
+				long candidateEndOfFile = candidateOffset.getStartBtyeOffset() + candidateOffset.getTotalBytes();
+				
+				if (candidateEndOfFile > maxEndOfFile)
+					maxEndOfFile = candidateEndOfFile;
+			}
+		}
+		
+		RevisionMapOffset revisionMapOffset = revisionMap.get(String.valueOf(longRevision));
+		
+		long revMapEndOfFile = revisionMapOffset.getStartBtyeOffset() + revisionMapOffset.getTotalBytes();
+		
+		// now do the truncate
+		
+		endOfRevisionBranchMergeDataFileInBytes = maxEndOfFile;
+		endOfRevisionMapDataFileInBytes = revMapEndOfFile;
+		
+		revisionBranchMergeDataRandomAccessFile.setLength(endOfRevisionBranchMergeDataFileInBytes);
+		
+		revisionMapDataRandomAccessFile.setLength(endOfRevisionMapDataFileInBytes);
+		
+		// reset the indices
+		
+		List<String>revisions = new ArrayList<>();
+		
+		revisions.addAll(this.revisionMergeMap.keySet());
+		
+		Collections.sort(revisions, STRING_LONG_VALUE_COMPARATOR);
+		
+		
+		int targetRevisionIndex = revisions.indexOf(String.valueOf(longRevision));
+		
+		
+		Set<String>keysToRemove = new HashSet<>(revisions.subList(targetRevisionIndex+1, revisions.size()));
+		
+		
+		for (String key : keysToRemove) {
+
+			this.revisionMergeMap.remove(key);
+			
+		}
+		
+		revisions = new ArrayList<>(this.revisionMap.keySet());
+		
+		Collections.sort(revisions, STRING_LONG_VALUE_COMPARATOR);
+		
+		
+		targetRevisionIndex = revisions.indexOf(String.valueOf(longRevision));
+		
+		
+		keysToRemove = new HashSet<>(revisions.subList(targetRevisionIndex+1, revisions.size()));
+		
+		for (String key : keysToRemove) {
+
+			this.revisionMap.remove(key);
+			
+		}
 		
 	}
 

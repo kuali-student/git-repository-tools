@@ -44,6 +44,7 @@ import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.exception.InvalidBlobChangeException;
 import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
@@ -64,6 +65,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 	private static final String SVN_MERGEINFO_PROPERTY_KEY = "svn:mergeinfo";
 
 	private static final String DELETE_ACTION = "delete";
+
+	private static final String REPLACE_ACTION = "replace";
 
 	private static final String CHANGE_ACTION = "change";
 
@@ -138,12 +141,15 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		BranchData branchData = null;
 		try {
 			branchData = branchDetector.parseBranch(currentRevision, path);
-			
-			if (kind != null && kind.equals(FILE_KIND) && branchData.getPath().length() == 0)
-				throw new VetoBranchException("A file add or change requires part of the path to be a subpath in the branch.");
-			
+
+			if (kind != null && kind.equals(FILE_KIND)
+					&& branchData.getPath().length() == 0)
+				throw new VetoBranchException(
+						"A file add or change requires part of the path to be a subpath in the branch.");
+
 		} catch (VetoBranchException e) {
 			validBranch = false;
+
 		}
 
 		if (validBranch) {
@@ -167,10 +173,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		if (validBranch) {
 			data = getBranchData(GitBranchUtils.getCanonicalBranchName(
 					branchData.getBranchPath(), currentRevision,
-					largeBranchNameProvider),
-					currentRevision);
+					largeBranchNameProvider), currentRevision);
 		}
-		
 
 		if (ADD_ACTION.equals(action)) {
 
@@ -182,22 +186,24 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				 */
 
 				if (!validBranch) {
-					// an add on an invalid branch means we have a gap and the path should be stored in a default branch
+					// an add on an invalid branch means we have a gap and the
+					// path should be stored in a default branch
 					// for now this will be the first directory in the path.
-					
+
 					data = getDefaultBranchData(path, currentRevision);
 				}
-				
+
 				if (data != null)
 					applyBlobAdd(data, path, currentRevision, nodeProperties);
 
 			} else if (DIR_KIND.equals(kind)) {
-				
+
 				/*
 				 * We care if the directory was copied from somewhere else
 				 */
-				
-				loadRevisionProperties(currentRevision, data, path, nodeProperties);
+
+				loadRevisionProperties(currentRevision, data, path,
+						nodeProperties);
 
 				applyDirectoryAdd(data, path, currentRevision, nodeProperties);
 
@@ -215,16 +221,75 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 				if (!validBranch)
 					data = getDefaultBranchData(path, currentRevision);
-				
+
 				if (data != null)
 					applyBlobAdd(data, path, currentRevision, nodeProperties);
 
 			} else if (DIR_KIND.equals(kind)) {
-				loadRevisionProperties(currentRevision, data, path, nodeProperties);
+				loadRevisionProperties(currentRevision, data, path,
+						nodeProperties);
 			} else {
 				// skip this case
 			}
 
+		} else if (REPLACE_ACTION.equals(action)) {
+
+			/*
+			 * Copy of add action section to start with.
+			 */
+			if (FILE_KIND.equals(kind)) {
+
+				log.info("file replace on " + path);
+
+				if (validBranch) {
+
+					deletePath(data, currentRevision, path);
+				}
+
+				/*
+				 * No content length means we add the blob from the copy from
+				 * revision
+				 */
+
+				if (!validBranch) {
+					// an add on an invalid branch means we have a gap and the
+					// path should be stored in a default branch
+					// for now this will be the first directory in the path.
+
+					data = getDefaultBranchData(path, currentRevision);
+				}
+
+				if (data != null)
+					applyBlobAdd(data, path, currentRevision, nodeProperties);
+
+			} else if (DIR_KIND.equals(kind)) {
+
+				log.info("directory replace on " + path);
+
+				if (validBranch) {
+
+					deletePath(data, currentRevision, path);
+				}
+				/*
+				 * not a known branch so we need to apply this delete to all
+				 * branches starting with the path provided.
+				 * 
+				 * This may also be a branch delete step.
+				 */
+				deleteBranches(data, path, currentRevision);
+
+				/*
+				 * We care if the directory was copied from somewhere else
+				 */
+
+				loadRevisionProperties(currentRevision, data, path,
+						nodeProperties);
+
+				applyDirectoryAdd(data, path, currentRevision, nodeProperties);
+
+			} else {
+				// skip this case
+			}
 		} else if (DELETE_ACTION.equals(action)) {
 			/*
 			 * We make no distinction between file and directory deletes.
@@ -234,141 +299,169 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			if (validBranch) {
 
 				deletePath(data, currentRevision, path);
-			} else {
-				/*
-				 * not a known branch so we need to apply this delete to all
-				 * branches starting with the path provided.
-				 * 
-				 * This may also be a branch delete step.
-				 */
-				deleteBranches(data, path, currentRevision);
 			}
+			/*
+			 * not a known branch so we need to apply this delete to all
+			 * branches starting with the path provided.
+			 * 
+			 * This may also be a branch delete step.
+			 */
+			deleteBranches(data, path, currentRevision);
 		}
 	}
 
 	/*
 	 * This is called if we didn't find a branch through the normal route.
 	 * 
-	 * We don't want to loose blobs so we will instead create a branch based on the first path part and then use that.
-	 * 
+	 * We don't want to loose blobs so we will instead create a branch based on
+	 * the first path part and then use that.
 	 */
-	private GitBranchData getDefaultBranchData(String path, long currentRevision) {
-		
+	private GitBranchData getDefaultBranchData(String path, long currentRevision)
+			throws IOException {
+
+		// First check if there is an existing branch that equals or contains
+		// the path given
+
+		String branchPart = GitBranchUtils.extractBranchPath(repo, path);
+
+		if (branchPart != null) {
+			String branchName = GitBranchUtils.getCanonicalBranchName(
+					branchPart, currentRevision, largeBranchNameProvider);
+
+			return getBranchData(branchName, currentRevision);
+
+		}
+
+		// if there is no existing branch then use the first part of the path as
+		// the branch name.
+
 		int firstSlashIndex = path.indexOf('/');
-		
+
 		if (firstSlashIndex == -1) {
-			blobLog.println(String.format("(revision=%d) could not save %s because it is stored at the repository root.", currentRevision, path));
+			blobLog.println(String
+					.format("(revision=%d) could not save %s because it is stored at the repository root.",
+							currentRevision, path));
 			return null;
 		}
-		
+
 		/*
 		 * Check if there are any known branches that contain this path.
 		 * 
-		 * One case if the svn:externals exists on the path so we create a branch.
+		 * One case if the svn:externals exists on the path so we create a
+		 * branch.
 		 * 
-		 * The branch detector will still veto for blob adds so we just do a quick check before defaulting to the first part branch naming strategy.
+		 * The branch detector will still veto for blob adds so we just do a
+		 * quick check before defaulting to the first part branch naming
+		 * strategy.
 		 */
-		
+
 		for (GitBranchData data : this.knownBranchMap.values()) {
-			
+
 			if (path.startsWith(data.getBranchPath())) {
 				return data;
 			}
 		}
-		
+
 		String firstPart = path.substring(0, firstSlashIndex);
-		
-		String branchName = GitBranchUtils.getCanonicalBranchName(firstPart, currentRevision, largeBranchNameProvider);
-		
+
+		String branchName = GitBranchUtils.getCanonicalBranchName(firstPart,
+				currentRevision, largeBranchNameProvider);
+
 		return getBranchData(branchName, currentRevision);
 	}
 
-	private void loadRevisionProperties(long revision, GitBranchData data, String path, Map<String, String> nodeProperties) {
-		
+	private void loadRevisionProperties(long revision, GitBranchData data,
+			String path, Map<String, String> nodeProperties) {
+
 		String contentLengthProperty = nodeProperties
 				.get(SvnDumpFilter.SVN_DUMP_KEY_CONTENT_LENGTH);
-		
+
 		String propContentLengthProperty = nodeProperties
 				.get(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH);
 
 		if (contentLengthProperty == null || propContentLengthProperty == null)
 			return;
-		
+
 		long contentLength = Long.parseLong(contentLengthProperty);
 
 		long propContentLength = Long.parseLong(propContentLengthProperty);
-		
+
 		try {
 			Map<String, String> revisionProperties = org.kuali.student.common.io.IOUtils
 					.extractRevisionProperties(getInputStream(),
-							propContentLength,
-							contentLength);
-			
+							propContentLength, contentLength);
+
 			if (revisionProperties.containsKey(SVN_MERGEINFO_PROPERTY_KEY)) {
-				
+
 				if (data != null) {
-					
-					String mergeInfoString = revisionProperties.get(SVN_MERGEINFO_PROPERTY_KEY);
-					
+
+					String mergeInfoString = revisionProperties
+							.get(SVN_MERGEINFO_PROPERTY_KEY);
+
 					if (mergeInfoString.length() > 0)
-						data.accumulateMergeInfo(SvnMergeInfoUtils.extractBranchMergeInfoFromString(branchDetector, mergeInfoString));
+						data.accumulateMergeInfo(SvnMergeInfoUtils
+								.extractBranchMergeInfoFromString(
+										branchDetector, mergeInfoString));
 					else {
 						data.clearMergeInfo();
 					}
 				}
 			}
-			
+
 			// intentionally not an else-if
 			if (revisionProperties.containsKey(SVN_EXTERNALS_PROPERTY_KEY)) {
-				
-				String externalString = revisionProperties.get(SVN_EXTERNALS_PROPERTY_KEY);
-				
-				List<ExternalModuleInfo> externals = SvnExternalsUtils.extractExternalModuleInfoFromString(revision, repositoryBaseUrl, externalString);
-				
+
+				String externalString = revisionProperties
+						.get(SVN_EXTERNALS_PROPERTY_KEY);
+
+				List<ExternalModuleInfo> externals = SvnExternalsUtils
+						.extractExternalModuleInfoFromString(revision,
+								repositoryBaseUrl, externalString);
+
 				if (externals.size() > 0) {
-					
+
 					if (data == null) {
-						
+
 						/*
-						 * not detected as a branch but externals makes it a branch.
-						 * 
+						 * not detected as a branch but externals makes it a
+						 * branch.
 						 */
-						String branchName = GitBranchUtils.getCanonicalBranchName(path, revision, largeBranchNameProvider);
-						
+						String branchName = GitBranchUtils
+								.getCanonicalBranchName(path, revision,
+										largeBranchNameProvider);
+
 						data = getBranchData(branchName, revision);
-						
+
 						data.setCreated(true);
-						
+
 					}
-					
+
 					data.setExternals(externals);
-					
-				}
-				else {
+
+				} else {
 					if (data != null)
 						data.clearExternals();
 				}
 			}
-			
-			
+
 			nodeProperties.putAll(revisionProperties);
-			
+
 		} catch (Exception e) {
-			throw new RuntimeException("failed to extract revision properties for prop content length = " + propContentLength, e);
+			throw new RuntimeException(
+					"failed to extract revision properties for prop content length = "
+							+ propContentLength, e);
 		}
-		
+
 	}
 
-
 	@Override
-	public GitBranchData getBranchData(
-			String branchName, long revision) {
+	public GitBranchData getBranchData(String branchName, long revision) {
 
 		GitBranchData data = knownBranchMap.get(branchName);
 
 		if (data == null) {
-			data = new GitBranchData(branchName, revision,
-					revisionMapper, treeProcessor, branchDetector);
+			data = new GitBranchData(branchName, revision, revisionMapper,
+					treeProcessor);
 
 			/*
 			 * If the branch already exists lets copy its commit tree as the
@@ -432,7 +525,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				copyFromBranchData = branchDetector.parseBranch(
 						copyFromRevision, copyFromPath);
 			} catch (VetoBranchException e1) {
-				
+
 				// check the default branch
 				log.warn(copyFromPath + " vetoed");
 				vetoLog.println(String
@@ -481,20 +574,26 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		log.debug("branch = " + data.getBranchPath() + ", path = " + path
 				+ ", at revision " + currentRevision);
 
-		ObjectId id = storeBlob(data, path, nodeProperties);
+		try {
+			ObjectId id = storeBlob(data, path, nodeProperties);
 
-		if (id != null) {
-			data.addBlob(path, id.getName(), blobLog);
-		} else {
+			if (id != null) {
+				data.addBlob(path, id.getName(), blobLog);
+			} else {
 
-			log.warn("failed to store blob at path = " + path);
+				log.warn("failed to store blob at path = " + path);
+			}
+		} catch (InvalidBlobChangeException e) {
+			// this is ok but lets log to make sure we are getting all of them.
+			log.warn("invalid blob change occured at " + currentRevision
+					+ " on path: " + path);
 		}
 
 	}
 
 	private ObjectId storeBlob(GitBranchData data, String path,
 			Map<String, String> nodeProperties) throws VetoBranchException,
-			IOException {
+			InvalidBlobChangeException, IOException {
 
 		String contentLengthProperty = nodeProperties
 				.get(SvnDumpFilter.SVN_DUMP_KEY_CONTENT_LENGTH);
@@ -515,6 +614,13 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 			// add case 1 or add case 3 : file content exists so save it.
 
+			// skip over the spacer line
+			int spacer = getInputStream().read();
+
+			if (spacer != '\n') {
+				log.error("SPACER LINE HAS DATA: ");
+			}
+
 			String propContentLengthProperty = nodeProperties
 					.get(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH);
 
@@ -524,6 +630,18 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 			if (propContentLengthProperty != null)
 				propContentLength = Long.parseLong(propContentLengthProperty);
+
+			String action = nodeProperties
+					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_ACTION);
+
+			if (propContentLength == contentLength && action.equals("change")) {
+				// there is no file change so don't do anything
+				log.warn(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH
+						+ " size equals "
+						+ SvnDumpFilter.SVN_DUMP_KEY_CONTENT_LENGTH + " of "
+						+ contentLength + " for path = " + path);
+				return null;
+			}
 
 			return storeBlob(data, path, contentLength, propContentLength);
 		}
@@ -601,7 +719,9 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				/*
 				 * require the last element to totally match:
 				 * 
-				 * ks-1.3, ks-1.3-ec1 if we delete ks-1.3 we only want ks-1.3 to be deleted.  Without the trailing "/" ks-1.3-ec1 was also being deleted.
+				 * ks-1.3, ks-1.3-ec1 if we delete ks-1.3 we only want ks-1.3 to
+				 * be deleted. Without the trailing "/" ks-1.3-ec1 was also
+				 * being deleted.
 				 */
 				deleteBranch(branchName, currentRevision);
 			}
@@ -629,8 +749,6 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		rename.setRefLogMessage(commitData.getPersonIdent() + " deleted "
 				+ branchName + "renaming the branch");
 
-		log.info("renamed " + branchName + " to " + archivedBranchReference);
-
 		Result result = rename.rename();
 
 		if (result != Result.RENAMED)
@@ -657,25 +775,28 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		 * It can also take place within an existing branch in which case we
 		 * need to navigate the subtree to find the blobs.
 		 */
-		
-		
+
 		try {
-			CopyFromOperation copyFromOperation = computeTargetBranches (data, path, currentRevision);
+			CopyFromOperation copyFromOperation = computeTargetBranches(data,
+					path, currentRevision);
 
-			computeCopyFromBranches (copyFromOperation, nodeProperties);
-			
-			
-			for (GitBranchData targetBranch : copyFromOperation.getTargetBranches()) {
-				
-				
-				List<SvnRevisionMapResults> copyFromBranches = copyFromOperation.getCopyFromBranches();
+			computeCopyFromBranches(copyFromOperation, nodeProperties);
 
-				if (copyFromOperation.getType().equals(OperationType.SINGLE_NEW)) {
-					
+			for (GitBranchData targetBranch : copyFromOperation
+					.getTargetBranches()) {
+
+				List<SvnRevisionMapResults> copyFromBranches = copyFromOperation
+						.getCopyFromBranches();
+
+				if (copyFromOperation.getType()
+						.equals(OperationType.SINGLE_NEW)) {
+
 					/*
-					 * If the parent exists then this is the same as a delete and copy.
+					 * If the parent exists then this is the same as a delete
+					 * and copy.
 					 * 
-					 * We are no longer connected to the old parent only the copyfrom data.
+					 * We are no longer connected to the old parent only the
+					 * copyfrom data.
 					 */
 					if (data.getParentId() != null) {
 
@@ -683,79 +804,133 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 						data.reset();
 					}
-					
+
 					if (copyFromBranches.size() == 1) {
 						// this is a new branch copied from the old branch
 						// copy the svn:externals and svn:mergeinfo data aswell.
 						SvnRevisionMapResults results = copyFromBranches.get(0);
-						
-						if (results != null && results.getSubPath() != null && results.getSubPath().length() == 0) {
-							
-							GitBranchDataUtils.extractAndStoreBranchMerges(results.getRevMap().getRevision(), results.getRevMap().getBranchName(), data, revisionMapper);
-							
-							ObjectId parentId = ObjectId.fromString(results.getRevMap().getCommitId());
-							
-							// make a shallow copy of the parent tree.  only the blobs in the root directory
-							GitTreeData parentTreeData = treeProcessor.extractExistingTreeData(parentId, true);
-							
-							GitBranchDataUtils.extractExternalModules(parentTreeData, data, treeProcessor);
-							
+
+						if (results != null && results.getSubPath() != null
+								&& results.getSubPath().length() == 0) {
+
+							GitBranchDataUtils.extractAndStoreBranchMerges(
+									results.getRevMap().getRevision(), results
+											.getRevMap().getBranchName(), data,
+									revisionMapper);
+
+							ObjectId parentId = ObjectId.fromString(results
+									.getRevMap().getCommitId());
+
+							// make a shallow copy of the parent tree. only the
+							// blobs in the root directory
+							GitTreeData parentTreeData = treeProcessor
+									.extractExistingTreeData(parentId, true);
+
+							// shallow because this method will insert a
+							// fusion-maven-plugin.dat file at the root of the
+							// tree.
+							GitBranchDataUtils.extractExternalModules(
+									parentTreeData, data, treeProcessor);
+
 						}
+					} else if (copyFromBranches.size() > 1) {
+
+						log.warn("multiple copy from case at rev = "
+								+ currentRevision + " path = " + path);
 					}
-					
+
+				} else if (copyFromOperation.getType().equals(
+						OperationType.INVALID_SINGLE_NEW)) {
+
+					if (copyFromBranches.size() > 0) {
+
+						/*
+						 * Normally we would not store into the path given but
+						 * because it is a copy from we will do it.
+						 */
+
+						String branchName = GitBranchUtils
+								.getCanonicalBranchName(path, currentRevision,
+										largeBranchNameProvider);
+
+						if (targetBranch != null) {
+							log.warn("overriting target branch at rev = "
+									+ currentRevision + " and path = " + path);
+						}
+
+						targetBranch = getBranchData(branchName,
+								currentRevision);
+
+					} 
+
 				}
-				
+
 				for (SvnRevisionMapResults revisionMapResults : copyFromBranches) {
-					
-					applyDirectoryCopy (currentRevision, path, targetBranch, copyFromOperation.getType(), revisionMapResults);
-					
-					data.addMergeParentId(ObjectId.fromString(revisionMapResults.getRevMap().getCommitId()));
-					
+
+					applyDirectoryCopy(currentRevision, path,
+							copyFromOperation.getType(),
+							copyFromOperation.getCopyFromPath(), targetBranch,
+							copyFromOperation.getType(), revisionMapResults);
+
 				}
-				
-				if (data.getBlobsAdded() > 0 && copyFromOperation.getType().equals(OperationType.SINGLE_NEW)) {
-					data.setCreated(true);
+
+				if (copyFromOperation.getType()
+						.equals(OperationType.SINGLE_NEW)
+						|| copyFromOperation.getType().equals(
+								OperationType.INVALID_SINGLE_NEW)) {
+					if (targetBranch != null
+							&& targetBranch.getBlobsAdded() > 0)
+						targetBranch.setCreated(true);
 				}
-				
+
 			}
 		} catch (IOException e) {
-			log.error(String.format("failed to process directory add %s at %d", path, currentRevision), e);
+			log.error(String.format("failed to process directory add %s at %d",
+					path, currentRevision), e);
 		}
-		
 
 	}
-	
+
 	/*
 	 * Apply the copy from into the target
 	 */
-	private void applyDirectoryCopy(long currentRevision, String path, GitBranchData targetBranch,
-			OperationType type, SvnRevisionMapResults revisionMapResults) {
-		
-		
-		ObjectId commitId = ObjectId.fromString(revisionMapResults.getRevMap().getCommitId());
-		
+	private void applyDirectoryCopy(long currentRevision, String path,
+			OperationType operationType, String copyFromPath,
+			GitBranchData targetBranch, OperationType type,
+			SvnRevisionMapResults revisionMapResults) {
+
+		ObjectId commitId = ObjectId.fromString(revisionMapResults.getRevMap()
+				.getCommitId());
+
 		try {
-			treeProcessor.visitBlobs(commitId, new CopyFromTreeBlobVisitor(currentRevision, path, targetBranch, type, revisionMapResults, largeBranchNameProvider, branchDetector, this, vetoLog, blobLog), createPathFilter (revisionMapResults));
+
+			boolean fallbackOnTargetBranch = false;
+
+			if (operationType.equals(OperationType.INVALID_SINGLE_NEW))
+				fallbackOnTargetBranch = true;
+
+			treeProcessor.visitBlobs(commitId, new CopyFromTreeBlobVisitor(
+					currentRevision, path, targetBranch, type, copyFromPath,
+					fallbackOnTargetBranch, revisionMapResults,
+					largeBranchNameProvider, branchDetector, this, vetoLog,
+					blobLog), createPathFilter(revisionMapResults));
 		} catch (Exception e) {
 			log.error("failed to visit blobs", e);
 		}
-		
+
 	}
 
 	private TreeFilter createPathFilter(SvnRevisionMapResults revisionMapResults) {
-		
+
 		if (revisionMapResults.getSubPath().length() > 0)
 			return PathFilter.create(revisionMapResults.getSubPath());
 		else
 			return null;
 	}
 
-	
-	
 	private void computeCopyFromBranches(CopyFromOperation copyOp,
 			Map<String, String> nodeProperties) throws IOException {
-		
-		
+
 		final String copyFromPath = nodeProperties
 				.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_PATH);
 
@@ -768,91 +943,99 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 			long copyFromRevision = Long.valueOf(nodeProperties
 					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_REV));
-			
-			
-			List<SvnRevisionMapResults> copyFromBranches = revisionMapper.getRevisionBranches(copyFromRevision, copyFromPath);
-			
-			copyOp.setCopyFromBranches(copyFromBranches);
+
+			List<SvnRevisionMapResults> copyFromBranches = revisionMapper
+					.getRevisionBranches(copyFromRevision, copyFromPath);
+
+			copyOp.setCopyFromBranches(copyFromBranches, copyFromPath);
 
 		}
 	}
 
-	private GitBranchData getBranchData (SvnRevisionMap revMap) {
-		
+	private GitBranchData getBranchData(SvnRevisionMap revMap) {
+
 		return getBranchData(revMap.getBranchName(), revMap.getRevision());
 	}
-	
-	
-	private List<SvnRevisionMap>getRevMapList(List<SvnRevisionMapResults>revMapResults) {
-		List<SvnRevisionMap>revMaps = new ArrayList<>(revMapResults.size());
-		
+
+	private List<SvnRevisionMap> getRevMapList(
+			List<SvnRevisionMapResults> revMapResults) {
+		List<SvnRevisionMap> revMaps = new ArrayList<>(revMapResults.size());
+
 		for (SvnRevisionMapResults revisionMapResults : revMapResults) {
-			
+
 			revMaps.add(revisionMapResults.getRevMap());
 		}
-		
+
 		return revMaps;
 	}
-	private List<GitBranchData>getBranchDataList (List<SvnRevisionMap>revMaps) {
-		
+
+	private List<GitBranchData> getBranchDataList(List<SvnRevisionMap> revMaps) {
+
 		List<GitBranchData> gitBranchDataList = new ArrayList<>(revMaps.size());
-		
+
 		for (SvnRevisionMap revMap : revMaps) {
-			
+
 			gitBranchDataList.add(getBranchData(revMap));
 		}
-		
+
 		return gitBranchDataList;
 	}
+
 	/*
-	 * target is multiple branches, a single branch or a sub tree within a single branch
+	 * target is multiple branches, a single branch or a sub tree within a
+	 * single branch
 	 */
 	private CopyFromOperation computeTargetBranches(GitBranchData data,
 			String path, long currentRevision) throws IOException {
-		
+
 		CopyFromOperation copyOp = null;
-		
-		List<SvnRevisionMapResults> targetBranches = revisionMapper.getRevisionBranches(currentRevision, path);
-		
+
+		List<SvnRevisionMapResults> targetBranches = revisionMapper
+				.getRevisionBranches(currentRevision, path);
+
 		if (targetBranches.size() == 1) {
 			SvnRevisionMap revMap = targetBranches.get(0).getRevMap();
-			
-			String adjustedBranchPath = revMap.getBranchPath().substring(Constants.R_HEADS.length());
-			
+
+			String adjustedBranchPath = revMap.getBranchPath().substring(
+					Constants.R_HEADS.length());
+
 			if (adjustedBranchPath.length() < path.length()) {
 				copyOp = new CopyFromOperation(OperationType.SUBTREE);
-			}
-			else
+			} else
 				copyOp = new CopyFromOperation(OperationType.SINGLE);
-			
-			
-			copyOp.setTargetBranches(Arrays.asList(new GitBranchData[] {getBranchData(revMap)}));
-			
-		}
-		else {
-			
-			if (targetBranches.size() == 0 && data != null) {
-				
-				if (data.getBranchPath().equals(path)) {
-					// 	new single branch
-					copyOp = new CopyFromOperation(OperationType.SINGLE_NEW);
+
+			copyOp.setTargetBranches(Arrays
+					.asList(new GitBranchData[] { getBranchData(revMap) }));
+
+		} else {
+
+			if (targetBranches.size() == 0) {
+
+				if (data == null) {
+					/*
+					 * target is not a branch but is a copy op.
+					 */
+					copyOp = new CopyFromOperation(
+							OperationType.INVALID_SINGLE_NEW);
+				} else {
+					if (data.getBranchPath().equals(path)) {
+						// new single branch
+						copyOp = new CopyFromOperation(OperationType.SINGLE_NEW);
+					} else {
+						// existing single branch
+						copyOp = new CopyFromOperation(OperationType.SINGLE);
+					}
 				}
-				else {
-					// existing single branch
-					copyOp = new CopyFromOperation(OperationType.SINGLE);
-				}
-				
-				copyOp.setTargetBranches(Arrays.asList(new GitBranchData[] {data}));
-			}
-			else {
+
+				copyOp.setTargetBranches(Arrays
+						.asList(new GitBranchData[] { data }));
+			} else {
 				copyOp = new CopyFromOperation(OperationType.MULTI);
-			
+
 				copyOp.setTargetBranches(getBranchDataList(getRevMapList(targetBranches)));
 			}
 		}
 
-		
-		
 		return copyOp;
 	}
 
@@ -901,7 +1084,6 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		}
 	}
 
-	
 	public void setCommitData(GitCommitData commitData) {
 		this.commitData = commitData;
 

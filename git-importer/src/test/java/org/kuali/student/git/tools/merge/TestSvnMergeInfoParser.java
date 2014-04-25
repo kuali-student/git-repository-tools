@@ -54,7 +54,7 @@ public class TestSvnMergeInfoParser extends AbstractBranchDetectorTest {
 		
 		FileInputStream input = new FileInputStream("src/test/resources/ks-enroll-merge-info.txt");
 
-		List<BranchMergeInfo> bmiList = SvnMergeInfoUtils.extractBranchMergeInfoFromInputStream(new BranchDetectorImpl(), input);
+		List<BranchMergeInfo> bmiList = SvnMergeInfoUtils.extractBranchMergeInfoFromInputStream(branchDetector, input);
 		
 		Assert.assertNotNull(bmiList);
 		Assert.assertEquals(18, bmiList.size());

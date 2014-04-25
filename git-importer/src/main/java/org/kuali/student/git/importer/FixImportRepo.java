@@ -75,6 +75,8 @@ public class FixImportRepo {
 
 			String revision = args[1];
 			
+			long longRevision = Long.parseLong(revision);
+			
 			SvnRevisionMapper mapper = new SvnRevisionMapper(repo);
 			
 			mapper.initialize();
@@ -83,11 +85,13 @@ public class FixImportRepo {
 
 			Map<String, Ref> existingRefs = repo.getRefDatabase().getRefs(Constants.R_HEADS);
 			
-			for (SvnRevisionMap entry : mapper.getRevisionHeads(Long.parseLong(revision))) {
+			allRefs.putAll(existingRefs);
+			
+			for (SvnRevisionMap entry : mapper.getRevisionHeads(longRevision)) {
 				
 				updateRef(repo, entry.getBranchName(), revision, ObjectId.fromString(entry.getCommitId()));
 			
-				existingRefs.remove(entry.getBranchName());
+				allRefs.remove(entry.getBranchName().substring(Constants.R_HEADS.length()));
 			}
 
 			
@@ -99,6 +103,8 @@ public class FixImportRepo {
 					
 				}
 			}
+			
+			mapper.truncateTo(longRevision); 
 			
 			mapper.shutdown();
 			

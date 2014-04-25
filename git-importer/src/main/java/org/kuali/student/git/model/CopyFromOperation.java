@@ -32,8 +32,17 @@ public class CopyFromOperation {
 	
 	
 	private OperationType type;
+
+	private String copyFromPath;
 	
-	public static enum OperationType { MULTI, SINGLE, SINGLE_NEW, SUBTREE};
+	/*
+	 * MULTI - multiple targets
+	 * SINGLE - single target
+	 * SINGLE_NEW - single target a new branch
+	 * INVALID_SINGLE_NEW - singal target name is invalid but could be a new branch (depends on copy from data)
+	 * SUBTREE - target is a subtree in an existing branch.
+	 */
+	public static enum OperationType { MULTI, SINGLE, SINGLE_NEW, INVALID_SINGLE_NEW, SUBTREE};
 
 	/**
 	 * 
@@ -59,9 +68,11 @@ public class CopyFromOperation {
 
 	/**
 	 * @param copyFromBranches the copyFromBranches to set
+	 * @param copyFromPath 
 	 */
-	public void setCopyFromBranches(List<SvnRevisionMapResults> copyFromBranches) {
+	public void setCopyFromBranches(List<SvnRevisionMapResults> copyFromBranches, String copyFromPath) {
 		this.copyFromBranches = copyFromBranches;
+		this.copyFromPath = copyFromPath;
 	}
 
 	/**
@@ -69,6 +80,14 @@ public class CopyFromOperation {
 	 */
 	public OperationType getType() {
 		return type;
+	}
+
+	
+	/**
+	 * @return the copyFromPath
+	 */
+	public String getCopyFromPath() {
+		return copyFromPath;
 	}
 
 	public void setTargetBranches(List<GitBranchData> targetBranches) {

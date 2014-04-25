@@ -43,6 +43,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.kuali.student.git.model.GitRepositoryUtils;
+import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,19 +137,14 @@ public class ConvertOldBranchesToTagsMain {
 				ObjectId tagId = null;
 				
 				// tag this commit
-				tagId = tagCommit (simpleTagName, commit, objectInserter);
+				tagId = GitRefUtils.insertTag(simpleTagName, commit, objectInserter);
 				
 				if (tagId != null) {
 					
 					
 					// update the tag reference
 					// copied from JGit's TagCommand
-					String refName = Constants.R_TAGS + simpleTagName;
-					RefUpdate tagRef = repo.updateRef(refName);
-					tagRef.setNewObjectId(tagId);
-					tagRef.setForceUpdate(true);
-					tagRef.setRefLogMessage("tagged " + simpleTagName, false); 
-					Result updateResult = tagRef.update(rw);
+					Result updateResult = GitRefUtils.createTagReference(repo, simpleTagName, tagId);
 					
 					if (updateResult != Result.NEW) {
 						log.warn("problem creating tag reference for " + simpleTagName + " result = " + updateResult);
@@ -219,22 +215,6 @@ public class ConvertOldBranchesToTagsMain {
 			return false;
 	}
 
-	private static ObjectId tagCommit(String tagName, RevCommit commit,
-			ObjectInserter objectInserter) throws IOException {
-
-		PersonIdent committer = commit.getCommitterIdent();
-		
-		TagBuilder tagBuilder = new TagBuilder();
-		
-		tagBuilder.setMessage(commit.getFullMessage());
-		tagBuilder.setObjectId(commit);
-		
-		tagBuilder.setTagger(committer);
-		tagBuilder.setTag(tagName);
-		
-		ObjectId tagId = objectInserter.insert(tagBuilder);
 	
-		return tagId;
-	}
 
 }

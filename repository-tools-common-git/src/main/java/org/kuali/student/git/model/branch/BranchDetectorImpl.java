@@ -147,10 +147,10 @@ public class BranchDetectorImpl implements BranchDetector {
 
 		if (beforePathRootIndex == -1) {
 
-			// no branches tags or sandbox found
-			// treat the path as the branch
-
-			branchPathList.addAll(Arrays.asList(parts));
+			/*
+			 * No branch was determined.
+			 */
+			throw new VetoBranchException("no branch could be computed for path : " + path);
 
 		} else {
 

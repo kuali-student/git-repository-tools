@@ -43,11 +43,16 @@ public abstract class AbstractBranchDetectorTest {
 		super();
 	}
 	
+	protected void assertPath (String filePath, String expectedBranchPath, String expectedFilePath) {
+		assertPath(filePath, expectedBranchPath, expectedFilePath, false);
+	}
+	
 	protected void assertPath (String filePath, String expectedBranchPath, String expectedFilePath, boolean expectVeto) {
 		
 		try {
 			BranchData data = branchDetector.parseBranch(0L, filePath);
 			
+			Assert.assertNotNull(data);
 			Assert.assertEquals(expectedBranchPath, data.getBranchPath());
 			Assert.assertEquals(expectedFilePath, data.getPath());
 		} catch (VetoBranchException e) {

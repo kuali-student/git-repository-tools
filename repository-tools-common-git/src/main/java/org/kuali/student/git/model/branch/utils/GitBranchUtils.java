@@ -15,22 +15,24 @@
  */
 package org.kuali.student.git.model.branch.utils;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Kuali Student Team
@@ -38,6 +40,7 @@ import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
  */
 public class GitBranchUtils {
 
+	private static final Logger log = LoggerFactory.getLogger(GitBranchUtils.class);
 	
 	protected static final String SPACE_CHARACTER = " ";
 	protected static final String TILDE_CHARACTER = "~";
@@ -337,35 +340,74 @@ public class GitBranchUtils {
 		
 	}
 
-	public static String convertToTargetPath(String path, long copyFromRevision, String copyFromPath, String blobPath, BranchDetector branchDetector) throws VetoBranchException {
+	/**
+	 * Convert the copyfrom blob path into a path rooted on the target branch (branch in path).
+	 * 
+	 * Handle removal of base copyfrom file path directories but still allow sub directories to be realized in the adjusted blob path.
+	 * 
+	 * @param path the target path, could be a branch or a sub tree within a branch.
+	 * @param copyFromRevision
+	 * @param copyFromPath the whole copy from path (copy from branch path + copy from file path)
+	 * @param blobPath path of the blob in the copyfrom branch (will overlap somewhat with the copy from file path)
+	 * @param copyFromBranch holds the split between the copy from branch path and copy from dile path)
+	 * @return the adjusted blob path to be rooted in the target branch with the correct subtree (if applicable).
+	 */
+	public static String convertToTargetPath(String path, long copyFromRevision, String copyFromPath, String blobPath, BranchData copyFromBranch) {
 		
-		BranchData copyFromBranch = branchDetector.parseBranch(copyFromRevision, copyFromPath);
+		// remove any base structure that is not part of the copy
+		String branchRemovedCopyFromPath = blobPath.substring(copyFromBranch.getPath().length());
 		
-		StringBuilder alteredBlobPrefixPath = new StringBuilder(path);
+		// place the altered file path into the target path
+		// this may be at the branch root or into some subtree structure.
+		StringBuilder alteredBlobPath = new StringBuilder(path);
 		
-		/*
-		 * Make sure that the point we join has only one slash.
-		 * 
-		 * We put the slash on the prefix and remove if found on the suffix.
-		 * 
-		 */
-		if (alteredBlobPrefixPath.charAt(alteredBlobPrefixPath.length()-1) != '/')
-			alteredBlobPrefixPath.append("/");
+		if (alteredBlobPath.charAt(alteredBlobPath.length()-1) != '/') {
+			
+			if (branchRemovedCopyFromPath.length() > 0) {
+				
+				if (branchRemovedCopyFromPath.charAt(0) != '/')
+					alteredBlobPath.append("/");
+				// else fall through and make no change.
+			}
+			else
+				alteredBlobPath.append("/");
+		}
 		
-		/*
-		 * Within the branch the blob path may have directory nesting.
-		 * 
-		 * This needs to be stripped off so that the altered blob is rooted in the target path.
-		 */
+		alteredBlobPath.append(branchRemovedCopyFromPath);
 		
-		StringBuilder alteredBlobSuffixPath = new StringBuilder(blobPath.substring(copyFromBranch.getPath().length()));
+		return alteredBlobPath.toString();
 		
-		if (alteredBlobSuffixPath.charAt(0) == '/')
-			alteredBlobSuffixPath.delete(0, 1);
+	}
+
+	/**
+	 * In some cases a path could refer to a branch that is not detectable using our heuristics.
+	 * 
+	 * In certain copy from cases we want to save the files even if the branch name is non sensical.
+	 * 
+	 * This provides a mechanism to find those branches later
+	 * 
+	 * @return the branch path part from the path.
+	 * 
+	 */
+	public static String extractBranchPath(Repository repo, String path) throws IOException {
 		
-		String alteredBlobPath = alteredBlobPrefixPath.append(alteredBlobSuffixPath.toString()).toString();
+		String pathPaths[] = path.split("/");
 		
-		return alteredBlobPath;
+		for (int i = pathPaths.length-1; i > 0; i--) {
+			
+			String candidatePath = StringUtils.join(pathPaths, "/", 0, i);
+			
+			Ref branchRef = repo.getRef(Constants.R_HEADS + candidatePath);
+			
+			if (branchRef != null) {
+				// found a match
+				return candidatePath;
+			}
+			
+		}
+		
+		return null;
+		
 	}
 
 }

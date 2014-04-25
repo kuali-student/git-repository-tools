@@ -5,12 +5,19 @@ package org.kuali.student.git.model.ref.utils;
 
 import java.io.IOException;
 
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.TagBuilder;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.kuali.student.git.model.ref.exception.BranchRefExistsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author ocleirig
@@ -20,6 +27,7 @@ import org.kuali.student.git.model.ref.exception.BranchRefExistsException;
  */
 public final class GitRefUtils {
 
+	private static final Logger log = LoggerFactory.getLogger(GitRefUtils.class);
 	/**
 	 * 
 	 */
@@ -82,5 +90,38 @@ public final class GitRefUtils {
 		Ref ref = repo.getRef(absoluteBranchName);
 		
 		return ref;
+	}
+	
+	public static ObjectId insertTag(String tagName, RevCommit commit,
+			ObjectInserter objectInserter) throws IOException {
+
+		PersonIdent committer = commit.getCommitterIdent();
+		
+		TagBuilder tagBuilder = new TagBuilder();
+		
+		tagBuilder.setMessage(commit.getFullMessage());
+		tagBuilder.setObjectId(commit);
+		
+		tagBuilder.setTagger(committer);
+		tagBuilder.setTag(tagName);
+		
+		ObjectId tagId = objectInserter.insert(tagBuilder);
+	
+		return tagId;
+	}
+
+	public static Result createTagReference(Repository repo, String simpleTagName,
+			ObjectId tagId) throws IOException {
+		
+		String refName = Constants.R_TAGS + simpleTagName;
+		RefUpdate tagRef = repo.updateRef(refName);
+		tagRef.setNewObjectId(tagId);
+		tagRef.setForceUpdate(true);
+		tagRef.setRefLogMessage("tagged " + simpleTagName, false); 
+		Result updateResult = tagRef.update();
+		
+		return updateResult;
+		
+		
 	}
 }

@@ -16,7 +16,9 @@
 package org.kuali.student.git.model.branch;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.AbstractKualiStudentBranchDetectorTest;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
@@ -57,10 +59,28 @@ public class TestGitSubTreePath extends AbstractKualiStudentBranchDetectorTest {
 		 * poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast/BinaryTree.java
 		 * 
 		 */
-		String alteredBlobPath = GitBranchUtils.convertToTargetPath(directoryPath, 0L, copyFromDirectoryPath, copyFromBlobPath, branchDetector);
+		
+		BranchData copyFromBranch = branchDetector.parseBranch(0L, copyFromDirectoryPath);
+		
+		String alteredBlobPath = GitBranchUtils.convertToTargetPath(directoryPath, 0L, copyFromDirectoryPath, copyFromBlobPath, copyFromBranch);
 	   
 		Assert.assertEquals("poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast/BinaryTree.java", alteredBlobPath);
 				
+		
+		/*
+		 * We want to remove the top level sub directory structure from the copy from branch in the blob name (any structure below is fine)
+		 * 
+		 */
+		
+		alteredBlobPath = GitBranchUtils.convertToTargetPath("enrollment/ks-ap/branches/KSAP-M8", 0L, "enrollment/ks-ap/trunk/KSAP-M8", "KSAP-M8/pom.xml", new BranchData(0L, "enrollment/ks-ap/trunk", "KSAP-M8"));
+	   
+		Assert.assertEquals("enrollment/ks-ap/branches/KSAP-M8/pom.xml", alteredBlobPath);
+		
+		// test a further nesting to make sure it is still preserved.
+		alteredBlobPath = GitBranchUtils.convertToTargetPath("enrollment/ks-ap/branches/KSAP-M8", 0L, "enrollment/ks-ap/trunk/KSAP-M8/subdir", "KSAP-M8/subdir/pom.xml", new BranchData(0L, "enrollment/ks-ap/trunk", "KSAP-M8"));
+		   
+		Assert.assertEquals("enrollment/ks-ap/branches/KSAP-M8/subdir/pom.xml", alteredBlobPath);
+		
 		
 	}
 	
@@ -73,7 +93,9 @@ public class TestGitSubTreePath extends AbstractKualiStudentBranchDetectorTest {
 		
 		long copyFromRevision = 12074;
 		
-		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromRevision, copyFromPath, "impex/pom.xml", branchDetector);
+		BranchData copyFromBranch = branchDetector.parseBranch(0L, copyFromPath);
+		
+		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromRevision, copyFromPath, "impex/pom.xml", copyFromBranch);
 		
 		Assert.assertEquals("deploymentlab/tags/impex-parent-1.0.0/pom.xml", alteredPath);
 		
@@ -92,7 +114,9 @@ public class TestGitSubTreePath extends AbstractKualiStudentBranchDetectorTest {
 		
 		String blobPath = "inspect-rule-failure/src/main/java/org/kuali/student/rules/ast/BinaryTree.java";
 		
-		String alteredPath = GitBranchUtils.convertToTargetPath(path, 100L, copyFromPath, blobPath, branchDetector);
+		BranchData copyFromBranch = branchDetector.parseBranch(0L, copyFromPath);
+		
+		String alteredPath = GitBranchUtils.convertToTargetPath(path, 100L, copyFromPath, blobPath, copyFromBranch);
 		
 		Assert.assertEquals("poc/brms/brms-ri/branches/brms-ri-dev/inspect-rule-failure/src/main/java/org/kuali/student/rules/runtime/ast/BinaryTree.java", alteredPath);
 	}
@@ -106,9 +130,30 @@ public class TestGitSubTreePath extends AbstractKualiStudentBranchDetectorTest {
 		
 		long copyFromRevision = 7562;
 		
-		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromRevision, copyFromPath, ".project", branchDetector);
+		BranchData copyFromBranch = branchDetector.parseBranch(copyFromRevision, copyFromPath);
+		
+		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromRevision, copyFromPath, ".project", copyFromBranch);
 		
 		Assert.assertEquals("deploymentlab/branches/1.0.0-m3/performance/.project", alteredPath);
+	}
+	
+	
+	@Test
+	@Ignore
+	public void testRevision65409 () throws VetoBranchException {
+		
+		/*
+		 * 
+		 */
+		String targetPath = "enrollment/ks-ap/trunk";
+		
+		String copyFromPathOne = "deploymentlab/performance/tsung/trunk";
+		
+		long copyFromRevision = 7562;
+		
+//		String alteredPath = GitBranchUtils.convertToTargetPath(targetPath, copyFromRevision, copyFromPath, ".project", branchDetector);
+		
+//		Assert.assertEquals("deploymentlab/branches/1.0.0-m3/performance/.project", alteredPath);
 	}
 
 }

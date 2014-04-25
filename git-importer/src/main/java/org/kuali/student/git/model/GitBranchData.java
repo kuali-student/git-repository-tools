@@ -70,8 +70,6 @@ public class GitBranchData {
 
 	private long revision;
 
-	private BranchDetector branchDetector;
-
 	private GitTreeProcessor treeProcessor;
 
 	private Map<String, BranchMergeInfo>branchPathToMergeInfoMap = new HashMap<String, BranchMergeInfo>();
@@ -92,10 +90,9 @@ public class GitBranchData {
 	 * @param path
 	 * 
 	 */
-	public GitBranchData(String branchName, long revision, SvnRevisionMapper revisionMapper, GitTreeProcessor treeProcessor, BranchDetector branchDetector) {
+	public GitBranchData(String branchName, long revision, SvnRevisionMapper revisionMapper, GitTreeProcessor treeProcessor) {
 		this.revisionMapper = revisionMapper;
 		this.treeProcessor = treeProcessor;
-		this.branchDetector = branchDetector;
 		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, revisionMapper);
 		this.revision = revision;
 		this.branchName = GitBranchUtils.getCanonicalBranchName(this.branchPath, revision, revisionMapper);
@@ -134,7 +131,7 @@ public class GitBranchData {
 
 		
 		if (!path.startsWith(this.branchPath + "/")) {
-			String errorMessage = String.format("blob absolute path(%s) does not match this branch (%s)", path, this.branchName);
+			String errorMessage = String.format("%s : blob absolute path(%s) does not match this branch (%s)", String.valueOf (revision), path, this.branchName);
 			log.error(errorMessage);
 			blobLog.println(errorMessage);
 			return;

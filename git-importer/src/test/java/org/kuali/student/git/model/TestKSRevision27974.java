@@ -120,9 +120,9 @@ public class TestKSRevision27974 {
 	@Test
 	public void testReorderingExternals() {
 		
-		GitBranchData A = new GitBranchData("A", 10, null, null, null);
+		GitBranchData A = new GitBranchData("A", 10, null, null);
 		
-		GitBranchData B = new GitBranchData("B", 10, null, null, null);
+		GitBranchData B = new GitBranchData("B", 10, null, null);
 		
 		B.setExternals(Arrays.asList(new ExternalModuleInfo [] {new ExternalModuleInfo("A", "A", 10)}));
 		
@@ -136,7 +136,7 @@ public class TestKSRevision27974 {
 		Assert.assertEquals("A", orderedList.get(0).getBranchPath()); 
 		Assert.assertEquals("B", orderedList.get(1).getBranchPath());
 		
-		GitBranchData C = new GitBranchData("C", 10, null, null, null);
+		GitBranchData C = new GitBranchData("C", 10, null, null);
 		
 		unorderedList = Arrays.asList(new GitBranchData[] {B, C, A});
 		

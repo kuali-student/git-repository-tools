@@ -103,7 +103,6 @@ public class SvnMergeInfoUtils {
 				continue; // skip to the next line
 			}
 			
-			
 			BranchMergeInfo bmi = new BranchMergeInfo(bd.getBranchPath());
 			
 			String revisions = parts[1].trim();

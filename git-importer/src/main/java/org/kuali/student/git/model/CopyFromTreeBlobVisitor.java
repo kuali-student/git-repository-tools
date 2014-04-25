@@ -33,7 +33,7 @@ import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisito
 
 /**
  * @author Kuali Student Team
- *
+ * 
  */
 public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 
@@ -47,101 +47,177 @@ public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 	private PrintWriter blobLog;
 	private ILargeBranchNameProvider largeBranchNameProvider;
 	private IGitBranchDataProvider branchDataProvider;
-	
+	private String copyFromPath;
+	private boolean fallbackOnTargetBranch;
 
-		public CopyFromTreeBlobVisitor(long currentRevision, String path, GitBranchData targetBranch,
-			OperationType type, SvnRevisionMapResults copyFromRevisionMapResults, ILargeBranchNameProvider largeBranchNameProvider, BranchDetector branchDetector, IGitBranchDataProvider branchDataProvider, PrintWriter vetoLog, PrintWriter blobLog) {
-				this.currentRevision = currentRevision;
-				this.path = path;
-				this.targetBranch = targetBranch;
-				this.type = type;
-				this.copyFromRevisionMapResults = copyFromRevisionMapResults;
-				this.largeBranchNameProvider = largeBranchNameProvider;
-				this.branchDetector = branchDetector;
-				this.branchDataProvider = branchDataProvider;
-				this.vetoLog = vetoLog;
-				this.blobLog = blobLog;
-				
+	public CopyFromTreeBlobVisitor(long currentRevision, String path,
+			GitBranchData targetBranch, OperationType type,
+			String copyFromPath,
+			boolean fallbackOnTargetBranch, SvnRevisionMapResults copyFromRevisionMapResults,
+			ILargeBranchNameProvider largeBranchNameProvider,
+			BranchDetector branchDetector,
+			IGitBranchDataProvider branchDataProvider, PrintWriter vetoLog,
+			PrintWriter blobLog) {
+		this.currentRevision = currentRevision;
+		this.path = path;
+		this.targetBranch = targetBranch;
+		this.type = type;
+		this.copyFromPath = copyFromPath;
+		this.fallbackOnTargetBranch = fallbackOnTargetBranch;
+		this.copyFromRevisionMapResults = copyFromRevisionMapResults;
+		this.largeBranchNameProvider = largeBranchNameProvider;
+		this.branchDetector = branchDetector;
+		this.branchDataProvider = branchDataProvider;
+		this.vetoLog = vetoLog;
+		this.blobLog = blobLog;
+
 	}
 
-		@Override
-		public boolean visitBlob(ObjectId blobId,
-				String blobPath, String name) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+	@Override
+	public boolean visitBlob(ObjectId blobId, String blobPath, String name)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
 
-			String alteredBlobPath = null;
-			
-			try {
+		String alteredBlobPath = null;
 
-				
-				String adjustedCopyFromBranchPath = copyFromRevisionMapResults.getRevMap().getBranchPath().substring(Constants.R_HEADS.length());
-				
-				String copyFromBranchSubPath = copyFromRevisionMapResults.getSubPath();
-				
-				if (copyFromBranchSubPath.length() > 0) {
-					adjustedCopyFromBranchPath = adjustedCopyFromBranchPath + "/" + copyFromBranchSubPath;
-				}
-				
-				alteredBlobPath = GitBranchUtils
-						.convertToTargetPath(path,
-								copyFromRevisionMapResults.getRevMap().getRevision(), adjustedCopyFromBranchPath,
-								blobPath, branchDetector);
+		try {
 
-				/*
-				 * In most cases this blob path will live in the
-				 * branch identified as data.
-				 * 
-				 * But in some cases the branch could be
-				 * different. i.e. the full blob path shows a
-				 * different branch.
-				 * 
-				 * Detect the branch path and if different from
-				 * data then record this blob separately.
-				 */
+			String copyFromBranchPath = copyFromRevisionMapResults.getRevMap()
+					.getBranchPath();
 
-				BranchData alteredData = null;
-				try {
+			String adjustedCopyFromBranchPath = copyFromBranchPath
+					.substring(Constants.R_HEADS.length());
 
-					alteredData = branchDetector.parseBranch(
-							currentRevision, alteredBlobPath);
+			String copyFromBranchSubPath = copyFromRevisionMapResults
+					.getSubPath();
 
-				} catch (VetoBranchException e1) {
-					vetoLog.print("vetoed alteredBlobPath = "
-							+ alteredBlobPath);
-					// even though this blob failed we still want to look at the others in case any can be applied.
-					return true;
-				}
-
-				if (alteredData.getBranchPath().equals(
-						targetBranch.getBranchPath())) {
-					
-					// same branch
-					targetBranch.addBlob(alteredBlobPath,
-							blobId.getName(), blobLog);
-				} else {
-					// a different branch
-					GitBranchData alteredBranchData = branchDataProvider.getBranchData(
-							GitBranchUtils.getCanonicalBranchName(
-									alteredData.getBranchPath(),
-									currentRevision,
-									largeBranchNameProvider),
-							currentRevision);
-
-					alteredBranchData.addBlob(alteredBlobPath,
-							blobId.getName(), blobLog);
-
-				}
-
-			} catch (VetoBranchException e) {
-				vetoLog.println(String
-						.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s",
-								String.valueOf(currentRevision),
-								targetBranch.getBranchName(), alteredBlobPath));
-				// intentionally continue
-
+			if (copyFromBranchSubPath.length() > 0) {
+				adjustedCopyFromBranchPath = adjustedCopyFromBranchPath + "/"
+						+ copyFromBranchSubPath;
 			}
 
-			// visit all of the blobs
-			return true;
+			Long copyFromRevision = copyFromRevisionMapResults.getRevMap().getRevision();
+			
+			BranchData copyFromBranch = null; 
+					
+			try {
+				copyFromBranch = branchDetector.parseBranch(copyFromRevision, adjustedCopyFromBranchPath);
+			} catch (VetoBranchException e) {
+				// just use the name as given in the copy from
+				copyFromBranch = new BranchData(copyFromRevision,
+						copyFromBranchPath, copyFromBranchSubPath);
+			}
+			
+			alteredBlobPath = GitBranchUtils.convertToTargetPath(path,
+					copyFromRevisionMapResults.getRevMap().getRevision(),
+					adjustedCopyFromBranchPath, blobPath, copyFromBranch);
+
+			if (copyFromPath.length() > 0) {
+				String adjustedPath = adjustedCopyFromBranchPath
+						.substring(copyFromPath.length());
+
+				/*
+				 * Insert the adjusted path between the new branch name and file
+				 * part
+				 */
+
+				if (adjustedPath.length() > 0) {
+
+					int insertionIndex = targetBranch.getBranchPath().length();
+
+					StringBuilder blobPathBuilder = new StringBuilder();
+
+					blobPathBuilder.append(targetBranch.getBranchPath());
+
+					blobPathBuilder.append(adjustedPath);
+
+					blobPathBuilder.append(alteredBlobPath
+							.substring(insertionIndex));
+
+					alteredBlobPath = blobPathBuilder.toString();
+
+				}
+
+			}
+			/*
+			 * In most cases this blob path will live in the branch identified
+			 * as data.
+			 * 
+			 * But in some cases the branch could be different. i.e. the full
+			 * blob path shows a different branch.
+			 * 
+			 * Detect the branch path and if different from data then record
+			 * this blob separately.
+			 */
+
+			BranchData alteredData = null;
+			try {
+
+				alteredData = branchDetector.parseBranch(currentRevision,
+						alteredBlobPath);
+
+			} catch (VetoBranchException e1) {
+				
+				if (!fallbackOnTargetBranch) {
+					vetoLog.print("vetoed alteredBlobPath = " + alteredBlobPath);
+					// even though this blob failed we still want to look at the
+					// others in case any can be applied.
+					return true;
+				}
+				else {
+					
+					// fallback on the target branch
+					/*
+					 * This is mostly to allow in certain copy from cases the copyfrom to work even though the branch detection heuristic fails.
+					 */
+					targetBranch
+					.addBlob(alteredBlobPath, blobId.getName(), blobLog);
+					
+					targetBranch.addMergeParentId(ObjectId
+							.fromString(this.copyFromRevisionMapResults.getRevMap()
+									.getCommitId()));
+					
+					return true;
+				}
+			}
+
+			if (alteredData.getBranchPath()
+					.equals(targetBranch.getBranchPath())) {
+
+				// same branch
+				targetBranch
+						.addBlob(alteredBlobPath, blobId.getName(), blobLog);
+				
+				targetBranch.addMergeParentId(ObjectId
+						.fromString(this.copyFromRevisionMapResults.getRevMap()
+								.getCommitId()));
+				
+			} else {
+				// a different branch
+				GitBranchData alteredBranchData = branchDataProvider
+						.getBranchData(GitBranchUtils.getCanonicalBranchName(
+								alteredData.getBranchPath(), currentRevision,
+								largeBranchNameProvider), currentRevision);
+
+				alteredBranchData.addBlob(alteredBlobPath, blobId.getName(),
+						blobLog);
+
+				alteredBranchData.addMergeParentId(ObjectId
+						.fromString(this.copyFromRevisionMapResults.getRevMap()
+								.getCommitId()));
+			}
+
+		} catch (VetoBranchException e) {
+			vetoLog.println(String
+					.format("tree walk add blob vetoed. CurrentRevision: %s, Current Branch Name: %s, Blob Path: %s",
+							String.valueOf(currentRevision),
+							targetBranch.getBranchName(), alteredBlobPath));
+			// intentionally continue
+
 		}
+
+		// visit all of the blobs
+		return true;
+	}
 
 }

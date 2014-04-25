@@ -239,12 +239,78 @@ public class TestSvnRevisionMapper {
 		
 	}
 	
+	@Test
+	public void testTruncate () throws IOException {
+		
+		List<Ref> branchHeads = new ArrayList<Ref>(repo.getRefDatabase().getRefs(Constants.R_HEADS).values());
+		
+		// create 500 revs
+		for (int i = 0; i < 500; i++) {
+			createRevision(i, branchHeads);
+		}
+		
+		Random r = new Random();
+		
+		// test 500 revs
+		for (int i = 0; i < 500; i++) {
+		
+			int randomRevision = r.nextInt(499);
+			
+			testRevision(randomRevision, branchHeads);
+			
+		}
+		
+		revisionMapper.truncateTo(250);
+		
+		// test first 250 still work
+		
+		for (int i = 0; i < 250; i++) {
+			
+			int randomRevision = r.nextInt(250);
+			
+			testRevision(randomRevision, branchHeads);
+		}
+
+		
+		// confirm 251 does not exist
+		boolean expectToFail = testRevisionHead(251, branchHeads);
+		
+		Assert.assertEquals(false, expectToFail);
+		
+		// insert another 250 (total is now 500)
+		for (int i = 250; i < 500; i++) {
+			createRevision(i, branchHeads);
+		}
+		
+		// test that all 500 revs work again.
+		for (int i = 0; i < 500; i++) {
+			
+			int randomRevision = r.nextInt(499);
+			
+			testRevision(randomRevision, branchHeads);
+		}
+		
+		
+	}
 	
 
 	private void createRevision(long revision, List<Ref> branchHeads) throws IOException {
 		
 		revisionMapper.createRevisionMap(revision, branchHeads);
 		
+	}
+	
+	private boolean testRevisionHead (long revision, List<Ref>branchHeads) throws IOException {
+	
+		for (Ref ref : branchHeads) {
+			
+			ObjectId head = revisionMapper.getRevisionBranchHead(revision, ref.getName().replaceFirst(Constants.R_HEADS, ""));
+			
+			if (head == null)
+				return false;
+		}
+		
+		return true;
 	}
 	
 	private void testRevision (long revision, List<Ref>branchHeads) throws IOException {

@@ -57,6 +57,7 @@ import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
+import org.kuali.student.git.utils.ExternalGitUtils;
 import org.kuali.student.git.utils.GitImporterDateUtils;
 import org.kuali.student.subversion.AbstractParseOptions;
 import org.kuali.student.subversion.model.INodeFilter;
@@ -73,7 +74,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 	
 		private GitCommitData commitData = null;
 
-		private long currentRevision = 0;
+		private long currentRevision = -1;
 
 		private SvnRevisionMapper revisionMapper;
 
@@ -160,6 +161,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 		}
 
+		
 		/*
 		 * The revision comes before the file content so only
 		 * the second call per file and onward is relevant.
@@ -169,6 +171,8 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				long currentRevision, long contentLength,
 				long propContentLength, ReadLineData lineData) {
 
+			
+			
 			// flush logs for the last revision
 
 			blobLog.flush();
@@ -176,7 +180,9 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			vetoLog.flush();
 			
 			// for any branch with a blob added create a git commit object pointing at the git tree for the change.
-			flushPendingBranchCommits();
+			
+			if (this.currentRevision != -1)
+				flushPendingBranchCommits();
 			
 		if (gcEnabled && this.currentRevision != 0 && this.currentRevision % 500 == 0) {
 			// every five hundred revisions garbage collect the repository to
@@ -184,22 +190,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			log.info("Garbage collecting git repository");
 
 			if (externalGitCommandPath != null) {
-				try {
-					String command = String.format("%s --git-dir %s gc",
-							externalGitCommandPath, repo.getDirectory()
-									.getAbsolutePath());
-
-					log.info("invoking external garbage collection : " + command);
-					
-					Process p = Runtime.getRuntime().exec(command);
-
-					p.waitFor();
-					
-				} catch (IOException e) {
-
-				} catch (InterruptedException e) {
-
-				}
+				ExternalGitUtils.runGarbageCollection(externalGitCommandPath, repo, System.out);
 			}
 
 			else {
@@ -257,14 +248,6 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				String emailAddress = userName
 						+ "@kuali.org";
 
-				
-				if (commitMessage == null) {
-					commitMessage = MISSING_COMMIT_DATE_MESSAGE;
-				}
-				else {
-					commitMessage = commitMessage + "\n" + MISSING_COMMIT_DATE_MESSAGE;
-				}
-				
 				Date actualCommitDate = null;
 				
 				if (commitDate != null) {
@@ -273,6 +256,13 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				else {
 				
 					log.warn("Missing commit date");
+					
+					if (commitMessage == null) {
+						commitMessage = MISSING_COMMIT_DATE_MESSAGE;
+					}
+					else {
+						commitMessage = commitMessage + "\n" + MISSING_COMMIT_DATE_MESSAGE;
+					}
 					
 					/*
 					 * Get the commit time of the previous commit and add 5 minutes to it.
@@ -293,6 +283,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 						
 						actualCommitDate = dt.toDate();
 						
+					}
 				}
 
 				TimeZone tz = GitImporterDateUtils.extractTimeZone(actualCommitDate);

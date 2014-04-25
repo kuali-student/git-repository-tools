@@ -433,8 +433,6 @@ public class SvnDumpFilter {
 					
 					// read in any of the path properties into the nodeProperties map
 					
-					
-					
 					// write the properties and copy the content (this includes
 					// both the svn properties and text content)
 					options.onNodeContentLength(currentRevision, path,

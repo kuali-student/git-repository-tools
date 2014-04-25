@@ -27,8 +27,8 @@ public class TestKualiFoundationBranchDetectorImpl extends
 	@Test
 	public void testPaths() {
 		
-		assertPath("rice/impex/rice-impex-master-1.0.3/KREW_DOC_TYP_ATTR_T.xml", "rice/impex/rice-impex-master-1.0.3", "KREW_DOC_TYP_ATTR_T.xml", false);
+		assertPath("rice/impex/rice-impex-master-1.0.3/KREW_DOC_TYP_ATTR_T.xml", "rice/impex/rice-impex-master-1.0.3", "KREW_DOC_TYP_ATTR_T.xml");
 		
-		assertPath("legacy/mocks/KCUIWG/KC-propdev/p2-prototype-a/assets/js/tags/keywords.html", "legacy/mocks/KCUIWG/KC-propdev/p2-prototype-a/assets/js/tags/keywords.html", "", false);
+		assertPath("legacy/mocks/KCUIWG/KC-propdev/p2-prototype-a/assets/js/tags/keywords.html", "legacy/mocks/KCUIWG/KC-propdev/p2-prototype-a/assets/js/tags/keywords.html", "");
 	}
 }

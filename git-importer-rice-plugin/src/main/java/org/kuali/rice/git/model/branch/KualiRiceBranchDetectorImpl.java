@@ -1,3 +1,4 @@
+package org.kuali.rice.git.model.branch;
 /*
  * Copyright 2014 The Kuali Foundation
  * 
@@ -13,10 +14,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.kuali.student.git.model.branch;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.kuali.student.branch.model.BranchData;
+import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 
@@ -24,11 +26,8 @@ import org.kuali.student.git.model.branch.utils.GitBranchUtils;
  * @author Kuali Student Team
  *
  */
-public class KualiStudentBranchDetectorImpl implements BranchDetector {
-
-	private static final String INACTIVE = "inactive";
-
-	private static final String TEST_FUNCTIONAL_AUTOMATION_KSAP_AFT = "test/functional-automation/ksap-aft";
+public class KualiRiceBranchDetectorImpl implements BranchDetector {
+	
 
 	private static final String CONTRIB_CM = "contrib/CM";
 
@@ -50,8 +49,6 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 
 	private static final String EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT = "examples/training/cm-myschool-config-project";
 
-	private static final String EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT2 = "examples/training/cm-myschool-config-project2";
-	
 	private static final String EXAMPLES_SAMPLE_CONFIG_PROJECT = "examples/sample-config-project";
 
 	private static final String EXAMPLES_KS_CORE_TUTORIAL = "examples/ks-core-tutorial";
@@ -102,7 +99,7 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 	/**
 	 * 
 	 */
-	public KualiStudentBranchDetectorImpl() {
+	public KualiRiceBranchDetectorImpl() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -120,15 +117,7 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		
 		String lastPart = parts[parts.length-1];
 		
-		if (parts.length > 1) {
-			
-			String secondLastPart = parts[parts.length-2];
-		
-			if (BRANCHES.equals(secondLastPart) && INACTIVE.equals(lastPart))
-				throw new VetoBranchException(path + " vetoed because it is not complete.");
-		}
-		
-		if (BRANCHES.equals(lastPart) || BRANCHES_INACTIVE.equals(lastPart)|| TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
+		if (BRANCHES.equals(lastPart) || TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
 			throw new VetoBranchException(path + " vetoed because it is incomplete.");
 		
 		
@@ -138,11 +127,11 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 
 		if (!(isPathValidBranchTagOrTrunk(path))) {
 
-			if (GitBranchUtils.startsWith (path, SUSHIK_COMPONENT_MANUAL_IMPL)) {
+			if (GitBranchUtils.startsWith(path, SUSHIK_COMPONENT_MANUAL_IMPL)) {
 				return buildBranchData(revision, path, 1);
 			}
 			
-			if (GitBranchUtils.startsWith (path, POC_SRC)) {
+			if (GitBranchUtils.startsWith(path, POC_SRC)) {
 				
 				/*
 				 * Create poc branch where there is a src directory directly under it.
@@ -151,11 +140,8 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 				return buildBranchData(revision, path, 1);
 			}
 			
-			if (GitBranchUtils.startsWith (path, TEST_FUNCTIONAL_AUTOMATION_SAMBAL_RICE_2_3_M2_AFT_BRANCH)) {
+			if (GitBranchUtils.startsWith(path, TEST_FUNCTIONAL_AUTOMATION_SAMBAL_RICE_2_3_M2_AFT_BRANCH)) {
 				return buildBranchData(revision, path, TEST_FUNCTIONAL_AUTOMATION_SAMBAL_RICE_2_3_M2_AFT_BRANCH);
-			}
-			else if (GitBranchUtils.startsWith(path, TEST_FUNCTIONAL_AUTOMATION_KSAP_AFT)) {
-				return buildBranchData(revision, path, TEST_FUNCTIONAL_AUTOMATION_KSAP_AFT);
 			}
 			
 			BranchData bd = handleContribCMRoots(revision, path, parts);
@@ -169,9 +155,9 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 			 * 
 			 * sandbox is also a special case.
 			 */
-			if (!(GitBranchUtils.startsWith (path, ENUMERATION) 
-					|| GitBranchUtils.startsWith (path, SANDBOX)
-					|| GitBranchUtils.startsWith (path, DICTIONARY) || GitBranchUtils.startsWith(path, KS_CFG_DBS) || GitBranchUtils.startsWith (path, DEPLOYMENTLAB) || GitBranchUtils.startsWith (path, TOOLS) || GitBranchUtils.startsWith (path, MERGES) || GitBranchUtils.startsWith (path, EXAMPLES)))
+			if (!(GitBranchUtils.startsWith(path, ENUMERATION) 
+					|| GitBranchUtils.startsWith(path, SANDBOX)
+					|| GitBranchUtils.startsWith(path, DICTIONARY) || GitBranchUtils.startsWith(path, KS_CFG_DBS) || GitBranchUtils.startsWith(path, DEPLOYMENTLAB) || GitBranchUtils.startsWith(path, TOOLS) || GitBranchUtils.startsWith(path, MERGES) || GitBranchUtils.startsWith(path, EXAMPLES)))
 				throw new VetoBranchException(
 						path
 								+ "vetoed because it does not contain tags, branches or trunk");
@@ -181,22 +167,22 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		 * Custom whitelist for tricky paths
 		 */
 		
-		if (GitBranchUtils.startsWith (path, KS_WEB_BRANCHES_KS_WEB_DEV)) {
+		if (GitBranchUtils.startsWith(path, KS_WEB_BRANCHES_KS_WEB_DEV)) {
 			
 			return buildBranchData(revision, path, KS_WEB_BRANCHES_KS_WEB_DEV);
 		}
-		else if (GitBranchUtils.startsWith (path, DEPLOYMENTLAB)) {
+		else if (GitBranchUtils.startsWith(path, DEPLOYMENTLAB)) {
 			
 			BranchData bd = handleStartsWithDeploymentlab(revision, path, parts);
 			
 			if (bd != null)
 				return bd;
 		}
-		if (GitBranchUtils.startsWith (path, SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR)) {
+		if (GitBranchUtils.startsWith(path, SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR)) {
 
 			return buildBranchData(revision, path,
 					SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR);
-		} else if (GitBranchUtils.startsWith (path, SANDBOX_DEPLOYMENTLAB)) {
+		} else if (GitBranchUtils.startsWith(path, SANDBOX_DEPLOYMENTLAB)) {
 
 			BranchData bd = handleStartsWithDeploymentlab(revision, path,
 					parts, SANDBOX.length() + 1);
@@ -205,7 +191,7 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 				return bd;
 
 		}
-		else if (GitBranchUtils.startsWith (path, TOOLS_MAVEN_DICTIONARY_GENERATOR) && !isPathValidBranchTagOrTrunk(path)) {
+		else if (GitBranchUtils.startsWith(path, TOOLS_MAVEN_DICTIONARY_GENERATOR) && !isPathValidBranchTagOrTrunk(path)) {
 			/*
 			 * BranchUtils.parse can find the trunk if it exists.
 			 * 
@@ -260,7 +246,7 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 			// else fall through to return null below
 			
 		}
-		else if (GitBranchUtils.startsWith (path, MERGES)) { 
+		else if (GitBranchUtils.startsWith(path, MERGES)) { 
 			int branchNameIndex = 1;
 			
 			if (branchNameIndex < parts.length) {
@@ -270,26 +256,23 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 			// else fall through and return null
 			
 		}
-		else if (GitBranchUtils.startsWith (path, EXAMPLES)) {
+		else if (GitBranchUtils.startsWith(path, EXAMPLES)) {
 			
-			if (GitBranchUtils.startsWith (path, EXAMPLES_KS_CORE_TUTORIAL)) {
+			if (GitBranchUtils.startsWith(path, EXAMPLES_KS_CORE_TUTORIAL)) {
 				return buildBranchData(revision, path, EXAMPLES_KS_CORE_TUTORIAL);
 			}
-			else if (GitBranchUtils.startsWith (path, EXAMPLES_SAMPLE_CONFIG_PROJECT)) {
+			else if (GitBranchUtils.startsWith(path, EXAMPLES_SAMPLE_CONFIG_PROJECT)) {
 				return buildBranchData(revision, path, EXAMPLES_SAMPLE_CONFIG_PROJECT);
 			}
-			else if (GitBranchUtils.startsWith (path, EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT)) {
+			else if (GitBranchUtils.startsWith(path, EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT)) {
 				return buildBranchData(revision, path, EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT);
-			}
-			else if (GitBranchUtils.startsWith (path, EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT2)) {
-				return buildBranchData(revision, path, EXAMPLES_TRAINING_CM_MYSCHOOL_CONFIG_PROJECT2);
 			}
 			// else fall through
 		}
-		else if ((GitBranchUtils.startsWith (path, ENUMERATION) || GitBranchUtils.startsWith (path, DICTIONARY) || GitBranchUtils.startsWith (path, KS_CFG_DBS) || GitBranchUtils.startsWith (path, DEPLOYMENTLAB) ) && !isPathValidBranchTagOrTrunk(path)) {
+		else if ((GitBranchUtils.startsWith(path, ENUMERATION) || GitBranchUtils.startsWith(path, DICTIONARY) || GitBranchUtils.startsWith(path, KS_CFG_DBS) || GitBranchUtils.startsWith(path, DEPLOYMENTLAB) ) && !isPathValidBranchTagOrTrunk(path)) {
 			return buildBranchData(revision, path, 1);
 		}
-		else if (GitBranchUtils.startsWith (path, CONTRIB_CM)) {
+		else if (GitBranchUtils.startsWith(path, CONTRIB_CM)) {
 			return handleContribCMRoots(revision, path, parts);
 		}
 		
@@ -306,19 +289,19 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		if (nextPart.equals(TRUNK) || nextPart.equals(BRANCHES) || nextPart.equals(TAGS))
 			return null;  // let the base branch detector handle these.
 		
-		if (GitBranchUtils.startsWith (path, CONTRIB_CM_KS_DEPLOYMENTS)) {
+		if (GitBranchUtils.startsWith(path, CONTRIB_CM_KS_DEPLOYMENTS)) {
 			return buildBranchData(revision, path, CONTRIB_CM_KS_DEPLOYMENTS);
 		}
-		else if (GitBranchUtils.startsWith (path, CONTRIB_CM_KS_API)) {
+		else if (GitBranchUtils.startsWith(path, CONTRIB_CM_KS_API)) {
 			return buildBranchData(revision, path, CONTRIB_CM_KS_API);
 		}
-		else if (GitBranchUtils.startsWith (path, CONTRIB_CM_KS_CORE)) {
+		else if (GitBranchUtils.startsWith(path, CONTRIB_CM_KS_CORE)) {
 			return buildBranchData(revision, path, CONTRIB_CM_KS_CORE);
 		}
-		else if (GitBranchUtils.startsWith (path, CONTRIB_CM_KS_LUM)) {
+		else if (GitBranchUtils.startsWith(path, CONTRIB_CM_KS_LUM)) {
 			return buildBranchData(revision, path, CONTRIB_CM_KS_LUM);
 		}
-		else if (GitBranchUtils.startsWith (path, CONTRIB_CM_AGGREGATE)) {
+		else if (GitBranchUtils.startsWith(path, CONTRIB_CM_AGGREGATE)) {
 			return buildBranchData(revision, path, CONTRIB_CM_AGGREGATE);
 		}
 		else
@@ -344,29 +327,29 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		if (offsetPath.contains(TRUNK))
 			return null; // let the default logic pick this up.
 		
-		if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY)) {
+		if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY)) {
 			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_BRANCHES_PROPOSALHISTORY);
 		}
-		else if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY)) {
+		else if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY)) {
 			return buildBranchData (revision, path, prefixPath + DEPLOYMENTLAB_TEST_BRANCHES_PROPOSALHISTORY);
 		}
-		else if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_UI_KS_CUKE_TESTING) && !isPathValidBranchTagOrTrunk(path)) {
+		else if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_UI_KS_CUKE_TESTING) && !isPathValidBranchTagOrTrunk(path)) {
 			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_UI_KS_CUKE_TESTING);
 		}
-		else if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK)) {
+		else if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK)) {
 			
 			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_UI_KS_CUKE_TESTING_TRUNK);
 		}
-		else if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_KS_CUKE_TESTING)) {
+		else if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_KS_CUKE_TESTING)) {
 			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_KS_CUKE_TESTING);
 		}
-		else if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK)) {
+		else if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK)) {
 			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_STUDENT_TRUNK_KS_TOOLS_MAVEN_COMPONENT_SANDBOX_TRUNK);
 		}
-		else if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_KS_1_1_DB_1_0_X)) {
+		else if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_KS_1_1_DB_1_0_X)) {
 			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_KS_1_1_DB_1_0_X);
 		}
-		else if (GitBranchUtils.startsWith (offsetPath, DEPLOYMENTLAB_KS_1_1_DB_MAVEN_SITE_PLUGIN)) {
+		else if (GitBranchUtils.startsWith(offsetPath, DEPLOYMENTLAB_KS_1_1_DB_MAVEN_SITE_PLUGIN)) {
 			return buildBranchData(revision, path, prefixPath + DEPLOYMENTLAB_KS_1_1_DB_MAVEN_SITE_PLUGIN);
 		}
 		
@@ -375,10 +358,6 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 	}
 
 
-	
-	
-	
-	
 	private BranchData buildBranchData(Long revision, String path, int filePathStartIndex) {
 
 		String[] parts = path.split("\\/");
