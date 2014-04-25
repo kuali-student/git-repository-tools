@@ -37,11 +37,10 @@ import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.RefUpdate;
-import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.joda.time.DateTime;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.common.io.ReadLineData;
 import org.kuali.student.git.model.BranchMergeInfo;
@@ -53,6 +52,7 @@ import org.kuali.student.git.model.NodeProcessor;
 import org.kuali.student.git.model.SvnExternalsUtils;
 import org.kuali.student.git.model.SvnMergeInfoUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
+import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
@@ -99,6 +99,8 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		private String externalGitCommandPath;
 
 		private PrintWriter blobLog;
+
+		private static final String MISSING_COMMIT_DATE_MESSAGE = "missing commit date.  Used an approximate date.";
 		
 		/**
 		 * @param repo 
@@ -255,7 +257,43 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				String emailAddress = userName
 						+ "@kuali.org";
 
-				Date actualCommitDate = GitImporterDateUtils.convertDateString(commitDate);
+				
+				if (commitMessage == null) {
+					commitMessage = MISSING_COMMIT_DATE_MESSAGE;
+				}
+				else {
+					commitMessage = commitMessage + "\n" + MISSING_COMMIT_DATE_MESSAGE;
+				}
+				
+				Date actualCommitDate = null;
+				
+				if (commitDate != null) {
+					actualCommitDate = GitImporterDateUtils.convertDateString(commitDate);
+				}
+				else {
+				
+					log.warn("Missing commit date");
+					
+					/*
+					 * Get the commit time of the previous commit and add 5 minutes to it.
+					 */
+					List<SvnRevisionMap> heads = revisionMapper.getRevisionHeads(currentRevision-1L);
+					
+					if (heads.size() == 0) {
+						actualCommitDate = new DateTime(0L).toDate();
+					}
+					else {
+						SvnRevisionMap head = heads.get(0);
+					
+						RevWalk rw = new RevWalk (repo);
+						
+						RevCommit lastCommit = rw.parseCommit(ObjectId.fromString(head.getCommitId()));
+
+						DateTime dt = new DateTime(lastCommit.getAuthorIdent().getWhen()).plusMinutes(5);
+						
+						actualCommitDate = dt.toDate();
+						
+				}
 
 				TimeZone tz = GitImporterDateUtils.extractTimeZone(actualCommitDate);
 				
