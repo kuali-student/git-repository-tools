@@ -18,8 +18,16 @@ package org.kuali.student.git.model;
 import java.io.File;
 import java.io.IOException;
 
+import org.eclipse.jgit.errors.CorruptObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.lib.FileMode;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.TreeWalk;
 
 /**
  * @author Kuali Student Team
@@ -67,5 +75,77 @@ public final class GitRepositoryUtils {
 		return repo;
 	}
 
-	 
+
+	public static ObjectId findInCommit(Repository repository, ObjectId commitId,
+			String filePath) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+
+		RevWalk rw = new RevWalk(repository);
+		
+		RevCommit commit = rw.parseCommit(commitId);
+		
+		rw.release();
+	
+		return findInTree(repository, commit.getTree().getId(), filePath);
+		
+	}
+
+	/**
+	 * Return the JGit ObjectId for the blob or tree represented by the path given.
+	 * 
+	 * The path needs to be relative to the tree provided.
+	 * @param repository
+	 * @param treeId
+	 * @param filePath
+	 * @return
+	 * @throws MissingObjectException
+	 * @throws IncorrectObjectTypeException
+	 * @throws CorruptObjectException
+	 * @throws IOException
+	 */
+	public static ObjectId findInTree(Repository repository, ObjectId treeId,
+			String filePath) throws MissingObjectException,
+			IncorrectObjectTypeException, CorruptObjectException, IOException {
+
+		if (treeId == null)
+			return null;
+
+		String parts[] = filePath.split("/");
+
+		int currentPartIndex = 0;
+
+		TreeWalk tw = new TreeWalk(repository);
+
+		tw.addTree(treeId);
+
+		while (tw.next()) {
+
+			// the part changes when we decend the tree path
+			String currentPart = parts[currentPartIndex];
+
+			String pathName = tw.getNameString();
+
+			if (currentPart.equals(pathName)) {
+
+				if ((currentPartIndex + 1) == parts.length) {
+					// at the end so use the current object id.
+					tw.release();
+					return tw.getObjectId(0);
+				} else {
+					if (tw.getFileMode(0).equals(FileMode.TYPE_TREE)) {
+						tw.enterSubtree();
+						currentPartIndex++;
+					}
+					else {
+						tw.release();
+						return null;
+					}
+				}
+
+			}
+		}
+
+		tw.release();
+		return null;
+
+	}
 }

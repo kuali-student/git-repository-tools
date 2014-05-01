@@ -31,10 +31,11 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
-import org.kuali.student.git.model.branch.BranchDetector;
+import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.GitTreeNodeInitializer;
 import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.util.GitBranchDataUtils;
@@ -54,7 +55,7 @@ public class GitBranchData {
 	public static final Logger log = LoggerFactory
 			.getLogger(GitBranchData.class);
 
-	private GitTreeData branchRoot = new GitTreeData();
+	private GitTreeData branchRoot;
 
 	private String branchPath;
 
@@ -82,6 +83,10 @@ public class GitBranchData {
 
 	private SvnRevisionMapper revisionMapper;
 
+	private GitTreeNodeInitializer nodeInitializer;
+
+	private Repository repo;
+
 	/**
 	 * @param revision
 	 * @param branchPath
@@ -90,12 +95,16 @@ public class GitBranchData {
 	 * @param path
 	 * 
 	 */
-	public GitBranchData(String branchName, long revision, SvnRevisionMapper revisionMapper, GitTreeProcessor treeProcessor) {
+	public GitBranchData(Repository repo, String branchName, long revision, SvnRevisionMapper revisionMapper, GitTreeProcessor treeProcessor, GitTreeNodeInitializer nodeInitializer) {
+		this.repo = repo;
 		this.revisionMapper = revisionMapper;
 		this.treeProcessor = treeProcessor;
+		this.nodeInitializer = nodeInitializer;
 		this.branchPath = GitBranchUtils.getBranchPath(branchName, revision, revisionMapper);
 		this.revision = revision;
 		this.branchName = GitBranchUtils.getCanonicalBranchName(this.branchPath, revision, revisionMapper);
+		
+		this.branchRoot = new GitTreeData(nodeInitializer);
 
 	}
 
@@ -126,7 +135,7 @@ public class GitBranchData {
 		return blobsDeleted;
 	}
 
-	public void addBlob(String path, String blobSha1, PrintWriter blobLog)
+	public void addBlob(String path, ObjectId blobSha1, PrintWriter blobLog)
 			throws VetoBranchException, MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 
 		
@@ -214,13 +223,11 @@ public class GitBranchData {
 		
 		alreadyInitialized = true;
 		
-		this.branchRoot = treeProcessor.extractExistingTreeData (parentId);
-
-		this.branchRoot.resetDirtyFlag();
+		this.branchRoot = treeProcessor.extractExistingTreeData (parentId, true);
 
 		GitBranchDataUtils.extractAndStoreBranchMerges(this.revision-1L, this.branchName, this, revisionMapper);
 		
-		GitBranchDataUtils.extractExternalModules(this.branchRoot, this, treeProcessor);
+		GitBranchDataUtils.extractExternalModules(repo, this.branchRoot, this, treeProcessor);
 		
 	}
 	
@@ -264,7 +271,7 @@ public class GitBranchData {
 
 		created = false;
 		blobsAdded.set(0L);
-		branchRoot = new GitTreeData();
+		branchRoot = new GitTreeData(nodeInitializer);
 		mergeParentIdSet.clear();
 		parentId = null;
 
@@ -317,6 +324,28 @@ public class GitBranchData {
 		
 		this.externals.clear();
 		
+	}
+
+	public void addTree(String path, ObjectId treeId) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		if (path.isEmpty())
+			this.branchRoot.setGitTreeObjectId(treeId);
+		else {
+			/*
+			 * Adding a sub path so we need to initialize
+			 */
+			initialize();
+			this.branchRoot.addTree(path, treeId);
+		}
+	}
+
+	public ObjectId findPath(Repository repo, String subPath) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		return this.branchRoot.find(repo, subPath);
+	}
+
+	public boolean isTreeDirty() {
+		return this.branchRoot.isTreeDirty();
 	}
 	
 	

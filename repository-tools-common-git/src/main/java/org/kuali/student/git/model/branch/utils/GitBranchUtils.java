@@ -339,6 +339,71 @@ public class GitBranchUtils {
 		return convertedBranchPathBuilder.toString();
 		
 	}
+	
+	public static class ExistingPathTree {
+		private String path;
+		private String branchName;
+		private ObjectId treeId;
+		/**
+		 * @param path
+		 * @param branchName
+		 * @param treeId
+		 */
+		public ExistingPathTree(String path, String branchName, ObjectId treeId) {
+			super();
+			this.path = path;
+			this.branchName = branchName;
+			this.treeId = treeId;
+		}
+		/**
+		 * @return the path
+		 */
+		public String getPath() {
+			return path;
+		}
+		/**
+		 * @return the branchName
+		 */
+		public String getBranchName() {
+			return branchName;
+		}
+		/**
+		 * @return the treeId
+		 */
+		public ObjectId getTreeId() {
+			return treeId;
+		}
+		
+		
+	}
+	
+	/**
+	 * Figure out any suffix to apply to the path and then the git tree object representing the copyfrom branch directory.
+	 * 
+	 * @param path
+	 * @param copyFromPath
+	 * @param copyFromBranch
+	 * @return
+	 */
+	public static String convertToTargetPath (String path, String copyFromPath, BranchData copyFromBranch) {
+		
+		String copyfromBranchPath = copyFromBranch.getBranchPath();
+		
+		
+		if (copyFromPath.length() < copyfromBranchPath.length()) {
+			
+			String suffixPath = copyfromBranchPath.substring(copyFromPath.length());
+			
+			if (suffixPath.charAt(0) != '/')
+				return path + "/" + suffixPath;
+			else
+				return path + suffixPath;
+			
+		}
+		
+		return path;
+		
+	}
 
 	/**
 	 * Convert the copyfrom blob path into a path rooted on the target branch (branch in path).

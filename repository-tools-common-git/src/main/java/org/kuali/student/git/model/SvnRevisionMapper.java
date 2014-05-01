@@ -615,18 +615,24 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 	 */
 	public static class SvnRevisionMapResults {
 		
-		public SvnRevisionMapResults(SvnRevisionMap revMap) {
-			this (revMap, "");
-		}
+		private String copyFromPath;
 		
-		public SvnRevisionMapResults (SvnRevisionMap revMap, String subPath) {
-			this.revMap = revMap;
-			this.subPath = subPath;
-		}
-
 		private final SvnRevisionMap revMap;
 		
 		private final String subPath;
+		
+		public SvnRevisionMapResults (SvnRevisionMap revMap, String copyFromPath, String subPath) {
+			this.revMap = revMap;
+			this.copyFromPath = copyFromPath;
+			this.subPath = subPath;
+		}
+
+		public SvnRevisionMapResults(SvnRevisionMap revMap,
+				String copyFromPath) {
+			this (revMap, copyFromPath, "");
+		}
+
+		
 
 		/**
 		 * @return the revMap
@@ -642,6 +648,21 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 			return subPath;
 		}
 
+		/**
+		 * @return the copyFromPath
+		 */
+		public String getCopyFromPath() {
+			return copyFromPath;
+		}
+
+		/**
+		 * @param copyFromPath the copyFromPath to set
+		 */
+		public void setCopyFromPath(String copyFromPath) {
+			this.copyFromPath = copyFromPath;
+		}
+
+		
 	
 		
 	}
@@ -682,7 +703,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		String candidateBranchPath = revMap.getBranchPath().substring(Constants.R_HEADS.length());
 		
 		if (GitBranchUtils.startsWith (candidateBranchPath, copyFromPath))
-			return new SvnRevisionMapResults (revMap); // the common case
+			return new SvnRevisionMapResults (revMap, copyFromPath); // the common case
 		
 		String candidateBranchParts[] = candidateBranchPath.split("\\/");
 		
@@ -712,7 +733,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 			
 			try {
 				if (treeProcessor.treeContainsPath(commitId, insidePath)) {
-					return new SvnRevisionMapResults(revMap, insidePath);
+					return new SvnRevisionMapResults(revMap, copyFromPath, insidePath);
 				}
 				// fall through
 			} catch (Exception e) {

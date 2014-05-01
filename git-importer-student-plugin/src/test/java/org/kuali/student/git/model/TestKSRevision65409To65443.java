@@ -15,32 +15,15 @@
  */
 package org.kuali.student.git.model;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
-import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.FileMode;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectInserter;
-import org.eclipse.jgit.lib.PersonIdent;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.TreeFormatter;
-import org.eclipse.jgit.storage.file.FileBasedConfig;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-import org.kuali.student.git.importer.GitImporterMain;
 import org.kuali.student.git.model.ref.exception.BranchRefExistsException;
-import org.kuali.student.git.model.ref.utils.GitRefUtils;
-import org.kuali.student.svn.model.ExternalModuleInfo;
 
 /**
  * 
@@ -50,52 +33,56 @@ import org.kuali.student.svn.model.ExternalModuleInfo;
  *
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class TestKSRevision65409To65443 {
+public class TestKSRevision65409To65443 extends AbstractGitImporterMainTestCase {
 
 	/**
 	 * @param name
 	 */
 	public TestKSRevision65409To65443() {
-		
+		super("ks-r65409-to-r65443", true);
 	}
 
 	@Test
 	public void testImport () throws IOException, BranchRefExistsException {
-		File gitRepository = new File ("target/ks-r65409-to-r65443");
 		
-		FileUtils.deleteDirectory(gitRepository);
-		
-		Repository repository = GitRepositoryUtils
-				.buildFileRepository(gitRepository, true);
-		
-		// insert some fake copy from data
-		
-		
-	
 		runImporter (repository, 65409);
 		
 		// test that the ks-ap/trunk branch was created
 		
 		assertRefNotNull(repository, "enrollment_ks-ap_trunk", "ks-ap trunk should exist");
 		
+		assertPathsExist (repository, "enrollment_ks-ap_trunk", Arrays.asList(new String [] {"ks-ap-ui/src/main/resources", "ks-ap-web"}));
+		
 		// inject copyfrom data for enrollment/ks-ap/trunk from 65424
 		
 		runImporter (repository,  65425);
 		
 		// ks-ap trunk should have been deleted
-		assertRefNull(repository, "enrollment_ks-ap_trunk", "ks-ap trunk should be null (deleted");
+		assertRefNull(repository, "enrollment_ks-ap_trunk", "ks-ap trunk should be null (deleted)");
+		
+		assertRefNotNull(repository, "enrollment_ks-ap_branches_inactive_KSAP", "enrollment_ks-ap_branches_inactive_KSAP should exist");
 		
 		assertRefNotNull(repository, "enrollment_ks-ap_trunk@65424", "enrollment_ks-ap_trunk@65424 should exist");
+		
+		assertPathsExist (repository, "enrollment_ks-ap_trunk@65424", Arrays.asList(new String [] {"ks-ap-ui/src/main/resources", "ks-ap-web"}));
+		
+		
 		/*
 		 * thinking about creating a branch here for ks-ap/branches/inactive/KSAP-M8
 		 */
 		
 		createBranch (repository, Constants.R_HEADS + "enrollment_ks-ap_branches_inactive_KSAP-M8", "pom.xml", "some text");
 		
+		assertRefNotNull(repository, "enrollment_ks-ap_branches_inactive_KSAP-M8", "enrollment_ks-ap_branches_inactive_KSAP-M8 should exist");
+		
+		assertPathsExist (repository, "enrollment_ks-ap_branches_inactive_KSAP-M8", Arrays.asList(new String [] {"pom.xml"}));
+		
 		// 65430 
 		runImporter (repository, 65431); 
 		
 		assertRefNotNull(repository, Constants.R_HEADS + "enrollment_ks-ap_trunk", "expected ks-ap trunk to exist");
+		
+		assertPathsExist (repository, "enrollment_ks-ap_trunk", Arrays.asList(new String [] {"KSAP", "KSAP-M8", "KSAP/ks-ap-ui/src/main/resources", "KSAP-M8/pom.xml"}));
 		
 		assertRefNull(repository, Constants.R_HEADS + "enrollment_ks-ap_branches_inactive_KSAP", "expected ks-ap inactive KSAP to not exist");
 		
@@ -110,6 +97,8 @@ public class TestKSRevision65409To65443 {
 		runImporter (repository, 65435);
 		
 		assertRefNotNull(repository, Constants.R_HEADS + "enrollment_ks-ap_branches_inactive_KSAP-M7", "expected ks-ap trunk to exist");
+		
+		assertPathsExist (repository, "enrollment_ks-ap_branches_inactive_KSAP-M7", Arrays.asList(new String [] {"pom.xml"}));
 		
 		assertRefNull(repository, Constants.R_HEADS + "enrollment_ks-ap_branches_KSAP-M7", "expected ks-ap KSAP-M7 to not exist");
 
@@ -139,6 +128,8 @@ public class TestKSRevision65409To65443 {
 		
 		assertRefNotNull(repository, Constants.R_HEADS + "enrollment_ks-ap_branches_KSAP-M8", "expected ks-ap branches KSAP-M8 to exist");
 		
+		assertPathsExist (repository, "enrollment_ks-ap_branches_KSAP-M8", Arrays.asList(new String [] {"pom.xml"}));
+		
 		// check that the 
 //		assertRefNull(repository, Constants.R_HEADS + "enrollment_ks-ap_inactive", "expected ks-ap inactive to not exist");
 		
@@ -154,79 +145,10 @@ public class TestKSRevision65409To65443 {
 		
 		
 	}
-	
-	private void createBranch(Repository repository, String branchName,
-			String fileName, String fileContent) throws IOException, BranchRefExistsException {
-
-		ObjectInserter inserter = repository.newObjectInserter();
-		
-		// store the blob
-		ObjectId blobId = inserter.insert(Constants.OBJ_BLOB, fileContent.getBytes());
-		
-		// create the tree
-		TreeFormatter tf = new TreeFormatter();
-		
-		tf.append(fileName, FileMode.REGULAR_FILE, blobId);
-		
-		ObjectId treeId = inserter.insert(tf);
-		
-		// make the commit
-		CommitBuilder cb = new CommitBuilder();
-
-		PersonIdent pi;
-		cb.setAuthor(pi = new PersonIdent("admin", "admin@kuali.org"));
-		
-		cb.setCommitter(pi);
-		
-		cb.setMessage("committed " + fileName);
-		
-		cb.setTreeId(treeId);
-		
-		cb.setEncoding("UTF-8");
-		
-		// save the branch
-		
-		ObjectId commit = inserter.insert(cb);
-		
-		GitRefUtils.createBranch(repository, branchName, commit);
-		
-		inserter.flush();
-		inserter.release();
-	}
-
-	private void assertRefNotNull(Repository repo, String expectedBranchName, String onNullMessage) throws IOException {
-
-		Ref trunk = repo.getRef(expectedBranchName);
-		
-		Assert.assertNotNull(onNullMessage, trunk);
-	}
-	
-	private void assertRefNull(Repository repo, String expectedBranchName, String notNullMessage) throws IOException {
-
-		Ref trunk = repo.getRef(expectedBranchName);
-		
-		Assert.assertNull(notNullMessage, trunk);
-	}
 
 	private void runImporter(Repository repository, long importRevision) throws IOException {
-		
-		SvnRevisionMapper revisionMapper = new SvnRevisionMapper(repository);
-//		
-		revisionMapper.initialize();
-		
-		Map<String, Ref> heads = repository.getRefDatabase().getRefs(Constants.R_HEADS);
-		
-		if (heads.size() > 0) {
-			revisionMapper.createRevisionMap(importRevision-1L, new ArrayList<Ref>(heads.values()));
-		}
-		
-		revisionMapper.shutdown();
-		
-		System.getProperties().setProperty("spring.profiles.active", "configured-plugin");
-		
-		GitImporterMain.main(new String [] {"src/test/resources/ks-r" + importRevision + ".dump.bz2", repository.getDirectory().getAbsolutePath(), "target/ks-r"+importRevision+"-ks-veto.log", "target/ks-r"+importRevision+"-ks-copyFrom-skipped.log", "target/ks-r"+importRevision+"-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid"});
-		
-		
+		super.runImporter(repository, importRevision, "src/test/resources/ks-r" + importRevision + ".dump.bz2", "https://svn.kuali.org/repos/student", "fake-uuid");
 	}
+	
 
 }

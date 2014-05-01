@@ -32,8 +32,11 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.GitTreeNodeInitializer;
+import org.kuali.student.git.model.tree.GitTreeNodeInitializerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author Kuali Student Team
  *
  */
-public class GitTreeProcessor {
+public class GitTreeProcessor implements TreeProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(GitTreeProcessor.class);
 	
@@ -49,15 +52,29 @@ public class GitTreeProcessor {
 
 	private ObjectReader objectReader;
 
+	private GitTreeNodeInitializer nodeInitializer;
+
 	/**
 	 * 
 	 */
 	public GitTreeProcessor(Repository repo) {
 		this.repo = repo;
+		this.nodeInitializer = new GitTreeNodeInitializerImpl(this);
 		this.objectReader = repo.newObjectReader();
 		
 	}
 	
+	
+	
+	/**
+	 * @return the nodeInitializer
+	 */
+	public GitTreeNodeInitializer getNodeInitializer() {
+		return nodeInitializer;
+	}
+
+
+
 	public static interface GitTreeBlobVisitor {
 		/**
 		 * 
@@ -222,20 +239,24 @@ public class GitTreeProcessor {
 	
 	public GitTreeData extractExistingTreeData(ObjectId parentId, boolean shallow) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		
-		GitTreeData treeData = new GitTreeData();
-
-		RevWalk rw = new RevWalk(repo);
+		ObjectId treeId = getTreeId (parentId);
 		
-		RevCommit parentCommit = rw.parseCommit(parentId);
-		
-		if (parentCommit == null)
-			return treeData;
+		if (treeId == null)
+			return new GitTreeData(nodeInitializer);
 
+		return extractTreeData(treeId, shallow);
+	}
+	
+	@Override
+	public GitTreeData extractTreeData (ObjectId treeId, boolean shallow) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		GitTreeData treeData = new GitTreeData(nodeInitializer);
+		
 		TreeWalk tw = new TreeWalk(repo);
 		
 		tw.setRecursive(false);
 		
-		tw.addTree(parentCommit.getTree().getId());
+		tw.addTree(treeId);
 		
 		while (tw.next()) {
 			
@@ -247,25 +268,85 @@ public class GitTreeProcessor {
 			
 			if (fileMode.equals(FileMode.TREE)) {
 				
-				if (!shallow) {
+				treeData.addTree(path, objectId);
 				
-					treeData.addTree(path, objectId);
+				if (!shallow) {
 				
 					tw.enterSubtree();
 				
 				}
 			}
 			else if (fileMode.equals(FileMode.REGULAR_FILE)) {
-				treeData.addBlob(path, objectId.name());
+				treeData.addBlob(path, objectId);
 			}
 		}
 		
 		tw.release();
-		rw.release();
-		
 
 		return treeData;
 		
+	}
+
+	public ObjectId getTreeId(ObjectId parentId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		
+		return getTreeId(parentId, "");
+	}
+
+
+
+	public ObjectId getTreeId(ObjectId parentId, String branchSubPath) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		
+		ObjectId treeId = null;
+		
+		RevWalk rw = new RevWalk(repo);
+		
+		RevCommit parentCommit = rw.parseCommit(parentId);
+		
+		rw.release();
+		
+		String[] subPathParts = branchSubPath.split("/");
+		
+		int currentPartIndex = 0;
+		
+		if (branchSubPath != null && !branchSubPath.isEmpty()) {
+			
+			TreeWalk tw = new TreeWalk(repo);
+			
+			tw.addTree(parentCommit.getTree().getId());
+			
+			while (tw.next()) {
+				
+				String currentPathPart = subPathParts[currentPartIndex];
+				
+				if (tw.getFileMode(0).equals(FileMode.TYPE_TREE)) {
+					String name = tw.getNameString();
+					
+					if (name.equals(currentPathPart)) {
+						currentPartIndex++;
+						
+						if (currentPartIndex >= subPathParts.length) {
+							// we are done
+							treeId = tw.getObjectId(0);
+							break;
+						}
+						else {
+							tw.enterSubtree();
+						}
+					}
+					
+				}
+			}
+			
+			tw.release();
+			
+			return treeId;
+		}
+		
+		
+		if (parentCommit == null)
+			return null;
+		else
+			return parentCommit.getTree().getId();
 	}
 
 }

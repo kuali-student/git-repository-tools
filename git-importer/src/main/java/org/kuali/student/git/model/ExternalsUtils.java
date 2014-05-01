@@ -49,6 +49,9 @@ public class ExternalsUtils {
 		
 		results.addAll(unorderedList);
 		
+		if (results.size() == 1)
+			return results;
+		
 		for (GitBranchData data : unorderedList) {
 			
 			List<ExternalModuleInfo> externals = data.getExternals();

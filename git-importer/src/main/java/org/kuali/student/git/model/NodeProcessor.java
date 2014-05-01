@@ -25,7 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.language.RefinedSoundex;
 import org.apache.commons.io.input.BoundedInputStream;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
@@ -46,8 +49,10 @@ import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.git.model.exception.InvalidBlobChangeException;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
+import org.kuali.student.git.model.tree.utils.JGitTreeUtils;
 import org.kuali.student.git.model.util.GitBranchDataUtils;
 import org.kuali.student.subversion.SvnDumpFilter;
 import org.kuali.student.svn.model.ExternalModuleInfo;
@@ -460,8 +465,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		GitBranchData data = knownBranchMap.get(branchName);
 
 		if (data == null) {
-			data = new GitBranchData(branchName, revision, revisionMapper,
-					treeProcessor);
+			data = new GitBranchData(repo, branchName, revision, revisionMapper,
+					treeProcessor, treeProcessor.getNodeInitializer());
 
 			/*
 			 * If the branch already exists lets copy its commit tree as the
@@ -578,7 +583,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			ObjectId id = storeBlob(data, path, nodeProperties);
 
 			if (id != null) {
-				data.addBlob(path, id.getName(), blobLog);
+				data.addBlob(path, id, blobLog);
 			} else {
 
 				log.warn("failed to store blob at path = " + path);
@@ -829,7 +834,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 							// shallow because this method will insert a
 							// fusion-maven-plugin.dat file at the root of the
 							// tree.
-							GitBranchDataUtils.extractExternalModules(
+							GitBranchDataUtils.extractExternalModules(repo, 
 									parentTreeData, data, treeProcessor);
 
 						}
@@ -861,16 +866,104 @@ public class NodeProcessor implements IGitBranchDataProvider {
 						targetBranch = getBranchData(branchName,
 								currentRevision);
 
-					} 
+					}
 
 				}
 
+				/*
+				 * In this case the number of copyfrom branches can be very
+				 * high.
+				 * 
+				 * And we need an efficient way to perform the copy.
+				 * 
+				 * To start with we will ignore the possible child branches and
+				 * just use the existing git tree objects represented by the
+				 * copyfrom branches.
+				 */
+
 				for (SvnRevisionMapResults revisionMapResults : copyFromBranches) {
 
-					applyDirectoryCopy(currentRevision, path,
-							copyFromOperation.getType(),
-							copyFromOperation.getCopyFromPath(), targetBranch,
-							copyFromOperation.getType(), revisionMapResults);
+					ObjectId copyFromBranchCommitId = ObjectId
+							.fromString(revisionMapResults.getRevMap()
+									.getCommitId());
+
+					String copyFromPath = revisionMapResults.getCopyFromPath();
+
+					String copyFromBranchPath = revisionMapResults.getRevMap()
+							.getBranchPath()
+							.substring(Constants.R_HEADS.length());
+
+					String copyFromBranchSubPath = revisionMapResults
+							.getSubPath();
+
+					String targetPath = GitBranchUtils.convertToTargetPath(
+							path, copyFromPath, new BranchData(currentRevision,
+									copyFromBranchPath, copyFromBranchSubPath));
+
+					try {
+
+						BranchData adjustedBranch = branchDetector.parseBranch(
+								currentRevision, targetPath);
+
+						String branchName = GitBranchUtils
+								.getCanonicalBranchName(
+										adjustedBranch.getBranchPath(),
+										currentRevision,
+										largeBranchNameProvider);
+
+						GitBranchData adjustedTargetBranch = getBranchData(
+								branchName, currentRevision);
+
+						applyCopy(adjustedTargetBranch, targetPath, copyFromBranchSubPath, copyFromBranchCommitId);
+
+						// create the new branch
+
+						if (copyFromOperation.getType().equals(
+								OperationType.INVALID_SINGLE_NEW)
+								|| copyFromOperation.getType().equals(
+										OperationType.SINGLE_NEW)) {
+
+							adjustedTargetBranch.setCreated(true);
+
+							// copy over any svn merge data
+
+							GitBranchDataUtils.extractAndStoreBranchMerges(
+									revisionMapResults.getRevMap()
+											.getRevision(), revisionMapResults
+											.getRevMap().getBranchName(),
+									adjustedTargetBranch, revisionMapper);
+
+							ObjectId parentId = ObjectId
+									.fromString(revisionMapResults.getRevMap()
+											.getCommitId());
+
+							// make a shallow copy of the parent tree. only the
+							// blobs in the root directory
+							GitTreeData parentTreeData = treeProcessor
+									.extractExistingTreeData(parentId, true);
+
+							// shallow because this method will insert a
+							// fusion-maven-plugin.dat file at the root of the
+							// tree.
+							GitBranchDataUtils.extractExternalModules(repo, 
+									parentTreeData, adjustedTargetBranch,
+									treeProcessor);
+						}
+
+						adjustedTargetBranch
+								.addMergeParentId(copyFromBranchCommitId);
+
+					} catch (VetoBranchException e) {
+
+						// add the branch tree into the target branch
+
+						applyCopy(targetBranch, targetPath, copyFromBranchSubPath, copyFromBranchCommitId);
+						
+						targetBranch.setCreated(true);
+
+						targetBranch.addMergeParentId(copyFromBranchCommitId);
+
+					}
 
 				}
 
@@ -889,6 +982,42 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					path, currentRevision), e);
 		}
 
+	}
+
+	private void applyCopy(GitBranchData adjustedTargetBranch, String targetPath, String copyFromBranchSubPath, ObjectId copyFromBranchCommitId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		/*
+		 * There are two kinds of subtree paths:
+		 * 
+		 * 1. where the copy from source is a subdirectory of
+		 * the copy from branch
+		 * 
+		 * 2. where the target path is deeper then the path
+		 * (i.e. we matched a branch with a name longer than the
+		 * svn target path)
+		 */
+
+		String targetSubtreePath = targetPath
+				.substring(adjustedTargetBranch.getBranchPath()
+						.length());
+
+		if (targetSubtreePath.startsWith("/")) {
+			targetSubtreePath = targetSubtreePath.substring(1);
+		}
+
+		ObjectId treeId = null;
+
+		if (copyFromBranchSubPath != null
+				&& !copyFromBranchSubPath.isEmpty()) {
+			treeId = treeProcessor.getTreeId(
+					copyFromBranchCommitId,
+					copyFromBranchSubPath);
+		} else {
+
+			treeId = treeProcessor.getTreeId(copyFromBranchCommitId);
+		}
+		
+		adjustedTargetBranch.addTree(targetSubtreePath, treeId);
+		
 	}
 
 	/*
@@ -1058,7 +1187,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			long adjustedContentLength = contentLength - propContentLength;
 
 			if (propContentLength > 0) {
-				getInputStream().skip(propContentLength + 1);
+				getInputStream().skip(propContentLength);
 			}
 
 			/*

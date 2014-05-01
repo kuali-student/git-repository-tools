@@ -313,7 +313,9 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				
 				RevWalk rw = new RevWalk(repo);
 				
-				for (GitBranchData data : ExternalsUtils.computeExternalsAwareOrdering(knownBranchMap.values())) {
+				List<GitBranchData> externalsAwareOrdering = ExternalsUtils.computeExternalsAwareOrdering(knownBranchMap.values());
+				
+				for (GitBranchData data : externalsAwareOrdering) {
 					
 					String branchName = data.getBranchName();
 					
@@ -323,7 +325,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 						ObjectId id = objectInserter.insert(Constants.OBJ_BLOB, SvnExternalsUtils.createFusionMavenPluginDataFileString(currentRevision, repo, data.getExternals(), revisionMapper).getBytes());
 						
 						try {
-							data.addBlob(data.getBranchPath() + "/" + "fusion-maven-plugin.dat", id.name(), blobLog);
+							data.addBlob(data.getBranchPath() + "/" + "fusion-maven-plugin.dat", id, blobLog);
 						} catch (VetoBranchException e) {
 							// should never happen
 							log.error("failed to add fusion-maven-plugin.dat to the branch skipping. branchName = " +  data.getBranchName(), e);
@@ -334,10 +336,13 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					}
 					else {
 						// check for and remove if present.
-						data.deletePath(data.getBranchPath() + "/" + "fusion-maven-plugin.dat", currentRevision);
+						ObjectId blobId = data.findPath (repo, "fusion-maven-plugin.dat");
+						
+						if (blobId != null)
+							data.deletePath(data.getBranchPath() + "/" + "fusion-maven-plugin.dat", currentRevision);
 					}
 
-					if (data.getBlobsAdded() == 0 && !data.isBlobsDeleted() && !data.isCreated()) {
+					if (data.getBlobsAdded() == 0 && !data.isBlobsDeleted() && !data.isCreated() && !data.isTreeDirty()) {
 						
 						/*
 						 * Directory changes can cause a branch data object

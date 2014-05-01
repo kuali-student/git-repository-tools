@@ -15,8 +15,6 @@
  */
 package org.kuali.student.git.tools.merge;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,9 +29,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.BranchRangeDataProviderImpl;
+import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
 import org.kuali.student.git.model.SvnMergeInfoUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
-import org.kuali.student.git.model.SvnMergeInfoUtils.BranchRangeDataProvider;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.BranchDetectorImpl;
 import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
@@ -89,7 +87,7 @@ public class TestActualSvnMergeDeltaCompression extends
 		
 		BranchDetector branchDetector = new BranchDetectorImpl();
 
-		GitTreeData trunk = new GitTreeData();
+		GitTreeData trunk = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
 		String branchFilePath = "src/main/java/org/kuali/student/enrollment/test.txt";
 		storeFile (inserter, trunk, branchFilePath, "test");

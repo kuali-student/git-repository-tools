@@ -5,14 +5,19 @@ package org.kuali.student.svn.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.treewalk.TreeWalk;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
 import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.slf4j.Logger;
@@ -64,7 +69,7 @@ public class TestGitTreeData extends AbstractGitRespositoryTestCase {
 		
 		ObjectInserter inserter = repo.newObjectInserter();
 		
-		GitTreeData branch = new GitTreeData();
+		GitTreeData branch = new GitTreeData(new DummyGitTreeNodeInitializer());
 
 		List<String> lines = FileUtils.readLines(new File ("src/test/resources/ks-r21-expected-files.txt"));
 		
@@ -90,14 +95,50 @@ public class TestGitTreeData extends AbstractGitRespositoryTestCase {
 		
 		storeFile(inserter, nextCommitBase, "src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeDefinition.java", Double.valueOf(Math.random()).toString());
 		
-		String blobId = nextCommitBase.find("src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeDefinition.java");
+		ObjectId blobId = nextCommitBase.find(repo, "src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeDefinition.java");
 		
 		Assert.assertNotNull(blobId);
 		
-		blobId = nextCommitBase.find("src/main/java/org/kuali/student/poc/xsd/personidentity/person");
+		ObjectId treeId = nextCommitBase.find(repo, "src/main/java/org/kuali/student/poc/xsd/personidentity/person");
 		
-		Assert.assertNull(blobId);
+		Assert.assertNotNull(treeId);
+		
+		TreeWalk tw = new TreeWalk(repo);
+		
+		tw.addTree(treeId);
+		
+		boolean expectDto = true;
+		
+		List<String>expectedBlobNames = Arrays.asList(new String [] {"AttributeDataTypeDTO.java", "AttributeDefinitionDTO.java", "AttributeSetDTO.java", "PersonCreateInfo.java", 
+				"PersonDTO.java", "PersonDisplayInfo.java", "PersonIdDTO.java", "PersonInfo.java", "PersonInfoDTO.java", "PersonTypeDTO.java", "PersonTypeInfoDTO.java", "PersonUpdateInfo.java"});
+		
+		List<String>actualBlobNames = new ArrayList<>();
+		
+		while (tw.next()) {
+		
+			if (expectDto) {
+				
+				Assert.assertEquals(FileMode.TREE, tw.getFileMode(0));
+				
+				Assert.assertEquals("dto", tw.getNameString());
+			
+				tw.enterSubtree();
+				
+				expectDto = false;
+			}
+			else {
+				
+				Assert.assertEquals(FileMode.REGULAR_FILE, tw.getFileMode(0));
+				
+				actualBlobNames.add(tw.getNameString());
+				
+			}
+		}
+		
+		tw.release();
 
+		Assert.assertArrayEquals(expectedBlobNames.toArray(), actualBlobNames.toArray());
+		
 		storeFile(inserter, nextCommitBase, "src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java", Double.valueOf(Math.random()).toString());
 		
 		storeFile(inserter, nextCommitBase, "src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/PersonCitizenship.java", Double.valueOf(Math.random()).toString());

@@ -16,7 +16,6 @@
 package org.kuali.student.svn.model;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -24,12 +23,10 @@ import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.AnyObjectId;
-import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.ObjectReader;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
@@ -39,9 +36,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
 import org.kuali.student.git.model.SvnExternalsUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
-import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +68,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		ObjectInserter inserter = repo.newObjectInserter();
 		
 		// create branch 1
-		GitTreeData branch1 = new GitTreeData();
+		GitTreeData branch1 = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
 		String branch1FilePath = "src/main/java/org/kuali/student/enrollment/test.txt";
 		storeFile (inserter, branch1, branch1FilePath, "test");
@@ -85,7 +82,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		inserter.flush();
 		
 		// create branch 2
-		GitTreeData branch2 = new GitTreeData();
+		GitTreeData branch2 = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
 		String branch2FilePath = branch1FilePath;
 		
@@ -100,7 +97,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		inserter.flush();
 		
 		// create aggregate
-		GitTreeData aggregate = new GitTreeData();
+		GitTreeData aggregate = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
 		String aggregate_file_path = "src/main/java/org/kuali/student/enrollment/pom.xml";
 		storeFile (inserter, aggregate, aggregate_file_path, "pom test");
@@ -223,7 +220,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		ObjectInserter inserter = repo.newObjectInserter();
 		
 		// create branch 1
-		GitTreeData branch1 = new GitTreeData();
+		GitTreeData branch1 = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
 		String branch1FilePath = "src/main/java/org/kuali/student/enrollment/test.txt";
 		storeFile (inserter, branch1, branch1FilePath, "test");
@@ -237,7 +234,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		inserter.flush();
 		
 		// create branch 2
-		GitTreeData branch2 = new GitTreeData();
+		GitTreeData branch2 = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
 		String branch2FilePath = branch1FilePath;
 		
@@ -252,7 +249,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		inserter.flush();
 		
 		// create aggregate
-		GitTreeData aggregate = new GitTreeData();
+		GitTreeData aggregate = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
 		String aggregate_file_path = "src/main/java/org/kuali/student/enrollment/pom.xml";
 		storeFile (inserter, aggregate, aggregate_file_path, "pom test");

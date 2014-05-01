@@ -171,7 +171,7 @@ public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 					 * This is mostly to allow in certain copy from cases the copyfrom to work even though the branch detection heuristic fails.
 					 */
 					targetBranch
-					.addBlob(alteredBlobPath, blobId.getName(), blobLog);
+					.addBlob(alteredBlobPath, blobId, blobLog);
 					
 					targetBranch.addMergeParentId(ObjectId
 							.fromString(this.copyFromRevisionMapResults.getRevMap()
@@ -186,7 +186,7 @@ public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 
 				// same branch
 				targetBranch
-						.addBlob(alteredBlobPath, blobId.getName(), blobLog);
+						.addBlob(alteredBlobPath, blobId, blobLog);
 				
 				targetBranch.addMergeParentId(ObjectId
 						.fromString(this.copyFromRevisionMapResults.getRevMap()
@@ -199,7 +199,7 @@ public class CopyFromTreeBlobVisitor implements GitTreeBlobVisitor {
 								alteredData.getBranchPath(), currentRevision,
 								largeBranchNameProvider), currentRevision);
 
-				alteredBranchData.addBlob(alteredBlobPath, blobId.getName(),
+				alteredBranchData.addBlob(alteredBlobPath, blobId,
 						blobLog);
 
 				alteredBranchData.addMergeParentId(ObjectId

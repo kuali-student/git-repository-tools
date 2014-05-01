@@ -205,7 +205,7 @@ public abstract class AbstractGitRespositoryTestCase {
 		ObjectId blobSha1 = inserter.insert(Constants.OBJ_BLOB,
 				fileContent.getBytes());
 
-		branch.addBlob(path, blobSha1.name());
+		branch.addBlob(path, blobSha1);
 
 	}
 
