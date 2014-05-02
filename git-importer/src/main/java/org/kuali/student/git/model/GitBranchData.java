@@ -35,6 +35,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.GitTreeNodeData;
 import org.kuali.student.git.model.tree.GitTreeNodeInitializer;
 import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
@@ -223,7 +224,9 @@ public class GitBranchData {
 		
 		alreadyInitialized = true;
 		
-		this.branchRoot = treeProcessor.extractExistingTreeData (parentId, true);
+		this.branchRoot = treeProcessor.extractExistingTreeDataFromCommit (parentId);
+		
+		this.branchRoot.resetDirtyFlag();
 
 		GitBranchDataUtils.extractAndStoreBranchMerges(this.revision-1L, this.branchName, this, revisionMapper);
 		
@@ -328,14 +331,18 @@ public class GitBranchData {
 
 	public void addTree(String path, ObjectId treeId) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 		
-		if (path.isEmpty())
-			this.branchRoot.setGitTreeObjectId(treeId);
+		if (path.isEmpty()) {
+			
+			GitTreeNodeData root = treeProcessor.extractExistingTreeData(treeId, "");
+			
+			this.branchRoot.setRoot(root);
+		}
 		else {
 			/*
 			 * Adding a sub path so we need to initialize
 			 */
 			initialize();
-			this.branchRoot.addTree(path, treeId);
+			this.branchRoot.addTree(treeProcessor, path, treeId);
 		}
 	}
 

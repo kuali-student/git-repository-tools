@@ -33,7 +33,10 @@ import org.kuali.student.git.model.util.GitBranchDataUtils;
 
 /**
  * 
- * Test the importer on KS Revision 29500 to make sure the svn:mergeinfo properly is being indexed properly.
+ * Test the importer on a new suite of manually created svn dump files designed to test out various properties of the importer.
+ * 
+ * Primarily related to the diffent variations of copyfrom for the new lazy initializing GitTreeData's.
+ * 
  * @author Kuali Student Team
  *
  */
@@ -94,6 +97,15 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		runImporter(repository, 8);
 		
 		assertFileContentEquals (repository, "trunk", "pom.xml", "another pom file only change\n");
+		
+		runImporter(repository, 9);
+		
+		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/test.txt", "module3/src/main/resources/A.txt", "module3/src/main/resources/B.txt", "module3/src/main/resources/C.txt"}));
+		
+		runImporter(repository, 10);
+		
+		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module4/pom.xml", "module4/src/main/resources/test.txt"}));
+		
 		
 	}
 

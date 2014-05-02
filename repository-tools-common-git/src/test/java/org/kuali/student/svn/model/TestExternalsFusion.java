@@ -113,7 +113,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		// a fused commit
 		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
 		
-		GitTreeData fusedAggregate = treeProcessor.extractExistingTreeData(aggregateId);
+		GitTreeData fusedAggregate = treeProcessor.extractExistingTreeDataFromCommit(aggregateId);
 		
 		fusedAggregate.resetDirtyFlag();
 

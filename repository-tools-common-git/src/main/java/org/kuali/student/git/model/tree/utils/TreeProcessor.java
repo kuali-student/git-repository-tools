@@ -28,7 +28,7 @@ public interface TreeProcessor {
 	 * @throws CorruptObjectException
 	 * @throws IOException
 	 */
-	GitTreeData extractTreeData(ObjectId treeId, boolean shallow)
+	GitTreeData extractExistingTreeData(ObjectId treeId, boolean shallow)
 			throws MissingObjectException, IncorrectObjectTypeException,
 			CorruptObjectException, IOException;
 

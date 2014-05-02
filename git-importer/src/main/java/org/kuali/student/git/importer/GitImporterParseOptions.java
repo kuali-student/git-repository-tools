@@ -364,30 +364,17 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 							.newObjectInserter();
 
 					// create the tree
-					ObjectId treeId = null;
 					
-					ObjectId parentId = data.getParentId();
-					
-					if (data.getBlobsAdded() == 0 && !data.isBlobsDeleted() && parentId != null) {
-						
-						RevCommit parentCommit = rw.parseCommit(parentId);
-						
-						treeId = parentCommit.getTree().getId();
-						
-						log.debug("reuse parent tree id = " + treeId.name());
-					}
-					else {
-						treeId = data
+					ObjectId treeId = data
 							.buildTree(inserter);
 						
-						log.debug("create new tree id = " + treeId.name());
-					}
-					
-					
+					log.debug("create new tree id = " + treeId.name());
 
 					commitBuilder.setTreeId(treeId);
 
 					Set<ObjectId> parentSet = new HashSet<ObjectId>();
+					
+					ObjectId parentId = data.getParentId();
 					
 					if (parentId != null)
 						parentSet.add(parentId);

@@ -829,11 +829,12 @@ public class NodeProcessor implements IGitBranchDataProvider {
 							// make a shallow copy of the parent tree. only the
 							// blobs in the root directory
 							GitTreeData parentTreeData = treeProcessor
-									.extractExistingTreeData(parentId, true);
+									.extractExistingTreeDataFromCommit(parentId);
 
-							// shallow because this method will insert a
+							// shallow because this method extract the externals from a
 							// fusion-maven-plugin.dat file at the root of the
 							// tree.
+							// then it will set the details into the target branch.
 							GitBranchDataUtils.extractExternalModules(repo, 
 									parentTreeData, data, treeProcessor);
 
@@ -940,7 +941,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 							// make a shallow copy of the parent tree. only the
 							// blobs in the root directory
 							GitTreeData parentTreeData = treeProcessor
-									.extractExistingTreeData(parentId, true);
+									.extractExistingTreeDataFromCommit(parentId);
 
 							// shallow because this method will insert a
 							// fusion-maven-plugin.dat file at the root of the

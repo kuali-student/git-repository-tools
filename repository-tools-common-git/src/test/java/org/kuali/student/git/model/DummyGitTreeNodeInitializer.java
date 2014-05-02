@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
-import org.kuali.student.git.model.tree.GitTreeData.GitTreeNodeData;
+import org.kuali.student.git.model.tree.GitTreeNodeData;
 import org.kuali.student.git.model.tree.GitTreeNodeInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

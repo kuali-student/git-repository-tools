@@ -9,7 +9,6 @@ import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
-import org.kuali.student.git.model.tree.GitTreeData.GitTreeNodeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 
 /**
@@ -37,7 +36,7 @@ public class GitTreeNodeInitializerImpl implements GitTreeNodeInitializer {
 		
 		if (originalTreeId != null) {
 			
-			GitTreeData loadedNode = treeProcessor.extractTreeData(originalTreeId, true);
+			GitTreeNodeData loadedNode = treeProcessor.extractExistingTreeData(originalTreeId, "");
 		
 			node.replaceWith (loadedNode);
 			

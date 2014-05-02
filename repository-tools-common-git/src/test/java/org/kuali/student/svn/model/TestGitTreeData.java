@@ -89,7 +89,7 @@ public class TestGitTreeData extends AbstractGitRespositoryTestCase {
 		
 		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
 		
-		GitTreeData nextCommitBase = treeProcessor.extractExistingTreeData(commitId);
+		GitTreeData nextCommitBase = treeProcessor.extractExistingTreeDataFromCommit(commitId);
 		
 		nextCommitBase.resetDirtyFlag();
 		

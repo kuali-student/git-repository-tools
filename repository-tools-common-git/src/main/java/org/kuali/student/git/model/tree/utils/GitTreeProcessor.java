@@ -35,6 +35,7 @@ import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.GitTreeNodeData;
 import org.kuali.student.git.model.tree.GitTreeNodeInitializer;
 import org.kuali.student.git.model.tree.GitTreeNodeInitializerImpl;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author Kuali Student Team
  *
  */
-public class GitTreeProcessor implements TreeProcessor {
+public class GitTreeProcessor  {
 
 	private static final Logger log = LoggerFactory.getLogger(GitTreeProcessor.class);
 	
@@ -233,24 +234,28 @@ public class GitTreeProcessor implements TreeProcessor {
 	 * @throws IOException
 	 */
 	
-	public GitTreeData extractExistingTreeData(ObjectId parentId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		return extractExistingTreeData(parentId, false);
-	}
-	
-	public GitTreeData extractExistingTreeData(ObjectId parentId, boolean shallow) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+	public GitTreeData extractExistingTreeDataFromCommit(ObjectId parentId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		
 		ObjectId treeId = getTreeId (parentId);
 		
+		GitTreeData tree = new GitTreeData(nodeInitializer);
+		
 		if (treeId == null)
-			return new GitTreeData(nodeInitializer);
+			return tree;
 
-		return extractTreeData(treeId, shallow);
+		GitTreeNodeData root = extractExistingTreeData(treeId, "");
+		
+		tree.setRoot(root);
+		
+		return tree;
+		
 	}
 	
-	@Override
-	public GitTreeData extractTreeData (ObjectId treeId, boolean shallow) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+	public GitTreeNodeData extractExistingTreeData (ObjectId treeId, String name) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 		
-		GitTreeData treeData = new GitTreeData(nodeInitializer);
+		GitTreeNodeData treeData = new GitTreeNodeData(nodeInitializer, name);
+		
+		treeData.setGitTreeObjectId(treeId);
 		
 		TreeWalk tw = new TreeWalk(repo);
 		
@@ -262,24 +267,30 @@ public class GitTreeProcessor implements TreeProcessor {
 			
 			FileMode fileMode = tw.getFileMode(0);
 			
-			String path = tw.getPathString();
+			String entryName = tw.getNameString();
 			
 			ObjectId objectId = tw.getObjectId(0);
 			
 			if (fileMode.equals(FileMode.TREE)) {
 				
-				treeData.addTree(path, objectId);
+				GitTreeNodeData subTree = new GitTreeNodeData(nodeInitializer, entryName);
 				
-				if (!shallow) {
+				subTree.setGitTreeObjectId(objectId);
 				
-					tw.enterSubtree();
+				treeData.addDirectTree(entryName, subTree);
 				
-				}
+				
 			}
 			else if (fileMode.equals(FileMode.REGULAR_FILE)) {
-				treeData.addBlob(path, objectId);
+				treeData.addDirectBlob(entryName, objectId);
 			}
 		}
+		
+		/*
+		 * This tree is initialized the subtree's are not.
+		 */
+		treeData.setInitialized(true);
+		treeData.setDirty(false);
 		
 		tw.release();
 
