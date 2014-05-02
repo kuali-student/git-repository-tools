@@ -43,7 +43,11 @@ public class TreeResourceContext extends AbstractResourceContext {
 		GitTreeNodeData existing = node.addDirectTree(name, newTree);
 		
 		if (existing != null) {
-			log.warn("overwriting " + getErrorMessage());
+			
+			ObjectId existingObjectId = existing.getOriginalTreeObjectId();
+			
+			if (existingObjectId != null && !existingObjectId.equals(objectId))
+				log.warn("overwriting " + getErrorMessage());
 		}
 
 		

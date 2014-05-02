@@ -133,6 +133,63 @@ public abstract class AbstractGitImporterMainTestCase {
 		rw.release();
 		
 	}
+	
+	/**
+	 * Ensure that the paths given to not exist in the current branch HEAD.
+	 * 
+	 * @param repository
+	 * @param branchName
+	 * @param pathList
+	 * @throws IOException
+	 */
+	protected void assertPathsDontExist(Repository repository, String branchName,
+			List<String> pathList) throws IOException {
+
+		Ref ref = repository.getRef(Constants.R_HEADS + branchName);
+		
+		Assert.assertNotNull(ref);
+		
+		RevWalk rw = new RevWalk(repository);
+		
+		RevCommit commit = rw.parseCommit(ref.getObjectId());
+		
+		TreeWalk tw = new TreeWalk(repository);
+		
+		tw.addTree(commit.getTree().getId());
+		
+		tw.setRecursive(true);
+		
+		Set<String>unmatchedPaths = new HashSet<>();
+		
+		unmatchedPaths.addAll(pathList);
+		
+		int originalSize = unmatchedPaths.size();
+		
+		while (tw.next()) {
+			
+			String path = tw.getPathString();
+			
+			Iterator<String> it = unmatchedPaths.iterator();
+			
+			while (it.hasNext()) {
+				
+				String um = it.next();
+				
+				if (path.startsWith(um))
+					it.remove();
+				
+			}
+			
+			
+		}
+		
+		Assert.assertEquals(originalSize, unmatchedPaths.size());
+		
+		tw.release();
+		
+		rw.release();
+		
+	}
 
 	protected void createBranch(Repository repository, String branchName,
 			String fileName, String fileContent) throws IOException, BranchRefExistsException {

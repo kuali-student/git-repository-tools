@@ -106,6 +106,15 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module4/pom.xml", "module4/src/main/resources/test.txt"}));
 		
+		runImporter(repository, 11);
+		
+		assertPathsDontExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/A.txt", "module3/src/main/resources/B.txt",  "module3/src/main/resources/test.txt"}));
+		
+		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/C.txt"}));
+		
+		
+		
+		
 		
 	}
 

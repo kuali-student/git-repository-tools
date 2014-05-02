@@ -157,52 +157,12 @@ public class GitTreeProcessor  {
 	 */
 	public boolean treeContainsPath (ObjectId commitId, String path) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		
-		String pathParts[] = path.split("\\/");
+		ObjectId treeId = getTreeId(commitId, path);
 		
-		RevWalk walk = new RevWalk(repo);
-
-		RevCommit commit = walk.parseCommit(commitId);
-
-		// a commit points to a tree
-		ObjectId treeId = commit.getTree().getId();
-		
-		TreeWalk treeWalk = new TreeWalk(repo);
-		
-		treeWalk.addTree(treeId);
-
-		boolean containsPath = checkPath (treeWalk, pathParts, 0);
-		
-		treeWalk.release();
-		walk.release();
-
-		return containsPath;
-	}
-
-	private boolean checkPath(TreeWalk treeWalk, String[] pathParts, int currentPathPartIndex) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
-		
-		if (currentPathPartIndex == pathParts.length) {
+		if (treeId != null)
 			return true;
-		}
-		
-		String currentPathPart = pathParts[currentPathPartIndex];
-		
-		while (treeWalk.next()) {
-			
-			if (treeWalk.getFileMode(0) != FileMode.TREE)
-				continue;
-			
-			if (currentPathPart.equals(treeWalk.getNameString())) {
-				
-				ObjectId treeId = treeWalk.getObjectId(0);
-				
-				treeWalk.reset(treeId);
-				
-				return checkPath(treeWalk, pathParts, (currentPathPartIndex+1));
-			}
-				
-		}
-		
-		return false;
+		else
+			return false;
 		
 	}
 	

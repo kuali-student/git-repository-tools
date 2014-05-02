@@ -157,7 +157,7 @@ public class GitTreeNodeData {
 					log.warn("missing leaf blob = " + name);
 			} else {
 
-				if (!this.isInitialized()) {
+				if (!leaf.isInitialized()) {
 					try {
 						nodeInitializer.initialize(leaf);
 					} catch (Exception e) {
