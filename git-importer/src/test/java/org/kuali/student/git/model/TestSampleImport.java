@@ -112,9 +112,28 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/C.txt"}));
 		
+		/*
+		 * test deleting a path ending in tags from trunk.
+		 */
+		runImporter(repository, 12);
+		
+		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"tags/test-tag/test.txt"}));
+		
+		runImporter(repository, 13);
+		
+		assertPathsDontExist(repository, "trunk", Arrays.asList(new String [] {"tags/test-tag/test.txt"}));
 		
 		
+		/*
+		 * Test copyfrom nested trunk to trunk scenario
+		 */
+		runImporter(repository, 14);
 		
+		assertPathsExist(repository, "trunk_maven_trunk", Arrays.asList(new String [] {"kuali/test.txt"}));
+		
+		runImporter(repository, 15);
+		
+		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"maven/kuali/test.txt"}));
 		
 	}
 

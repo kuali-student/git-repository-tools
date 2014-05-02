@@ -43,12 +43,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Kuali Student Team
- *
+ * 
  */
-public class GitTreeProcessor  {
+public class GitTreeProcessor {
 
-	private static final Logger log = LoggerFactory.getLogger(GitTreeProcessor.class);
-	
+	private static final Logger log = LoggerFactory
+			.getLogger(GitTreeProcessor.class);
+
 	private Repository repo;
 
 	private ObjectReader objectReader;
@@ -62,11 +63,9 @@ public class GitTreeProcessor  {
 		this.repo = repo;
 		this.nodeInitializer = new GitTreeNodeInitializerImpl(this);
 		this.objectReader = repo.newObjectReader();
-		
+
 	}
-	
-	
-	
+
 	/**
 	 * @return the nodeInitializer
 	 */
@@ -74,45 +73,50 @@ public class GitTreeProcessor  {
 		return nodeInitializer;
 	}
 
-
-
 	public static interface GitTreeBlobVisitor {
 		/**
 		 * 
 		 * @param blobId
 		 * @param path
-		 * @return true if the visiting should continue; false if it should stop.
+		 * @return true if the visiting should continue; false if it should
+		 *         stop.
 		 * 
 		 */
-		public boolean visitBlob(ObjectId blobId, String path, String name) throws MissingObjectException, IncorrectObjectTypeException, IOException;
+		public boolean visitBlob(ObjectId blobId, String path, String name)
+				throws MissingObjectException, IncorrectObjectTypeException,
+				IOException;
 	}
-	
+
 	public static interface GitTreePathVisitor {
-		
-		public boolean visitPath (String path, String name);
-		
+
+		public boolean visitPath(String path, String name);
+
 	}
-	
-	public void visitBlobs (ObjectId commitId, GitTreeBlobVisitor visitor) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-	
+
+	public void visitBlobs(ObjectId commitId, GitTreeBlobVisitor visitor)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
+
 		visitBlobs(commitId, visitor, null);
 	}
-	
-	public void visitBlobs (ObjectId commitId, GitTreeBlobVisitor visitor, TreeFilter treeFilter) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
+
+	public void visitBlobs(ObjectId commitId, GitTreeBlobVisitor visitor,
+			TreeFilter treeFilter) throws MissingObjectException,
+			IncorrectObjectTypeException, IOException {
+
 		RevWalk walk = new RevWalk(repo);
 
 		RevCommit commit = walk.parseCommit(commitId);
 
 		// a commit points to a tree
 		ObjectId treeId = commit.getTree().getId();
-		
+
 		TreeWalk treeWalk = new TreeWalk(repo);
 
 		treeWalk.addTree(treeId);
 
 		treeWalk.setRecursive(true);
-		
+
 		if (treeFilter != null)
 			treeWalk.setFilter(treeFilter);
 
@@ -133,18 +137,18 @@ public class GitTreeProcessor  {
 			ObjectId blobId = treeWalk.getObjectId(0);
 
 			String path = treeWalk.getPathString();
-			
+
 			String name = treeWalk.getNameString();
-			
+
 			if (!visitor.visitBlob(blobId, path, name))
 				return; // stop when the visitor indicates its done.
 		}
-		
+
 		treeWalk.release();
 		walk.release();
-		
+
 	}
-	
+
 	/**
 	 * Compute if the path given exists in the commit tree.
 	 * 
@@ -155,165 +159,184 @@ public class GitTreeProcessor  {
 	 * @throws IncorrectObjectTypeException
 	 * @throws IOException
 	 */
-	public boolean treeContainsPath (ObjectId commitId, String path) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
-		ObjectId treeId = getTreeId(commitId, path);
-		
-		if (treeId != null)
+	public boolean treeContainsPath(ObjectId commitId, String path)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
+
+		ObjectId objectId = getObjectId(commitId, path);
+
+		if (objectId != null)
 			return true;
 		else
 			return false;
-		
+
 	}
-	
-	public ObjectLoader getBlob(ObjectId blobId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
+
+	public ObjectLoader getBlob(ObjectId blobId) throws MissingObjectException,
+			IncorrectObjectTypeException, IOException {
+
 		return objectReader.open(blobId, Constants.OBJ_BLOB);
 	}
-	
-	public List<String> getBlobAsStringLines(ObjectId blobId) throws MissingObjectException, IOException {
-		
+
+	public List<String> getBlobAsStringLines(ObjectId blobId)
+			throws MissingObjectException, IOException {
+
 		ObjectLoader loader = getBlob(blobId);
-		
+
 		return IOUtils.readLines(loader.openStream());
-		
+
 	}
 
 	/**
 	 * Extract the existing Git Tree Data for the commit indicated.
 	 * 
-	 * We index the blob's but also note the object id's of the tree's so that we can optimize
-	 * creation of the new tree data at the end.
+	 * We index the blob's but also note the object id's of the tree's so that
+	 * we can optimize creation of the new tree data at the end.
 	 * 
 	 * i.e. only have to create new trees for the data that has changed.
 	 * 
 	 * @param parentId
-	 * @return the fully constructed mutable GitTreeData structure representing the tree committed in the indicated parent commit.
+	 * @return the fully constructed mutable GitTreeData structure representing
+	 *         the tree committed in the indicated parent commit.
 	 * @throws MissingObjectException
 	 * @throws IncorrectObjectTypeException
 	 * @throws IOException
 	 */
-	
-	public GitTreeData extractExistingTreeDataFromCommit(ObjectId parentId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
-		ObjectId treeId = getTreeId (parentId);
-		
+
+	public GitTreeData extractExistingTreeDataFromCommit(ObjectId parentId)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
+
+		ObjectId treeId = getTreeId(parentId);
+
 		GitTreeData tree = new GitTreeData(nodeInitializer);
-		
+
 		if (treeId == null)
 			return tree;
 
 		GitTreeNodeData root = extractExistingTreeData(treeId, "");
-		
+
 		tree.setRoot(root);
-		
+
 		return tree;
-		
+
 	}
-	
-	public GitTreeNodeData extractExistingTreeData (ObjectId treeId, String name) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
-		
+
+	public GitTreeNodeData extractExistingTreeData(ObjectId treeId, String name)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			CorruptObjectException, IOException {
+
 		GitTreeNodeData treeData = new GitTreeNodeData(nodeInitializer, name);
-		
+
 		treeData.setGitTreeObjectId(treeId);
-		
+
 		TreeWalk tw = new TreeWalk(repo);
-		
+
 		tw.setRecursive(false);
-		
+
 		tw.addTree(treeId);
-		
+
 		while (tw.next()) {
-			
+
 			FileMode fileMode = tw.getFileMode(0);
-			
+
 			String entryName = tw.getNameString();
-			
+
 			ObjectId objectId = tw.getObjectId(0);
-			
+
 			if (fileMode.equals(FileMode.TREE)) {
-				
-				GitTreeNodeData subTree = new GitTreeNodeData(nodeInitializer, entryName);
-				
+
+				GitTreeNodeData subTree = new GitTreeNodeData(nodeInitializer,
+						entryName);
+
 				subTree.setGitTreeObjectId(objectId);
-				
+
 				treeData.addDirectTree(entryName, subTree);
-				
-				
-			}
-			else if (fileMode.equals(FileMode.REGULAR_FILE)) {
+
+			} else if (fileMode.equals(FileMode.REGULAR_FILE)) {
 				treeData.addDirectBlob(entryName, objectId);
 			}
 		}
-		
+
 		/*
 		 * This tree is initialized the subtree's are not.
 		 */
 		treeData.setInitialized(true);
 		treeData.setDirty(false);
-		
+
 		tw.release();
 
 		return treeData;
-		
+
 	}
 
-	public ObjectId getTreeId(ObjectId parentId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
-		return getTreeId(parentId, "");
+	public ObjectId getTreeId(ObjectId parentId) throws MissingObjectException,
+			IncorrectObjectTypeException, IOException {
+
+		return getObjectId(parentId, "");
 	}
 
+	public ObjectId getObjectId(ObjectId parentId, String branchSubPath)  
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
 
-
-	public ObjectId getTreeId(ObjectId parentId, String branchSubPath) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
 		ObjectId treeId = null;
-		
+
 		RevWalk rw = new RevWalk(repo);
-		
+
 		RevCommit parentCommit = rw.parseCommit(parentId);
-		
+
 		rw.release();
-		
+
 		String[] subPathParts = branchSubPath.split("/");
-		
+
 		int currentPartIndex = 0;
-		
+
 		if (branchSubPath != null && !branchSubPath.isEmpty()) {
-			
+
 			TreeWalk tw = new TreeWalk(repo);
-			
+
 			tw.addTree(parentCommit.getTree().getId());
-			
+
 			while (tw.next()) {
-				
+
 				String currentPathPart = subPathParts[currentPartIndex];
-				
-				if (tw.getFileMode(0).equals(FileMode.TYPE_TREE)) {
+
+				if (currentPartIndex == (subPathParts.length - 1)) {
+					// on the last element consider blobs
 					String name = tw.getNameString();
 					
 					if (name.equals(currentPathPart)) {
-						currentPartIndex++;
-						
-						if (currentPartIndex >= subPathParts.length) {
-							// we are done
-							treeId = tw.getObjectId(0);
-							break;
-						}
-						else {
-							tw.enterSubtree();
-						}
+						treeId = tw.getObjectId(0);
+						break;
 					}
 					
+				} else {
+
+					if (tw.getFileMode(0).equals(FileMode.TYPE_TREE)) {
+						String name = tw.getNameString();
+
+						if (name.equals(currentPathPart)) {
+							currentPartIndex++;
+
+							if (currentPartIndex >= subPathParts.length) {
+								// we are done
+								treeId = tw.getObjectId(0);
+								break;
+							} else {
+								tw.enterSubtree();
+							}
+						}
+
+					}
 				}
 			}
-			
+
 			tw.release();
-			
+
 			return treeId;
 		}
-		
-		
+
 		if (parentCommit == null)
 			return null;
 		else

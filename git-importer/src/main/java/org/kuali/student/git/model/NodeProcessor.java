@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.codec.language.RefinedSoundex;
 import org.apache.commons.io.input.BoundedInputStream;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -49,10 +48,8 @@ import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.git.model.exception.InvalidBlobChangeException;
 import org.kuali.student.git.model.tree.GitTreeData;
-import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
-import org.kuali.student.git.model.tree.utils.JGitTreeUtils;
 import org.kuali.student.git.model.util.GitBranchDataUtils;
 import org.kuali.student.subversion.SvnDumpFilter;
 import org.kuali.student.svn.model.ExternalModuleInfo;
@@ -246,10 +243,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 				log.info("file replace on " + path);
 
-				if (validBranch) {
-
-					deletePath(data, currentRevision, path);
-				}
+				deletePath(data, currentRevision, path);
 
 				/*
 				 * No content length means we add the blob from the copy from
@@ -271,17 +265,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 				log.info("directory replace on " + path);
 
-				if (validBranch) {
 
-					deletePath(data, currentRevision, path);
-				}
-				/*
-				 * not a known branch so we need to apply this delete to all
-				 * branches starting with the path provided.
-				 * 
-				 * This may also be a branch delete step.
-				 */
-				deleteBranches(data, path, currentRevision);
+				deletePath(data, currentRevision, path);
 
 				/*
 				 * We care if the directory was copied from somewhere else
@@ -301,17 +286,9 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			 * 
 			 * Just that the delete is occurring on a valid branch.
 			 */
-			if (validBranch) {
 
-				deletePath(data, currentRevision, path);
-			}
-			/*
-			 * not a known branch so we need to apply this delete to all
-			 * branches starting with the path provided.
-			 * 
-			 * This may also be a branch delete step.
-			 */
-			deleteBranches(data, path, currentRevision);
+			deletePath(data, currentRevision, path);
+			
 		}
 	}
 
@@ -700,6 +677,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 	private void deleteBranches(GitBranchData data, String path,
 			long currentRevision) throws IOException {
 
+		
+		
 		Map<String, Ref> heads = repo.getRefDatabase().getRefs(
 				Constants.R_HEADS);
 
@@ -1009,7 +988,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 		if (copyFromBranchSubPath != null
 				&& !copyFromBranchSubPath.isEmpty()) {
-			treeId = treeProcessor.getTreeId(
+			treeId = treeProcessor.getObjectId(
 					copyFromBranchCommitId,
 					copyFromBranchSubPath);
 		} else {
@@ -1084,7 +1063,15 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 	private GitBranchData getBranchData(SvnRevisionMap revMap) {
 
-		return getBranchData(revMap.getBranchName(), revMap.getRevision());
+		return getBranchData(normalizeBranchName (revMap.getBranchName()), revMap.getRevision());
+	}
+
+	private String normalizeBranchName(String branchName) {
+		
+		if (branchName.startsWith(Constants.R_HEADS)) 
+			branchName = branchName.substring(Constants.R_HEADS.length());
+		
+		return branchName;
 	}
 
 	private List<SvnRevisionMap> getRevMapList(
@@ -1172,11 +1159,22 @@ public class NodeProcessor implements IGitBranchDataProvider {
 	private void deletePath(GitBranchData data, long currentRevision,
 			String path) throws IOException {
 
-		if (path.equals(data.getBranchPath())) {
-			deleteBranches(data, path, currentRevision);
-		} else {
-
-			data.deletePath(path, currentRevision);
+		// TODO: refactor this logic to work with actual Ref's or branches that represent those refs.
+		List<SvnRevisionMapResults> targetBranches = revisionMapper
+				.getRevisionBranches(currentRevision-1, path);
+		
+		for (SvnRevisionMapResults revisionMapResults : targetBranches) {
+			
+			if (revisionMapResults.getSubPath().length() > 0) {
+				// delete the path from this branch
+				GitBranchData branchData = getBranchData(revisionMapResults.getRevMap());
+				
+				branchData.deletePath(path, currentRevision);
+			}
+			else {
+				
+				deleteBranch(normalizeBranchName(revisionMapResults.getRevMap().getBranchName()), currentRevision);
+			}
 		}
 	}
 
