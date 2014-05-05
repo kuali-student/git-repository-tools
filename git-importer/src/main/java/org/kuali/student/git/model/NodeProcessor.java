@@ -32,7 +32,6 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.RefRename;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
@@ -47,6 +46,7 @@ import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.git.model.exception.InvalidBlobChangeException;
+import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor.GitTreeBlobVisitor;
@@ -643,7 +643,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				branchName);
 
 		if (head == null) {
-			log.warn("no branch found for branch path = "
+			log.warn("(copy-from) no branch found for branch path = "
 					+ branchData.getBranchPath() + " at " + revision);
 			return null;
 		}
@@ -715,37 +715,16 @@ public class NodeProcessor implements IGitBranchDataProvider {
 	private void deleteBranch(String branchName, long currentRevision)
 			throws IOException {
 
-		Ref existingBranchRef = repo.getRef(Constants.R_HEADS + branchName);
-
-		if (existingBranchRef == null) {
-			log.warn("trying to delete branch: " + branchName + " at " + currentRevision + " but it doesn't exist.");
-			return;
+		Ref archivedBranchRef = GitRefUtils.archiveBranch(repo, largeBranchNameProvider, commitData.getPersonIdent(), branchName, currentRevision);
+		
+		if (archivedBranchRef == null) {
+			log.warn("problems archiving branch = " + branchName);
 		}
-		String archivedBranchReference = Constants.R_HEADS + branchName + "@"
-				+ (currentRevision - 1);
-
-		if (archivedBranchReference.length() >= GitBranchUtils.FILE_SYSTEM_NAME_LIMIT) {
-			archivedBranchReference = Constants.R_HEADS
-					+ largeBranchNameProvider.storeLargeBranchName(
-							archivedBranchReference, currentRevision);
-		}
-
-		RefRename rename = repo.renameRef(existingBranchRef.getName(),
-				archivedBranchReference);
-
-		rename.setRefLogIdent(commitData.getPersonIdent());
-		rename.setRefLogMessage(commitData.getPersonIdent() + " deleted "
-				+ branchName + "renaming the branch");
-
-		Result result = rename.rename();
-
-		if (result != Result.RENAMED)
-			log.warn("problems renaming branch = " + branchName + " to "
-					+ archivedBranchReference);
 		else {
-			log.info("renamed " + branchName + " to " + archivedBranchReference);
+			
+			log.info("archived " + branchName + " to " + archivedBranchRef.getName());
 		}
-
+		
 		// also remove this branch from the known branches
 		knownBranchMap.remove(branchName);
 	}
@@ -956,7 +935,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 						|| copyFromOperation.getType().equals(
 								OperationType.INVALID_SINGLE_NEW)) {
 					if (targetBranch != null
-							&& targetBranch.getBlobsAdded() > 0)
+							&& (targetBranch.getBlobsAdded() > 0 || targetBranch.isTreeDirty()))
 						targetBranch.setCreated(true);
 				}
 
@@ -1108,11 +1087,11 @@ public class NodeProcessor implements IGitBranchDataProvider {
 	 */
 	private CopyFromOperation computeTargetBranches(GitBranchData data,
 			String path, long currentRevision) throws IOException {
-
+		
 		CopyFromOperation copyOp = null;
 
 		List<SvnRevisionMapResults> targetBranches = revisionMapper
-				.getRevisionBranches(currentRevision, path);
+				.getRevisionBranches(currentRevision-1, path);
 
 		if (targetBranches.size() == 1) {
 			SvnRevisionMap revMap = targetBranches.get(0).getRevMap();
@@ -1122,8 +1101,9 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 			if (adjustedBranchPath.length() < path.length()) {
 				copyOp = new CopyFromOperation(OperationType.SUBTREE);
-			} else
+			} else {
 				copyOp = new CopyFromOperation(OperationType.SINGLE);
+			}
 
 			copyOp.setTargetBranches(Arrays
 					.asList(new GitBranchData[] { getBranchData(revMap) }));

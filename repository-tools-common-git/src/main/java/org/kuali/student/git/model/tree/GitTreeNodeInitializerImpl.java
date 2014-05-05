@@ -41,9 +41,8 @@ public class GitTreeNodeInitializerImpl implements GitTreeNodeInitializer {
 			node.replaceWith (loadedNode);
 			
 		}
-		else {
-			node.setInitialized(true);
-		}
+		
+		node.setInitialized(true);
 		
 	}
 	
