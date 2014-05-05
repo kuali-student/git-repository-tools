@@ -370,7 +370,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 					// check the parentId is the same
 					Ref existingRef = repo.getRef(Constants.R_HEADS
-							+ data.getBranchPath());
+							+ data.getBranchName());
 
 					if (existingRef != null) {
 

@@ -876,12 +876,14 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 						GitBranchData adjustedTargetBranch = getBranchData(
 								branchName, currentRevision);
-
+						
 						applyCopy(adjustedTargetBranch, targetPath, copyFromBranchSubPath, copyFromBranchCommitId);
 
 						// create the new branch
-
-						if (copyFromOperation.getType().equals(
+						
+						Ref ref = repo.getRef(Constants.R_HEADS + branchName);
+						
+						if (ref == null || copyFromOperation.getType().equals(
 								OperationType.INVALID_SINGLE_NEW)
 								|| copyFromOperation.getType().equals(
 										OperationType.SINGLE_NEW)) {
