@@ -76,6 +76,15 @@ public final class GitRefUtils {
 		
 		
 		Result result = update.forceUpdate();
+		
+		if (result.equals(Result.LOCK_FAILURE)) {
+			try {
+				Thread.currentThread().sleep(1000);
+			} catch (InterruptedException e) {
+				//fall through
+			}
+			return createBranch(repo, absoluteBranchName, commitId, allowUpdate);
+		}
 
 		if (result == null
 				|| !(result.equals(Result.NEW)

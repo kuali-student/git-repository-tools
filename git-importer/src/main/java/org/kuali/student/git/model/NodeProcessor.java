@@ -717,6 +717,10 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 		Ref existingBranchRef = repo.getRef(Constants.R_HEADS + branchName);
 
+		if (existingBranchRef == null) {
+			log.warn("trying to delete branch: " + branchName + " at " + currentRevision + " but it doesn't exist.");
+			return;
+		}
 		String archivedBranchReference = Constants.R_HEADS + branchName + "@"
 				+ (currentRevision - 1);
 
@@ -1163,19 +1167,47 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		List<SvnRevisionMapResults> targetBranches = revisionMapper
 				.getRevisionBranches(currentRevision-1, path);
 		
+		boolean processedCurrentBranch = false;
+		
+		
 		for (SvnRevisionMapResults revisionMapResults : targetBranches) {
+			
+			String candidateBranchName = normalizeBranchName(revisionMapResults.getRevMap().getBranchName());
 			
 			if (revisionMapResults.getSubPath().length() > 0) {
 				// delete the path from this branch
 				GitBranchData branchData = getBranchData(revisionMapResults.getRevMap());
 				
+				if (data != null && data.getBranchName().equals(candidateBranchName)) {
+					processedCurrentBranch = true;
+				}
 				branchData.deletePath(path, currentRevision);
 			}
 			else {
 				
-				deleteBranch(normalizeBranchName(revisionMapResults.getRevMap().getBranchName()), currentRevision);
+				if (data != null && data.getBranchName().equals(candidateBranchName)) {
+					processedCurrentBranch = true;
+				}
+				
+				deleteBranch(candidateBranchName, currentRevision);
 			}
 		}
+		
+		if (data != null && !processedCurrentBranch) {
+			
+
+			if (data.getBranchPath().equals(path)) {
+				// delete the current branch
+				deleteBranch(data.getBranchName(), currentRevision);
+			}
+			else {
+				// delete a path in the current branch
+				data.deletePath(path, currentRevision);
+			}
+			
+			
+		}
+		
 	}
 
 	private ObjectId storeBlob(GitBranchData gbd, String path,

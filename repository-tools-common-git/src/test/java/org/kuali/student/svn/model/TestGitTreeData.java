@@ -86,6 +86,8 @@ public class TestGitTreeData extends AbstractGitRespositoryTestCase {
 		
 		createBranch(commitId, "branch");
 		
+		inserter.flush();
+		
 		
 		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
 		

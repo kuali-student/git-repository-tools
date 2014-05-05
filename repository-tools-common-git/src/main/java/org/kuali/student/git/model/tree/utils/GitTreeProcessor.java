@@ -336,11 +336,12 @@ public class GitTreeProcessor {
 
 			return treeId;
 		}
-
-		if (parentCommit == null)
-			return null;
-		else
+		else if (branchSubPath.length() == 0) {
 			return parentCommit.getTree().getId();
+		}
+		else
+			return null;
+
 	}
 
 }

@@ -43,6 +43,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
 import org.slf4j.Logger;
@@ -52,6 +53,8 @@ import org.slf4j.LoggerFactory;
  * @author Kuali Student Team
  *
  */
+// random access file is terribly slow in linux
+@Ignore
 public class TestSvnRevisionMapper {
 
 	private static final Logger log = LoggerFactory.getLogger(TestSvnRevisionMapper.class);
