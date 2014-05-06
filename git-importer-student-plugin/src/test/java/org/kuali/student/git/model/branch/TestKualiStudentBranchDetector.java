@@ -195,6 +195,8 @@ public class TestKualiStudentBranchDetector extends AbstractKualiStudentBranchDe
 		assertPath ("test/functional-automation/ksap-aft/lib/sambal-kuali/pages/ks_maintenance_portal_page.rb", "test/functional-automation/ksap-aft", "lib/sambal-kuali/pages/ks_maintenance_portal_page.rb");
 		
 		assertPath("enrollment/aggregate/branches/inactive/KSAP", "enrollment/aggregate/branches/inactive/KSAP", "");
+		
+		assertPath("enrollment/ks-deployments/trunk/ks-web/ks-embedded/src/main/webapp/WEB-INF/tags", "enrollment/ks-deployments/trunk", "ks-web/ks-embedded/src/main/webapp/WEB-INF/tags");
 	}
 	
 	@Test

@@ -128,14 +128,17 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 				throw new VetoBranchException(path + " vetoed because it is not complete.");
 		}
 		
-		if (BRANCHES.equals(lastPart) || BRANCHES_INACTIVE.equals(lastPart)|| TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
-			throw new VetoBranchException(path + " vetoed because it is incomplete.");
+		if (!path.contains(TRUNK)) {
+			
+			if (BRANCHES.equals(lastPart) || BRANCHES_INACTIVE.equals(lastPart)|| TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
+				throw new VetoBranchException(path + " vetoed because it is incomplete.");
 		
 		
-		if (TAGS.equals(parts[0]) && KS_OLD_DIRECTORY_STRUCTURE.equals(lastPart))
-			throw new VetoBranchException (TAGS + "/" + KS_OLD_DIRECTORY_STRUCTURE + " is not a valid branch by itself, its children are valid individually.");
+			if (TAGS.equals(parts[0]) && KS_OLD_DIRECTORY_STRUCTURE.equals(lastPart))
+				throw new VetoBranchException (TAGS + "/" + KS_OLD_DIRECTORY_STRUCTURE + " is not a valid branch by itself, its children are valid individually.");
 		
-
+		}
+		
 		if (!(isPathValidBranchTagOrTrunk(path))) {
 
 			if (GitBranchUtils.startsWith (path, SUSHIK_COMPONENT_MANUAL_IMPL)) {
