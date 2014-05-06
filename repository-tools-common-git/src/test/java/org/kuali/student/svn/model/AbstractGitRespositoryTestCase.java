@@ -17,8 +17,10 @@ package org.kuali.student.svn.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -27,16 +29,16 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
@@ -104,6 +106,28 @@ public abstract class AbstractGitRespositoryTestCase {
 
 	}
 
+	protected List<String>getBlobContents (ObjectId blobId) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+
+		ObjectLoader loader = repo.newObjectReader().open(blobId, Constants.OBJ_BLOB);
+		
+		List<String> lines = IOUtils.readLines(loader.openStream(), "UTF-8");
+		
+		return lines;
+	}
+	
+	protected void assertBlobContents (ObjectId blobId, int lineNumber, String expectedContent) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		
+		List<String> contents = getBlobContents(blobId);
+		
+		Assert.assertTrue (lineNumber < contents.size());
+		
+		String line = contents.get(lineNumber);
+		
+		Assert.assertEquals(expectedContent, line);
+		
+		
+		
+	}
 	protected String diffTrees(ObjectId tree1, ObjectId tree2) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 
 		StringBuilder builder = new StringBuilder();

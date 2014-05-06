@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TreeResourceContext extends AbstractResourceContext {
 
-	private static final Logger log = LoggerFactory.getLogger(BlobResourceContext.class);
+	private static final Logger log = LoggerFactory.getLogger(TreeResourceContext.class);
 	
 	private GitTreeProcessor treeProcessor;
 
@@ -46,8 +46,16 @@ public class TreeResourceContext extends AbstractResourceContext {
 			
 			ObjectId existingObjectId = existing.getOriginalTreeObjectId();
 			
-			if (existingObjectId != null && !existingObjectId.equals(objectId))
+			if (existingObjectId != null && !existingObjectId.equals(objectId)) {
+				
+				/*
+				 * lets merge the tree.  Its only a blocker if we are trying to save different blobs into the same path
+				 */
+				
+				existing.merge(treeProcessor.extractExistingTreeData(objectId, existing.getName()));
+				
 				log.warn("overwriting " + getErrorMessage());
+			}
 		}
 
 		

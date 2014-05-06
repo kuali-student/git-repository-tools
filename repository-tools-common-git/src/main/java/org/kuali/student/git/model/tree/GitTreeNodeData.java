@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
@@ -60,6 +61,17 @@ public class GitTreeNodeData {
 		this.nodeInitializer = nodeInitializer;
 		this.name = name;
 	}
+	
+	
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+
 
 	public boolean deletePath(String path) {
 
@@ -488,6 +500,66 @@ public class GitTreeNodeData {
 
 	public ObjectId addDirectBlob(String entryName, ObjectId objectId) {
 		return this.blobReferences.put(entryName, objectId);
+	}
+
+
+
+	/**
+	 * Merge the content from the given node into ourself.
+	 * 
+	 * If there is a collision then the merge will fail.
+	 * 
+	 * @param node
+	 */
+	public boolean merge(GitTreeNodeData node) {
+		
+		boolean mergedSomething = false;
+		
+		for (Entry<String, ObjectId> entry : node.blobReferences.entrySet()) {
+			
+			String nodeBlobName = entry.getKey();
+			
+			ObjectId nodeBlobId = entry.getValue();
+			
+			ObjectId ourBlobId = this.blobReferences.get(nodeBlobName);
+			
+			if (ourBlobId == null) {
+				// we don't have this blob
+				this.blobReferences.put(nodeBlobName, nodeBlobId);
+				mergedSomething = true;
+			}
+			else if (!ourBlobId.equals(nodeBlobId)) {
+				log.warn(String.format("skipping merge due to blob collision merge (name=%s, ourBlobId=%s, nodeBlobId=%s)", nodeBlobName, ourBlobId, nodeBlobId));
+			}
+			
+		}
+		
+		for (Entry<String, GitTreeNodeData> entry : node.subTreeReferences.entrySet()) {
+			
+			GitTreeNodeData nodeSubTree = entry.getValue();
+			
+			GitTreeNodeData ourSubTree = this.subTreeReferences.get(nodeSubTree.getName());
+			
+			if (ourSubTree == null) {
+				// we don't have this tree
+				this.subTreeReferences.put(nodeSubTree.getName(), nodeSubTree);
+				mergedSomething = true;
+			}
+			else {
+				if (ourSubTree.merge(nodeSubTree)) {
+					mergedSomething = true;
+				}
+			}
+			
+			
+		}
+		
+		if (mergedSomething)
+			setDirty(true);
+		
+		return mergedSomething;
+		
+		
 	}
 
 }

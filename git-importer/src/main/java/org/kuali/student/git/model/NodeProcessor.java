@@ -961,9 +961,16 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		 * svn target path)
 		 */
 
-		String targetSubtreePath = targetPath
-				.substring(adjustedTargetBranch.getBranchPath()
-						.length());
+		String targetSubtreePath = "";
+		
+		if (adjustedTargetBranch.getBranchName().length() <= targetPath.length()) {
+			
+			targetSubtreePath = targetPath
+					.substring(adjustedTargetBranch.getBranchPath()
+							.length());
+		}
+		
+		
 
 		if (targetSubtreePath.startsWith("/")) {
 			targetSubtreePath = targetSubtreePath.substring(1);

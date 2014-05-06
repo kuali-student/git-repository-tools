@@ -221,7 +221,7 @@ public class GitTreeProcessor {
 		return tree;
 
 	}
-
+	
 	public GitTreeNodeData extractExistingTreeData(ObjectId treeId, String name)
 			throws MissingObjectException, IncorrectObjectTypeException,
 			CorruptObjectException, IOException {
