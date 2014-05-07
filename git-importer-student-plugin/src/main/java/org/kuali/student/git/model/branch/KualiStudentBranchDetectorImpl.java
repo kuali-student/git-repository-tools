@@ -119,16 +119,17 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		}
 		
 		String lastPart = parts[parts.length-1];
-		
-		if (parts.length > 1) {
+
+		if (!path.contains(TRUNK) && !(path.contains(BRANCHES) && !lastPart.equals(BRANCHES))) {
+			if (parts.length > 1) {
+				
+				String secondLastPart = parts[parts.length-2];
 			
-			String secondLastPart = parts[parts.length-2];
-		
-			if (BRANCHES.equals(secondLastPart) && INACTIVE.equals(lastPart))
-				throw new VetoBranchException(path + " vetoed because it is not complete.");
+				if (BRANCHES.equals(secondLastPart) && INACTIVE.equals(lastPart))
+					throw new VetoBranchException(path + " vetoed because it is not complete.");
+			}
 		}
-		
-		if (!path.contains(TRUNK)) {
+		if (!path.contains(TRUNK) && !(path.contains(BRANCHES) && !lastPart.equals(BRANCHES))) {
 			
 			if (BRANCHES.equals(lastPart) || BRANCHES_INACTIVE.equals(lastPart)|| TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
 				throw new VetoBranchException(path + " vetoed because it is incomplete.");

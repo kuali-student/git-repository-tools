@@ -54,17 +54,21 @@ public class KualiFoundationBranchDetectorImpl implements BranchDetector {
 
 		String[] parts = path.split("\\/");
 		
-		if (parts.length == 1 && !path.equals(TRUNK)) {
+		String lastPart = "";
+		
+		if (parts.length > 0) {
+			lastPart = parts[parts.length-1];
+		}
+		if (parts.length == 1 && !path.contains(TRUNK) && !(path.contains(BRANCHES) && !lastPart.equals(BRANCHES))) {
 
 			throw new VetoBranchException(path
 					+ " vetoed because length is only one part");
 		}
 		
-		String lastPart = parts[parts.length-1];
-		
-		if (BRANCHES.equals(lastPart) || TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
-			throw new VetoBranchException(path + " vetoed because it is incomplete.");
-		
+		if (!path.contains(TRUNK) && !(path.contains(BRANCHES) && !lastPart.equals(BRANCHES))) {
+			if (BRANCHES.equals(lastPart) || TAGS.equals(lastPart) || OLD_TAGS.equals(lastPart) || OLD_BUILD_TAGS.equals(lastPart))
+				throw new VetoBranchException(path + " vetoed because it is incomplete.");
+		}
 
 		if (!(isPathValidBranchTagOrTrunk(path))) {
 			

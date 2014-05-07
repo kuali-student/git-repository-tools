@@ -197,6 +197,8 @@ public class TestKualiStudentBranchDetector extends AbstractKualiStudentBranchDe
 		assertPath("enrollment/aggregate/branches/inactive/KSAP", "enrollment/aggregate/branches/inactive/KSAP", "");
 		
 		assertPath("enrollment/ks-deployments/trunk/ks-web/ks-embedded/src/main/webapp/WEB-INF/tags", "enrollment/ks-deployments/trunk", "ks-web/ks-embedded/src/main/webapp/WEB-INF/tags");
+	
+		assertPath ("contrib/myplan/branches/ks-myplan-web-2.2M1/myplan-standalone/src/main/webapp/WEB-INF/tags", "contrib/myplan/branches/ks-myplan-web-2.2M1", "myplan-standalone/src/main/webapp/WEB-INF/tags");
 	}
 	
 	@Test
