@@ -9,6 +9,7 @@ import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.kuali.student.git.model.tree.exceptions.GitTreeNodeInitializationException;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 
 /**
@@ -30,19 +31,23 @@ public class GitTreeNodeInitializerImpl implements GitTreeNodeInitializer {
 	 * @see org.kuali.student.git.model.tree.GitTreeNodeInitializer#initialize(org.kuali.student.git.model.tree.GitTreeData.GitTreeNodeData)
 	 */
 	@Override
-	public void initialize(GitTreeNodeData node) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+	public void initialize(GitTreeNodeData node) throws GitTreeNodeInitializationException {
 		
-		ObjectId originalTreeId = node.getOriginalTreeObjectId();
-		
-		if (originalTreeId != null) {
+		try {
+			ObjectId originalTreeId = node.getOriginalTreeObjectId();
 			
-			GitTreeNodeData loadedNode = treeProcessor.extractExistingTreeData(originalTreeId, "");
-		
-			node.replaceWith (loadedNode);
+			if (originalTreeId != null) {
+				
+				GitTreeNodeData loadedNode = treeProcessor.extractExistingTreeData(originalTreeId, node.getName());
 			
+				node.replaceWith (loadedNode);
+				
+			}
+			
+			node.setInitialized(true);
+		} catch (Exception e) {
+			throw new GitTreeNodeInitializationException("initialize(node name="+node!=null?node.getName():"null"+") failed unexpectantly: ", e);
 		}
-		
-		node.setInitialized(true);
 		
 	}
 	

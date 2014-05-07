@@ -4,7 +4,10 @@
 package org.kuali.student.svn.model;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.treewalk.TreeWalk;
@@ -169,6 +172,84 @@ public class TestGitTreeNodeData extends AbstractGitRespositoryTestCase {
 		
 		// TODO check the file content is AB Tree Content
 		assertBlobContents(blobId, 0, "AB Tree content");
+		
+	}
+	
+	@Test
+	public void testTopAndNestedDirectoryMerge() throws IOException {
+		
+		ObjectInserter inserter = repo.newObjectInserter();
+		
+		GitTreeData AFBTree = new GitTreeData(treeNodeInitializer);
+		
+		storeFile(inserter, AFBTree, "A.txt", "test content");
+		
+		storeFile(inserter, AFBTree, "F/B.txt", "test content");
+		
+		ObjectId AFBtreeId = AFBTree.buildTree(inserter);
+		
+		inserter.flush();
+		
+		GitTreeData BFDTree = new GitTreeData(treeNodeInitializer);
+		
+		storeFile(inserter, BFDTree, "B.txt", "BD Tree content");
+		storeFile(inserter, BFDTree, "F/D.txt", "test content");
+		
+		ObjectId BFDTreeId = BFDTree.buildTree(inserter);
+		
+		inserter.flush();
+		
+		GitTreeNodeData loadedAFB = treeProcessor.extractExistingTreeData(AFBtreeId, "test");
+		
+		GitTreeNodeData loadedBFD = treeProcessor.extractExistingTreeData(BFDTreeId, "test");
+		
+		loadedAFB.merge(loadedBFD);
+		
+		ObjectId mergedTreeId = loadedAFB.buildTree(inserter);
+		
+		inserter.flush();
+		
+		TreeWalk tw = new TreeWalk(repo);
+		
+		tw.setRecursive(false);
+		
+		tw.addTree(mergedTreeId);
+		
+		int depth = 0;
+		
+		Set<String>depthZeroExpectedFiles = new HashSet<>();
+		
+		depthZeroExpectedFiles.add("A.txt");
+		depthZeroExpectedFiles.add("B.txt");
+		
+		Set<String> depthFExpectedFiles = new HashSet<>();
+		
+		depthFExpectedFiles.add("B.txt");
+		depthFExpectedFiles.add("D.txt");
+		
+		
+		while (tw.next()) {
+			
+			String name = tw.getNameString();
+			
+			if (tw.getFileMode(0).equals(FileMode.TYPE_FILE)) {
+				
+				if (depth == 0) {
+					
+					Assert.assertEquals(true, depthZeroExpectedFiles.contains(name));
+				}
+				else {
+					Assert.assertEquals(true, depthFExpectedFiles.contains(name));
+				}
+				
+			}
+			else {
+				tw.enterSubtree();
+				depth++;
+			}
+		}
+		
+		tw.release();
 		
 	}
 	

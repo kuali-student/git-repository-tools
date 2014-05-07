@@ -89,17 +89,11 @@ public class GitTreeNodeData {
 		return originalTreeObjectId;
 	}
 
-	private void initializeSubTrees() {
+	protected void initializeSubTrees() {
 
 		if (!this.initialized) {
 
-			this.initialized = true;
-
-			try {
-				this.nodeInitializer.initialize(this);
-			} catch (Exception e) {
-				log.error("failed to initialize node: " + this.name, e);
-			}
+			this.nodeInitializer.initialize(this);
 
 		}
 	}
@@ -126,11 +120,7 @@ public class GitTreeNodeData {
 		if (difference == 1) {
 
 			if (!this.isInitialized()) {
-				try {
-					nodeInitializer.initialize(this);
-				} catch (Exception e) {
-					throw new RuntimeException("nodeInitializer Failed", e);
-				}
+				nodeInitializer.initialize(this);
 			}
 
 			boolean blobReference = false;
@@ -170,11 +160,7 @@ public class GitTreeNodeData {
 			} else {
 
 				if (!leaf.isInitialized()) {
-					try {
-						nodeInitializer.initialize(leaf);
-					} catch (Exception e) {
-						throw new RuntimeException("nodeInitializer Failed", e);
-					}
+					nodeInitializer.initialize(leaf);
 				}
 				/*
 				 * bubble up the dirty flag to the root along the deleted path.
@@ -253,11 +239,7 @@ public class GitTreeNodeData {
 		if (difference == 1) {
 
 			if (!this.isInitialized()) {
-				try {
-					nodeInitializer.initialize(this);
-				} catch (Exception e) {
-					throw new RuntimeException("nodeInitializer Failed", e);
-				}
+				nodeInitializer.initialize(this);
 			}
 
 			context.storeResource(name, this);
@@ -277,11 +259,7 @@ public class GitTreeNodeData {
 			} else {
 
 				if (!leaf.isInitialized()) {
-					try {
-						nodeInitializer.initialize(leaf);
-					} catch (Exception e) {
-						throw new RuntimeException("nodeInitializer Failed", e);
-					}
+					nodeInitializer.initialize(leaf);
 				}
 			}
 			
@@ -513,7 +491,19 @@ public class GitTreeNodeData {
 	 */
 	public boolean merge(GitTreeNodeData node) {
 		
+		// init ourself if needed.
+		if (!initialized)
+			initializeSubTrees();
+		
+		// init the node to merge if needed
+		if (!node.isInitialized()) {
+			node.initializeSubTrees();
+		}
+		
 		boolean mergedSomething = false;
+		
+		// see if there are any new blobs to merge
+		// skip over any overlapping blobs.
 		
 		for (Entry<String, ObjectId> entry : node.blobReferences.entrySet()) {
 			
@@ -534,6 +524,7 @@ public class GitTreeNodeData {
 			
 		}
 		
+		// check the subtrees.
 		for (Entry<String, GitTreeNodeData> entry : node.subTreeReferences.entrySet()) {
 			
 			GitTreeNodeData nodeSubTree = entry.getValue();
@@ -554,6 +545,10 @@ public class GitTreeNodeData {
 			
 		}
 		
+		// if something changed set the dirty flag 
+		// and transmit back up the path to the root.
+		// so that the tree's touched by the change will
+		// be persisted properly.
 		if (mergedSomething)
 			setDirty(true);
 		
