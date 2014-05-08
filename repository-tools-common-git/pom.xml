@@ -6,7 +6,7 @@
     <version>0.0.2-SNAPSHOT</version>
   </parent>
   <artifactId>repository-tools-common-git</artifactId>
-  <name>Respository Tools Common Git</name>
+  <name>Repository Tools Common Git</name>
   <description>Common Code Related to Git</description>
   
   <dependencies>
