@@ -9,6 +9,12 @@
   <name>Foundation  Git Importer Plugin</name>
   <description>Branch Detection Rules for the Foundation Repo</description>
     <dependencies>
+    
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
+		</dependency>
   	<dependency>
 			<groupId>org.kuali.student.repository</groupId>
 			<artifactId>git-importer-plugin-api</artifactId>

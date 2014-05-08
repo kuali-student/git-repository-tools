@@ -135,6 +135,19 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"maven/kuali/test.txt"}));
 		
+		/*
+		 * Test that a copyfrom an invalid branch works.
+		 */
+		runImporter(repository, 16);
+		
+		assertRefNotNull(repository, "invalid-branch-name", "expected invalid-branch-name to exist");
+		
+		runImporter(repository, 17);
+		
+		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"invalid-branch-name-resource.txt"}));
+		
+		
+		
 	}
 
 	

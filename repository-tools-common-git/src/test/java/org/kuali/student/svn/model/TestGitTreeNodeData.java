@@ -170,8 +170,7 @@ public class TestGitTreeNodeData extends AbstractGitRespositoryTestCase {
 		 */
 		Assert.assertEquals(3, counter);
 		
-		// TODO check the file content is AB Tree Content
-		assertBlobContents(blobId, 0, "AB Tree content");
+		assertBlobContents(blobId, 0, "BD Tree content");
 		
 	}
 	

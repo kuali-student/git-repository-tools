@@ -75,10 +75,9 @@ public class KualiFoundationBranchDetectorImpl implements BranchDetector {
 			if (GitBranchUtils.startsWith(path, RICE_IMPEX_RICE_IMPEX_MASTER_1_0_3)) {
 				return buildBranchData(revision, path, RICE_IMPEX_RICE_IMPEX_MASTER_1_0_3);
 			}
-
-				throw new VetoBranchException(
-						path
-								+ "vetoed because it does not contain tags, branches or trunk");
+			else 
+				return null;
+			
 		}
 
 		/*

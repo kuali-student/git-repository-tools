@@ -496,27 +496,54 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 		String copyFromPath = nodeProperties
 				.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_PATH);
+		
+		BranchData copyFromBranchData = null;
 
 		if (copyFromPath != null) {
 
 			long copyFromRevision = Long.valueOf(nodeProperties
 					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_REV));
 
-			BranchData copyFromBranchData;
+			
 			try {
 				copyFromBranchData = branchDetector.parseBranch(
 						copyFromRevision, copyFromPath);
 			} catch (VetoBranchException e1) {
 
 				// check the default branch
-				log.warn(copyFromPath + " vetoed");
-				vetoLog.println(String
-						.format("detect merge vetoed CurrentRevision: %s, Branch: %s, CopyFromRevision: %s",
-								"CopyFromPath: %s",
-								String.valueOf(currentRevision),
-								data.getBranchName(), copyFromRevision,
-								copyFromPath));
+				List<SvnRevisionMapResults> copyFromBranches = revisionMapper
+						.getRevisionBranches(copyFromRevision, copyFromPath);
+
+				
+				if (copyFromBranches.size() == 1) {
+					
+					SvnRevisionMapResults results = copyFromBranches.get(0);
+					copyFromBranchData = new BranchData (copyFromRevision, results.getRevMap().getBranchPath().substring(Constants.R_HEADS.length()), results.getSubPath());
+					
+				}
+				else {
+					
+					if (copyFromBranches.size() == 0) {
+						log.warn("no copyfrom branch found for: " + copyFromPath);
+						vetoLog.println(String
+								.format("no copyfrom branch fround at blob add CurrentRevision: %s, Branch: %s, CopyFromRevision: %s, CopyFromPath: %s",
+										String.valueOf(currentRevision),
+										data.getBranchName(), copyFromRevision,
+										copyFromPath));
+					}
+					else if (copyFromBranches.size() > 1) {
+						log.warn("multiple copyfrom branches found for " + copyFromPath);
+						vetoLog.println(String
+								.format("multiple copyfrom branch fround at blob add CurrentRevision: %s, Branch: %s, CopyFromRevision: %s, CopyFromPath: %s",
+										String.valueOf(currentRevision),
+										data.getBranchName(), copyFromRevision,
+										copyFromPath));
+					}
+				
+					
 				return;
+				
+				}
 			}
 
 			if (!copyFromBranchData.getBranchPath()
@@ -557,7 +584,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				+ ", at revision " + currentRevision);
 
 		try {
-			ObjectId id = storeBlob(data, path, nodeProperties);
+			ObjectId id = storeBlob(data, path, copyFromBranchData, nodeProperties);
 
 			if (id != null) {
 				data.addBlob(path, id, blobLog);
@@ -574,7 +601,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 	}
 
 	private ObjectId storeBlob(GitBranchData data, String path,
-			Map<String, String> nodeProperties) throws VetoBranchException,
+			BranchData copyFromBranchData, Map<String, String> nodeProperties) throws VetoBranchException,
 			InvalidBlobChangeException, IOException {
 
 		String contentLengthProperty = nodeProperties
@@ -590,7 +617,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			long copyFromRevision = Long.valueOf(nodeProperties
 					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_REV));
 
-			return getBlobId(copyFromPath, copyFromRevision);
+			return getBlobId(copyFromPath, copyFromBranchData, copyFromRevision);
 
 		} else {
 
@@ -630,86 +657,33 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 	}
 
-	private ObjectId getBlobId(String path, long revision)
+	private ObjectId getBlobId(String path, final BranchData copyFromBranchData, long revision)
 			throws VetoBranchException, IOException {
 
-		final BranchData branchData = branchDetector
-				.parseBranch(revision, path);
+		if (copyFromBranchData == null) {
+			log.warn("getBlobId no copyfrom branch for path " + path + " at " + revision);
+			return null;
+		}
+		
 
 		String branchName = GitBranchUtils.getCanonicalBranchName(
-				branchData.getBranchPath(), revision, largeBranchNameProvider);
+				copyFromBranchData.getBranchPath(), revision, largeBranchNameProvider);
 
 		ObjectId head = revisionMapper.getRevisionBranchHead(revision,
 				branchName);
 
 		if (head == null) {
 			log.warn("(copy-from) no branch found for branch path = "
-					+ branchData.getBranchPath() + " at " + revision);
+					+ copyFromBranchData.getBranchPath() + " at " + revision);
 			return null;
 		}
-		/*
-		 * A bit of a hack but this gives us a place to put the result when
-		 * found in the inner class.
-		 */
-		final Set<ObjectId> resultSet = new HashSet<ObjectId>();
 
-		treeProcessor.visitBlobs(head, new GitTreeBlobVisitor() {
-
-			@Override
-			public boolean visitBlob(ObjectId blobId, String path, String name) {
-
-				if (path.equals(branchData.getPath())) {
-					resultSet.add(blobId);
-					return false;
-				} else
-					return true;
-			}
-		});
-
-		// return out the result if it exists
-		if (resultSet.size() == 0)
-			return null;
-		else
-			return resultSet.iterator().next();
-
-	}
-
-	private void deleteBranches(GitBranchData data, String path,
-			long currentRevision) throws IOException {
-
+		GitTreeData copyFromTreeData = treeProcessor.extractExistingTreeDataFromCommit(head);
 		
+		ObjectId blobId = copyFromTreeData.find(repo, copyFromBranchData.getPath());
 		
-		Map<String, Ref> heads = repo.getRefDatabase().getRefs(
-				Constants.R_HEADS);
-
-		for (Map.Entry<String, Ref> entry : heads.entrySet()) {
-			String branchName = entry.getKey();
-
-			if (branchName.contains("@"))
-				continue; // skip over archived references
-
-			String largeBranchName = largeBranchNameProvider.getBranchName(
-					branchName, currentRevision);
-
-			if (largeBranchName != null) {
-				branchName = largeBranchName;
-			}
-
-			String branchPath = GitBranchUtils.getBranchPath(branchName,
-					currentRevision, largeBranchNameProvider);
-
-			if (branchPath.equals(path) || branchPath.startsWith(path + "/")) {
-
-				/*
-				 * require the last element to totally match:
-				 * 
-				 * ks-1.3, ks-1.3-ec1 if we delete ks-1.3 we only want ks-1.3 to
-				 * be deleted. Without the trailing "/" ks-1.3-ec1 was also
-				 * being deleted.
-				 */
-				deleteBranch(branchName, currentRevision);
-			}
-		}
+		return blobId;
+		
 	}
 
 	private void deleteBranch(String branchName, long currentRevision)

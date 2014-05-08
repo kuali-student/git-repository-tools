@@ -426,6 +426,9 @@ public class GitTreeNodeData {
 		}
 
 		String filePart = parts[uptoFile];
+		
+		if (!currentNode.isInitialized())
+			nodeInitializer.initialize(currentNode);
 
 		ObjectId blobId = currentNode.blobReferences.get(filePart);
 
@@ -519,7 +522,11 @@ public class GitTreeNodeData {
 				mergedSomething = true;
 			}
 			else if (!ourBlobId.equals(nodeBlobId)) {
-				log.warn(String.format("skipping merge due to blob collision merge (name=%s, ourBlobId=%s, nodeBlobId=%s)", nodeBlobName, ourBlobId, nodeBlobId));
+				
+				// accept the overwrite
+				this.blobReferences.put(nodeBlobName, nodeBlobId);
+				
+				log.warn(String.format("blob collision during merge taking the node Blob data (name=%s, ourBlobId=%s, nodeBlobId=%s)", nodeBlobName, ourBlobId, nodeBlobId));
 			}
 			
 		}
