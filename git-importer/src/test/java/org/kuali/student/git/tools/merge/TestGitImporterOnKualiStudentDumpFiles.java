@@ -18,18 +18,13 @@ package org.kuali.student.git.tools.merge;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-
-
-
-import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,12 +43,26 @@ import org.slf4j.LoggerFactory;
 public class TestGitImporterOnKualiStudentDumpFiles {
 	
 	private static final Logger log = LoggerFactory.getLogger(TestGitImporterOnKualiStudentDumpFiles.class);
+	private TimeZone defaultTimeZone;
 
 	/**
 	 * 
 	 */
 	public TestGitImporterOnKualiStudentDumpFiles() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	
+	@Before
+	public void onBefore () {
+		defaultTimeZone = TimeZone.getDefault();
+		
+		TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
+	}
+	
+	@After
+	public void onAfter () {
+		TimeZone.setDefault(defaultTimeZone);
 	}
 	
 	@Test
