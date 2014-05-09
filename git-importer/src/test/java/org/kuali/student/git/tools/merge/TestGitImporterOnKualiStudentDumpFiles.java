@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import org.apache.commons.io.FileUtils;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.junit.After;
 import org.junit.Assert;
@@ -44,6 +45,7 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 	
 	private static final Logger log = LoggerFactory.getLogger(TestGitImporterOnKualiStudentDumpFiles.class);
 	private TimeZone defaultTimeZone;
+	private DateTimeZone defaultDateTimeZone;
 
 	/**
 	 * 
@@ -58,11 +60,15 @@ public class TestGitImporterOnKualiStudentDumpFiles {
 		defaultTimeZone = TimeZone.getDefault();
 		
 		TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"));
+		
+		defaultDateTimeZone = DateTimeZone.getDefault();
+		DateTimeZone.setDefault(DateTimeZone.forID("America/New_York"));
 	}
 	
 	@After
 	public void onAfter () {
 		TimeZone.setDefault(defaultTimeZone);
+		DateTimeZone.setDefault(defaultDateTimeZone);
 	}
 	
 	@Test
