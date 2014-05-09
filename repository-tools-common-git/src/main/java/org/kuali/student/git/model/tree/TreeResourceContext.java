@@ -49,7 +49,7 @@ public class TreeResourceContext extends AbstractResourceContext {
 			if (existingObjectId != null && !existingObjectId.equals(objectId)) {
 				
 				/*
-				 * lets merge the tree.  Its only a blocker if we are trying to save different blobs into the same path
+				 * lets merge the tree.  We take the changes even if there are conflicts on the blob id's.
 				 */
 				
 				existing.merge(treeProcessor.extractExistingTreeData(objectId, existing.getName()));

@@ -30,14 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Kuali Student Team
- * 
- *         The code in this class was copied from
+ *         This class started as a copy from
  *         org.tmatesoft.svn.core.internal.wc.SVNUtil version 1.7.8 and was
  *         originally written by: TMate Software Ltd., Peter Skoog
  * 
  *         it is subject to the <a
  *         href="http://svnkit.com/license.html">svnkit.com license</a>.
+ *         
+ *         The key part of the copied code related to using the decoder to extract each line (see readLine method).
  * 
  */
 public final class IOUtils {

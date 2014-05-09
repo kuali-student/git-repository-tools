@@ -26,7 +26,6 @@
 		<module>repository-tools-common-git</module>
 		<module>repository-tools-common-svn</module>
 		<module>repository-tools-common</module>
-		<module>git-importer-plugin-api</module>
 		<module>git-importer-student-plugin</module>
 		<module>git-importer-foundation-plugin</module>
 		<module>git-importer-rice-plugin</module>
