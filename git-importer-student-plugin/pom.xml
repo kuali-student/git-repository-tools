@@ -10,11 +10,7 @@
   <description>Branch Detection for the Kuali Student Svn Repository</description>
   
   <dependencies>
-  	<dependency>
-			<groupId>org.kuali.student.repository</groupId>
-			<artifactId>git-importer-plugin-api</artifactId>
-			<version>${project.version}</version>
-  	</dependency>
+  
   	<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

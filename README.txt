@@ -152,3 +152,33 @@ Modify the script in scripts/run-svn-export.sh for the location of your local mi
 
 Perhaps export in 10,000 rev chunks so that if there is a problem you will be able to dump only the difference to the next block instead of to the end of the repository.
 
+Validating a Git Conversion
+===========================
+
+Checkout the svn path for a commit (like release tags or the tip of the trunk)
+
+Import that tree into git and then look to make sure there are no differences.
+look at the exported url in the git commit
+
+1. svn export $URL branchName-at-rXYZ
+
+2. cd branchName-at-rXYZ
+
+3. find . -name .gitignore | xargs rm
+
+4. git init
+
+5. git add .
+
+6. git commit -m "initial import of branchName-at-rXYZ"
+
+7. cd /path/to/converted/git/repo
+
+8. git remote add svn ../branchName-at-rXYZ
+
+9. git fetch svn
+
+10. git diff-tree -r -w -b svn/master HEAD | less
+
+11. If there are differences research what we are missing.  If a line has all
+    zeros it means the file does not exist on that branch.

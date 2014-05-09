@@ -10,11 +10,7 @@
   <description>Custom Branch Detection Logic for the Kuali Rice Project Subversion to Git Conversion</description>
   
   <dependencies>
-  	<dependency>
-			<groupId>org.kuali.student.repository</groupId>
-			<artifactId>git-importer-plugin-api</artifactId>
-			<version>${project.version}</version>
-  	</dependency>
+  	
   	<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
