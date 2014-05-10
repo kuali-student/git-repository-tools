@@ -21,6 +21,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
+	<scm>
+		<connection>scm:svn:https://svn.kuali.org/repos/student/tools/svn-history-tools/trunk</connection>
+		<developerConnection>scm:svn:https://svn.kuali.org/repos/student/tools/svn-history-tools/trunk</developerConnection>
+		<url>https://svn.kuali.org/repos/student/tools/svn-history-tools/trunk</url>
+	</scm>
 	<modules>
 		<module>git-importer</module>
 		<module>repository-tools-common-git</module>

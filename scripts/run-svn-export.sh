@@ -8,4 +8,4 @@ then
 	exit 1
 fi
 
-svnadmin dump --incremental -r $REV $REPO | bzip2 > ks-r$REV.dump.bz2
+svnadmin dump --incremental -r $REV $REPO | bzip2 > ~/ks-r$REV.dump.bz2
