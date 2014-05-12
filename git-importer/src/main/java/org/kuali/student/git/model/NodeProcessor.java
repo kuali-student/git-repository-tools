@@ -607,16 +607,21 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		String contentLengthProperty = nodeProperties
 				.get(SvnDumpFilter.SVN_DUMP_KEY_CONTENT_LENGTH);
 
+		String copyFromPath = nodeProperties
+				.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_PATH);
+
+		String copyFromRevisionString = nodeProperties.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_REV);
+		
+		String propContentLengthProperty = nodeProperties
+				.get(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH);
+		
+		long copyFromRevision = -1;
+		
+		if (copyFromRevisionString != null)
+			copyFromRevision = Long.valueOf(copyFromRevisionString);
+		
 		if (contentLengthProperty == null) {
-
 			// add case 2 : Add an unchanged copy of an existing file
-
-			String copyFromPath = nodeProperties
-					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_PATH);
-
-			long copyFromRevision = Long.valueOf(nodeProperties
-					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_COPYFROM_REV));
-
 			return getBlobId(copyFromPath, copyFromBranchData, copyFromRevision);
 
 		} else {
@@ -630,9 +635,6 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				log.error("SPACER LINE HAS DATA: ");
 			}
 
-			String propContentLengthProperty = nodeProperties
-					.get(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH);
-
 			long contentLength = Long.parseLong(contentLengthProperty);
 
 			long propContentLength = 0L;
@@ -640,16 +642,24 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			if (propContentLengthProperty != null)
 				propContentLength = Long.parseLong(propContentLengthProperty);
 
-			String action = nodeProperties
-					.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_ACTION);
-
-			if (propContentLength == contentLength && action.equals("change")) {
+			if (propContentLength == contentLength) {
+				
+				/*
+				 * Check if there is copyfrom data
+				 */
+				
+				if (copyFromPath != null) {
+					// use the copyfrom data to get an existing blob id.
+					return getBlobId(copyFromPath, copyFromBranchData, copyFromRevision);
+				}
+				else {
 				// there is no file change so don't do anything
 				log.warn(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH
 						+ " size equals "
 						+ SvnDumpFilter.SVN_DUMP_KEY_CONTENT_LENGTH + " of "
 						+ contentLength + " for path = " + path);
 				return null;
+				}
 			}
 
 			return storeBlob(data, path, contentLength, propContentLength);

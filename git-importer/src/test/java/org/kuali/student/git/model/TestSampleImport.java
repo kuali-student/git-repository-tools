@@ -146,7 +146,9 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"invalid-branch-name-resource.txt"}));
 		
+		runImporter(repository, 18);
 		
+		assertFileContentEquals (repository, "trunk", "module5/pom.xml", " module pom file\n");
 		
 	}
 
