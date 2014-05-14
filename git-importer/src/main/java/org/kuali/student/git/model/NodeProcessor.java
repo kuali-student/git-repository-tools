@@ -615,6 +615,9 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		String propContentLengthProperty = nodeProperties
 				.get(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH);
 		
+		String textContentLengthProperty = nodeProperties
+				.get(SvnDumpFilter.SVN_DUMP_KEY_TEXT_CONTENT_LENGTH);
+		
 		long copyFromRevision = -1;
 		
 		if (copyFromRevisionString != null)
@@ -628,8 +631,6 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 			// add case 1 or add case 3 : file content exists so save it.
 
-			
-
 			long contentLength = Long.parseLong(contentLengthProperty);
 
 			long propContentLength = 0L;
@@ -637,6 +638,11 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			if (propContentLengthProperty != null)
 				propContentLength = Long.parseLong(propContentLengthProperty);
 			
+			long textContentLength = 0L;
+			
+			if (textContentLengthProperty != null)
+				textContentLength = Long.parseLong(textContentLengthProperty);
+				
 			if (propContentLength == contentLength) {
 				
 				/*
@@ -651,7 +657,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					// use the copyfrom data to get an existing blob id.
 					return getBlobId(copyFromPath, copyFromBranchData, copyFromRevision);
 				}
-				else if (contentLength == 0) {
+				else if (textContentLength == 0) {
 					
 					String action = nodeProperties.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_ACTION);
 					
@@ -667,8 +673,10 @@ public class NodeProcessor implements IGitBranchDataProvider {
 						
 						return storeBlob(data, path, contentLength, propContentLength);
 					}
-					else
+					else {
+						// skip over the empty file
 						return null;
+					}
 					
 				}
 				else {

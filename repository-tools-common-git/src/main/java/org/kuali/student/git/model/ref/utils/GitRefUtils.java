@@ -185,4 +185,11 @@ public final class GitRefUtils {
 				return null;
 		}
 	}
+
+	public static Result deleteRef(Repository repo, Ref ref) throws IOException {
+		
+		RefUpdate refUpdate = repo.getRefDatabase().newUpdate(ref.getName(), false);
+		
+		return refUpdate.delete();
+	}
 }

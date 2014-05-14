@@ -53,6 +53,8 @@ public class SvnDumpFilter {
 	public static final String SVN_DUMP_KEY_NODE_KIND = "Node-kind";
 
 	public static final String SVN_DUMP_KEY_PROP_CONTENT_LENGTH = "Prop-content-length";
+	
+	public static final String SVN_DUMP_KEY_TEXT_CONTENT_LENGTH = "Text-content-length";
 
 	public static final String SVN_DUMP_KEY_CONTENT_LENGTH = "Content-length";
 
