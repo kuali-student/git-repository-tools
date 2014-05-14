@@ -628,12 +628,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 			// add case 1 or add case 3 : file content exists so save it.
 
-			// skip over the spacer line
-			int spacer = getInputStream().read();
-
-			if (spacer != '\n') {
-				log.error("SPACER LINE HAS DATA: ");
-			}
+			
 
 			long contentLength = Long.parseLong(contentLengthProperty);
 
@@ -641,27 +636,62 @@ public class NodeProcessor implements IGitBranchDataProvider {
 
 			if (propContentLengthProperty != null)
 				propContentLength = Long.parseLong(propContentLengthProperty);
-
+			
 			if (propContentLength == contentLength) {
 				
 				/*
-				 * Check if there is copyfrom data
+				 * Normally skip over the change (return null case below).
+				 * 
+				 * If there is a copyfrom source find the blob id that way.
+				 * 
+				 * If the content length is specified as 0 create an empty file
 				 */
-				
+
 				if (copyFromPath != null) {
 					// use the copyfrom data to get an existing blob id.
 					return getBlobId(copyFromPath, copyFromBranchData, copyFromRevision);
 				}
+				else if (contentLength == 0) {
+					
+					String action = nodeProperties.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_ACTION);
+					
+					if (action.equals("add")) {
+						// if the content was specified as zero then create the file but with no content.
+						
+						// skip over the spacer line
+						int spacer = getInputStream().read();
+	
+						if (spacer != '\n') {
+							log.error("SPACER LINE HAS DATA: ");
+						}
+						
+						return storeBlob(data, path, contentLength, propContentLength);
+					}
+					else
+						return null;
+					
+				}
 				else {
-				// there is no file change so don't do anything
-				log.warn(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH
-						+ " size equals "
-						+ SvnDumpFilter.SVN_DUMP_KEY_CONTENT_LENGTH + " of "
-						+ contentLength + " for path = " + path);
-				return null;
+					// there is no file change so don't do anything
+					log.warn(SvnDumpFilter.SVN_DUMP_KEY_PROP_CONTENT_LENGTH
+							+ " size equals "
+							+ SvnDumpFilter.SVN_DUMP_KEY_CONTENT_LENGTH + " of "
+							+ contentLength + " for path = " + path);
+					return null;
 				}
 			}
+			
+			/*
+			 * Standard case ingest the blob content and store it in git.
+			 */
 
+			// skip over the spacer line
+			int spacer = getInputStream().read();
+
+			if (spacer != '\n') {
+				log.error("SPACER LINE HAS DATA: ");
+			}
+						
 			return storeBlob(data, path, contentLength, propContentLength);
 		}
 
