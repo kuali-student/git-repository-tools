@@ -193,7 +193,6 @@ public class ConvertBuildTagBranchesToGitTags {
 				
 				Iterable<PushResult> results = pushCommand.call();
 				
-				
 				for (PushResult pushResult : results) {
 					
 					if (!pushResult.equals(Result.NEW)) {

@@ -95,7 +95,9 @@ public class IdentifyBranchTipsMain {
 		
 		try {
 			
-			PrintWriter pw = new PrintWriter("branch-tips.dat");
+			PrintWriter tipWriter = new PrintWriter("branch-tips.txt");
+			
+			PrintWriter toDeleteWriter = new PrintWriter("branch-to-delete.txt");
 			
 			Repository repo = GitRepositoryUtils.buildFileRepository(new File (args[0]).getAbsoluteFile(), false, bare);
 			
@@ -112,6 +114,8 @@ public class IdentifyBranchTipsMain {
 			Set<ObjectId>visitedCommits = new HashSet<>();
 			
 			Set<String>branchTips = new HashSet<>();
+			
+			Set<String>branchesToDelete = new HashSet<>();
 			
 			for (Ref ref : repositoryHeads) {
 				
@@ -140,6 +144,7 @@ public class IdentifyBranchTipsMain {
 				if (visitedCommits.contains(ref.getObjectId())) {
 					log.info("skipping {} because it has already been visited.", branchName);
 					branchTips.remove(branchName);
+					branchesToDelete.add(branchName);
 					continue;
 				}
 				
@@ -166,6 +171,7 @@ public class IdentifyBranchTipsMain {
 								continue; // skip over our own branch name
 							
 							branchTips.remove(currentBranchName);
+							branchesToDelete.add(currentBranchName);
 							
 						}
 						
@@ -179,7 +185,7 @@ public class IdentifyBranchTipsMain {
 			
 			log.info("found {} branch tips", branchTips.size());
 			
-			pw.println("# " + branchTips.size() + " branch tips");
+//			tipWriter.println("# " + branchTips.size() + " branch tips");
 			
 			List<String>orderedBranchTips = new ArrayList<>();
 			
@@ -189,12 +195,25 @@ public class IdentifyBranchTipsMain {
 			
 			for (String branch : orderedBranchTips) {
 
-				pw.println(branch);
+				tipWriter.println(branch);
+			}
+			
+			log.info("found {} branches to delete", branchesToDelete.size());
+			
+			List<String>orderedBranchesToDelete = new ArrayList<>(branchesToDelete);
+			
+			Collections.sort(orderedBranchesToDelete);
+			
+			for (String branch : orderedBranchesToDelete) {
+
+				toDeleteWriter.println(branch);
 			}
 			
 			rw.release();
 			
-			pw.close();
+			tipWriter.close();
+			
+			toDeleteWriter.close();
 			
 			
 		} catch (Exception e) {
@@ -202,40 +221,5 @@ public class IdentifyBranchTipsMain {
 			log.error("unexpected Exception ", e);
 		}
 	}
-
-	/*
-	 * In the future if the commit has no changes from the parent we may apply the tag to the parent instead.
-	 */
-	private static boolean commitContainsChangesToParent(Git git, Repository repo, AnyObjectId commitTreeId, AnyObjectId parentTreeId) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException, GitAPIException {
-		DiffCommand diffCommand = git.diff();
-		
-		TreeWalk parentWalk = new TreeWalk(repo);
-		
-		parentWalk.addTree(parentTreeId);
-		
-		parentWalk.setRecursive(true);
-		
-		TreeWalk commitWalk = new TreeWalk(repo);
-		
-		commitWalk.addTree(commitTreeId);
-		
-		commitWalk.setRecursive(true);
-		
-		CanonicalTreeParser commitTreeParser = new CanonicalTreeParser(null, commitWalk.getObjectReader(), commitTreeId);
-		
-		CanonicalTreeParser parentTreeParser = new CanonicalTreeParser(null, parentWalk.getObjectReader(), parentTreeId);
-		
-		diffCommand.setOldTree(parentTreeParser);
-		diffCommand.setNewTree(commitTreeParser);
-		
-		List<DiffEntry> entries = diffCommand.call();
-		
-		if (entries.size() > 0)
-			return true;
-		else
-			return false;
-	}
-
-	
 
 }
