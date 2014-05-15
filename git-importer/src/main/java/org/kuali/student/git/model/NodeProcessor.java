@@ -659,24 +659,18 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				}
 				else if (textContentLength == 0) {
 					
-					String action = nodeProperties.get(SvnDumpFilter.SVN_DUMP_KEY_NODE_ACTION);
-					
-					if (action.equals("add")) {
-						// if the content was specified as zero then create the file but with no content.
-						
-						// skip over the spacer line
-						int spacer = getInputStream().read();
-	
-						if (spacer != '\n') {
-							log.error("SPACER LINE HAS DATA: ");
-						}
-						
-						return storeBlob(data, path, contentLength, propContentLength);
+					// if the content was specified as zero then create the file
+					// but with no content.
+
+					// skip over the spacer line
+					int spacer = getInputStream().read();
+
+					if (spacer != '\n') {
+						log.error("SPACER LINE HAS DATA: ");
 					}
-					else {
-						// skip over the empty file
-						return null;
-					}
+
+					return storeBlob(data, path, contentLength,
+							propContentLength);
 					
 				}
 				else {

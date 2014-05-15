@@ -16,45 +16,39 @@
 package org.kuali.student.git.importer;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jgit.api.DiffCommand;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.diff.DiffEntry;
-import org.eclipse.jgit.errors.CorruptObjectException;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
-import org.eclipse.jgit.lib.AnyObjectId;
+import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.awtui.AwtCredentialsProvider;
+import org.eclipse.jgit.console.ConsoleCredentialsProvider;
+import org.eclipse.jgit.errors.UnsupportedCredentialItem;
 import org.eclipse.jgit.lib.BatchRefUpdate;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
-import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.RefUpdate;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.TextProgressMonitor;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.CredentialItem;
+import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.PushResult;
 import org.eclipse.jgit.transport.ReceiveCommand;
+import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.ReceiveCommand.Type;
-import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.transport.RefSpec;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.slf4j.Logger;
@@ -89,30 +83,41 @@ public class ConvertBuildTagBranchesToGitTags {
 	 */
 	public static void main(String[] args) {
 
-		if (args.length != 2 && args.length != 3) {
-			System.err.println("USAGE: <git repository> <bare> [<ref prefix>]");
+		if (args.length < 3 || args.length > 6) {
+			System.err.println("USAGE: <git repository> <bare> <ref mode> [<ref prefix> <username> <password>]");
 			System.err.println("\t<bare> : 0 (false) or 1 (true)");
+			System.err.println("\t<ref mode> : local or name of remote");
 			System.err.println("\t<ref prefix> : refs/heads (default) or say refs/remotes/origin (test clone)");
 			System.exit(-1);
 		}
 
 		boolean bare = false;
 		
-		boolean deleteMode = false;
-		
 		if (args[1].trim().equals("1")) {
 			bare = true;
 		}
+
+		String remoteName = args[2].trim();
 		
 		String refPrefix = Constants.R_HEADS;
 		
-		if (args.length == 3)
-			refPrefix = args[2].trim();
+		if (args.length == 4)
+			refPrefix = args[3].trim();
+		
+		String userName = null;
+		String password = null;
+		
+		if (args.length == 5)
+			userName = args[4].trim();
+		
+		if (args.length == 6)
+			password = args[5].trim();
 		
 		try {
 			
 			Repository repo = GitRepositoryUtils.buildFileRepository(new File (args[0]).getAbsoluteFile(), false, bare);
 			
+			Git git = new Git(repo);
 			
 			ObjectInserter objectInserter = repo.newObjectInserter();
 			
@@ -128,7 +133,7 @@ public class ConvertBuildTagBranchesToGitTags {
 				
 				String branchName = ref.getName().substring(refPrefix.length()+1);
 				
-				if (branchName.contains("build-")) {
+				if (branchName.contains("tag") && branchName.contains("builds")) {
 					
 					String branchParts[] = branchName.split("_");
 					
@@ -150,6 +155,8 @@ public class ConvertBuildTagBranchesToGitTags {
 			
 			BatchRefUpdate batch = repo.getRefDatabase().newBatchUpdate();
 			
+			List<RefSpec>branchesToDelete = new ArrayList<>();
+			
 			for (Entry<String, ObjectId> entry : tagNameToTagId.entrySet()) {
 				
 				String tagName = entry.getKey();
@@ -161,11 +168,49 @@ public class ConvertBuildTagBranchesToGitTags {
 				
 				Ref branch = tagNameToRef.get(entry.getKey());
 				
-				batch.addCommand(new ReceiveCommand(branch.getObjectId(), null, branch.getName(), Type.DELETE));
+				if (remoteName.equals("local")) {
+				
+					batch.addCommand(new ReceiveCommand(branch.getObjectId(), null, branch.getName(), Type.DELETE));
+				
+				}
+				else {
+					String adjustedBranchName = branch.getName().substring(refPrefix.length()+1);
+					
+					branchesToDelete.add(new RefSpec(":" + Constants.R_HEADS + adjustedBranchName));
+				}
 				
 			}
 			
+			// create the tags
 			batch.execute(rw, new TextProgressMonitor());
+			
+			if (!remoteName.equals("local")) {
+				// push the tag to the remote right now
+				PushCommand pushCommand = git.push().setRemote(remoteName).setPushTags().setProgressMonitor(new TextProgressMonitor());
+				
+				if (userName != null)
+					pushCommand.setCredentialsProvider(new UsernamePasswordCredentialsProvider(userName, password));
+				
+				Iterable<PushResult> results = pushCommand.call();
+				
+				
+				for (PushResult pushResult : results) {
+					
+					if (!pushResult.equals(Result.NEW)) {
+						log.warn("failed to push tag " + pushResult.getMessages());
+					}
+				}
+				
+				// delete the branches from the remote
+				results = git.push().setRemote(remoteName).setRefSpecs(branchesToDelete).setProgressMonitor(new TextProgressMonitor()).call();
+				
+				log.info("");
+				
+					
+			}
+			
+			
+			
 			
 //			Result result = GitRefUtils.createTagReference(repo, moduleName, tag);
 //			
