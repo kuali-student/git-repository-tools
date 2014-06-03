@@ -15,11 +15,14 @@
 package org.kuali.student.git.model.ref.utils;
 
 import java.io.IOException;
+import java.util.List;
 
+import org.eclipse.jgit.lib.BatchRefUpdate;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.ProgressMonitor;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefRename;
 import org.eclipse.jgit.lib.RefUpdate;
@@ -27,7 +30,8 @@ import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.TagBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.transport.ReceiveCommand;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.git.model.ref.exception.BranchRefExistsException;
@@ -201,10 +205,19 @@ public final class GitRefUtils {
 		}
 	}
 
-public static Result deleteRef(Repository repo, Ref ref, boolean force) throws IOException {
+	public static void batchRefUpdate(Repository repo, List<ReceiveCommand>updates, ProgressMonitor progressMonitor) throws IOException {
+		
+		BatchRefUpdate batchUpdate = repo.getRefDatabase().newBatchUpdate();
+		
+		batchUpdate.addCommand(updates);
+		
+		batchUpdate.execute(new RevWalk (repo), progressMonitor);
+		
+	}
+	public static Result deleteRef(Repository repo, Ref ref, boolean force) throws IOException {
 		
 		RefUpdate refUpdate = repo.getRefDatabase().newUpdate(ref.getName(), false);
-		
+	
 		refUpdate.setForceUpdate(force);
 		
 		return refUpdate.delete();
