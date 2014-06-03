@@ -182,3 +182,53 @@ look at the exported url in the git commit
 
 11. If there are differences research what we are missing.  If a line has all
     zeros it means the file does not exist on that branch.
+
+Increasing Conversion Performance
+=================================
+
+This is an io bound operation that involves reading blob content from the dump stream and writing it into the git repository (new object insertion).
+
+Increasing disk throughput will reduce the time required to run the conversion program.
+
+In Linux you can create a tmpfs directory that is essentially stored in RAM and can be swapped out to disk (in the OS configured swap file or swap partition).
+
+Create a tmpfs partition
+------------------------
+
+$ mkdir /tmpfs-git
+$ mount -t tmpfs -o size=12G tmpfs /tmpfs-git
+
+Note you can specify the same command but with the remount option to grow an already mounted path
+
+$ mount -t tmpfs -o remount,size=24G tmpfs /tmpfs-git
+
+$ git init --bare /tmpfs-git/repo
+
+
+Create and add a swapfile
+-------------------------
+
+When a program asks for more memory Linux will always say sure, no problem.  At some point it will notice that it is in an out of memory situation 
+(where the actual used memory is near or equal to the available RAM and SWAP spaces) and at that point Linux randomly kills applications to free up memory.
+
+Git GC's can take a lot of space and memory so to avoid the converter being killed lets add in a super large swap file.
+
+1. Create the swap file (this creates a sparse file)
+
+$ java -cp git-importer-$Version.jar org.kuali.student.git.importer.CreateSwapFile /mnt/30GB.swap 30
+
+2. initiaize the file as swap
+
+$ mkswap /mnt/30GB.swap
+
+3. bind the swap file to the loop0 loopback device.  Using the loopback is a trick to allow activiating a sparse file (normally swapon would complain)
+
+$ losetup /dev/loop0 /mnt/30GB.swap
+
+4. activate the swap space.  
+
+$ swapon /dev/loop0 
+
+
+
+ 
