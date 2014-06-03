@@ -14,10 +14,6 @@
  */
 package org.kuali.student.git.model.branch;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
@@ -28,8 +24,6 @@ import org.kuali.student.git.model.branch.utils.GitBranchUtils;
  *
  */
 public class KualiStudentBranchDetectorImpl implements BranchDetector {
-
-	private static final String ENROLLMENT = "enrollment";
 
 	private static final String INACTIVE = "inactive";
 
@@ -103,8 +97,6 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 	private static final String DEPLOYMENTLAB_UI_KS_CUKE_TESTING = "deploymentlab/UI/ks-cuke-testing";
 	private static final String SANDBOX_TEAM2_KS_RICE_STANDALONE_BRANCHES_KS_RICE_STANDALONE_UBERWAR = "sandbox/team2/ks-rice-standalone/branches/ks-rice-standalone-uberwar";
 	private static final String KS_WEB_BRANCHES_KS_WEB_DEV = "ks-web/branches/ks-web-dev";
-	
-	private static final Set<String>ENROLLMENT_SQL_MODULES = new HashSet<>(Arrays.asList(new String [] {"ks-rice-sql", "ks-core-sql", "ks-lum-sql", "ks-enroll-sql", "ks-ap-sql"}));
 
 	/**
 	 * 
@@ -147,21 +139,6 @@ public class KualiStudentBranchDetectorImpl implements BranchDetector {
 		
 		}
 		
-		if (path.contains(ENROLLMENT)) {
-			
-			// look for ks enrollment sql modules and treat them as branches in their own right.
-			
-			for (int i = 0; i < parts.length; i++) {
-
-				String part = parts[i];
-				
-				if (ENROLLMENT_SQL_MODULES.contains(part)) {
-					return buildBranchData(revision, path, StringUtils.join(parts, "/", 0, i+1));
-				}
-			
-			}
-		
-		}
 		if (!(isPathValidBranchTagOrTrunk(path))) {
 
 			if (GitBranchUtils.startsWith (path, SUSHIK_COMPONENT_MANUAL_IMPL)) {
