@@ -12,49 +12,35 @@
  *	or implied. See the License for the specific language governing
  *	permissions and limitations under the License.
  */
-package org.kuali.student.branch.model;
+package org.kuali.student.git.cleaner;
+
+import org.eclipse.jgit.lib.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author Kuali Student Team
+ * @author ocleirig
  *
  */
-public class BranchData {
-	Long revision;
+public class RepositoryCleanerImpl implements RepositoryCleaner {
 
-	String branchPath;
-	String path;
-
-	/**
-	 * @param branchPath
-	 * @param path
-	 */
-	public BranchData(Long revision, String branchPath, String path) {
-		super();
-		this.revision = revision;
-		this.branchPath = branchPath;
-		this.path = path;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public String getBranchPath() {
-		return branchPath;
-	}
-
-	/**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @return the revision
-	 */
-	public Long getRevision() {
-		return revision;
-	}
-
+	private static final Logger log = LoggerFactory.getLogger(RepositoryCleanerImpl.class);
 	
+	/**
+	 * 
+	 */
+	public RepositoryCleanerImpl() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.cleaner.RepositoryCleaner#execute()
+	 */
+	@Override
+	public void execute(Repository repo) {
+		
+	}
+	
+	
+
 }

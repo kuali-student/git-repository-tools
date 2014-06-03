@@ -49,6 +49,7 @@
 		<module>git-importer-student-plugin</module>
 		<module>git-importer-foundation-plugin</module>
 		<module>git-importer-rice-plugin</module>
+		<module>git-repo-cleaner</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>

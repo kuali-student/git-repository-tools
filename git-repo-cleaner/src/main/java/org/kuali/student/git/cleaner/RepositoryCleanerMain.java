@@ -12,49 +12,37 @@
  *	or implied. See the License for the specific language governing
  *	permissions and limitations under the License.
  */
-package org.kuali.student.branch.model;
+package org.kuali.student.git.cleaner;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 
 /**
- * @author Kuali Student Team
+ * @author ocleirig
  *
  */
-public class BranchData {
-	Long revision;
-
-	String branchPath;
-	String path;
+public class RepositoryCleanerMain {
 
 	/**
-	 * @param branchPath
-	 * @param path
+	 * 
 	 */
-	public BranchData(Long revision, String branchPath, String path) {
-		super();
-		this.revision = revision;
-		this.branchPath = branchPath;
-		this.path = path;
+	public RepositoryCleanerMain() {
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
-	 * @return the prefix
+	 * @param args
 	 */
-	public String getBranchPath() {
-		return branchPath;
+	public static void main(String[] args) {
+		
+		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+				"RepositoryCleanerMain-applicationContext.xml");
+
+		applicationContext.registerShutdownHook();
+
+		
+		
+
 	}
 
-	/**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @return the revision
-	 */
-	public Long getRevision() {
-		return revision;
-	}
-
-	
 }

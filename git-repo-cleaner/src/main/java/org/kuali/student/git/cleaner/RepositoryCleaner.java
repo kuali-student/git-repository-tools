@@ -12,49 +12,19 @@
  *	or implied. See the License for the specific language governing
  *	permissions and limitations under the License.
  */
-package org.kuali.student.branch.model;
+package org.kuali.student.git.cleaner;
+
+import org.eclipse.jgit.lib.Repository;
 
 /**
- * @author Kuali Student Team
+ * @author ocleirig
  *
  */
-public class BranchData {
-	Long revision;
-
-	String branchPath;
-	String path;
+public interface RepositoryCleaner {
 
 	/**
-	 * @param branchPath
-	 * @param path
+	 * 
 	 */
-	public BranchData(Long revision, String branchPath, String path) {
-		super();
-		this.revision = revision;
-		this.branchPath = branchPath;
-		this.path = path;
-	}
-
-	/**
-	 * @return the prefix
-	 */
-	public String getBranchPath() {
-		return branchPath;
-	}
-
-	/**
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * @return the revision
-	 */
-	public Long getRevision() {
-		return revision;
-	}
-
+	void execute(Repository repo);
 	
 }
