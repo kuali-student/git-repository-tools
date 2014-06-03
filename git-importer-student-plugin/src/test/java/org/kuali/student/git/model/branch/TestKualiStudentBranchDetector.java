@@ -229,6 +229,40 @@ public class TestKualiStudentBranchDetector extends AbstractKualiStudentBranchDe
 		assertPath ("ks-1.2-umd/ks-admin/src/main/webapp/WEB-INF/tags/kim/attributeLookup.tag", "ks-1.2-umd", "ks-admin/src/main/webapp/WEB-INF/tags/kim/attributeLookup.tag", true);
 	}
 	
+	
+	@Test
+	public void testEnrollmentSqlBranches() {
+		
+		// ks-rice-sql
+		assertPath("enrollment/ks-core/trunk/ks-rice-sql/pom.xml", "enrollment/ks-core/trunk/ks-rice-sql", "pom.xml");
+		
+		assertPath("enrollment/ks-core/branches/feature-x/ks-rice-sql/pom.xml", "enrollment/ks-core/branches/feature-x/ks-rice-sql", "pom.xml");
+		
+		// ks-core-sql
+		
+		assertPath("enrollment/ks-core/trunk/ks-core-sql/pom.xml", "enrollment/ks-core/trunk/ks-core-sql", "pom.xml");
+		
+		assertPath("enrollment/ks-core/branches/feature-x/ks-core-sql/pom.xml", "enrollment/ks-core/branches/feature-x/ks-core-sql", "pom.xml");
+		
+		// ks-lum-sql
+		assertPath("enrollment/ks-lum/trunk/ks-lum-sql/pom.xml", "enrollment/ks-lum/trunk/ks-lum-sql", "pom.xml");
+
+		assertPath("enrollment/ks-lum/branches/feature-x/ks-lum-sql/pom.xml", "enrollment/ks-lum/branches/feature-x/ks-lum-sql", "pom.xml");
+		
+		// ks-enroll-sql
+		
+		assertPath("enrollment/ks-enroll/trunk/ks-enroll-sql/pom.xml", "enrollment/ks-enroll/trunk/ks-enroll-sql", "pom.xml");
+
+		assertPath("enrollment/ks-enroll/branches/feature-x/ks-enroll-sql/pom.xml", "enrollment/ks-enroll/branches/feature-x/ks-enroll-sql", "pom.xml");
+		
+		// ks-ap-sql
+		
+		assertPath("enrollment/ks-ap/trunk/ks-ap-sql/pom.xml", "enrollment/ks-ap/trunk/ks-ap-sql", "pom.xml");
+
+		assertPath("enrollment/ks-ap/branches/feature-x/ks-ap-sql/pom.xml", "enrollment/ks-ap/branches/feature-x/ks-ap-sql", "pom.xml");
+		
+		
+	}
 	@Test
 	public void testUnderscorePath() {
 		
