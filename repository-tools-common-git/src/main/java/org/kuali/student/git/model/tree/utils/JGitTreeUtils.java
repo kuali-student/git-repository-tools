@@ -23,6 +23,8 @@ import java.util.List;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.errors.ObjectWritingException;
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
@@ -49,7 +51,30 @@ public class JGitTreeUtils {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
+	/**
+	 * Helper to load the mutable tree data (at the root level) for the indicated tree and to then insert the blob and content provided.
+	 * 
+	 * @param or
+	 * @param inserter
+	 * @param treeId
+	 * @param blobName
+	 * @param blobContent
+	 * @return
+	 * @throws MissingObjectException
+	 * @throws IncorrectObjectTypeException
+	 * @throws CorruptObjectException
+	 * @throws IOException
+	 */
+	public static List<JGitTreeData> insertBlob (ObjectReader or, ObjectInserter inserter, ObjectId treeId, String blobName, String blobContent) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		List<JGitTreeData> data = extractBaseTreeLevel(or, treeId);
+		
+		ObjectId blobId = inserter.insert(Constants.OBJ_BLOB, blobContent.getBytes());
+		
+		data.add(new JGitTreeData(blobName, FileMode.REGULAR_FILE, blobId));
+		
+		return data;
+	}
 	/**
 	 * Extract the list of elements in the commit tree at the base or root level.
 	 * 
@@ -63,11 +88,18 @@ public class JGitTreeUtils {
 	 */
 	public static List<JGitTreeData>extractBaseTreeLevel (ObjectReader or, RevCommit commit) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 		
+		return extractBaseTreeLevel(or, commit.getTree().getId());
+		
+	}
+	
+	
+	public static List<JGitTreeData>extractBaseTreeLevel (ObjectReader or, ObjectId treeId) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
 		ArrayList<JGitTreeData> treeData = new ArrayList<>();
 		
 		TreeWalk tw = new TreeWalk(or);
 		
-		tw.addTree(commit.getTree().getId());
+		tw.addTree(treeId);
 		
 		tw.setRecursive(false);
 		

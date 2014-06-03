@@ -18,18 +18,11 @@ package org.kuali.student.git.model;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.apache.commons.io.IOUtils;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
-import org.kuali.student.git.model.ref.utils.GitRefUtils;
-import org.kuali.student.git.model.util.GitBranchDataUtils;
+import org.kuali.student.git.model.utils.GitTestUtils;
 
 /**
  * 
@@ -57,71 +50,71 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		runImporter(repository, 1);
 		
-		assertRefNotNull(repository, "trunk", "expected trunk to exist");
+		GitTestUtils.assertRefNotNull(repository, "trunk", "expected trunk to exist");
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"pom.xml", "module/pom.xml", "module/src/main/resources/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"pom.xml", "module/pom.xml", "module/src/main/resources/test.txt"}));
 		
-		assertFileContentEquals (repository, "trunk", "pom.xml", "test file\n");
+		GitTestUtils.assertFileContentEquals (repository, "trunk", "pom.xml", "test file\n");
 		
-		assertFileContentEquals (repository, "trunk", "module/src/main/resources/test.txt", " test resource file\n");
+		GitTestUtils.assertFileContentEquals (repository, "trunk", "module/src/main/resources/test.txt", " test resource file\n");
 		
 		runImporter(repository, 2);
 		
-		assertRefNotNull(repository, "branches_branch1", "expected branch1 to exist");
+		GitTestUtils.assertRefNotNull(repository, "branches_branch1", "expected branch1 to exist");
 		
-		assertPathsExist(repository, "branches_branch1", Arrays.asList(new String [] {"pom.xml", "module/pom.xml", "module/src/main/resources/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "branches_branch1", Arrays.asList(new String [] {"pom.xml", "module/pom.xml", "module/src/main/resources/test.txt"}));
 		
 		runImporter(repository, 3);
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"pom.xml", "module1/pom.xml", "module1/src/main/resources/test.txt", "module2/pom.xml", "module2/src/main/resources/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"pom.xml", "module1/pom.xml", "module1/src/main/resources/test.txt", "module2/pom.xml", "module2/src/main/resources/test.txt"}));
 		
 		runImporter(repository, 4);
 		
-		assertRefNotNull(repository, "branches_branch2", "expected branch2 to exist");
+		GitTestUtils.assertRefNotNull(repository, "branches_branch2", "expected branch2 to exist");
 		
 		runImporter(repository, 5);
 		
-		assertRefNotNull(repository, "branches_inactive", "expected branches_inactive to exist");
+		GitTestUtils.assertRefNotNull(repository, "branches_inactive", "expected branches_inactive to exist");
 		
-		assertPathsExist(repository, "branches_inactive", Arrays.asList(new String [] {"branch1/pom.xml", "branch1/module/pom.xml", "branch2/module1/src/main/resources/test.txt", "branch2/module2/pom.xml", "branch2/module2/src/main/resources/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "branches_inactive", Arrays.asList(new String [] {"branch1/pom.xml", "branch1/module/pom.xml", "branch2/module1/src/main/resources/test.txt", "branch2/module2/pom.xml", "branch2/module2/src/main/resources/test.txt"}));
 		
 		runImporter(repository, 6);
 		
-		assertRefNotNull(repository, "branches_branch1", "expected branch1 to exist");
-		assertRefNotNull(repository, "branches_branch2", "expected branch2 to exist");
+		GitTestUtils.assertRefNotNull(repository, "branches_branch1", "expected branch1 to exist");
+		GitTestUtils.assertRefNotNull(repository, "branches_branch2", "expected branch2 to exist");
 		
 		runImporter(repository, 7);
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/pom.xml", "module3/src/main/resources/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/pom.xml", "module3/src/main/resources/test.txt"}));
 		
 		runImporter(repository, 8);
 		
-		assertFileContentEquals (repository, "trunk", "pom.xml", "another pom file only change\n");
+		GitTestUtils.assertFileContentEquals (repository, "trunk", "pom.xml", "another pom file only change\n");
 		
 		runImporter(repository, 9);
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/test.txt", "module3/src/main/resources/A.txt", "module3/src/main/resources/B.txt", "module3/src/main/resources/C.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/test.txt", "module3/src/main/resources/A.txt", "module3/src/main/resources/B.txt", "module3/src/main/resources/C.txt"}));
 		
 		runImporter(repository, 10);
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module4/pom.xml", "module4/src/main/resources/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module4/pom.xml", "module4/src/main/resources/test.txt"}));
 		
 		runImporter(repository, 11);
 		
-		assertPathsDontExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/A.txt", "module3/src/main/resources/B.txt",  "module3/src/main/resources/test.txt"}));
+		GitTestUtils.assertPathsDontExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/A.txt", "module3/src/main/resources/B.txt",  "module3/src/main/resources/test.txt"}));
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/C.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"module3/src/main/resources/C.txt"}));
 		
 		/*
 		 * test deleting a path ending in tags from trunk.
 		 */
 		runImporter(repository, 12);
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"tags/test-tag/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"tags/test-tag/test.txt"}));
 		
 		runImporter(repository, 13);
 		
-		assertPathsDontExist(repository, "trunk", Arrays.asList(new String [] {"tags/test-tag/test.txt"}));
+		GitTestUtils.assertPathsDontExist(repository, "trunk", Arrays.asList(new String [] {"tags/test-tag/test.txt"}));
 		
 		
 		/*
@@ -129,26 +122,26 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		 */
 		runImporter(repository, 14);
 		
-		assertPathsExist(repository, "trunk_maven_trunk", Arrays.asList(new String [] {"kuali/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk_maven_trunk", Arrays.asList(new String [] {"kuali/test.txt"}));
 		
 		runImporter(repository, 15);
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"maven/kuali/test.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"maven/kuali/test.txt"}));
 		
 		/*
 		 * Test that a copyfrom an invalid branch works.
 		 */
 		runImporter(repository, 16);
 		
-		assertRefNotNull(repository, "invalid-branch-name", "expected invalid-branch-name to exist");
+		GitTestUtils.assertRefNotNull(repository, "invalid-branch-name", "expected invalid-branch-name to exist");
 		
 		runImporter(repository, 17);
 		
-		assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"invalid-branch-name-resource.txt"}));
+		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"invalid-branch-name-resource.txt"}));
 		
 		runImporter(repository, 18);
 		
-		assertFileContentEquals (repository, "trunk", "module5/pom.xml", " module pom file\n");
+		GitTestUtils.assertFileContentEquals (repository, "trunk", "module5/pom.xml", " module pom file\n");
 		
 	}
 

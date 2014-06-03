@@ -1,0 +1,22 @@
+#
+# The svn.externals file controls what local directories appear in the
+# checkout, and what actual location inside Subversion they represent.
+# 
+# This enables development streams to be independently managed and released 
+# while also providing a single spot to perform an aggregated Kuali Student checkout
+# and build
+#
+# The SVN command for using this file to create SVN external definitions is
+# 
+# svn propset svn:externals -F svn.externals .
+#
+# *** IMPORTANT ***
+# you must rerun the svn propset command and commit after editing any of
+# the external paths
+#
+
+https://svn.kuali.org/repos/student/enrollment/ks-api/branches/M6 ks-api
+https://svn.kuali.org/repos/student/enrollment/ks-core/trunk ks-core
+https://svn.kuali.org/repos/student/enrollment/ks-lum/trunk ks-lum
+https://svn.kuali.org/repos/student/enrollment/ks-enroll/trunk ks-enroll 
+https://svn.kuali.org/repos/student/enrollment/ks-deployments/trunk ks-deployments 

@@ -38,8 +38,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
 import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
+import org.kuali.student.git.model.utils.GitTestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,6 +166,12 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		Assert.assertEquals(true, findPath(tw, fusedBPath.substring("branch2/".length())));
 		Assert.assertEquals(false, findPath(tw, fusedAPath.substring("branch2/".length())));
+		
+		tw.reset(results.get("remainder"));
+
+		Assert.assertEquals(true, findPath(tw, "src/main/java/org/kuali/student/enrollment/pom.xml"));
+		Assert.assertEquals(false, findPath(tw, "branch1"));
+		Assert.assertEquals(false, findPath(tw, "branch2"));
 		
 		rw.release();
 		

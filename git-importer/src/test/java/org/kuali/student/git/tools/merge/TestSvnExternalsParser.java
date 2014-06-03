@@ -16,6 +16,7 @@
 package org.kuali.student.git.tools.merge;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -48,10 +49,9 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Test
-	public void testParseExternalsInfoDataFile () throws IOException, VetoBranchException {
+	private void testExternalsDataFile (String name) throws IOException {
 		
-		FileInputStream input = new FileInputStream("src/test/resources/ks-externals-for-aggregate-trunk-at-r43000.txt");
+		FileInputStream input = new FileInputStream(name);
 
 		List<ExternalModuleInfo> externalsList = SvnExternalsUtils.extractExternalModuleInfoFromInputStream(43000, "https://svn.kuali.org/repos/student", input);
 		
@@ -91,8 +91,26 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 			Assert.assertEquals(expectedExternal.getModuleName(), actualExternal.getModuleName());
 			Assert.assertEquals(expectedExternal.getRevision(), actualExternal.getRevision());
 		}
+	}
+	
+	@Test
+	public void testRelativeExternalsDataFile() throws IOException {
+		testExternalsDataFile("src/test/resources/ks-relative-externals-for-aggregate-trunk.txt");
 		
 	}
+	
+	@Test
+	public void testParseExternalsInfoDataFile () throws IOException, VetoBranchException {
+		
+		testExternalsDataFile("src/test/resources/ks-externals-for-aggregate-trunk-at-r43000.txt");
+	}
+	
+	@Test
+	public void testParseExternalsReversedDataFile () throws IOException, VetoBranchException {
+		
+		testExternalsDataFile("src/test/resources/ks-externals-for-aggregate-trunk-at-r43000-reversed.txt");
+	}
+	
 	
 	
 	@Test

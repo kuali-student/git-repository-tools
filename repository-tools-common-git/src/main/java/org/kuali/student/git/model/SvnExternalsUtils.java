@@ -15,11 +15,11 @@
  */
 package org.kuali.student.git.model;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +37,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.treewalk.TreeWalk;
 import org.kuali.student.common.io.IOUtils;
+import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.kuali.student.git.model.tree.JGitTreeData;
@@ -53,6 +53,10 @@ import org.slf4j.LoggerFactory;
  */
 public class SvnExternalsUtils {
 	
+	private static final String REMAINDER = "remainder";
+
+	private static final String FUSION_MAVEN_PLUGIN_DAT = "fusion-maven-plugin.dat";
+
 	private static final String HTTPS_URL = "https://";
 
 	private static final String HTTP_URL = "http://";
@@ -216,21 +220,32 @@ public class SvnExternalsUtils {
 		if (inputString == null)
 			return externalsList;
 		
-		String lines[] = inputString.split("\\n");
+		String lines[] = inputString.split("\n");
 		
 		for (String line : lines) {
 		
 			if (line.isEmpty() || line.charAt(0) == '#')
 				continue; // skip to the next line
 			
-			String [] parts = line.split(" ");
+			
+			String [] parts = line.replace("\r", "").split(" ");
 			
 			if (parts.length != 2)
 				continue; // skip to the next line
 			
-			String moduleName = parts[0].trim();
+			int branchPathIndex = determineBranchPathIndex (parts, repositoryPrefixPath, securePrefixPath);
 			
-			String branchPath = parts[1].trim();
+			String moduleName = null;
+			String branchPath = null;
+			
+			if (branchPathIndex == 0) {
+				branchPath = parts[0].trim();
+				moduleName = parts[1].trim();
+			}
+			else {
+				branchPath = parts[1].trim();
+				moduleName = parts[0].trim();
+			}
 			
 			if (securePrefixPath && branchPath.startsWith(HTTP_URL)) {
 				/*
@@ -249,6 +264,9 @@ public class SvnExternalsUtils {
 				// trim the leading slash if it exists.
 				branchPath = branchPath.substring(repositoryPrefixPath.length()+1);
 			}
+			else if (branchPath.startsWith("^")){
+				branchPath = branchPath.substring(1);
+			}
 
 			
 			ExternalModuleInfo external = new ExternalModuleInfo(moduleName, branchPath, revision);
@@ -259,6 +277,39 @@ public class SvnExternalsUtils {
 		return externalsList;
 	}
 
+	/*
+	 * Figure out which part is the branch path part.
+	 * 
+	 * It can include the url but since 1.5 it can also be relative.
+	 * 
+	 */
+	
+	private static boolean matchesSvnURL (String part, String repositoryPrefixPath) {
+		
+		if (part.startsWith(repositoryPrefixPath))
+			return true;
+		
+		if (part.startsWith("^"))
+			return true;
+		
+		return false;
+	}
+	
+	private static int determineBranchPathIndex(String[] parts, String repositoryPrefixPath, boolean securePrefixPath) {
+		
+		String firstCandidate = parts[0].trim();
+		
+		String secondCandidate = parts[1].trim();
+		
+		if (matchesSvnURL(firstCandidate, repositoryPrefixPath))
+			return 0;
+		
+		else if (matchesSvnURL(secondCandidate, repositoryPrefixPath))
+			return 1;
+		else
+			return -1; // neither matched.
+		
+	}
 	/**
 	 * Create a new tree that is the result of the fusion of the existing commit with the other modules indicated in the externals list.
 	 * 
@@ -278,6 +329,13 @@ public class SvnExternalsUtils {
 	public static AnyObjectId createFusedTree(ObjectReader objectReader,
 			ObjectInserter inserter, RevWalk rw, RevCommit commit,
 			List<ExternalModuleInfo> externals) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		// default is to include the fusion-maven-plugin.dat if it is in the directory.
+		return createFusedTree(objectReader, inserter, rw, commit, externals, false);
+	}
+	
+	public static AnyObjectId createFusedTree(ObjectReader objectReader,
+			ObjectInserter inserter, RevWalk rw, RevCommit commit,
+			List<ExternalModuleInfo> externals, boolean excludeFusionPluginData) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 		
 		
 		List<JGitTreeData> baseData = JGitTreeUtils.extractBaseTreeLevel(objectReader, commit);
@@ -302,6 +360,24 @@ public class SvnExternalsUtils {
 			
 		}
 		
+		if (excludeFusionPluginData) {
+
+			int targetIndex = -1;
+			
+			for (int i = 0; i < baseData.size(); i++) {
+				
+				JGitTreeData data = baseData.get(i);
+				
+				if (data.getName().equals(FUSION_MAVEN_PLUGIN_DAT)) {
+					targetIndex = i;
+					break;
+				}
+					
+			}
+			
+			if (targetIndex != -1)
+				baseData.remove(targetIndex);
+		}
 		
 		ObjectId fusedTreeId = JGitTreeUtils.createTree(baseData, inserter);
 
@@ -313,6 +389,8 @@ public class SvnExternalsUtils {
 
 	/**
 	 * Split the fused commit into modules.size() tree's for each ExternalModuleInfo provided.
+	 * 
+	 * Put the remainder of the tree (original - external modules that were removed) under the key 'remainder'.
 	 * 
 	 * @param fusedCommitId
 	 * @return a map of the branch name to split tree id.
@@ -326,40 +404,44 @@ public class SvnExternalsUtils {
 		
 		RevCommit fusedCommit = rw.parseCommit(fusedCommitId);
 		
-		TreeWalk tw = new TreeWalk(objectReader);
+		List<JGitTreeData> baseData = JGitTreeUtils.extractBaseTreeLevel(objectReader, fusedCommit);
 		
-		tw.addTree(fusedCommit.getTree().getId());
+		Iterator<JGitTreeData> iter = baseData.iterator();
 		
-		// walk over the top level directories in this commit
-		tw.setRecursive(false);
-		
-		while (tw.next()) {
+		while (iter.hasNext()) {
 			
-			if (!tw.getFileMode(0).equals(FileMode.TREE)) 
+			JGitTreeData data = iter.next();
+			
+			if (!data.getFileMode().equals(FileMode.TREE)) 
 				continue;
 			
-			String candidateName = tw.getNameString();
+			String candidateName = data.getName();
 			
 			// find the external if it exists for this name
 			for (ExternalModuleInfo external : modules) {
 				
 				if (candidateName.equals(external.getModuleName())) {
 					// match found
-					ObjectId moduleTreeId = tw.getObjectId(0);
+					ObjectId moduleTreeId = data.getObjectId();
 					splitTreeMap.put(external.getModuleName(), moduleTreeId);
-					
+					iter.remove();
 					break;
 				}
 			}
 			
 			
-			
 		}
 		
-		tw.release();
+		ObjectId remainderTreeId = JGitTreeUtils.createTree(baseData, inserter);
 		
+		splitTreeMap.put(REMAINDER, remainderTreeId);
 		
 		return splitTreeMap;
+		
+	}
+	public static String createFusionMavenPluginDataFileString(Repository repo,
+			List<ExternalModuleInfo> externals) {
+		return createFusionMavenPluginDataFileString(0L, repo, externals, new LargeBranchNameProviderMapImpl());
 		
 	}
 	
