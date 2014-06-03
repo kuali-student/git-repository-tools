@@ -40,11 +40,16 @@ import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.revwalk.filter.CommitTimeRevFilter;
+import org.kuali.student.git.model.ref.exception.BranchRefExistsException;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Git Repositories are best kept under 1 GB for a variety of performance reasons.
+ * 
+ * This tool can be used to split a repository into two parts.
+ * 
  * @author ocleirig
  *
  */
@@ -63,20 +68,27 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 	 * @see org.kuali.student.git.cleaner.RepositoryCleaner#execute(org.eclipse.jgit.lib.Repository, java.io.File, long)
 	 */
 	@Override
-	public void execute(Repository repo, Date splitDate) throws IOException {
+	public void execute(Repository repo, String branchRefSpec, Date splitDate) throws IOException {
+		
+		boolean localBranchSource = true;
+		if (!branchRefSpec.equals(Constants.R_HEADS))
+			localBranchSource = false;
 		
 		PrintWriter pw = new PrintWriter ("grafts-" + DateFormat.getDateInstance().format(splitDate) + ".txt");
 		
+		PrintWriter refChangeWriter = new PrintWriter("ref-changes-" + DateFormat.getDateInstance().format(splitDate) + ".txt");
+		
+		PrintWriter objectTranslationWriter = new PrintWriter ("object-translations-" + DateFormat.getDateInstance().format(splitDate) + ".txt");
+		
 		ObjectInserter objectInserter = repo.newObjectInserter();
 		
-		RevWalk rw = new RevWalk(repo);
-		
-		Set<RevCommit>startingPoints = new HashSet<>();
-		
-		Map<String, Ref> branchHeads = repo.getRefDatabase().getRefs(Constants.R_HEADS);
+		Map<String, Ref> branchHeads = repo.getRefDatabase().getRefs(branchRefSpec);
 		
 		Map<ObjectId, Set<Ref>>commitToBranchMap = new HashMap<ObjectId, Set<Ref>>();
 
+		RevWalk walkRight = new RevWalk(repo);
+		RevWalk walkLeft = new RevWalk(repo);
+		
 		for (Ref branchRef : branchHeads.values()) {
 			
 			ObjectId branchObjectId = branchRef.getObjectId();
@@ -90,7 +102,8 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 			
 			refs.add(branchRef);
 		
-			startingPoints.add(rw.parseCommit(branchObjectId));
+			walkLeft.markStart(walkLeft.parseCommit(branchObjectId));
+			walkRight.markStart(walkRight.parseCommit(branchObjectId));
 			
 		}
 		
@@ -98,9 +111,11 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 		
 		Map<ObjectId, Set<Ref>>commitToTagMap = new HashMap<ObjectId, Set<Ref>>();
 
+		RevWalk walkRefs = new RevWalk(repo);
+		
 		for (Ref tagRef : tagHeads.values()) {
 			
-			RevTag tag = rw.parseTag(tagRef.getObjectId());
+			RevTag tag = walkRefs.parseTag(tagRef.getObjectId());
 			
 			ObjectId commitId = tag.getObject().getId();
 			
@@ -108,19 +123,20 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 			
 			if (refs == null) {
 				refs = new HashSet<>();
-				commitToBranchMap.put(commitId, refs);
+				commitToTagMap.put(commitId, refs);
 			}
 			
 			refs.add(tagRef);
+			
+			walkLeft.markStart(walkLeft.parseCommit(commitId));
+			walkRight.markStart(walkRight.parseCommit(commitId));
 		}
 		
 		Set<ObjectId>leftSideCommits = new HashSet<>();
 		
-		rw.setRevFilter(CommitTimeRevFilter.before(splitDate));
+		walkLeft.setRevFilter(CommitTimeRevFilter.before(splitDate));
 		
-		rw.markStart(startingPoints);
-		
-		Iterator<RevCommit> it = rw.iterator();
+		Iterator<RevCommit> it = walkLeft.iterator();
 		
 		while (it.hasNext()) {
 			
@@ -130,14 +146,17 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 			
 		}
 		
-		rw.setRevFilter(CommitTimeRevFilter.after(splitDate));
+		objectTranslationWriter.println("# new-object-id <space> original-object-id");
 		
-		rw.sort(RevSort.TOPO);
-		rw.sort(RevSort.REVERSE, true);
+		// holds the old right side to new right side commit mapping
+		Map<ObjectId, ObjectId>rightSideConversionMap = new HashMap<>();
 		
-		rw.reset();
+		walkRight.setRevFilter(CommitTimeRevFilter.after(splitDate));
 		
-		it = rw.iterator();
+		walkRight.sort(RevSort.TOPO);
+		walkRight.sort(RevSort.REVERSE, true);
+		
+		it = walkRight.iterator();
 		
 		while (it.hasNext()) {
 			
@@ -168,7 +187,10 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 					removedParents.add(parentCommit.getId());
 				}
 				else {
-					newParents.add(parentCommit.getId());
+					
+					ObjectId adjustedParentId = rightSideConversionMap.get(parentCommit.getId());
+					
+					newParents.add(adjustedParentId);
 				}
 			}
 			
@@ -176,6 +198,11 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 			ObjectId newCommitId = objectInserter.insert(builder);
 			
+			objectInserter.flush();
+		
+			rightSideConversionMap.put(commit.getId(), newCommitId);
+			
+			objectTranslationWriter.println(newCommitId.name() + " " + commit.getId().getName());
 		
 			if (removedParents.size() > 0) {
 				
@@ -221,9 +248,12 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 					newTagSet.add(tb);
 					
-					Result result = GitRefUtils.deleteRef(repo, tagRef);
+					Result result = GitRefUtils.deleteRef(repo, tagRef, true);
 
-					log.info("");
+					if (!result.equals(Result.FORCED))
+						log.warn("failed to delete tag reference " + tagRef.getName());
+					else
+						refChangeWriter.println("deleted tagRef " + tagRef.getName() + " original commit id: " + tag.getObject().getId());
 					
 				}
 				
@@ -233,9 +263,14 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 					
 					ObjectId tagId = objectInserter.insert(tagBuilder);
 					
+					objectInserter.flush();
+					
 					Result result = GitRefUtils.createTagReference(repo, tagBuilder.getTag(), tagId);
 					
-					log.info("");
+					if (!result.equals(Result.NEW))
+						log.warn("unable to create tag " + tagBuilder.getTag() + " now pointed at " + tagId);
+					else
+						refChangeWriter.println("created tag ref: " + tagBuilder.getTag() + " new commit id: " + tagBuilder.getObjectId());
 				}
 				
 				
@@ -249,34 +284,47 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 				Set<Ref>refs = commitToBranchMap.get(commit.getId());
 				
 				for (Ref branchRef : refs) {
-					
-					GitRefUtils.createOrUpdateBranch(repo, branchRef.getName(), newCommitId);
+
+					if (localBranchSource) {
+						Ref updatedRef = GitRefUtils.createOrUpdateBranch(repo, branchRef.getName(), newCommitId);
+						
+						
+					}
+					else {
+						/*
+						 * create a new local branch
+						 */
+						
+						String adjustedBranchName = Constants.R_HEADS + branchRef.getName().substring(branchRefSpec.length()+1);
+						try {
+							Ref newBranch = GitRefUtils.createBranch(repo, adjustedBranchName, newCommitId, true);
+							
+							refChangeWriter.println("Updated branchRef: " + branchRef.getName() + " at original commit id: " + branchRef.getObjectId() + " to local branch: " + newBranch.getName() + " at new commit id: " + newBranch.getObjectId());
+							
+						} catch (BranchRefExistsException e) {
+							log.error("failed to create a branch " + adjustedBranchName + " to point at " + newCommitId.getName(), e);
+						}
+					}
 					
 				}
 				
 			}
 			
+			repo.getRefDatabase().refresh();
 			commitWalk.release();
 		}
+		
+		walkRefs.release();
+		walkLeft.release();
+		walkRight.release();
 		
 		objectInserter.release();
 		repo.close();
 		pw.close();
 		
+		objectTranslationWriter.close();
+		refChangeWriter.close();
+		
 	}
-
-	private RevCommit duplicateCommit(RevCommit commit,
-			Set<ObjectId> leftSideCommits) {
-		
-		
-		
-		Set
-		builder.setParentIds(newParents);
-		return null;
-	}
-
-	
-	
-	
 
 }

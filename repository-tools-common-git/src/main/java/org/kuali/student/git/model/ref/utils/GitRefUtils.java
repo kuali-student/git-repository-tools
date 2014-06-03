@@ -143,7 +143,7 @@ public final class GitRefUtils {
 		tagRef.setNewObjectId(tagId);
 		tagRef.setForceUpdate(true);
 		tagRef.setRefLogMessage("tagged " + simpleTagName, false); 
-		Result updateResult = tagRef.update();
+		Result updateResult = tagRef.forceUpdate();
 		
 		return updateResult;
 		
@@ -201,10 +201,16 @@ public final class GitRefUtils {
 		}
 	}
 
-	public static Result deleteRef(Repository repo, Ref ref) throws IOException {
+public static Result deleteRef(Repository repo, Ref ref, boolean force) throws IOException {
 		
 		RefUpdate refUpdate = repo.getRefDatabase().newUpdate(ref.getName(), false);
 		
+		refUpdate.setForceUpdate(force);
+		
 		return refUpdate.delete();
+	}
+	public static Result deleteRef(Repository repo, Ref ref) throws IOException {
+		
+		return deleteRef(repo, ref, false);
 	}
 }

@@ -17,6 +17,7 @@ package org.kuali.student.git.cleaner;
 import java.io.File;
 import java.util.Date;
 
+import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -51,8 +52,8 @@ public class RepositoryCleanerMain {
 	 */
 	public static void main(String[] args) {
 		
-		if (args.length != 2 && args.length != 3) {
-			log.error("USAGE: <source git repository meta directory> <split date> [<git command path>]");
+		if (args.length != 2 && args.length != 3 && args.length != 4) {
+			log.error("USAGE: <source git repository meta directory> <split date> [<branchRefSpec> <git command path>]");
 			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
 			log.error("\t<split date> : YYYY-MM-DD");
 			log.error("\t<git command path> : the path to a native git ");
@@ -71,8 +72,13 @@ public class RepositoryCleanerMain {
 			
 			Date splitDate = formatter.parseDateTime(args[1]).toDate();
 			
+			String branchRefSpec = Constants.R_HEADS;
 			
-			repoCleaner.execute(repo, splitDate);
+			if (args.length == 3)
+				branchRefSpec = args[2].trim();
+			
+			
+			repoCleaner.execute(repo, branchRefSpec, splitDate);
 			
 		} catch (Exception e) {
 			log.error ("unexpected exception", e);

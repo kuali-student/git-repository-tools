@@ -37,6 +37,7 @@ public interface RepositoryCleaner {
 	 * @throws IOException 
 	 * 
 	 */
-	void execute(Repository repo, Date splitDate) throws IOException;
+	void execute(Repository repo, String branchRefSpec, Date splitDate)
+			throws IOException;
 	
 }
