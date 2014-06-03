@@ -169,29 +169,33 @@ public final class GitRefUtils {
 							archivedBranchName, currentRevision);
 		}
 
+		return renameRef(repo, refLogIdent, existingBranchRef.getName(), archivedBranchName);
+	}
+	
+	public static Ref renameRef (Repository repo,  PersonIdent refLogIdent, String fromRefName, String toRefName) throws IOException {
 		
-		RefRename rename = repo.renameRef(existingBranchRef.getName(),
-				archivedBranchName);
+		RefRename rename = repo.renameRef(fromRefName, toRefName
+				);
 
 		rename.setRefLogIdent(refLogIdent);
 		rename.setRefLogMessage(refLogIdent + " archived "
-				+ currentBranchName + " to " + archivedBranchName);
+				+ fromRefName + " to " + toRefName);
 
 		Result result = rename.rename();
 		
 		if (result.equals(Result.LOCK_FAILURE)) {
-			log.warn("lockfailure archiving " + currentBranchName + " to branch = " + archivedBranchName);
+			log.warn("lockfailure archiving " + fromRefName + " to branch = " + toRefName);
 			try {
 				Thread.currentThread().sleep(1000);
 			} catch (InterruptedException e) {
 				//fall through
 			}
 			
-			return archiveBranch(repo, largeBranchNameProvider, refLogIdent, currentBranchName, currentRevision);
+			return renameRef(repo, refLogIdent, fromRefName, toRefName);
 		}
 		else {
 			if (result.equals(Result.RENAMED))
-				return repo.getRef(archivedBranchName);
+				return repo.getRef(toRefName);
 			else
 				return null;
 		}

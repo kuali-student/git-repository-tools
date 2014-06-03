@@ -14,6 +14,9 @@
  */
 package org.kuali.student.git.cleaner;
 
+import java.io.IOException;
+import java.util.Date;
+
 import org.eclipse.jgit.lib.Repository;
 
 /**
@@ -23,8 +26,17 @@ import org.eclipse.jgit.lib.Repository;
 public interface RepositoryCleaner {
 
 	/**
+	 * Execute the split of the repository about the split date.
+	 * 
+	 * The right side will be decoupled from the left side.
+	 * 
+	 * 
+	 * 
+	 * @param repo the source repository
+	 * @param splitDate commits before are on the left side, commits after are on the right side.
+	 * @throws IOException 
 	 * 
 	 */
-	void execute(Repository repo);
+	void execute(Repository repo, Date splitDate) throws IOException;
 	
 }

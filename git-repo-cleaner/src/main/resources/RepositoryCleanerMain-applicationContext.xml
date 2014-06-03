@@ -18,6 +18,6 @@
 
 	<context:annotation-config/>
 	
-	<bean id="repoCleaner" class="org.kuali.student.git.cleaner.RepositoryHistoryImpl"
+	<bean id="repoCleaner" class="org.kuali.student.git.cleaner.RepositoryCleanerImpl" />
 	
  </beans>
