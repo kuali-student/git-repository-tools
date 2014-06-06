@@ -209,6 +209,11 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 				}
 			}
+			
+			/*
+			 * Make sure JGit knows where the ref is located after loose refs are put into the pack file.
+			 */
+			repo.getRefDatabase().refresh();
 		}
 
 		// if (gcEnabled && this.currentRevision != 0 && this.currentRevision %
@@ -487,6 +492,8 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				if (accumulatedMergeData.size() > 0)
 					revisionMapper.createMergeData(currentRevision,
 							data.getBranchPath(), accumulatedMergeData);
+				
+				repo.getRefDatabase().refresh();
 
 			}
 
@@ -498,8 +505,6 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			revisionMapper.createRevisionMap(currentRevision, refs);
 
 			knownBranchMap.clear();
-
-			repo.getRefDatabase().refresh();
 
 			rw.release();
 

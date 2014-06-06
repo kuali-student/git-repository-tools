@@ -612,6 +612,11 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 		inputStream.close();
 
 		String revisionString = String.valueOf(revision);
+		
+		String adjustedBranchName = branchName;
+		
+		if (!adjustedBranchName.startsWith(Constants.R_HEADS))
+			adjustedBranchName = Constants.R_HEADS + branchName;
 
 		for (String line : lines) {
 
@@ -622,7 +627,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 				continue;
 			}
 
-			if (parts[1].equals(Constants.R_HEADS + branchName)) {
+			if (parts[1].equals(adjustedBranchName)) {
 				ObjectId id = ObjectId.fromString(parts[2]);
 
 				return id;
@@ -633,6 +638,7 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 		// this is actually an exceptional case
 		// if not found it means that the reference can't be found.
+		
 		return null;
 	}
 

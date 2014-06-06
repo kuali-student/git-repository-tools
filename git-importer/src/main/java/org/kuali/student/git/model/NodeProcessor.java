@@ -446,24 +446,15 @@ public class NodeProcessor implements IGitBranchDataProvider {
 					treeProcessor, treeProcessor.getNodeInitializer());
 
 			/*
-			 * If the branch already exists lets copy its commit tree as the
-			 * basis of this commit.
-			 * 
-			 * Then all of the detected adds and deletes can apply on this tree.
-			 */
+			 * Notice if there is already a branch of the same name (it should be the parent of this new commit).
+			 */ 
 			try {
-				Ref ref = repo.getRef(Constants.R_HEADS + data.getBranchName());
-
-				ObjectId parentId = null;
-
-				if (ref != null) {
-					// load some existing data like the
-					// current parent sha1.
-					parentId = ref.getObjectId();
-
+				
+				ObjectId parentId = revisionMapper.getRevisionBranchHead((revision-1), data.getBranchName());
+				
+				if (parentId != null)
 					data.setParentId(parentId);
 
-				}
 			} catch (Exception e) {
 				log.debug("no existing reference for branch = "
 						+ data.getBranchName());
