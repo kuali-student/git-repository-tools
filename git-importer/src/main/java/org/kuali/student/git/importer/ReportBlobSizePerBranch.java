@@ -30,6 +30,7 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.NoMergeBaseException;
 import org.eclipse.jgit.errors.NoMergeBaseException.MergeBaseFailureReason;
 import org.eclipse.jgit.internal.JGitText;
+import org.eclipse.jgit.lib.AsyncObjectSizeQueue;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
@@ -132,10 +133,11 @@ public class ReportBlobSizePerBranch {
 				
 				long totalSize = 0L;
 				
-				for (ObjectId blobiId : blobIds) {
-					
-					totalSize += objectReader.getObjectSize(blobiId, FileMode.TYPE_FILE);
-				}
+				AsyncObjectSizeQueue<ObjectId> sq = objectReader.getObjectSize(
+						blobIds, true);
+
+				while (sq.next())
+					totalSize += sq.getSize();
 				
 				BigDecimal totalCounter = new BigDecimal(totalSize);
 				

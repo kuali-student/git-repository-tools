@@ -71,7 +71,8 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("YYYY-MM-dd");
+	private static final DateTimeFormatter dateFormat = DateTimeFormat
+			.forPattern("YYYY-MM-dd");
 
 	/*
 	 * (non-Javadoc)
@@ -88,17 +89,20 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 		if (!branchRefSpec.equals(Constants.R_HEADS))
 			localBranchSource = false;
 
-		String dateString = dateFormat.print(new DateTime (splitDate));
-		
-		PrintWriter leftRefsWriter = new PrintWriter("left-refs-"+dateString+".txt");
-		PrintWriter rightRefsWriter = new PrintWriter("right-refs"+dateString+".txt");
+		String dateString = dateFormat.print(new DateTime(splitDate));
 
-		PrintWriter pw = new PrintWriter("grafts-"+dateString+".txt");
+		PrintWriter leftRefsWriter = new PrintWriter("left-refs-" + dateString
+				+ ".txt");
+		PrintWriter rightRefsWriter = new PrintWriter("right-refs-"
+				+ dateString + ".txt");
 
-		PrintWriter refChangeWriter = new PrintWriter("ref-changes-"+dateString+".txt");
+		PrintWriter pw = new PrintWriter("grafts-" + dateString + ".txt");
+
+		PrintWriter refChangeWriter = new PrintWriter("ref-changes-"
+				+ dateString + ".txt");
 
 		PrintWriter objectTranslationWriter = new PrintWriter(
-				"object-translations-"+dateString+".txt");
+				"object-translations-" + dateString + ".txt");
 
 		ObjectInserter objectInserter = repo.newObjectInserter();
 
@@ -155,7 +159,7 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 		}
 
 		Set<ObjectId> leftSideCommits = new HashSet<>();
-		
+
 		Set<ObjectId> leftSidePreventGCCommits = new HashSet<>();
 
 		walkLeft.setRevFilter(CommitTimeRevFilter.before(splitDate));
@@ -167,7 +171,7 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 			RevCommit commit = it.next();
 
 			ObjectId commitId = commit.getId();
-			
+
 			leftSideCommits.add(commitId);
 
 			Set<Ref> branches = commitToBranchMap.get(commitId);
@@ -388,52 +392,29 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 				for (Ref branchRef : refs) {
 
 					if (localBranchSource) {
-						// Ref updatedRef =
-						// GitRefUtils.createOrUpdateBranch(repo,
-						// branchRef.getName(), newCommitId);
 
-						deferredReferenceCreates
-								.add(new ReceiveCommand(
-										branchRef.getObjectId(), newCommitId,
-										branchRef.getName(),
-										Type.UPDATE_NONFASTFORWARD));
+						deferredReferenceDeletes.add(new ReceiveCommand(
+								branchRef.getObjectId(), null, branchRef
+										.getName(), Type.DELETE));
 
-						rightRefsWriter.println(branchRef.getName());
+						refChangeWriter.println("deleted branchRef "
+								+ branchRef.getName() + " original commit id: "
+								+ branchRef.getObjectId());
 
-					} else {
-						/*
-						 * create a new local branch
-						 */
-
-						String adjustedBranchName = Constants.R_HEADS
-								+ branchRef.getName().substring(
-										branchRefSpec.length() + 1);
-
-						deferredReferenceCreates.add(new ReceiveCommand(null,
-								newCommitId, adjustedBranchName, Type.CREATE));
-						refChangeWriter.println("Updated branchRef: "
-								+ branchRef.getName()
-								+ " at original commit id: "
-								+ branchRef.getObjectId()
-								+ " to local branch: " + adjustedBranchName
-								+ " at new commit id: " + newCommitId);
-						rightRefsWriter.println(adjustedBranchName);
-						// try {
-						// Ref newBranch = GitRefUtils.createBranch(repo,
-						// adjustedBranchName, newCommitId, true);
-						//
-						// refChangeWriter.println("Updated branchRef: " +
-						// branchRef.getName() + " at original commit id: " +
-						// branchRef.getObjectId() + " to local branch: " +
-						// newBranch.getName() + " at new commit id: " +
-						// newBranch.getObjectId());
-						//
-						// } catch (BranchRefExistsException e) {
-						// log.error("failed to create a branch " +
-						// adjustedBranchName + " to point at " +
-						// newCommitId.getName(), e);
-						// }
 					}
+
+					String adjustedBranchName = Constants.R_HEADS
+							+ branchRef.getName().substring(
+									branchRefSpec.length() + 1);
+
+					deferredReferenceCreates.add(new ReceiveCommand(null,
+							newCommitId, adjustedBranchName, Type.CREATE));
+					refChangeWriter.println("Updated branchRef: "
+							+ branchRef.getName() + " at original commit id: "
+							+ branchRef.getObjectId() + " to local branch: "
+							+ adjustedBranchName + " at new commit id: "
+							+ newCommitId);
+					rightRefsWriter.println(adjustedBranchName);
 
 				}
 
