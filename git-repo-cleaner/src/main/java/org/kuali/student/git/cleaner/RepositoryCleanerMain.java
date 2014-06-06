@@ -25,6 +25,7 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.git.model.GitRepositoryUtils;
+import org.kuali.student.git.utils.ExternalGitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -77,8 +78,13 @@ public class RepositoryCleanerMain {
 			if (args.length == 3)
 				branchRefSpec = args[2].trim();
 			
+			String externalGitCommandPath = null;
 			
-			repoCleaner.execute(repo, branchRefSpec, splitDate);
+			if (args.length == 4)
+				externalGitCommandPath = args[3].trim();
+			
+			
+			repoCleaner.execute(repo, branchRefSpec, splitDate, externalGitCommandPath);
 			
 		} catch (Exception e) {
 			log.error ("unexpected exception", e);

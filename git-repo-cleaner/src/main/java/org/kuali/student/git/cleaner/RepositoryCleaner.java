@@ -34,10 +34,11 @@ public interface RepositoryCleaner {
 	 * 
 	 * @param repo the source repository
 	 * @param splitDate commits before are on the left side, commits after are on the right side.
+	 * @param externalGitCommandPath 
 	 * @throws IOException 
 	 * 
 	 */
-	void execute(Repository repo, String branchRefSpec, Date splitDate)
+	void execute(Repository repo, String branchRefSpec, Date splitDate, String externalGitCommandPath)
 			throws IOException;
 	
 }

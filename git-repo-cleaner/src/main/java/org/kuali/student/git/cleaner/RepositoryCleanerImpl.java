@@ -47,6 +47,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
+import org.kuali.student.git.utils.ExternalGitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,8 +83,8 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 	 * .lib.Repository, java.io.File, long)
 	 */
 	@Override
-	public void execute(Repository repo, String branchRefSpec, Date splitDate)
-			throws IOException {
+	public void execute(Repository repo, String branchRefSpec, Date splitDate,
+			String externalGitCommand) throws IOException {
 
 		boolean localBranchSource = true;
 		if (!branchRefSpec.equals(Constants.R_HEADS))
@@ -405,7 +406,7 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 					String adjustedBranchName = Constants.R_HEADS
 							+ branchRef.getName().substring(
-									branchRefSpec.length() + 1);
+									branchRefSpec.length());
 
 					deferredReferenceCreates.add(new ReceiveCommand(null,
 							newCommitId, adjustedBranchName, Type.CREATE));
@@ -430,14 +431,25 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 		log.info("Applying updates: " + deferredReferenceDeletes.size()
 				+ " deletes, " + deferredReferenceCreates.size() + " creates.");
 
-		GitRefUtils.batchRefUpdate(repo, deferredReferenceDeletes,
-				NullProgressMonitor.INSTANCE);
+		if (externalGitCommand != null) {
+			ExternalGitUtils.batchRefUpdate(externalGitCommand, repo,
+					deferredReferenceDeletes, System.out);
+		} else {
+			GitRefUtils.batchRefUpdate(repo, deferredReferenceDeletes,
+					NullProgressMonitor.INSTANCE);
+		}
 
 		repo.getRefDatabase().refresh();
 
-		GitRefUtils.batchRefUpdate(repo, deferredReferenceCreates,
-				NullProgressMonitor.INSTANCE);
+		if (externalGitCommand != null) {
+			ExternalGitUtils.batchRefUpdate(externalGitCommand, repo,
+					deferredReferenceCreates, System.out);
+		} else {
 
+			GitRefUtils.batchRefUpdate(repo, deferredReferenceCreates,
+					NullProgressMonitor.INSTANCE);
+
+		}
 		log.info("Completed.");
 
 		walkRefs.release();
