@@ -17,9 +17,9 @@ package org.kuali.student.git.cleaner;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,12 +29,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.NullProgressMonitor;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.TagBuilder;
@@ -42,86 +46,111 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.revwalk.filter.CommitTimeRevFilter;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.ReceiveCommand.Type;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.git.model.GitRepositoryUtils;
+import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.graft.GitGraft;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.GitTreeData.GitTreeDataVisitor;
+import org.kuali.student.git.model.tree.GitTreeNodeInitializerImpl;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.utils.ExternalGitUtils;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Git Repositories are best kept under 1 GB for a variety of performance
- * reasons.
+ * After a repository has been split into pieces the fusion-maven-plugin.dat file may refer to stale object ids.
  * 
- * This tool can be used to split a repository into two parts.
+ * This program will rewrite the commits and related commits to those that contain the fusion-maven-plugin.dat file to use the new object ids.
+ * 
+ * If the to be fused id refers to an object id that is on the left side of the cut line a temporary right side clone of that object will be created.
+ * 
  * 
  * @author ocleirig
  * 
  */
-public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
+public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(RepositoryBlobRewriter.class);
+			.getLogger(RewriteFusionPluginData.class);
+	
 
+	private Map<ObjectId, GitGraft>targetCommitToGitGrafts = new HashMap<>();
+	
+	private Map<ObjectId, ObjectId>originalToNewCommitId = new HashMap<>();
+	
+	private Map<ObjectId, ObjectId> oldToNewCommitMap;
 
-	private Map<ObjectId, String> blobIdToReplacementContentMap = new HashMap<>();
-
-
+	private GitTreeProcessor rightTreeProcessor;
+		
+	
 	/**
 	 * 
 	 */
-	public RepositoryBlobRewriter() {
+	public RewriteFusionPluginData() {
+		// TODO Auto-generated constructor stub
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.kuali.student.git.cleaner.RepositoryCleaner#validateArgs(java.lang
-	 * .String[])
+	
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.cleaner.RepositoryCleaner#validateArgs(java.lang.String[])
 	 */
 	@Override
 	public void validateArgs(List<String> args) throws Exception {
 
-		if (args.size() != 3 && args.size() != 5) {
-			log.error("USAGE: <source git repository meta directory> <blob replacement input file> <grafts file> [<branchRefSpec> <git command path>]");
-			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
-			log.error("\t<blob replacement input file> : format: blob id <double colon ::> replacement message (single line)");
-			log.error("\t<grafts file> : An existing grafts file if this is a subsequent split");
+		if (args.size() != 2 && args.size() != 4) {
+			log.error("USAGE: <right git repository meta directory> <replaced objects file> [<branchRefSpec> <git command path>]");
+			log.error("\t<right git repo meta directory> : the path to the meta directory of the right (target) git repository");
+			log.error("\t<grafts file> : existing grafts file created when the left and right repo's were split");
+			log.error("\t<replaced objects file> : replaced objects file created when the left and right repo's were split");
 			log.error("\t<branchRefSpec> : git refspec from which to source the graph to be rewritten");
 			log.error("\t<git command path> : the path to a native git ");
 			throw new IllegalArgumentException("invalid arguments");
 		}
-
+		
 		setRepo(GitRepositoryUtils.buildFileRepository(
-				new File(args.get(0)).getAbsoluteFile(), false));
-
-		List<String> lines = FileUtils.readLines(new File(args.get(1)));
-
-		for (String line : lines) {
-
-			String[] parts = line.split("::");
-
-			ObjectId blobId = ObjectId.fromString(parts[0].trim());
-
-			String replacementContent = parts[1].trim();
-
-			this.blobIdToReplacementContentMap.put(blobId, replacementContent);
+				new File (args.get(0)).getAbsoluteFile(), false));
+		
+		
+		// format: new object id <space> original object id
+		
+		List<String> newToOriginalObjectLines = FileUtils.readLines(new File (args.get(2)));
+		
+		for (String rightToLeftObjectLine : newToOriginalObjectLines) {
+			
+			String parts[] = rightToLeftObjectLine.split(" ");
+			
+			ObjectId newCommitId = ObjectId.fromString(parts[0]);
+			
+			ObjectId originalCommitId = ObjectId.fromString(parts[1]);
+			
+			this.originalToNewCommitId.put(originalCommitId, newCommitId);
+			
+			
 		}
-
-		if (args.size() == 3)
-			setBranchRefSpec(args.get(2).trim());
-
+		
+		
 		if (args.size() == 4)
-			setExternalGitCommandPath(args.get(3).trim());
+			setBranchRefSpec(args.get(3).trim());
+		
+		
+		if (args.size() == 5)
+			setExternalGitCommandPath(args.get(4).trim());
+		
+		
+		rightTreeProcessor = new GitTreeProcessor(getRepo());
+		
+		
+		
+		
 	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -133,6 +162,8 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 	@Override
 	public void execute() throws IOException {
 
+//		RevWalk leftWalk = new RevWalk(leftRepo);
+		
 		ObjectInserter inserter = getRepo().newObjectInserter();
 
 		boolean localBranchSource = true;
@@ -149,7 +180,7 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 		 * the current parent object ids.
 		 */
 		PrintWriter objectTranslationWriter = new PrintWriter(
-				"object-translations-blob-rewrite" + dateString + ".txt");
+				"object-translations-fusion-rewrite-" + dateString + ".txt");
 
 		Map<String, Ref> branchHeads = getRepo().getRefDatabase().getRefs(
 				getBranchRefSpec());
@@ -200,8 +231,6 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 			walkRepo.markStart(walkRepo.parseCommit(commitId));
 		}
 
-		Set<ObjectId> leftSidePreventGCCommits = new HashSet<>();
-
 		walkRepo.sort(RevSort.TOPO, true);
 		walkRepo.sort(RevSort.REVERSE, true);
 
@@ -213,58 +242,80 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 		objectTranslationWriter
 				.println("# new-object-id <space> original-object-id");
 
-		int counter = 1;
 
-		// holds the old right side to new right side commit mapping
-		Map<ObjectId, ObjectId> rightSideConversionMap = new HashMap<>();
-
-		GitTreeProcessor treeProcessor = new GitTreeProcessor(getRepo());
+		oldToNewCommitMap = new HashMap<>();
 
 		while (it.hasNext()) {
 
 			RevCommit commit = it.next();
 
-			if (commit.getId().name().equals("ab62fa06367df22fdc5761672bc550f48332c456") || commit.getId().name().equals("5b2b4888550739a0111a2744eae52f0f02b91d98")) {
-				log.info("");
-			}
 			boolean recreateCommit = false;
 
 			for (RevCommit parentCommit : commit.getParents()) {
 
-				if (rightSideConversionMap.containsKey(parentCommit.getId())) {
+				if (oldToNewCommitMap.containsKey(parentCommit.getId())) {
 					recreateCommit = true;
 					break;
 				}
 
 			}
 
-			GitTreeData tree = treeProcessor
+			GitTreeData tree = rightTreeProcessor
 					.extractExistingTreeDataFromCommit(commit.getId());
 
-			for (Map.Entry<ObjectId, String> entry : this.blobIdToReplacementContentMap
-					.entrySet()) {
-
-				ObjectId blobId = entry.getKey();
-
-				List<String> currentPaths = GitRepositoryUtils
-						.findPathsForBlobInCommit(getRepo(), commit.getId(), blobId);
-
-				if (currentPaths.size() > 0) {
+			ObjectId fusionPluginDataBlobId = tree.find(getRepo(), "fusion-maven-plugin.dat");
+			
+			boolean changesToBeCommitted = false;
+			
+			if (fusionPluginDataBlobId != null) {
+				
+				ObjectLoader loader = getRepo().newObjectReader().open(fusionPluginDataBlobId, Constants.OBJ_BLOB);
+				
+				// rewrite the data here
+				List<ExternalModuleInfo> fusionData = SvnExternalsUtils.extractFusionMavenPluginData(loader.openStream());
+				
+				
+				for (ExternalModuleInfo fusion : fusionData) {
 					
-					recreateCommit = true;
+					ObjectId commitId = fusion.getBranchHeadId();
 					
-					ObjectId newBlobId = inserter.insert(Constants.OBJ_BLOB,
-							entry.getValue().getBytes());
-
-					for (String path : currentPaths) {
-
-						tree.addBlob(path, newBlobId);
+					// check where this originates from
+					ObjectId newCommitId = this.originalToNewCommitId.get(commitId);
+					
+					if (newCommitId != null) {
+						
+						/*
+						 * It might be possible for the new commit to have been rewritten as part of the fusion plugin changes
+						 * so check for an even newer commit id
+						 */
+						
+						ObjectId newerCommitId = this.oldToNewCommitMap.get(newCommitId);
+						
+						if (newerCommitId != null)
+							fusion.setBranchHeadId(newerCommitId);
+						else
+							fusion.setBranchHeadId(newCommitId);
+						
+						changesToBeCommitted = true;
 					}
-
-					inserter.release();
+					
+					
 				}
-
+				
+				if (changesToBeCommitted) {
+					
+					// save it into the tree
+					String updatedFusionData = SvnExternalsUtils.createFusionMavenPluginDataFileString(getRepo(), fusionData);
+					
+					ObjectId updatedBlobId = inserter.insert(Constants.OBJ_BLOB, updatedFusionData.getBytes());
+					
+					tree.addBlob("fusion-maven-plugin.dat", updatedBlobId);
+			
+					recreateCommit = true;
+				}
+				
 			}
+			
 
 			if (!recreateCommit)
 				continue;
@@ -295,7 +346,7 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 
 			for (RevCommit parentCommit : commit.getParents()) {
 
-				ObjectId adjustedParentId = rightSideConversionMap
+				ObjectId adjustedParentId = oldToNewCommitMap
 						.get(parentCommit.getId());
 
 				if (adjustedParentId != null)
@@ -308,7 +359,9 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 
 			ObjectId newCommitId = inserter.insert(builder);
 
-			rightSideConversionMap.put(commit.getId(), newCommitId);
+			oldToNewCommitMap.put(commit.getId(), newCommitId);
+			
+			updateGrafts(commit.getId(), newCommitId);
 
 			objectTranslationWriter.println(newCommitId.name() + " "
 					+ commit.getId().getName());
@@ -437,13 +490,59 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 
 		walkRefs.release();
 		walkRepo.release();
-
-		inserter.release();
 		
+		inserter.release();
 		super.close();
 
 		objectTranslationWriter.close();
 
 	}
+
+
+	
+	private void updateGrafts(ObjectId targetId, ObjectId newCommitId) {
+		
+		/*
+		 * Update the grafts that refer to targetId to now refer to newCommitId
+		 * 
+		 * This could be in the target or the parent commits
+		 */
+		
+		Collection<GitGraft> grafts = this.targetCommitToGitGrafts.values();
+
+		this.targetCommitToGitGrafts.clear();
+		
+		for (GitGraft gitGraft : grafts) {
+			
+			GitGraft newGraft = gitGraft;
+			
+			ObjectId graftTargetId = gitGraft.getTargetCommitId();
+			
+			ObjectId newId = this.oldToNewCommitMap.get(graftTargetId);
+			
+			if (newId != null)
+				newGraft = gitGraft.setTargetCommitId(newId);
+			
+			Set<ObjectId>parentCommitIds = new HashSet<>();
+			
+			for (ObjectId parentId : gitGraft.getParentCommitIds()) {
+			
+				ObjectId newParentId = this.oldToNewCommitMap.get(graftTargetId);
+				
+				if (newParentId != null)
+					parentCommitIds.add(newParentId);
+				else
+					parentCommitIds.add(parentId);
+			}
+			
+			newGraft = newGraft.setParentCommitIds(parentCommitIds);
+			
+			this.targetCommitToGitGrafts.put(newGraft.getTargetCommitId(), newGraft);
+			
+		}
+	}
+
+
+	
 
 }

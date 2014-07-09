@@ -22,5 +22,5 @@
 	
 	<bean id="repoRewriter" class="org.kuali.student.git.cleaner.RepositoryBlobRewriter" />
 	
-	
+	<bean id="rewriteFusionPluginData" class="org.kuali.student.git.cleaner.RewriteFusionPluginData " />
  </beans>

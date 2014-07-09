@@ -62,23 +62,14 @@ import org.slf4j.LoggerFactory;
  * @author ocleirig
  * 
  */
-public class RepositorySplitter implements RepositoryCleaner {
+public class RepositorySplitter extends AbstractRepositoryCleaner {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(RepositorySplitter.class);
 
-	private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
-	
-	private static final DateTimeFormatter includeHourAndMinuteDateFormatter = DateTimeFormat
-			.forPattern("YYYY-MM-dd HH:mm");
-
-	private Repository repo;
-
 	private Date splitDate;
-
-	private String branchRefSpec;
-
-	private String externalGitCommandPath;
+	
+	
 		
 	
 	/**
@@ -95,18 +86,20 @@ public class RepositorySplitter implements RepositoryCleaner {
 	@Override
 	public void validateArgs(List<String> args) throws Exception {
 
-		if (args.size() != 2 && args.size() != 3 && args.size() != 4) {
-			log.error("USAGE: <source git repository meta directory> <split date> [<branchRefSpec> <git command path>]");
+		if (args.size() != 3 && args.size() != 5) {
+			log.error("USAGE: <source git repository meta directory> <grafts file> <split date> [<branchRefSpec> <git command path>]");
 			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
-			log.error("\t<split date> : YYYY-MM-DD");
+			log.error("\t<grafts file> : An existing grafts file if this is a subsequent split");
+			log.error("\t<split date> : YYYY-MM-DD [MM:hh]");
+			log.error("\t<branchRefSpec> : git refspec from which to source the graph to be rewritten");
 			log.error("\t<git command path> : the path to a native git ");
 			throw new IllegalArgumentException("invalid arguments");
 		}
 		
-		repo = GitRepositoryUtils.buildFileRepository(
-				new File (args.get(0)).getAbsoluteFile(), false);
+		setRepo(GitRepositoryUtils.buildFileRepository(
+				new File (args.get(0)).getAbsoluteFile(), false));
 		
-		
+		super.loadGrafts (args.get(1));
 		
 		splitDate = null;
 		
@@ -117,15 +110,13 @@ public class RepositorySplitter implements RepositoryCleaner {
 			splitDate = formatter.parseDateTime(args.get(1)).toDate();
 		}
 		
-		branchRefSpec = Constants.R_HEADS;
 		
 		if (args.size() == 3)
-			branchRefSpec = args.get(2).trim();
+			setBranchRefSpec(args.get(2).trim());
 		
-		externalGitCommandPath = null;
 		
 		if (args.size() == 4)
-			externalGitCommandPath = args.get(3).trim();
+			setExternalGitCommandPath(args.get(3).trim());
 	}
 
 
@@ -140,7 +131,7 @@ public class RepositorySplitter implements RepositoryCleaner {
 	public void execute() throws IOException {
 
 		boolean localBranchSource = true;
-		if (!branchRefSpec.equals(Constants.R_HEADS))
+		if (!getBranchRefSpec().equals(Constants.R_HEADS))
 			localBranchSource = false;
 
 		String dateString = formatter.print(new DateTime(splitDate));
@@ -158,15 +149,15 @@ public class RepositorySplitter implements RepositoryCleaner {
 		PrintWriter objectTranslationWriter = new PrintWriter(
 				"object-translations-" + dateString + ".txt");
 
-		ObjectInserter objectInserter = repo.newObjectInserter();
+		ObjectInserter objectInserter = getRepo().newObjectInserter();
 
-		Map<String, Ref> branchHeads = repo.getRefDatabase().getRefs(
-				branchRefSpec);
+		Map<String, Ref> branchHeads = getRepo().getRefDatabase().getRefs(
+				getBranchRefSpec());
 
 		Map<ObjectId, Set<Ref>> commitToBranchMap = new HashMap<ObjectId, Set<Ref>>();
 
-		RevWalk walkRight = new RevWalk(repo);
-		RevWalk walkLeft = new RevWalk(repo);
+		RevWalk walkRight = new RevWalk(getRepo());
+		RevWalk walkLeft = new RevWalk(getRepo());
 
 		for (Ref branchRef : branchHeads.values()) {
 
@@ -186,12 +177,12 @@ public class RepositorySplitter implements RepositoryCleaner {
 
 		}
 
-		Map<String, Ref> tagHeads = repo.getRefDatabase().getRefs(
+		Map<String, Ref> tagHeads = getRepo().getRefDatabase().getRefs(
 				Constants.R_TAGS);
 
 		Map<ObjectId, Set<Ref>> commitToTagMap = new HashMap<ObjectId, Set<Ref>>();
 
-		RevWalk walkRefs = new RevWalk(repo);
+		RevWalk walkRefs = new RevWalk(getRepo());
 
 		for (Ref tagRef : tagHeads.values()) {
 
@@ -364,7 +355,7 @@ public class RepositorySplitter implements RepositoryCleaner {
 
 			}
 
-			RevWalk commitWalk = new RevWalk(repo);
+			RevWalk commitWalk = new RevWalk(getRepo());
 
 			RevCommit newCommit = commitWalk.parseCommit(newCommitId);
 
@@ -396,7 +387,7 @@ public class RepositorySplitter implements RepositoryCleaner {
 							+ tagRef.getName() + " original commit id: "
 							+ tag.getObject().getId());
 
-					// Result result = GitRefUtils.deleteRef(repo, tagRef,
+					// Result result = GitRefUtils.deleteRef(getRepo(), tagRef,
 					// true);
 					//
 					// if (!result.equals(Result.FORCED))
@@ -424,7 +415,7 @@ public class RepositorySplitter implements RepositoryCleaner {
 
 					rightRefsWriter.println(tagName);
 
-					// Result result = GitRefUtils.createTagReference(repo,
+					// Result result = GitRefUtils.createTagReference(getRepo(),
 					// tagBuilder.getTag(), tagId);
 					//
 					// if (!result.equals(Result.NEW))
@@ -459,7 +450,7 @@ public class RepositorySplitter implements RepositoryCleaner {
 
 					String adjustedBranchName = Constants.R_HEADS
 							+ branchRef.getName().substring(
-									branchRefSpec.length());
+									getBranchRefSpec().length());
 
 					deferredReferenceCreates.add(new ReceiveCommand(null,
 							newCommitId, adjustedBranchName, Type.CREATE));
@@ -479,27 +470,27 @@ public class RepositorySplitter implements RepositoryCleaner {
 
 		objectInserter.flush();
 
-		repo.getRefDatabase().refresh();
+		getRepo().getRefDatabase().refresh();
 
 		log.info("Applying updates: " + deferredReferenceDeletes.size()
 				+ " deletes, " + deferredReferenceCreates.size() + " creates.");
 
-		if (externalGitCommandPath != null) {
-			ExternalGitUtils.batchRefUpdate(externalGitCommandPath, repo,
+		if (getExternalGitCommandPath() != null) {
+			ExternalGitUtils.batchRefUpdate(getExternalGitCommandPath(), getRepo(),
 					deferredReferenceDeletes, System.out);
 		} else {
-			GitRefUtils.batchRefUpdate(repo, deferredReferenceDeletes,
+			GitRefUtils.batchRefUpdate(getRepo(), deferredReferenceDeletes,
 					NullProgressMonitor.INSTANCE);
 		}
 
-		repo.getRefDatabase().refresh();
+		getRepo().getRefDatabase().refresh();
 
-		if (externalGitCommandPath != null) {
-			ExternalGitUtils.batchRefUpdate(externalGitCommandPath, repo,
+		if (getExternalGitCommandPath() != null) {
+			ExternalGitUtils.batchRefUpdate(getExternalGitCommandPath(), getRepo(),
 					deferredReferenceCreates, System.out);
 		} else {
 
-			GitRefUtils.batchRefUpdate(repo, deferredReferenceCreates,
+			GitRefUtils.batchRefUpdate(getRepo(), deferredReferenceCreates,
 					NullProgressMonitor.INSTANCE);
 
 		}
@@ -510,7 +501,7 @@ public class RepositorySplitter implements RepositoryCleaner {
 		walkRight.release();
 
 		objectInserter.release();
-		repo.close();
+		getRepo().close();
 		pw.close();
 
 		objectTranslationWriter.close();

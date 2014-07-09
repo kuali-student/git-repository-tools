@@ -352,6 +352,9 @@ public class GitTreeNodeData {
 		for (Map.Entry<String, GitTreeNodeData> treeEntry : subTreeReferences
 				.entrySet()) {
 			GitTreeNodeData subTree = treeEntry.getValue();
+			
+			if (!subTree.isInitialized())
+				this.nodeInitializer.initialize(subTree);
 
 			subTree.visit(vistor);
 		}
