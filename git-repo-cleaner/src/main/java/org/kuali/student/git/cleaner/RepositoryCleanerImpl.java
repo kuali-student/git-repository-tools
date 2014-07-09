@@ -74,7 +74,7 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 	private static final DateTimeFormatter dateFormat = DateTimeFormat
 			.forPattern("YYYY-MM-dd");
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

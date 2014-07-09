@@ -46,7 +46,10 @@ public class RepositoryCleanerMain {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+	private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
+	
+	private static final DateTimeFormatter includeHourAndMinuteDateFormatter = DateTimeFormat
+			.forPattern("YYYY-MM-dd HH:mm");
 		
 	/**
 	 * @param args
@@ -71,7 +74,14 @@ public class RepositoryCleanerMain {
 			
 			RepositoryCleaner repoCleaner = applicationContext.getBean(RepositoryCleaner.class);
 			
-			Date splitDate = formatter.parseDateTime(args[1]).toDate();
+			Date splitDate = null;
+			
+			if (args[1].contains(":")) {
+				splitDate = includeHourAndMinuteDateFormatter.parseDateTime(args[1]).toDate();
+			}
+			else {
+				splitDate = formatter.parseDateTime(args[1]).toDate();
+			}
 			
 			String branchRefSpec = Constants.R_HEADS;
 			
