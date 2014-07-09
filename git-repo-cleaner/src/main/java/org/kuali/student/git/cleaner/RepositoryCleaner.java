@@ -15,9 +15,7 @@
 package org.kuali.student.git.cleaner;
 
 import java.io.IOException;
-import java.util.Date;
-
-import org.eclipse.jgit.lib.Repository;
+import java.util.List;
 
 /**
  * @author ocleirig
@@ -38,7 +36,14 @@ public interface RepositoryCleaner {
 	 * @throws IOException 
 	 * 
 	 */
-	void execute(Repository repo, String branchRefSpec, Date splitDate, String externalGitCommandPath)
-			throws IOException;
+	void execute() throws IOException;
+	
+	/**
+	 * Ingest the command line arguments and setup the requirements for the command.
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
+	public void validateArgs (List<String> args) throws Exception;
 	
 }

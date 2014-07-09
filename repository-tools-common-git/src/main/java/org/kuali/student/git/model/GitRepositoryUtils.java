@@ -16,6 +16,8 @@ package org.kuali.student.git.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -74,6 +76,43 @@ public final class GitRepositoryUtils {
 		return repo;
 	}
 
+
+	public static List<String>findPathsForBlobInCommit (Repository repository, ObjectId commitId, ObjectId blobId) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+
+		RevWalk rw = new RevWalk(repository);
+		
+		RevCommit commit = rw.parseCommit(commitId);
+		
+		rw.release();
+	
+		return findPathsForBlobInTree(repository, commit.getTree().getId(), blobId);
+		
+	}
+	
+	private static List<String> findPathsForBlobInTree(Repository repository,
+			ObjectId treeId, ObjectId blobId) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		List<String>paths = new ArrayList<>();
+		
+		TreeWalk tw = new TreeWalk(repository);
+		
+		tw.addTree(treeId);
+		
+		tw.setRecursive(true);
+		
+		while (tw.next()) {
+		
+			if (tw.getObjectId(0).equals(blobId)) {
+				paths.add(tw.getPathString());
+			}
+
+		}
+		
+		tw.release();
+		
+		
+		return paths;
+	}
 
 	public static ObjectId findInCommit(Repository repository, ObjectId commitId,
 			String filePath) throws MissingObjectException, IncorrectObjectTypeException, IOException {

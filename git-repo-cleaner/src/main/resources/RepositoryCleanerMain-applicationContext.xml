@@ -18,6 +18,9 @@
 
 	<context:annotation-config/>
 	
-	<bean id="repoCleaner" class="org.kuali.student.git.cleaner.RepositoryCleanerImpl" />
+	<bean id="repoSplitter" class="org.kuali.student.git.cleaner.RepositorySplitter" />
+	
+	<bean id="repoRewriter" class="org.kuali.student.git.cleaner.RepositoryBlobRewriter" />
+	
 	
  </beans>

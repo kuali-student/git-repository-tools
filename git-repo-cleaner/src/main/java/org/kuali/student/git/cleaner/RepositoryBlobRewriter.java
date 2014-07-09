@@ -14,6 +14,7 @@
  */
 package org.kuali.student.git.cleaner;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
@@ -46,7 +48,10 @@ import org.eclipse.jgit.transport.ReceiveCommand.Type;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
+import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.utils.ExternalGitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,21 +65,73 @@ import org.slf4j.LoggerFactory;
  * @author ocleirig
  * 
  */
-public class RepositoryCleanerImpl implements RepositoryCleaner {
+public class RepositoryBlobRewriter implements RepositoryCleaner {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(RepositoryCleanerImpl.class);
+			.getLogger(RepositoryBlobRewriter.class);
+
+	private static final DateTimeFormatter formatter = DateTimeFormat
+			.forPattern("YYYY-MM-dd");
+
+	private Repository repo;
+
+	private Map<ObjectId, String> blobIdToReplacementContentMap = new HashMap<>();
+
+	private String branchRefSpec;
+
+	private String externalGitCommandPath;
 
 	/**
 	 * 
 	 */
-	public RepositoryCleanerImpl() {
-		// TODO Auto-generated constructor stub
+	public RepositoryBlobRewriter() {
 	}
 
-	private static final DateTimeFormatter dateFormat = DateTimeFormat
-			.forPattern("YYYY-MM-dd");
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.RepositoryCleaner#validateArgs(java.lang
+	 * .String[])
+	 */
+	@Override
+	public void validateArgs(List<String> args) throws Exception {
+
+		if (args.size() != 2 && args.size() != 3 && args.size() != 4) {
+			log.error("USAGE: <source git repository meta directory> <blob replacement input file> [<branchRefSpec> <git command path>]");
+			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
+			log.error("\t<blob replacement input file> : colon seperated ");
+			log.error("\t<git command path> : the path to a native git ");
+			throw new IllegalArgumentException("invalid arguments");
+		}
+
+		repo = GitRepositoryUtils.buildFileRepository(
+				new File(args.get(0)).getAbsoluteFile(), false);
+
+		List<String> lines = FileUtils.readLines(new File(args.get(1)));
+
+		for (String line : lines) {
+
+			String[] parts = line.split("::");
+
+			ObjectId blobId = ObjectId.fromString(parts[0].trim());
+
+			String replacementContent = parts[1].trim();
+
+			this.blobIdToReplacementContentMap.put(blobId, replacementContent);
+		}
+
+		branchRefSpec = Constants.R_HEADS;
+
+		if (args.size() == 3)
+			branchRefSpec = args.get(2).trim();
+
+		externalGitCommandPath = null;
+
+		if (args.size() == 4)
+			externalGitCommandPath = args.get(3).trim();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -83,37 +140,32 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 	 * .lib.Repository, java.io.File, long)
 	 */
 	@Override
-	public void execute(Repository repo, String branchRefSpec, Date splitDate,
-			String externalGitCommand) throws IOException {
+	public void execute() throws IOException {
+
+		ObjectInserter inserter = repo.newObjectInserter();
 
 		boolean localBranchSource = true;
+
 		if (!branchRefSpec.equals(Constants.R_HEADS))
 			localBranchSource = false;
 
-		String dateString = dateFormat.print(new DateTime(splitDate));
+		String dateString = formatter.print(new DateTime());
 
-		PrintWriter leftRefsWriter = new PrintWriter("left-refs-" + dateString
-				+ ".txt");
-		PrintWriter rightRefsWriter = new PrintWriter("right-refs-"
-				+ dateString + ".txt");
-
-		PrintWriter pw = new PrintWriter("grafts-" + dateString + ".txt");
-
-		PrintWriter refChangeWriter = new PrintWriter("ref-changes-"
-				+ dateString + ".txt");
-
+		/*
+		 * Track the commits that are rewritten.
+		 * 
+		 * This is important so that we can update the grafts file to relate to
+		 * the current parent object ids.
+		 */
 		PrintWriter objectTranslationWriter = new PrintWriter(
-				"object-translations-" + dateString + ".txt");
-
-		ObjectInserter objectInserter = repo.newObjectInserter();
+				"object-translations-blob-rewrite" + dateString + ".txt");
 
 		Map<String, Ref> branchHeads = repo.getRefDatabase().getRefs(
 				branchRefSpec);
 
 		Map<ObjectId, Set<Ref>> commitToBranchMap = new HashMap<ObjectId, Set<Ref>>();
 
-		RevWalk walkRight = new RevWalk(repo);
-		RevWalk walkLeft = new RevWalk(repo);
+		RevWalk walkRepo = new RevWalk(repo);
 
 		for (Ref branchRef : branchHeads.values()) {
 
@@ -128,8 +180,7 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 			refs.add(branchRef);
 
-			walkLeft.markStart(walkLeft.parseCommit(branchObjectId));
-			walkRight.markStart(walkRight.parseCommit(branchObjectId));
+			walkRepo.markStart(walkRepo.parseCommit(branchObjectId));
 
 		}
 
@@ -155,46 +206,15 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 			refs.add(tagRef);
 
-			walkLeft.markStart(walkLeft.parseCommit(commitId));
-			walkRight.markStart(walkRight.parseCommit(commitId));
+			walkRepo.markStart(walkRepo.parseCommit(commitId));
 		}
-
-		Set<ObjectId> leftSideCommits = new HashSet<>();
 
 		Set<ObjectId> leftSidePreventGCCommits = new HashSet<>();
 
-		walkLeft.setRevFilter(CommitTimeRevFilter.before(splitDate));
+		walkRepo.sort(RevSort.TOPO, true);
+		walkRepo.sort(RevSort.REVERSE, true);
 
-		Iterator<RevCommit> it = walkLeft.iterator();
-
-		while (it.hasNext()) {
-
-			RevCommit commit = it.next();
-
-			ObjectId commitId = commit.getId();
-
-			leftSideCommits.add(commitId);
-
-			Set<Ref> branches = commitToBranchMap.get(commitId);
-
-			if (branches != null) {
-				for (Ref ref : branches) {
-
-					leftRefsWriter.println(ref.getName());
-
-				}
-			}
-
-			Set<Ref> tags = commitToTagMap.get(commitId);
-
-			if (tags != null) {
-				for (Ref ref : tags) {
-
-					leftRefsWriter.println(ref.getName());
-
-				}
-			}
-		}
+		Iterator<RevCommit> it = walkRepo.iterator();
 
 		List<ReceiveCommand> deferredReferenceDeletes = new LinkedList<>();
 		List<ReceiveCommand> deferredReferenceCreates = new LinkedList<>();
@@ -207,21 +227,56 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 		// holds the old right side to new right side commit mapping
 		Map<ObjectId, ObjectId> rightSideConversionMap = new HashMap<>();
 
-		walkRight.setRevFilter(CommitTimeRevFilter.after(splitDate));
-
-		walkRight.sort(RevSort.TOPO);
-		walkRight.sort(RevSort.REVERSE, true);
-
-		it = walkRight.iterator();
+		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
 
 		while (it.hasNext()) {
 
 			RevCommit commit = it.next();
 
+			boolean recreateCommit = false;
+
+			for (RevCommit parentCommit : commit.getParents()) {
+
+				if (rightSideConversionMap.containsKey(parentCommit.getId())) {
+					recreateCommit = true;
+					break;
+				}
+
+			}
+
+			GitTreeData tree = treeProcessor
+					.extractExistingTreeDataFromCommit(commit.getId());
+
+			for (Map.Entry<ObjectId, String> entry : this.blobIdToReplacementContentMap
+					.entrySet()) {
+
+				ObjectId blobId = entry.getKey();
+
+				List<String> currentPaths = GitRepositoryUtils
+						.findPathsForBlobInCommit(repo, commit.getId(), blobId);
+
+				if (currentPaths.size() > 0) {
+					
+					recreateCommit = true;
+					
+					ObjectId newBlobId = inserter.insert(Constants.OBJ_BLOB,
+							entry.getValue().getBytes());
+
+					for (String path : currentPaths) {
+
+						tree.addBlob(path, newBlobId);
+					}
+
+					inserter.release();
+				}
+
+			}
+
+			if (!recreateCommit)
+				continue;
+			
 			/*
-			 * Process the right side.
-			 * 
-			 * We should be rewriting from old to new.
+			 * Process in reverse order from old to new.
 			 */
 			CommitBuilder builder = new CommitBuilder();
 
@@ -229,87 +284,41 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 			builder.setMessage(commit.getFullMessage());
 
 			builder.setCommitter(commit.getCommitterIdent());
-			builder.setTreeId(commit.getTree().getId());
+			
+			if (tree.isTreeDirty()) {
+				
+				ObjectId newTreeId = tree.buildTree(repo.newObjectInserter());
+				
+				builder.setTreeId(newTreeId);
+			}
+			else {
+				builder.setTreeId(commit.getTree().getId());
+			}
+			
 			builder.setEncoding("UTF-8");
 
 			Set<ObjectId> newParents = new HashSet<>();
 
-			Set<ObjectId> removedParents = new HashSet<>();
-
 			for (RevCommit parentCommit : commit.getParents()) {
 
-				if (leftSideCommits.contains(parentCommit.getId())) {
-					removedParents.add(parentCommit.getId());
-				} else {
+				ObjectId adjustedParentId = rightSideConversionMap
+						.get(parentCommit.getId());
 
-					ObjectId adjustedParentId = rightSideConversionMap
-							.get(parentCommit.getId());
-
+				if (adjustedParentId != null)
 					newParents.add(adjustedParentId);
-				}
+				else
+					newParents.add(parentCommit.getId());
 			}
 
 			builder.setParentIds(new ArrayList<>(newParents));
 
-			ObjectId newCommitId = objectInserter.insert(builder);
+			ObjectId newCommitId = inserter.insert(builder);
 
 			rightSideConversionMap.put(commit.getId(), newCommitId);
 
 			objectTranslationWriter.println(newCommitId.name() + " "
 					+ commit.getId().getName());
 
-			if (removedParents.size() > 0) {
-
-				// create the graft.
-
-				List<String> graftData = new ArrayList<>();
-
-				graftData.add(newCommitId.getName());
-
-				for (ObjectId parentId : newParents) {
-					graftData.add(parentId.getName());
-				}
-
-				for (ObjectId parentId : removedParents) {
-					graftData.add(parentId.getName());
-				}
-
-				pw.println(StringUtils.join(graftData, " "));
-
-				/*
-				 * Make sure there is a branch or tag on the left side ref
-				 * 
-				 * and if not then put a branch to prevent the graph from being
-				 * gc'ed.
-				 * 
-				 * We use a branch and not a tag because branches are namespaced
-				 * but tags are global.
-				 */
-
-				for (ObjectId leftCommitId : removedParents) {
-
-					if (!commitToTagMap.containsKey(leftCommitId)
-							&& !commitToBranchMap.containsKey(leftCommitId)
-							&& !leftSidePreventGCCommits.contains(leftCommitId)) {
-
-						String preventGCBranchName = Constants.R_HEADS
-								+ "prevent_gc_" + counter;
-
-						// put a branch
-						deferredReferenceCreates
-								.add(new ReceiveCommand(null, leftCommitId,
-										preventGCBranchName, Type.CREATE));
-						counter++;
-
-						leftSidePreventGCCommits.add(leftCommitId);
-
-						leftRefsWriter.println(preventGCBranchName);
-
-					}
-
-				}
-
-			}
 
 			RevWalk commitWalk = new RevWalk(repo);
 
@@ -339,48 +348,27 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 							.add(new ReceiveCommand(tagRef.getObjectId(), null,
 									tagRef.getName(), Type.DELETE));
 
-					refChangeWriter.println("deleted tagRef "
-							+ tagRef.getName() + " original commit id: "
-							+ tag.getObject().getId());
-
-					// Result result = GitRefUtils.deleteRef(repo, tagRef,
-					// true);
-					//
-					// if (!result.equals(Result.FORCED))
-					// log.warn("failed to delete tag reference " +
-					// tagRef.getName());
-					// else
-					// refChangeWriter.println("deleted tagRef " +
-					// tagRef.getName() + " original commit id: " +
-					// tag.getObject().getId());
+					// refChangeWriter.println("deleted tagRef "
+					// + tagRef.getName() + " original commit id: "
+					// + tag.getObject().getId());
 
 				}
 
 				for (TagBuilder tagBuilder : newTagSet) {
 
-					ObjectId tagId = objectInserter.insert(tagBuilder);
+					ObjectId tagId = inserter.insert(tagBuilder);
 
 					String tagName = Constants.R_TAGS + tagBuilder.getTag();
 
 					deferredReferenceCreates.add(new ReceiveCommand(null,
 							tagId, tagName, Type.CREATE));
 
-					refChangeWriter.println("created tag ref: "
-							+ tagBuilder.getTag() + " new commit id: "
-							+ tagBuilder.getObjectId());
-
-					rightRefsWriter.println(tagName);
-
-					// Result result = GitRefUtils.createTagReference(repo,
-					// tagBuilder.getTag(), tagId);
+					// refChangeWriter.println("created tag ref: "
+					// + tagBuilder.getTag() + " new commit id: "
+					// + tagBuilder.getObjectId());
 					//
-					// if (!result.equals(Result.NEW))
-					// log.warn("unable to create tag " + tagBuilder.getTag() +
-					// " now pointed at " + tagId);
-					// else
-					// refChangeWriter.println("created tag ref: " +
-					// tagBuilder.getTag() + " new commit id: " +
-					// tagBuilder.getObjectId());
+					// rightRefsWriter.println(tagName);
+
 				}
 
 			}
@@ -398,9 +386,9 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 								branchRef.getObjectId(), null, branchRef
 										.getName(), Type.DELETE));
 
-						refChangeWriter.println("deleted branchRef "
-								+ branchRef.getName() + " original commit id: "
-								+ branchRef.getObjectId());
+						// refChangeWriter.println("deleted branchRef "
+						// + branchRef.getName() + " original commit id: "
+						// + branchRef.getObjectId());
 
 					}
 
@@ -410,12 +398,13 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 					deferredReferenceCreates.add(new ReceiveCommand(null,
 							newCommitId, adjustedBranchName, Type.CREATE));
-					refChangeWriter.println("Updated branchRef: "
-							+ branchRef.getName() + " at original commit id: "
-							+ branchRef.getObjectId() + " to local branch: "
-							+ adjustedBranchName + " at new commit id: "
-							+ newCommitId);
-					rightRefsWriter.println(adjustedBranchName);
+
+					// refChangeWriter.println("Updated branchRef: "
+					// + branchRef.getName() + " at original commit id: "
+					// + branchRef.getObjectId() + " to local branch: "
+					// + adjustedBranchName + " at new commit id: "
+					// + newCommitId);
+					// rightRefsWriter.println(adjustedBranchName);
 
 				}
 
@@ -424,15 +413,15 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 			commitWalk.release();
 		}
 
-		objectInserter.flush();
+		inserter.flush();
 
 		repo.getRefDatabase().refresh();
 
 		log.info("Applying updates: " + deferredReferenceDeletes.size()
 				+ " deletes, " + deferredReferenceCreates.size() + " creates.");
 
-		if (externalGitCommand != null) {
-			ExternalGitUtils.batchRefUpdate(externalGitCommand, repo,
+		if (externalGitCommandPath != null) {
+			ExternalGitUtils.batchRefUpdate(externalGitCommandPath, repo,
 					deferredReferenceDeletes, System.out);
 		} else {
 			GitRefUtils.batchRefUpdate(repo, deferredReferenceDeletes,
@@ -441,8 +430,8 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 
 		repo.getRefDatabase().refresh();
 
-		if (externalGitCommand != null) {
-			ExternalGitUtils.batchRefUpdate(externalGitCommand, repo,
+		if (externalGitCommandPath != null) {
+			ExternalGitUtils.batchRefUpdate(externalGitCommandPath, repo,
 					deferredReferenceCreates, System.out);
 		} else {
 
@@ -453,18 +442,12 @@ public class RepositoryCleanerImpl implements RepositoryCleaner {
 		log.info("Completed.");
 
 		walkRefs.release();
-		walkLeft.release();
-		walkRight.release();
+		walkRepo.release();
 
-		objectInserter.release();
+		inserter.release();
 		repo.close();
-		pw.close();
 
 		objectTranslationWriter.close();
-		refChangeWriter.close();
-
-		leftRefsWriter.close();
-		rightRefsWriter.close();
 
 	}
 

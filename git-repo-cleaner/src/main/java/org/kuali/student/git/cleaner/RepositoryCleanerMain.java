@@ -14,18 +14,9 @@
  */
 package org.kuali.student.git.cleaner;
 
-import java.io.File;
-import java.util.Date;
+import java.util.Arrays;
 
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.Repository;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.kuali.student.git.model.GitRepositoryUtils;
-import org.kuali.student.git.utils.ExternalGitUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -46,21 +37,14 @@ public class RepositoryCleanerMain {
 		// TODO Auto-generated constructor stub
 	}
 
-	private static final DateTimeFormatter formatter = DateTimeFormat.forPattern("YYYY-MM-dd");
 	
-	private static final DateTimeFormatter includeHourAndMinuteDateFormatter = DateTimeFormat
-			.forPattern("YYYY-MM-dd HH:mm");
-		
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		
-		if (args.length != 2 && args.length != 3 && args.length != 4) {
-			log.error("USAGE: <source git repository meta directory> <split date> [<branchRefSpec> <git command path>]");
-			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
-			log.error("\t<split date> : YYYY-MM-DD");
-			log.error("\t<git command path> : the path to a native git ");
+		if (args.length < 1) {
+			log.error("USAGE: <module name> [module specific arguments]");
 			System.exit(-1);
 		}
 		try {
@@ -69,32 +53,17 @@ public class RepositoryCleanerMain {
 
 			applicationContext.registerShutdownHook();
 			
-			final Repository repo = GitRepositoryUtils.buildFileRepository(
-					new File (args[0]).getAbsoluteFile(), false);
+			String beanName = args[0];
 			
-			RepositoryCleaner repoCleaner = applicationContext.getBean(RepositoryCleaner.class);
+			RepositoryCleaner repoCleaner = (RepositoryCleaner) applicationContext.getBean(beanName);
+
+			/*
+			 * Exclude the module name from the args sent to the module.
+			 */
 			
-			Date splitDate = null;
+			repoCleaner.validateArgs(Arrays.asList(args).subList(1, args.length));
 			
-			if (args[1].contains(":")) {
-				splitDate = includeHourAndMinuteDateFormatter.parseDateTime(args[1]).toDate();
-			}
-			else {
-				splitDate = formatter.parseDateTime(args[1]).toDate();
-			}
-			
-			String branchRefSpec = Constants.R_HEADS;
-			
-			if (args.length == 3)
-				branchRefSpec = args[2].trim();
-			
-			String externalGitCommandPath = null;
-			
-			if (args.length == 4)
-				externalGitCommandPath = args[3].trim();
-			
-			
-			repoCleaner.execute(repo, branchRefSpec, splitDate, externalGitCommandPath);
+			repoCleaner.execute();
 			
 		} catch (Exception e) {
 			log.error ("unexpected exception", e);
