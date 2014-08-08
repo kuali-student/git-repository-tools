@@ -50,6 +50,7 @@
 		<module>git-importer-foundation-plugin</module>
 		<module>git-importer-rice-plugin</module>
 		<module>git-repo-cleaner</module>
+		<module>repository-viewer</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
