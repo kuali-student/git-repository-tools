@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Paint;
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,7 +51,7 @@ public class GitGraphFrame extends JFrame {
 	 * @param simplify 
 	 * @throws HeadlessException
 	 */
-	public GitGraphFrame(File repository, Graph<RevCommit, String> graph, final Map<RevCommit, String> branchHeadCommitToBranchNameMap, boolean simplify)
+	public GitGraphFrame(File repository, final Graph<RevCommit, String> graph, final Map<RevCommit, String> branchHeadCommitToBranchNameMap, boolean simplify)
 			throws HeadlessException {
 		super("Git Graph Viewer, repository: " + repository.getAbsolutePath());
 
@@ -78,7 +79,9 @@ public class GitGraphFrame extends JFrame {
 
 					@Override
 					public String transform(RevCommit input) {
-						return "";
+						Collection<String> inEdges = graph.getInEdges(input);
+						
+						return String.valueOf(inEdges.size());
 					}
 				});
 		
@@ -92,10 +95,24 @@ public class GitGraphFrame extends JFrame {
 			@Override
 			public Paint transform(RevCommit input) {
 				
-				if (branchHeadCommitToBranchNameMap.containsKey(input))
-					return Color.YELLOW;
-				else
-					return Color.RED;
+				Collection<String> inEdges = graph.getInEdges(input);
+				
+				if (branchHeadCommitToBranchNameMap.containsKey(input)) {
+					
+					if (inEdges.size() > 10)
+						// light yellow
+						return new Color(255, 255, 188);
+					else
+						return Color.YELLOW;
+				}
+				else {
+					
+					if (inEdges.size() > 10)
+						// pink
+						return new Color(253, 188, 188);
+					else
+						return Color.RED;
+				}
 			}
 			
 		});

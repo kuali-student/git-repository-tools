@@ -19,6 +19,7 @@ import java.awt.geom.Point2D.Double;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.collections15.Transformer;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -31,24 +32,27 @@ import org.slf4j.LoggerFactory;
  */
 public class GitGraphTransformer implements Transformer<RevCommit, Point2D> {
 
-	private static final Logger log = LoggerFactory.getLogger(GitGraphTransformer.class);
-	
+	private static final Logger log = LoggerFactory
+			.getLogger(GitGraphTransformer.class);
+
 	private Map<RevCommit, String> branchHeadsToNameMap;
-	
-	private Map<RevCommit, Point2D>placedCommitsMap = new HashMap<RevCommit, Point2D>();
-	
-	
-	private Map<Point2D, RevCommit>pointToCommitsMap = new HashMap<Point2D, RevCommit>();
+
+	private Map<RevCommit, Point2D> placedCommitsMap = new HashMap<RevCommit, Point2D>();
+
+	private Map<Point2D, RevCommit> pointToCommitsMap = new HashMap<Point2D, RevCommit>();
 
 	private int nextParentCommitXOffset = 0;
 
 	private boolean simplify;
+
 	/**
-	 * @param branchHeadCommitToBranchNameMap 
-	 * @param simplify 
+	 * @param branchHeadCommitToBranchNameMap
+	 * @param simplify
 	 * 
 	 */
-	public GitGraphTransformer(Map<RevCommit, String> branchHeadCommitToBranchNameMap, boolean simplify) {
+	public GitGraphTransformer(
+			Map<RevCommit, String> branchHeadCommitToBranchNameMap,
+			boolean simplify) {
 		this.branchHeadsToNameMap = branchHeadCommitToBranchNameMap;
 		this.simplify = simplify;
 	}
@@ -56,86 +60,145 @@ public class GitGraphTransformer implements Transformer<RevCommit, Point2D> {
 	private Point2D findPlacement(RevCommit input) {
 
 		Point2D placement = this.placedCommitsMap.get(input);
-		
+
 		if (placement != null)
 			return placement;
 		else
 			return null;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see org.apache.commons.collections15.Transformer#transform(java.lang.Object)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.apache.commons.collections15.Transformer#transform(java.lang.Object)
 	 */
 	@Override
 	public Point2D transform(RevCommit input) {
-		
+
 		Point2D placement = findPlacement(input);
-		
+
 		if (placement != null)
 			return placement;
 		
-		for (RevCommit parentCommit : input.getParents()) {
+		if (input.getParentCount() == 0) {
+			// place here
+			placement = new Point2D.Double(nextParentCommitXOffset, 0);
+
+			nextParentCommitXOffset += 100;
+
+			this.placedCommitsMap.put(input, placement);
+			this.pointToCommitsMap.put(placement, input);
 			
-			RevCommit currentParent = parentCommit;
+			return placement;
 			
-			if (simplify) {
-			
-				currentParent = RevCommitVertexUtils.findSimplifiedVertex(branchHeadsToNameMap, parentCommit);
-			}
-		
-			if (placement == null)
-				placement = place (input, currentParent);
-			else
-				place (input, currentParent);
 		}
-		
+
+		for (RevCommit parentCommit : input.getParents()) {
+
+			RevCommit currentParent = parentCommit;
+
+			if (simplify) {
+
+				currentParent = RevCommitVertexUtils.findSimplifiedVertex(
+						branchHeadsToNameMap, parentCommit);
+			}
+
+			
+			if (placement == null)
+				placement = place(input, currentParent);
+			else
+				place(input, currentParent);
+		}
+
 		return placement;
 	}
 
-	
 	private Point2D place(RevCommit commit, RevCommit parentCommit) {
-		
+
 		Point2D parentPlacement = findPlacement(parentCommit);
-		
+
 		if (parentPlacement == null) {
-			
-			if (parentCommit.getParentCount() > 0) {
-				for (RevCommit parents : parentCommit.getParents()) {
-					
-					Point2D p = place (parentCommit, parents);
-					
-					if (parentPlacement == null)
-						parentPlacement = p;
-					
-				}
-			}
-			else {
-				// no parents
-				parentPlacement = new Point2D.Double(nextParentCommitXOffset, 0);
-				
-				nextParentCommitXOffset += 100;
-				
-				this.placedCommitsMap.put(parentCommit, parentPlacement);
-				this.pointToCommitsMap.put(parentPlacement, parentCommit);
-				
-			}
-			
+
+			parentPlacement = place (parentCommit);
+
 		}
-			
-		Point2D.Double placement =  new Point2D.Double(parentPlacement.getX(), parentPlacement.getY() + 10);
-		
+
+		Point2D.Double placement = new Point2D.Double(parentPlacement.getX(),
+				parentPlacement.getY() + 10);
+
 		while (this.pointToCommitsMap.containsKey(placement)) {
 			// prevent placements on the same point
-			
-			placement =  new Point2D.Double(placement.getX()+10, placement.getY() + 10);
-			
+
+			placement = new Point2D.Double(placement.getX() + 10,
+					placement.getY() + 10);
+
 		}
-		
+
 		this.placedCommitsMap.put(commit, placement);
 		this.pointToCommitsMap.put(placement, commit);
-		
+
 		return placement;
+
+	}
+
+	private Point2D place(RevCommit commit) {
+		
+		RevCommit currentCommit = commit;
+		
+		/*
+		 * we want to process in a loop and store the intermediaries so that we can place them
+		 * once we have placed the lowest level.
+		 */
+		
+		Stack<RevCommit>pendingPlacements = new Stack<RevCommit>();
+
+		Point2D currentPlacement = null;
+		
+		while (true) {
+		
+			currentPlacement = findPlacement(currentCommit);
+			
+			if (currentPlacement != null) {
+				// we are ascending the stack
+				
+				if (pendingPlacements.isEmpty())
+					break;
+				
+				RevCommit pendingCommit = pendingPlacements.pop();
+				
+				currentPlacement = place (pendingCommit, currentCommit);
+				
+				currentCommit = pendingCommit;
+				
+			}
+			else {
+				// we are descending the stack along the first parent
+				
+				if (currentCommit.getParentCount() == 0) {
+					// place here
+
+					Point2D placement = new Point2D.Double(nextParentCommitXOffset, 0);
+
+					nextParentCommitXOffset += 100;
+
+					this.placedCommitsMap.put(currentCommit, placement);
+					this.pointToCommitsMap.put(placement, currentCommit);
+
+				}
+				else {
+					// continue looking
+					pendingPlacements.push(currentCommit);
+				
+					currentCommit = currentCommit.getParent(0);
+				
+				}
+				
+				
+			}
+		}
+
+		return currentPlacement;
 		
 	}
 
