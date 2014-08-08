@@ -48,20 +48,27 @@ public class GitGraphDetailsPanel extends JPanel {
 	private JTextArea commitMessage;
 	private JLabel committer;
 	private JLabel commitDate;
+	private boolean simplify;
+	private JLabel inEdgesLabel;
 
 	/**
 	 * @param branchHeadCommitToBranchNameMap 
+	 * @param simplify 
 	 * @param jComboBox 
 	 * 
 	 */
-	public GitGraphDetailsPanel(JComboBox modeComboBox, Map<RevCommit, String> branchHeadCommitToBranchNameMap) {
+	public GitGraphDetailsPanel(JComboBox modeComboBox, Map<RevCommit, String> branchHeadCommitToBranchNameMap, boolean simplify) {
 		super();
 
 		this.branchHeadCommitToBranchNameMap = branchHeadCommitToBranchNameMap;
 		
+		this.simplify = simplify;
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		addSubPanel(new JLabel("Mouse Click Mode: "), modeComboBox);
+		
+		addSubPanel(new JLabel("In Edges: "), inEdgesLabel = new JLabel (""));
 		
 		addSubPanel(new JLabel("Object id: "), objectIdLabel = new JLabel (""));
 		
@@ -103,7 +110,9 @@ public class GitGraphDetailsPanel extends JPanel {
 		return subPanel;
 	}
 
-	public void setSelectedCommit(RevCommit commit) {
+	public void setSelectedCommit(RevCommit commit, int inEdges) {
+		
+		inEdgesLabel.setText(String.valueOf (inEdges));
 		
 		objectIdLabel.setText(commit.getId().name().substring(0, 8));
 		
@@ -112,18 +121,27 @@ public class GitGraphDetailsPanel extends JPanel {
 		
 		this.commitDate.setText(DateFormatUtils.ISO_DATE_FORMAT.format(commit.getCommitterIdent().getWhen()));
 		
-		List<RevCommit>parentCommitIds = Arrays.asList(commit.getParents());
-		Collection<String>parentIds = CollectionUtils.transformedCollection(parentCommitIds, new Transformer<RevCommit, String>() {
+		Transformer<RevCommit, String> transformer = new Transformer<RevCommit, String>() {
 
 			/* (non-Javadoc)
 			 * @see org.apache.commons.collections15.Transformer#transform(java.lang.Object)
 			 */
 			@Override
 			public String transform(RevCommit input) {
-				return input.getId().name().substring(0, 8);
+				
+				RevCommit vertex = input;
+				
+				if (simplify)
+					vertex = RevCommitVertexUtils.findSimplifiedVertex(branchHeadCommitToBranchNameMap, input);
+				
+				String objectIdString =  vertex.getId().name().substring(0, 8);
+				
+				return objectIdString;
 			}
 			
-		});
+		};
+		
+		Collection<String> parentIds = CollectionUtils.collect(Arrays.asList(commit.getParents()), transformer);
 		
 		this.parentIdsLabel.setText(StringUtils.join(parentIds, ", "));
 		
@@ -135,6 +153,8 @@ public class GitGraphDetailsPanel extends JPanel {
 			branchNamePanel.setVisible(true);
 			branchNameLabel.setText(branchName);
 		}
+		
+		
 		
 		
 	}

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
@@ -53,8 +54,8 @@ public class ViewerMain {
 	 */
 	public static void main(String[] args) {
 		
-		if (args.length != 1) {
-			System.err.println("USAGE: <git meta directory>");
+		if (args.length != 1 && args.length != 2) {
+			System.err.println("USAGE: <git meta directory> [--simplify]");
 			System.exit(-1);
 		}
 		
@@ -66,6 +67,11 @@ public class ViewerMain {
 			System.err.println(gitDirectory + " does not exist");
 			System.exit(-1);
 		}
+		
+		boolean simplify = false;
+		
+		if (args.length == 2 && args[1].toLowerCase().equals("--simplify"))
+			simplify = true;
 		
 		try {
 			
@@ -96,8 +102,6 @@ public class ViewerMain {
 			
 			RevCommit currentCommit = null;
 			
-			int edgeCounter = 1;
-			
 			Set<RevCommit>commits = new HashSet<RevCommit>();
 			
 			while ((currentCommit = rw.next()) != null) {
@@ -108,19 +112,49 @@ public class ViewerMain {
 			
 			for(RevCommit commit :  commits) {
 				
-				for (RevCommit parentCommit : commit.getParents()) {
-//					log.info("add edge from " + currentCommit + " to " + parentCommit);
-					graph.addEdge(String.valueOf(edgeCounter), commit, parentCommit);
-					edgeCounter++;
+				if (simplify) {
+					/* 
+					 * The only vertexes will be the parentless commits,  multi-parent commits and branch head commits.
+					 * 
+					 * For each commit we need to walk the available parents backwards so that we find the candidate vertex to associate with.
+					 * 
+					 */
+					
+					if (RevCommitVertexUtils.isSimplifiedVertex (branchHeadCommitToBranchNameMap, commit)) {
+						
+						for (RevCommit parentCommit : commit.getParents()) {
+							
+							// find the parent commit that is a simplified vertex
+							
+							RevCommit currentVertex = RevCommitVertexUtils.findSimplifiedVertex(branchHeadCommitToBranchNameMap, parentCommit);
+							
+							graph.addEdge(commit.getId().name() + " to " + currentVertex.getId().name(), commit, currentVertex);
+							
+						}
+						
+					}
+					
+					
 				}
+				else {
+					/*
+					 * For non-simplified mode we an edge between each commit and its parent commit.
+					 */
+					for (RevCommit parentCommit : commit.getParents()) {
+						graph.addEdge(commit.getId().name() + " to " + parentCommit.getId().name(), commit, parentCommit);
+					}
+				}
+				
 			}
 			
-			new GitGraphFrame(gitDir, graph, branchHeadCommitToBranchNameMap);
+			new GitGraphFrame(gitDir, graph, branchHeadCommitToBranchNameMap, simplify);
 			
 		} catch (Exception e) {
 			log.error("viewing failed", e);
 		}
 		
 	}
+
+	
 
 }

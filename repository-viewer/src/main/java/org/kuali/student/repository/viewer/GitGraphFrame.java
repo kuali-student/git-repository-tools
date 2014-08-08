@@ -47,13 +47,14 @@ public class GitGraphFrame extends JFrame {
 	private static final Logger log = LoggerFactory.getLogger(GitGraphFrame.class);
 	
 	/**
+	 * @param simplify 
 	 * @throws HeadlessException
 	 */
-	public GitGraphFrame(File repository, Graph<RevCommit, String> graph, final Map<RevCommit, String> branchHeadCommitToBranchNameMap)
+	public GitGraphFrame(File repository, Graph<RevCommit, String> graph, final Map<RevCommit, String> branchHeadCommitToBranchNameMap, boolean simplify)
 			throws HeadlessException {
 		super("Git Graph Viewer, repository: " + repository.getAbsolutePath());
 
-		Layout<RevCommit, String> layout = new StaticLayout<RevCommit, String>(graph, new GitGraphTransformer(branchHeadCommitToBranchNameMap));
+		Layout<RevCommit, String> layout = new StaticLayout<RevCommit, String>(graph, new GitGraphTransformer(branchHeadCommitToBranchNameMap, simplify));
 
 		Dimension d;
 		layout.setSize(d = new Dimension(800, 600));
@@ -103,9 +104,9 @@ public class GitGraphFrame extends JFrame {
 		
 		visualizer.setGraphMouse(gm);
 
-		GitGraphDetailsPanel detailsPanel = new GitGraphDetailsPanel(gm.getModeComboBox(), branchHeadCommitToBranchNameMap);
+		GitGraphDetailsPanel detailsPanel = new GitGraphDetailsPanel(gm.getModeComboBox(), branchHeadCommitToBranchNameMap, simplify);
 		
-		new GitGraphVertexPickedListener(visualizer.getPickedVertexState(), detailsPanel);
+		new GitGraphVertexPickedListener(visualizer, detailsPanel);
 		
 		visualizer.getRenderer().getVertexLabelRenderer()
 				.setPosition(Position.CNTR);

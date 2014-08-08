@@ -41,12 +41,16 @@ public class GitGraphTransformer implements Transformer<RevCommit, Point2D> {
 	private Map<Point2D, RevCommit>pointToCommitsMap = new HashMap<Point2D, RevCommit>();
 
 	private int nextParentCommitXOffset = 0;
+
+	private boolean simplify;
 	/**
 	 * @param branchHeadCommitToBranchNameMap 
+	 * @param simplify 
 	 * 
 	 */
-	public GitGraphTransformer(Map<RevCommit, String> branchHeadCommitToBranchNameMap) {
+	public GitGraphTransformer(Map<RevCommit, String> branchHeadCommitToBranchNameMap, boolean simplify) {
 		this.branchHeadsToNameMap = branchHeadCommitToBranchNameMap;
+		this.simplify = simplify;
 	}
 
 	private Point2D findPlacement(RevCommit input) {
@@ -72,11 +76,18 @@ public class GitGraphTransformer implements Transformer<RevCommit, Point2D> {
 			return placement;
 		
 		for (RevCommit parentCommit : input.getParents()) {
+			
+			RevCommit currentParent = parentCommit;
+			
+			if (simplify) {
+			
+				currentParent = RevCommitVertexUtils.findSimplifiedVertex(branchHeadsToNameMap, parentCommit);
+			}
 		
 			if (placement == null)
-				placement = place (input, parentCommit);
+				placement = place (input, currentParent);
 			else
-				place (input, parentCommit);
+				place (input, currentParent);
 		}
 		
 		return placement;

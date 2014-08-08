@@ -16,10 +16,13 @@ package org.kuali.student.repository.viewer.listener;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Collection;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.kuali.student.repository.viewer.GitGraphDetailsPanel;
 
+import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 
 /**
@@ -30,14 +33,16 @@ public class GitGraphVertexPickedListener implements ItemListener {
 
 	private PickedState<RevCommit> pickedState;
 	private GitGraphDetailsPanel detailsPanel;
+	private VisualizationViewer<RevCommit, String> visualizer;
 
 	/**
-	 * @param pickedState
+	 * @param visualizer
 	 * 
 	 */
-	public GitGraphVertexPickedListener(PickedState<RevCommit> pickedState, GitGraphDetailsPanel detailsPanel) {
+	public GitGraphVertexPickedListener(VisualizationViewer<RevCommit, String> visualizer, GitGraphDetailsPanel detailsPanel) {
 		super();
-		this.pickedState = pickedState;
+		this.visualizer = visualizer;
+		this.pickedState = visualizer.getPickedVertexState();
 		this.detailsPanel = detailsPanel;
 		
 		pickedState.addItemListener(this);
@@ -63,7 +68,11 @@ public class GitGraphVertexPickedListener implements ItemListener {
 			
 			if (pickedState.isPicked(commit)) {
 				// selected
-				detailsPanel.setSelectedCommit(commit);
+				
+				Collection<String> inEdges = visualizer.getGraphLayout().getGraph().getInEdges(commit);
+				
+				detailsPanel.setSelectedCommit(commit, inEdges.size());
+				
 			}
 			else {
 				// not selected
