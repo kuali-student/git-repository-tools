@@ -86,37 +86,40 @@ public class RepositorySplitter extends AbstractRepositoryCleaner {
 	@Override
 	public void validateArgs(List<String> args) throws Exception {
 
-		if (args.size() != 3 && args.size() != 5) {
+		if (args.size() != 3 &&  args.size() != 4 && args.size() != 5) {
 			log.error("USAGE: <source git repository meta directory> <grafts file> <split date> [<branchRefSpec> <git command path>]");
 			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
 			log.error("\t<grafts file> : An existing grafts file if this is a subsequent split");
 			log.error("\t<split date> : YYYY-MM-DD [MM:hh]");
 			log.error("\t<branchRefSpec> : git refspec from which to source the graph to be rewritten");
 			log.error("\t<git command path> : the path to a native git ");
-			throw new IllegalArgumentException("invalid arguments");
+			throw new IllegalArgumentException("invalid arguments["+StringUtils.join(args, ", ")+"]");
 		}
 		
 		setRepo(GitRepositoryUtils.buildFileRepository(
 				new File (args.get(0)).getAbsoluteFile(), false));
 		
-		super.loadGrafts (args.get(1));
+		String graftsFile = args.get(1);
+		
+		if (new File(graftsFile).exists())
+			super.loadGrafts (graftsFile);
 		
 		splitDate = null;
 		
-		if (args.get(1).contains(":")) {
-			splitDate = includeHourAndMinuteDateFormatter.parseDateTime(args.get(1)).toDate();
+		if (args.get(2).contains(":")) {
+			splitDate = includeHourAndMinuteDateFormatter.parseDateTime(args.get(2)).toDate();
 		}
 		else {
-			splitDate = formatter.parseDateTime(args.get(1)).toDate();
+			splitDate = formatter.parseDateTime(args.get(2)).toDate();
 		}
-		
-		
-		if (args.size() == 3)
-			setBranchRefSpec(args.get(2).trim());
 		
 		
 		if (args.size() == 4)
-			setExternalGitCommandPath(args.get(3).trim());
+			setBranchRefSpec(args.get(3).trim());
+		
+		
+		if (args.size() == 5)
+			setExternalGitCommandPath(args.get(4).trim());
 	}
 
 
