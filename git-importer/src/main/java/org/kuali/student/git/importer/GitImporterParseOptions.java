@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.management.RuntimeErrorException;
+
 import org.eclipse.jgit.api.GarbageCollectCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -226,7 +228,31 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		// }
 		// }
 
+		if (this.currentRevision == -1) {
+			/*
+			 * In the initialization case check that we haven't already imported this revision.
+			 * 
+			 * This will prevent clobbering an existing import.
+			 */
+			try {
+				List<SvnRevisionMap> knownHeads = revisionMapper.getRevisionHeads(currentRevision);
+				
+				if (knownHeads != null && knownHeads.size() > 0)
+					throw new RuntimeException("Aborting: Target Git Repository("+repo.getDirectory().getAbsolutePath()+") already contains an export of revision: " + currentRevision);
+				
+				
+			} catch (IOException e) {
+				throw new RuntimeException("failed to check existing revision heads for revision = " + currentRevision, e);
+			}
+			
+			
+		}
+		
+		
 		this.currentRevision = currentRevision;
+		
+		
+		
 
 		log.info("starting on Revision: " + currentRevision);
 
