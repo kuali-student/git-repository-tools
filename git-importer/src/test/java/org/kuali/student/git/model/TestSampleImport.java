@@ -17,12 +17,20 @@ package org.kuali.student.git.model;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.utils.GitTestUtils;
+import org.kuali.student.svn.model.ExternalModuleInfo;
 
 /**
  * 
@@ -142,6 +150,66 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		runImporter(repository, 18);
 		
 		GitTestUtils.assertFileContentEquals (repository, "trunk", "module5/pom.xml", " module pom file\n");
+		
+		runImporter(repository, 19);
+		
+		GitTestUtils.assertPathsExist(repository, "aggregate_trunk", Arrays.asList(new String[] {"fusion-maven-plugin.dat"}));
+		
+		ObjectLoader fusionDataFileLoader = GitTestUtils.loadFileContents(repository, "aggregate_trunk", "fusion-maven-plugin.dat");
+		
+		List<ExternalModuleInfo> externals = SvnExternalsUtils.extractFusionMavenPluginData(fusionDataFileLoader.openStream());
+		
+		for (ExternalModuleInfo externalModuleInfo : externals) {
+			
+			if (externalModuleInfo.getModuleName().equals("branch1")) {
+				
+				ObjectId branch1ExpectedHeadId = externalModuleInfo.getBranchHeadId();
+				
+				String branchPath = externalModuleInfo.getBranchPath();
+				
+				Assert.assertEquals("branches/branch1", branchPath);
+				
+				Ref actualBranchRef = repository.getRef("branches_branch1");
+				
+				Assert.assertEquals("expected branch 1 external head id to match repo head id", branch1ExpectedHeadId, actualBranchRef.getObjectId());
+				
+				
+			} else if (externalModuleInfo.getModuleName().equals("branch2")) {	
+				
+				ObjectId branch2ExpectedHeadId = externalModuleInfo.getBranchHeadId();
+				
+				String branchPath = externalModuleInfo.getBranchPath();
+				
+				Assert.assertEquals("branches/branch2", branchPath);
+				
+				Ref actualBranchRef = repository.getRef("branches_branch2");
+				
+				Assert.assertEquals("expected branch 2 external head id to match repo head id", branch2ExpectedHeadId, actualBranchRef.getObjectId());
+			}
+			else {
+				Assert.fail("expected branch1 or branch 2");
+			}
+		}
+		
+		GitTreeProcessor processor = new GitTreeProcessor(repository);
+		
+		Ref aggregateTrunkRef = repository.getRef("aggregate_trunk");
+		
+		GitTreeData treeAtR19 = processor.extractExistingTreeDataFromCommit(aggregateTrunkRef.getObjectId());
+		
+		ObjectId fusionMavenPluginDatAtR19 = treeAtR19.find(repository, "fusion-maven-plugin.dat");
+		
+		Assert.assertNotNull("Expected the fusion-maven-plugin.dat file to exist in the base of the aggregate_trunk branch at r19", fusionMavenPluginDatAtR19);
+		
+		runImporter(repository, 20);
+		
+		aggregateTrunkRef = repository.getRef("aggregate_trunk");
+		
+		GitTreeData treeAtR20 = processor.extractExistingTreeDataFromCommit(aggregateTrunkRef.getObjectId());
+		
+		ObjectId fusionMavenPluginDatAtR20 = treeAtR20.find(repository, "fusion-maven-plugin.dat");
+		
+		Assert.assertEquals("Expected the fusion-maven-plugin.dat file to stay the same between rev 19 and rev 20", fusionMavenPluginDatAtR19, fusionMavenPluginDatAtR20);
 		
 	}
 

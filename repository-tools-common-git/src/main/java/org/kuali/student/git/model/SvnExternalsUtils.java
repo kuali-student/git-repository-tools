@@ -114,7 +114,7 @@ public class SvnExternalsUtils {
 						branchHead = branchRef.getObjectId();
 					else {
 						log.warn(
-								"createFusionMavenPliginDataFileString failed to resolve branch for: {}",
+								"createFusionMavenPluginDataFileString failed to resolve branch for: {}",
 								branchName);
 					}
 					
@@ -264,7 +264,16 @@ public class SvnExternalsUtils {
 				branchPath = branchPath.substring(repositoryPrefixPath.length()+1);
 			}
 			else if (branchPath.startsWith("^")){
-				branchPath = branchPath.substring(1);
+				// relative external case
+				if (branchPath.startsWith("/", 1)) {
+					// trim ^/ from the front of the branch path
+					branchPath = branchPath.substring(2);
+				}
+				else {
+					// trim ^ from the front of the path
+					branchPath = branchPath.substring(1);
+				}
+				
 			}
 
 			

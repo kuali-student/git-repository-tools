@@ -27,6 +27,7 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
@@ -213,6 +214,28 @@ public final class GitTestUtils {
 	public static void assertFileContentEquals(Repository repository, String branchName,
 			String filePath, String expectedContent) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 
+		ObjectLoader loader = loadFileContents(repository, branchName, filePath);
+		
+		String actualContent = new String (loader.getBytes());
+		
+		Assert.assertEquals(expectedContent, actualContent);
+		
+	}
+	
+	/**
+	 * Acquire the JGit ObjectLoader reference on the file in the branch in the repository we want.
+	 * 
+	 * This gives the caller the option of extracting it as a string or passing it as an InputStream into some other functionality.
+	 * 
+	 * @param repository
+	 * @param branchName
+	 * @param filePath
+	 * @return the JGit ObjectLoader for the branch path given.
+	 * @throws IOException
+	 */
+	public static ObjectLoader loadFileContents(Repository repository, String branchName,
+			String filePath) throws IOException {
+		
 		Ref ref = repository.getRef(branchName);
 		
 		Assert.assertNotNull(ref);
@@ -223,9 +246,7 @@ public final class GitTestUtils {
 		
 		Assert.assertNotNull(objectId);
 		
-		String actualContent = new String (repository.newObjectReader().open(objectId).getBytes());
-		
-		Assert.assertEquals(expectedContent, actualContent);
+		return repository.newObjectReader().open(objectId);
 		
 	}
 
