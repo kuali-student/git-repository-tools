@@ -51,7 +51,7 @@ import org.kuali.student.git.model.ExternalsUtils;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.GitCommitData;
 import org.kuali.student.git.model.NodeProcessor;
-import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.SvnMergeInfoUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
@@ -356,7 +356,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 					ObjectId id = objectInserter
 							.insert(Constants.OBJ_BLOB,
-									SvnExternalsUtils
+									ExternalModuleUtils
 											.createFusionMavenPluginDataFileString(
 													currentRevision, repo,
 													data.getExternals(),

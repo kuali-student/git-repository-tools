@@ -33,7 +33,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.kuali.student.git.model.GitRepositoryUtils;
-import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
@@ -116,7 +116,7 @@ public class ModuleMergeToolMain {
 				 * 
 				 */
 				
-				List<ExternalModuleInfo> externals = SvnExternalsUtils.extractExternalModuleInfoFromInputStream(svnRevision, "https://svn.kuali.org/repos/student", new FileInputStream(svnExternalsDataFile));
+				List<ExternalModuleInfo> externals = ExternalModuleUtils.extractExternalModuleInfoFromSvnExternalsInputStream(svnRevision, "https://svn.kuali.org/repos/student", new FileInputStream(svnExternalsDataFile));
 			
 				/*
 				 * Take the existing content of the commit pointed at and then materialize the externals within it.
@@ -149,7 +149,7 @@ public class ModuleMergeToolMain {
 				CommitBuilder commitBuilder = new CommitBuilder();
 				
 				ObjectReader or;
-				commitBuilder.setTreeId(SvnExternalsUtils.createFusedTree (or = repo.newObjectReader(), inserter, rw, commit, externals));
+				commitBuilder.setTreeId(ExternalModuleUtils.createFusedTree (or = repo.newObjectReader(), inserter, rw, commit, externals));
 
 				List<ObjectId>parentIds = new LinkedList<>();
 				

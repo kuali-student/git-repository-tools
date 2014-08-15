@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,11 +53,12 @@ import org.eclipse.jgit.transport.ReceiveCommand.Type;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.kuali.student.cleaner.model.sort.FusionAwareTopoSortComparator;
 import org.kuali.student.git.cleaner.model.ObjectIdTranslation;
 import org.kuali.student.git.cleaner.model.ObjectIdTranslationService;
 import org.kuali.student.git.cleaner.model.ObjectTranslationDataSource;
 import org.kuali.student.git.model.GitRepositoryUtils;
-import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.graft.GitGraft;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
@@ -154,6 +156,28 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 	}
 
 	
+	
+
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.cleaner.AbstractRepositoryCleaner#provideRevCommitIterator(java.util.Iterator)
+	 */
+	@Override
+	protected Iterator<RevCommit> provideRevCommitIterator(
+			Iterator<RevCommit> iterator) {
+		
+		List<RevCommit>fusionTopoOrderedList = new ArrayList<RevCommit>();
+		
+		while (iterator.hasNext()) {
+			RevCommit revCommit = (RevCommit) iterator.next();
+			
+			fusionTopoOrderedList.add(revCommit);
+		}
+		
+		Collections.sort(fusionTopoOrderedList, new FusionAwareTopoSortComparator(getRepo(), true));
+		
+		return fusionTopoOrderedList.iterator();
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.kuali.student.git.cleaner.AbstractRepositoryCleaner#processCommitTree(org.eclipse.jgit.lib.ObjectId, org.kuali.student.git.model.tree.GitTreeData)
@@ -172,7 +196,7 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 			ObjectLoader loader = getRepo().newObjectReader().open(fusionPluginDataBlobId, Constants.OBJ_BLOB);
 			
 			// rewrite the data here
-			List<ExternalModuleInfo> fusionData = SvnExternalsUtils.extractFusionMavenPluginData(loader.openStream());
+			List<ExternalModuleInfo> fusionData = ExternalModuleUtils.extractFusionMavenPluginData(loader.openStream());
 			
 			
 			for (ExternalModuleInfo fusion : fusionData) {
@@ -206,7 +230,7 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 			if (changesToBeCommitted) {
 				
 				// save it into the tree
-				String updatedFusionData = SvnExternalsUtils.createFusionMavenPluginDataFileString(getRepo(), fusionData);
+				String updatedFusionData = ExternalModuleUtils.createFusionMavenPluginDataFileString(getRepo(), fusionData);
 				
 				ObjectId updatedBlobId = inserter.insert(Constants.OBJ_BLOB, updatedFusionData.getBytes());
 				

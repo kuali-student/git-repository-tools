@@ -157,7 +157,7 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		ObjectLoader fusionDataFileLoader = GitTestUtils.loadFileContents(repository, "aggregate_trunk", "fusion-maven-plugin.dat");
 		
-		List<ExternalModuleInfo> externals = SvnExternalsUtils.extractFusionMavenPluginData(fusionDataFileLoader.openStream());
+		List<ExternalModuleInfo> externals = ExternalModuleUtils.extractFusionMavenPluginData(fusionDataFileLoader.openStream());
 		
 		for (ExternalModuleInfo externalModuleInfo : externals) {
 			

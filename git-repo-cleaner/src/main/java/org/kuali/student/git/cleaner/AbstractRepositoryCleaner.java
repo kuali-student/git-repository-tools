@@ -19,7 +19,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,7 +28,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -45,13 +43,11 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.revwalk.filter.CommitTimeRevFilter;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.ReceiveCommand.Type;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.graft.GitGraft;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
@@ -121,6 +117,7 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 	 */
 	protected void setRepo(Repository repo) {
 		this.repo = repo;
+		
 	}
 
 	/**
@@ -276,7 +273,7 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 		walkRepo.sort(RevSort.TOPO, true);
 		walkRepo.sort(RevSort.REVERSE, true);
 
-		Iterator<RevCommit> it = walkRepo.iterator();
+		Iterator<RevCommit> it = provideRevCommitIterator(walkRepo.iterator());
 
 		deferredReferenceDeletes = new LinkedList<>();
 		deferredReferenceCreates = new LinkedList<>();
@@ -456,6 +453,19 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 
 	}
 
+
+	/**
+	 * An extension point where the ordering of the commits can be changed.
+	 * 
+	 * Defaults to use the provided iterator.
+	 * 
+	 * @param iterator
+	 * @return
+	 */
+	protected Iterator<RevCommit> provideRevCommitIterator(
+			Iterator<RevCommit> iterator) {
+		return iterator;
+	}
 
 	private void onBranchRefCreate(String adjustedBranchName,
 			ObjectId newCommitId) {

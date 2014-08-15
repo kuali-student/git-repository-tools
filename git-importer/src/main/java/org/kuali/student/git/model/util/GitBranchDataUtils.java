@@ -19,7 +19,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.GitBranchData;
-import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
@@ -56,7 +56,7 @@ public final class GitBranchDataUtils {
 			List<String> existingData = treeProcessor
 					.getBlobAsStringLines(blobId);
 
-			existingExternals.addAll(SvnExternalsUtils
+			existingExternals.addAll(ExternalModuleUtils
 					.extractFusionMavenPluginData(existingData));
 		}
 

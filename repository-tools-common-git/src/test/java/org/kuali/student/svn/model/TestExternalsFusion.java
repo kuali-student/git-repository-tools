@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
-import org.kuali.student.git.model.SvnExternalsUtils;
+import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
@@ -150,7 +150,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		ExternalModuleInfo branch1Externals = new ExternalModuleInfo("branch1", "branch1", 1);
 		ExternalModuleInfo branch2Externals = new ExternalModuleInfo("branch2", "branch2", 1);
 		
-		Map<String, ObjectId>results = SvnExternalsUtils.splitFusedTree(objectReader, inserter, rw, aggregateId, Arrays.asList(new ExternalModuleInfo[] {branch1Externals, branch2Externals}));
+		Map<String, ObjectId>results = ExternalModuleUtils.splitFusedTree(objectReader, inserter, rw, aggregateId, Arrays.asList(new ExternalModuleInfo[] {branch1Externals, branch2Externals}));
 
 		Assert.assertEquals(true, results.containsKey("branch1"));
 		
@@ -278,7 +278,7 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		RevCommit aggregateCommit = rw.parseCommit(aggregateId);
 		
-		AnyObjectId fusedTreeId = SvnExternalsUtils.createFusedTree(objectReader, inserter, rw, aggregateCommit, Arrays.asList(new ExternalModuleInfo[] {branch1Externals, branch2Externals}));
+		AnyObjectId fusedTreeId = ExternalModuleUtils.createFusedTree(objectReader, inserter, rw, aggregateCommit, Arrays.asList(new ExternalModuleInfo[] {branch1Externals, branch2Externals}));
 		
 		TreeWalk tw = new TreeWalk (objectReader);
 		

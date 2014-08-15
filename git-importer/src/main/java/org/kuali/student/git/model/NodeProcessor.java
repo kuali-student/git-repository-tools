@@ -396,8 +396,8 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				String externalString = revisionProperties
 						.get(SVN_EXTERNALS_PROPERTY_KEY);
 
-				List<ExternalModuleInfo> externals = SvnExternalsUtils
-						.extractExternalModuleInfoFromString(revision,
+				List<ExternalModuleInfo> externals = ExternalModuleUtils
+						.extractExternalModuleInfoFromSvnExternalsString(revision,
 								repositoryBaseUrl, externalString);
 
 				if (externals.size() > 0) {

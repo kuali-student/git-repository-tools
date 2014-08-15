@@ -40,7 +40,9 @@ import org.kuali.student.common.io.IOUtils;
 import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.tree.GitTreeNodeData;
 import org.kuali.student.git.model.tree.JGitTreeData;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.tree.utils.JGitTreeUtils;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
@@ -50,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @author Kuali Student Team
  *
  */
-public class SvnExternalsUtils {
+public class ExternalModuleUtils {
 	
 	private static final String REMAINDER = "remainder";
 
@@ -60,19 +62,19 @@ public class SvnExternalsUtils {
 
 	private static final String HTTP_URL = "http://";
 	
-	private static final Logger log = LoggerFactory.getLogger(SvnExternalsUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(ExternalModuleUtils.class);
 	
 	
 	/**
-	 * Consume the full content of the input stream and parse out the svn:mergeinfo property content found.
+	 * Consume the full content of the input stream and parse out the svn:externals property content found.
 	 * 
-	 * You should use a bounded input stream sized for only the length of the svn:mergeinfo data to be consumed.
+	 * You should use a bounded input stream sized for only the length of the svn:externals data to be consumed.
 	 * 
 	 * @param inputStream
 	 * @return the list of brance merge info
 	 * @throws IOException
 	 */
-	public static List<ExternalModuleInfo>extractExternalModuleInfoFromInputStream (long revision, String repositoryPrefixPath, InputStream inputStream) throws IOException {
+	public static List<ExternalModuleInfo>extractExternalModuleInfoFromSvnExternalsInputStream (long revision, String repositoryPrefixPath, InputStream inputStream) throws IOException {
 		
 		StringBuilder builder = new StringBuilder();
 		
@@ -89,7 +91,7 @@ public class SvnExternalsUtils {
 			builder.append(line).append("\n");
 		}
 		
-		return extractExternalModuleInfoFromString(revision, repositoryPrefixPath, builder.toString());
+		return extractExternalModuleInfoFromSvnExternalsString(revision, repositoryPrefixPath, builder.toString());
 	}
 	
 	public static interface IBranchHeadProvider {
@@ -207,7 +209,7 @@ public class SvnExternalsUtils {
 	 * @param inputString
 	 * @return
 	 */
-	public static List<ExternalModuleInfo>extractExternalModuleInfoFromString (long revision, String repositoryPrefixPath, String inputString) {
+	public static List<ExternalModuleInfo>extractExternalModuleInfoFromSvnExternalsString (long revision, String repositoryPrefixPath, String inputString) {
 	
 		boolean securePrefixPath = false;
 		if (repositoryPrefixPath.startsWith(HTTPS_URL)) {
@@ -393,6 +395,39 @@ public class SvnExternalsUtils {
 		 * 
 		 */
 		return fusedTreeId;
+	}
+	
+	/**
+	 * Look at the given commit and if there is a fusion-maven-plugin.dat in the root of its tree then load and return the contents.
+	 * 
+	 * @param commit
+	 * @return the ExternalsModuleInfo's found, an empty list if none are found.
+	 * @throws IOException 
+	 * @throws CorruptObjectException 
+	 * @throws IncorrectObjectTypeException 
+	 * @throws MissingObjectException 
+	 */
+	public static List<ExternalModuleInfo>findExternalModulesForCommit (Repository repo, RevCommit commit) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+		
+		List<ExternalModuleInfo> modules = new LinkedList<ExternalModuleInfo>();
+		
+		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
+		
+		GitTreeNodeData tree = treeProcessor.extractExistingTreeData(commit.getTree().getId(), "");
+		
+		ObjectId fusionDataBlobId = tree.find(repo, "fusion-maven-plugin.dat");
+		
+		if (fusionDataBlobId == null)
+			return modules;
+		
+		ObjectReader reader = repo.newObjectReader();
+		
+		modules = ExternalModuleUtils.extractFusionMavenPluginData(reader.open(fusionDataBlobId, Constants.OBJ_BLOB).openStream());
+		
+		reader.release();
+		
+		return modules;
+		
 	}
 
 	/**

@@ -25,8 +25,8 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Assert;
 import org.junit.Test;
-import org.kuali.student.git.model.SvnExternalsUtils;
-import org.kuali.student.git.model.SvnExternalsUtils.IBranchHeadProvider;
+import org.kuali.student.git.model.ExternalModuleUtils;
+import org.kuali.student.git.model.ExternalModuleUtils.IBranchHeadProvider;
 import org.kuali.student.git.model.branch.AbstractBranchDetectorTest;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
@@ -53,7 +53,7 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 		
 		FileInputStream input = new FileInputStream(name);
 
-		List<ExternalModuleInfo> externalsList = SvnExternalsUtils.extractExternalModuleInfoFromInputStream(43000, "https://svn.kuali.org/repos/student", input);
+		List<ExternalModuleInfo> externalsList = ExternalModuleUtils.extractExternalModuleInfoFromSvnExternalsInputStream(43000, "https://svn.kuali.org/repos/student", input);
 		
 		Assert.assertNotNull(externalsList);
 		Assert.assertEquals(5, externalsList.size());
@@ -69,7 +69,7 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 		
 		Assert.assertEquals(43000, external.getRevision());
 		
-		String reversedFusionDataFile = SvnExternalsUtils.createFusionMavenPluginDataFileString(43000L, new IBranchHeadProvider() {
+		String reversedFusionDataFile = ExternalModuleUtils.createFusionMavenPluginDataFileString(43000L, new IBranchHeadProvider() {
 			
 			@Override
 			public ObjectId getBranchHeadObjectId(String branchName) {
@@ -77,7 +77,7 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 			}
 		}, externalsList, new LargeBranchNameProviderMapImpl());
 
-		List<ExternalModuleInfo> reversedExternals = SvnExternalsUtils.extractFusionMavenPluginData(Arrays.asList(reversedFusionDataFile.split("\\n")));
+		List<ExternalModuleInfo> reversedExternals = ExternalModuleUtils.extractFusionMavenPluginData(Arrays.asList(reversedFusionDataFile.split("\\n")));
 		
 		Assert.assertEquals(externalsList.size(), reversedExternals.size());
 		
@@ -118,7 +118,7 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 		
 		FileInputStream input = new FileInputStream("src/test/resources/fusion-maven-plugin.dat");
 
-		List<ExternalModuleInfo> externalsList = SvnExternalsUtils.extractFusionMavenPluginData(input);
+		List<ExternalModuleInfo> externalsList = ExternalModuleUtils.extractFusionMavenPluginData(input);
 		
 		Assert.assertNotNull("externals are null", externalsList);
 		
