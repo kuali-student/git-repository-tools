@@ -51,6 +51,9 @@ import org.eclipse.jgit.transport.ReceiveCommand.Type;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.kuali.student.git.cleaner.model.ObjectIdTranslation;
+import org.kuali.student.git.cleaner.model.ObjectIdTranslationService;
+import org.kuali.student.git.cleaner.model.ObjectTranslationDataSource;
 import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.SvnExternalsUtils;
 import org.kuali.student.git.model.graft.GitGraft;
@@ -83,11 +86,12 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 
 	private Map<ObjectId, GitGraft>targetCommitToGitGrafts = new HashMap<>();
 	
-	private Map<ObjectId, ObjectId>originalToNewCommitId = new HashMap<>();
-	
 	private Map<ObjectId, ObjectId> oldToNewCommitMap;
 
 	private GitTreeProcessor rightTreeProcessor;
+
+
+	private ObjectIdTranslationService translationService;
 		
 	
 	/**
@@ -105,10 +109,10 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 	public void validateArgs(List<String> args) throws Exception {
 
 		if (args.size() != 2 && args.size() != 4) {
-			log.error("USAGE: <right git repository meta directory> <replaced objects file> [<branchRefSpec> <git command path>]");
+			log.error("USAGE: <right git repository meta directory> <replaced objects files> [<branchRefSpec> <git command path>]");
 			log.error("\t<right git repo meta directory> : the path to the meta directory of the right (target) git repository");
 			log.error("\t<grafts file> : existing grafts file created when the left and right repo's were split");
-			log.error("\t<replaced objects file> : replaced objects file created when the left and right repo's were split");
+			log.error("\t<replaced objects files> : double colon seperated list of object-translations files. specified in the order of the translations");
 			log.error("\t<branchRefSpec> : git refspec from which to source the graph to be rewritten");
 			log.error("\t<git command path> : the path to a native git ");
 			throw new IllegalArgumentException("invalid arguments");
@@ -118,30 +122,41 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 				new File (args.get(0)).getAbsoluteFile(), false));
 		
 		
-		// format: new object id <space> original object id
+		List<ObjectIdTranslation>dataSources = new ArrayList<ObjectIdTranslation>();
 		
-		List<String> newToOriginalObjectLines = FileUtils.readLines(new File (args.get(2)));
+		String objectTranslationDataSources[] = args.get(1).split("::");
 		
-		for (String rightToLeftObjectLine : newToOriginalObjectLines) {
+		
+		for (String objectTranslationDataFile : objectTranslationDataSources) {
 			
-			String parts[] = rightToLeftObjectLine.split(" ");
+			ObjectTranslationDataSource dataSource = new ObjectTranslationDataSource(objectTranslationDataFile);
 			
-			ObjectId newCommitId = ObjectId.fromString(parts[0]);
+			// format: new object id <space> original object id
 			
-			ObjectId originalCommitId = ObjectId.fromString(parts[1]);
+			List<String> newToOriginalObjectLines = FileUtils.readLines(new File (objectTranslationDataFile));
 			
-			this.originalToNewCommitId.put(originalCommitId, newCommitId);
+			for (String rightToLeftObjectLine : newToOriginalObjectLines) {
+				
+				if (rightToLeftObjectLine.trim().length() == 0 || rightToLeftObjectLine.startsWith("#"))
+					continue; // skip blank lines and comments.
+				
+				String parts[] = rightToLeftObjectLine.split(" ");
+				
+				dataSource.storeObjectTranslation(parts[1].trim(), parts[0].trim());
+				
+			}
 			
-			
+			dataSources.add(dataSource);
 		}
+		
+		translationService = new ObjectIdTranslationService(dataSources);
+		
+		if (args.size() >= 3)
+			setBranchRefSpec(args.get(2).trim());
 		
 		
 		if (args.size() == 4)
-			setBranchRefSpec(args.get(3).trim());
-		
-		
-		if (args.size() == 5)
-			setExternalGitCommandPath(args.get(4).trim());
+			setExternalGitCommandPath(args.get(3).trim());
 		
 		
 		rightTreeProcessor = new GitTreeProcessor(getRepo());
@@ -279,10 +294,15 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 					
 					ObjectId commitId = fusion.getBranchHeadId();
 					
-					// check where this originates from
-					ObjectId newCommitId = this.originalToNewCommitId.get(commitId);
+					if (commitId == null) {
+						log.warn("commit Id: " + commit.getId().name() + " is missing branch head for module: " + fusion.getModuleName());
+						continue;
+					}
 					
-					if (newCommitId != null) {
+					// check where this originates from
+					ObjectId newCommitId = this.translationService.translateObjectId(commitId);
+					
+					if (newCommitId != null && !newCommitId.equals(commitId)) {
 						
 						/*
 						 * It might be possible for the new commit to have been rewritten as part of the fusion plugin changes

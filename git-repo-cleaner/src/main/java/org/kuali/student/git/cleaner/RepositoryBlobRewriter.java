@@ -90,11 +90,10 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 	@Override
 	public void validateArgs(List<String> args) throws Exception {
 
-		if (args.size() != 3 && args.size() != 5) {
-			log.error("USAGE: <source git repository meta directory> <blob replacement input file> <grafts file> [<branchRefSpec> <git command path>]");
+		if (args.size() != 2 && args.size() != 4) {
+			log.error("USAGE: <source git repository meta directory> <blob replacement input file> [<branchRefSpec> <git command path>]");
 			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
 			log.error("\t<blob replacement input file> : format: blob id <double colon ::> replacement message (single line)");
-			log.error("\t<grafts file> : An existing grafts file if this is a subsequent split");
 			log.error("\t<branchRefSpec> : git refspec from which to source the graph to be rewritten");
 			log.error("\t<git command path> : the path to a native git ");
 			throw new IllegalArgumentException("invalid arguments");
@@ -116,7 +115,7 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 			this.blobIdToReplacementContentMap.put(blobId, replacementContent);
 		}
 
-		if (args.size() == 3)
+		if (args.size() >= 3)
 			setBranchRefSpec(args.get(2).trim());
 
 		if (args.size() == 4)

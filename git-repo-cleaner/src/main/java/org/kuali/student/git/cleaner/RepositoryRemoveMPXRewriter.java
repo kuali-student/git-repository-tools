@@ -99,7 +99,7 @@ public class RepositoryRemoveMPXRewriter extends AbstractRepositoryCleaner {
 		
 		replacementContentBlobId = getRepo().newObjectInserter().insert(Constants.OBJ_BLOB, blobReplacmentContent.getBytes());
 		
-		if (args.size() == 3)
+		if (args.size() >= 3)
 			setBranchRefSpec(args.get(2).trim());
 
 		if (args.size() == 4)
