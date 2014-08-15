@@ -15,6 +15,7 @@
 package org.kuali.student.git.cleaner;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -29,6 +30,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.errors.CorruptObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.NullProgressMonitor;
@@ -49,6 +53,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
+import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.utils.ExternalGitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,10 +73,29 @@ public class RepositorySplitter extends AbstractRepositoryCleaner {
 			.getLogger(RepositorySplitter.class);
 
 	private Date splitDate;
-	
-	
-		
-	
+
+	private PrintWriter leftRefsWriter;
+
+	private PrintWriter rightRefsWriter;
+
+	private PrintWriter pw;
+
+	private PrintWriter refChangeWriter;
+
+	private RevWalk walkRight;
+
+	private RevWalk walkLeft;
+
+	private Set<ObjectId> leftSideCommits;
+
+	private Set<ObjectId> leftSidePreventGCCommits;
+
+	private Set<ObjectId> removedParents;
+
+	private Set<ObjectId> newParents;
+
+	private int counter = 1;
+
 	/**
 	 * 
 	 */
@@ -79,136 +103,141 @@ public class RepositorySplitter extends AbstractRepositoryCleaner {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.kuali.student.git.cleaner.RepositoryCleaner#validateArgs(java.lang.String[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.RepositoryCleaner#validateArgs(java.lang
+	 * .String[])
 	 */
 	@Override
 	public void validateArgs(List<String> args) throws Exception {
 
-		if (args.size() != 3 &&  args.size() != 4 && args.size() != 5) {
+		if (args.size() != 3 && args.size() != 4 && args.size() != 5) {
 			log.error("USAGE: <source git repository meta directory> <grafts file> <split date> [<branchRefSpec> <git command path>]");
 			log.error("\t<git repo meta directory> : the path to the meta directory of the source git repository");
 			log.error("\t<grafts file> : An existing grafts file if this is a subsequent split");
 			log.error("\t<split date> : YYYY-MM-DD [MM:hh]");
 			log.error("\t<branchRefSpec> : git refspec from which to source the graph to be rewritten");
 			log.error("\t<git command path> : the path to a native git ");
-			throw new IllegalArgumentException("invalid arguments["+StringUtils.join(args, ", ")+"]");
+			throw new IllegalArgumentException("invalid arguments["
+					+ StringUtils.join(args, ", ") + "]");
 		}
-		
+
 		setRepo(GitRepositoryUtils.buildFileRepository(
-				new File (args.get(0)).getAbsoluteFile(), false));
-		
+				new File(args.get(0)).getAbsoluteFile(), false));
+
 		String graftsFile = args.get(1);
-		
+
 		if (new File(graftsFile).exists())
-			super.loadGrafts (graftsFile);
-		
+			super.loadGrafts(graftsFile);
+
 		splitDate = null;
-		
+
 		if (args.get(2).contains(":")) {
-			splitDate = includeHourAndMinuteDateFormatter.parseDateTime(args.get(2)).toDate();
-		}
-		else {
+			splitDate = includeHourAndMinuteDateFormatter.parseDateTime(
+					args.get(2)).toDate();
+		} else {
 			splitDate = formatter.parseDateTime(args.get(2)).toDate();
 		}
-		
-		
+
 		if (args.size() == 4)
 			setBranchRefSpec(args.get(3).trim());
-		
-		
+
 		if (args.size() == 5)
 			setExternalGitCommandPath(args.get(4).trim());
 	}
-
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.kuali.student.git.cleaner.RepositoryCleaner#execute(org.eclipse.jgit
-	 * .lib.Repository, java.io.File, long)
+	 * org.kuali.student.git.cleaner.AbstractRepositoryCleaner#processCommitTree
+	 * (org.eclipse.jgit.lib.ObjectId,
+	 * org.kuali.student.git.model.tree.GitTreeData)
 	 */
 	@Override
-	public void execute() throws IOException {
+	protected boolean processCommitTree(RevCommit commit, GitTreeData tree)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			CorruptObjectException, IOException {
 
-		boolean localBranchSource = true;
-		if (!getBranchRefSpec().equals(Constants.R_HEADS))
-			localBranchSource = false;
+		return false;
+	}
 
-		String dateString = formatter.print(new DateTime(splitDate));
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.AbstractRepositoryCleaner#getFileNameSuffix
+	 * ()
+	 */
+	@Override
+	protected String getFileNameSuffix() {
+		return "repo-splitter";
+	}
 
-		PrintWriter leftRefsWriter = new PrintWriter("left-refs-" + dateString
-				+ ".txt");
-		PrintWriter rightRefsWriter = new PrintWriter("right-refs-"
-				+ dateString + ".txt");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.AbstractRepositoryCleaner#onBeforeExecute()
+	 */
+	@Override
+	protected void onBeforeExecute() throws FileNotFoundException {
+		super.onBeforeExecute();
 
-		PrintWriter pw = new PrintWriter("grafts-" + dateString + ".txt");
+		leftRefsWriter = new PrintWriter("left-refs-" + dateString + ".txt");
+		rightRefsWriter = new PrintWriter("right-refs-" + dateString + ".txt");
 
-		PrintWriter refChangeWriter = new PrintWriter("ref-changes-"
-				+ dateString + ".txt");
+		pw = new PrintWriter("grafts-" + dateString + ".txt");
 
-		PrintWriter objectTranslationWriter = new PrintWriter(
-				"object-translations-" + dateString + ".txt");
+		refChangeWriter = new PrintWriter("ref-changes-" + dateString + ".txt");
 
-		ObjectInserter objectInserter = getRepo().newObjectInserter();
+		walkRight = new RevWalk(getRepo());
+		walkLeft = new RevWalk(getRepo());
 
-		Map<String, Ref> branchHeads = getRepo().getRefDatabase().getRefs(
-				getBranchRefSpec());
+	}
 
-		Map<ObjectId, Set<Ref>> commitToBranchMap = new HashMap<ObjectId, Set<Ref>>();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.AbstractRepositoryCleaner#onTag(org.eclipse
+	 * .jgit.lib.ObjectId, org.eclipse.jgit.lib.ObjectId)
+	 */
+	@Override
+	protected void onTag(ObjectId id, ObjectId commitId)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
+		walkLeft.markStart(walkLeft.parseCommit(commitId));
+	}
 
-		RevWalk walkRight = new RevWalk(getRepo());
-		RevWalk walkLeft = new RevWalk(getRepo());
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.AbstractRepositoryCleaner#onBranchHead(
+	 * org.eclipse.jgit.lib.Ref, org.eclipse.jgit.lib.ObjectId)
+	 */
+	@Override
+	protected void onBranchHead(Ref branchRef, ObjectId commitId)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			IOException {
+		walkLeft.markStart(walkLeft.parseCommit(commitId));
+	}
 
-		for (Ref branchRef : branchHeads.values()) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.AbstractRepositoryCleaner#onBeforeRevWalk()
+	 */
+	@Override
+	protected void onBeforeRevWalk() {
 
-			ObjectId branchObjectId = branchRef.getObjectId();
+		leftSideCommits = new HashSet<>();
 
-			Set<Ref> refs = commitToBranchMap.get(branchObjectId);
-
-			if (refs == null) {
-				refs = new HashSet<>();
-				commitToBranchMap.put(branchObjectId, refs);
-			}
-
-			refs.add(branchRef);
-
-			walkLeft.markStart(walkLeft.parseCommit(branchObjectId));
-			walkRight.markStart(walkRight.parseCommit(branchObjectId));
-
-		}
-
-		Map<String, Ref> tagHeads = getRepo().getRefDatabase().getRefs(
-				Constants.R_TAGS);
-
-		Map<ObjectId, Set<Ref>> commitToTagMap = new HashMap<ObjectId, Set<Ref>>();
-
-		RevWalk walkRefs = new RevWalk(getRepo());
-
-		for (Ref tagRef : tagHeads.values()) {
-
-			RevTag tag = walkRefs.parseTag(tagRef.getObjectId());
-
-			ObjectId commitId = tag.getObject().getId();
-
-			Set<Ref> refs = commitToTagMap.get(commitId);
-
-			if (refs == null) {
-				refs = new HashSet<>();
-				commitToTagMap.put(commitId, refs);
-			}
-
-			refs.add(tagRef);
-
-			walkLeft.markStart(walkLeft.parseCommit(commitId));
-			walkRight.markStart(walkRight.parseCommit(commitId));
-		}
-
-		Set<ObjectId> leftSideCommits = new HashSet<>();
-
-		Set<ObjectId> leftSidePreventGCCommits = new HashSet<>();
+		leftSidePreventGCCommits = new HashSet<>();
 
 		walkLeft.setRevFilter(CommitTimeRevFilter.before(splitDate));
 
@@ -242,277 +271,107 @@ public class RepositorySplitter extends AbstractRepositoryCleaner {
 				}
 			}
 		}
+	}
 
-		List<ReceiveCommand> deferredReferenceDeletes = new LinkedList<>();
-		List<ReceiveCommand> deferredReferenceCreates = new LinkedList<>();
+	
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.cleaner.AbstractRepositoryCleaner#onNewCommit(org.eclipse.jgit.revwalk.RevCommit, org.eclipse.jgit.lib.ObjectId)
+	 */
+	@Override
+	protected void onNewCommit(RevCommit commit, ObjectId newCommitId) {
+		// intentionally not calling the constructor
+		
+		if (removedParents.size() > 0) {
 
-		objectTranslationWriter
-				.println("# new-object-id <space> original-object-id");
+			// create the graft.
 
-		int counter = 1;
+			List<String> graftData = new ArrayList<>();
 
-		// holds the old right side to new right side commit mapping
-		Map<ObjectId, ObjectId> rightSideConversionMap = new HashMap<>();
+			graftData.add(newCommitId.getName());
 
-		walkRight.setRevFilter(CommitTimeRevFilter.after(splitDate));
+			for (ObjectId parentId : newParents) {
+				graftData.add(parentId.getName());
+			}
 
-		walkRight.sort(RevSort.TOPO);
-		walkRight.sort(RevSort.REVERSE, true);
+			for (ObjectId parentId : removedParents) {
+				graftData.add(parentId.getName());
+			}
 
-		it = walkRight.iterator();
-
-		while (it.hasNext()) {
-
-			RevCommit commit = it.next();
+			pw.println(StringUtils.join(graftData, " "));
 
 			/*
-			 * Process the right side.
+			 * Make sure there is a branch or tag on the left side ref
 			 * 
-			 * We should be rewriting from old to new.
+			 * and if not then put a branch to prevent the graph from being
+			 * gc'ed.
+			 * 
+			 * We use a branch and not a tag because branches are namespaced
+			 * but tags are global.
 			 */
-			CommitBuilder builder = new CommitBuilder();
 
-			builder.setAuthor(commit.getAuthorIdent());
-			builder.setMessage(commit.getFullMessage());
+			for (ObjectId leftCommitId : removedParents) {
 
-			builder.setCommitter(commit.getCommitterIdent());
-			builder.setTreeId(commit.getTree().getId());
-			builder.setEncoding("UTF-8");
+				if (!commitToTagMap.containsKey(leftCommitId)
+						&& !commitToBranchMap.containsKey(leftCommitId)
+						&& !leftSidePreventGCCommits.contains(leftCommitId)) {
 
-			Set<ObjectId> newParents = new HashSet<>();
+					String preventGCBranchName = Constants.R_HEADS
+							+ "prevent_gc_" + counter;
 
-			Set<ObjectId> removedParents = new HashSet<>();
+					// put a branch
+					deferCreate(preventGCBranchName, leftCommitId);
+					
+					counter++;
 
-			for (RevCommit parentCommit : commit.getParents()) {
+					leftSidePreventGCCommits.add(leftCommitId);
 
-				if (leftSideCommits.contains(parentCommit.getId())) {
-					removedParents.add(parentCommit.getId());
-				} else {
-
-					ObjectId adjustedParentId = rightSideConversionMap
-							.get(parentCommit.getId());
-
-					newParents.add(adjustedParentId);
-				}
-			}
-
-			builder.setParentIds(new ArrayList<>(newParents));
-
-			ObjectId newCommitId = objectInserter.insert(builder);
-
-			rightSideConversionMap.put(commit.getId(), newCommitId);
-
-			objectTranslationWriter.println(newCommitId.name() + " "
-					+ commit.getId().getName());
-
-			if (removedParents.size() > 0) {
-
-				// create the graft.
-
-				List<String> graftData = new ArrayList<>();
-
-				graftData.add(newCommitId.getName());
-
-				for (ObjectId parentId : newParents) {
-					graftData.add(parentId.getName());
-				}
-
-				for (ObjectId parentId : removedParents) {
-					graftData.add(parentId.getName());
-				}
-
-				pw.println(StringUtils.join(graftData, " "));
-
-				/*
-				 * Make sure there is a branch or tag on the left side ref
-				 * 
-				 * and if not then put a branch to prevent the graph from being
-				 * gc'ed.
-				 * 
-				 * We use a branch and not a tag because branches are namespaced
-				 * but tags are global.
-				 */
-
-				for (ObjectId leftCommitId : removedParents) {
-
-					if (!commitToTagMap.containsKey(leftCommitId)
-							&& !commitToBranchMap.containsKey(leftCommitId)
-							&& !leftSidePreventGCCommits.contains(leftCommitId)) {
-
-						String preventGCBranchName = Constants.R_HEADS
-								+ "prevent_gc_" + counter;
-
-						// put a branch
-						deferredReferenceCreates
-								.add(new ReceiveCommand(null, leftCommitId,
-										preventGCBranchName, Type.CREATE));
-						counter++;
-
-						leftSidePreventGCCommits.add(leftCommitId);
-
-						leftRefsWriter.println(preventGCBranchName);
-
-					}
+					leftRefsWriter.println(preventGCBranchName);
 
 				}
 
 			}
-
-			RevWalk commitWalk = new RevWalk(getRepo());
-
-			RevCommit newCommit = commitWalk.parseCommit(newCommitId);
-
-			// check if any tags need to be moved
-			if (commitToTagMap.containsKey(commit.getId())) {
-
-				Set<Ref> tags = commitToTagMap.get(commit.getId());
-
-				Set<TagBuilder> newTagSet = new HashSet<>();
-
-				for (Ref tagRef : tags) {
-
-					RevTag tag = commitWalk.parseTag(tagRef.getObjectId());
-
-					TagBuilder tb = new TagBuilder();
-
-					tb.setMessage(tag.getFullMessage());
-					tb.setObjectId(newCommit);
-					tb.setTag(tag.getTagName());
-					tb.setTagger(tag.getTaggerIdent());
-
-					newTagSet.add(tb);
-
-					deferredReferenceDeletes
-							.add(new ReceiveCommand(tagRef.getObjectId(), null,
-									tagRef.getName(), Type.DELETE));
-
-					refChangeWriter.println("deleted tagRef "
-							+ tagRef.getName() + " original commit id: "
-							+ tag.getObject().getId());
-
-					// Result result = GitRefUtils.deleteRef(getRepo(), tagRef,
-					// true);
-					//
-					// if (!result.equals(Result.FORCED))
-					// log.warn("failed to delete tag reference " +
-					// tagRef.getName());
-					// else
-					// refChangeWriter.println("deleted tagRef " +
-					// tagRef.getName() + " original commit id: " +
-					// tag.getObject().getId());
-
-				}
-
-				for (TagBuilder tagBuilder : newTagSet) {
-
-					ObjectId tagId = objectInserter.insert(tagBuilder);
-
-					String tagName = Constants.R_TAGS + tagBuilder.getTag();
-
-					deferredReferenceCreates.add(new ReceiveCommand(null,
-							tagId, tagName, Type.CREATE));
-
-					refChangeWriter.println("created tag ref: "
-							+ tagBuilder.getTag() + " new commit id: "
-							+ tagBuilder.getObjectId());
-
-					rightRefsWriter.println(tagName);
-
-					// Result result = GitRefUtils.createTagReference(getRepo(),
-					// tagBuilder.getTag(), tagId);
-					//
-					// if (!result.equals(Result.NEW))
-					// log.warn("unable to create tag " + tagBuilder.getTag() +
-					// " now pointed at " + tagId);
-					// else
-					// refChangeWriter.println("created tag ref: " +
-					// tagBuilder.getTag() + " new commit id: " +
-					// tagBuilder.getObjectId());
-				}
-
-			}
-
-			// check if any branches need to be moved
-			if (commitToBranchMap.containsKey(commit.getId())) {
-
-				Set<Ref> refs = commitToBranchMap.get(commit.getId());
-
-				for (Ref branchRef : refs) {
-
-					if (localBranchSource) {
-
-						deferredReferenceDeletes.add(new ReceiveCommand(
-								branchRef.getObjectId(), null, branchRef
-										.getName(), Type.DELETE));
-
-						refChangeWriter.println("deleted branchRef "
-								+ branchRef.getName() + " original commit id: "
-								+ branchRef.getObjectId());
-
-					}
-
-					String adjustedBranchName = Constants.R_HEADS
-							+ branchRef.getName().substring(
-									getBranchRefSpec().length());
-
-					deferredReferenceCreates.add(new ReceiveCommand(null,
-							newCommitId, adjustedBranchName, Type.CREATE));
-					refChangeWriter.println("Updated branchRef: "
-							+ branchRef.getName() + " at original commit id: "
-							+ branchRef.getObjectId() + " to local branch: "
-							+ adjustedBranchName + " at new commit id: "
-							+ newCommitId);
-					rightRefsWriter.println(adjustedBranchName);
-
-				}
-
-			}
-
-			commitWalk.release();
-		}
-
-		objectInserter.flush();
-
-		getRepo().getRefDatabase().refresh();
-
-		log.info("Applying updates: " + deferredReferenceDeletes.size()
-				+ " deletes, " + deferredReferenceCreates.size() + " creates.");
-
-		if (getExternalGitCommandPath() != null) {
-			ExternalGitUtils.batchRefUpdate(getExternalGitCommandPath(), getRepo(),
-					deferredReferenceDeletes, System.out);
-		} else {
-			GitRefUtils.batchRefUpdate(getRepo(), deferredReferenceDeletes,
-					NullProgressMonitor.INSTANCE);
-		}
-
-		getRepo().getRefDatabase().refresh();
-
-		if (getExternalGitCommandPath() != null) {
-			ExternalGitUtils.batchRefUpdate(getExternalGitCommandPath(), getRepo(),
-					deferredReferenceCreates, System.out);
-		} else {
-
-			GitRefUtils.batchRefUpdate(getRepo(), deferredReferenceCreates,
-					NullProgressMonitor.INSTANCE);
 
 		}
-		log.info("Completed.");
+	}
 
-		walkRefs.release();
-		walkLeft.release();
-		walkRight.release();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.kuali.student.git.cleaner.AbstractRepositoryCleaner#onCommitParent
+	 * (org.eclipse.jgit.revwalk.RevCommit, org.eclipse.jgit.revwalk.RevCommit)
+	 */
+	@Override
+	protected Set<ObjectId> processParents(RevCommit commit) {
 
-		objectInserter.release();
-		getRepo().close();
-		pw.close();
+		newParents = new HashSet<>();
 
-		objectTranslationWriter.close();
-		refChangeWriter.close();
+		removedParents = new HashSet<>();
 
-		leftRefsWriter.close();
-		rightRefsWriter.close();
+		for (RevCommit parentCommit : commit.getParents()) {
 
+			if (leftSideCommits.contains(parentCommit.getId())) {
+				removedParents.add(parentCommit.getId());
+			} else {
+
+				ObjectId adjustedParentId = super.originalCommitIdToNewCommitIdMap
+						.get(parentCommit.getId());
+
+				newParents.add(adjustedParentId);
+			}
+		}
+		
+		
+		return newParents;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.kuali.student.git.cleaner.AbstractRepositoryCleaner#onTagCreate(java.lang.String, org.eclipse.jgit.lib.ObjectId)
+	 */
+	@Override
+	protected void onTagRefCreate(String tagName, ObjectId tagId) {
+		rightRefsWriter.println(tagName);
 	}
 
 }

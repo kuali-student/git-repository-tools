@@ -27,6 +27,7 @@ import java.util.List;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ReceiveCommand;
+import org.eclipse.jgit.transport.ReceiveCommand.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -254,6 +255,17 @@ public final class ExternalGitUtils {
 				Process p = runGitCommand(repo, true, commandOptions);
 
 				waitFor(p, redirectStream);
+				
+				if (p.exitValue() == 0) {
+					// normal termination
+					
+					if (receiveCommand.getType().equals(Type.CREATE)) {
+						// C git doesn't say anything in this case so log it
+						redirectStream.write(("Created branch " + receiveCommand.getRefName() + "\n").getBytes());
+					}
+					
+				}
+				
 			} catch (InterruptedException e) {
 			}
 
