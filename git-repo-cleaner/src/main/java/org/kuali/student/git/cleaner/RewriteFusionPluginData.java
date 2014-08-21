@@ -265,7 +265,7 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 			if (changesToBeCommitted) {
 				
 				// save it into the tree
-				String updatedFusionData = ExternalModuleUtils.createFusionMavenPluginDataFileString(getRepo(), fusionData);
+				String updatedFusionData = ExternalModuleUtils.createFusionMavenPluginDataFileString(fusionData);
 				
 				ObjectId updatedBlobId = inserter.insert(Constants.OBJ_BLOB, updatedFusionData.getBytes());
 				

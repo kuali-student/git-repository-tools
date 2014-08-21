@@ -128,33 +128,77 @@ public class ExternalModuleUtils {
 			}
 		}, externals, largeBranchNameProvider);
 	}
-	public static String createFusionMavenPluginDataFileString(long currentRevision, IBranchHeadProvider branchHeadProvider, 
-			List<ExternalModuleInfo> externals, ILargeBranchNameProvider largeBranchNameProvider) {
-		
+	
+	/**
+	 * Don't make any adjustments just render the externals into the fusion-maven-plugin.dat format as given.
+	 * 
+	 * @param externals
+	 * @return fusion-maven-plugin.dat formatted string.
+	 */
+	public static String createFusionMavenPluginDataFileString(List<ExternalModuleInfo> externals) {
+	
 		StringBuilder builder = new StringBuilder();
 		
 		for (ExternalModuleInfo external : externals) {
 			
-			String externalModule = external.getModuleName();
+			String moduleName = external.getModuleName();
 			String externalBranchPath = external.getBranchPath();
 			long externalRevision = external.getRevision();
 			
-			builder.append("# module = " + externalModule + " branch Path = " + externalBranchPath + " revision = " + externalRevision + "\n");
+			builder.append("# module = " + moduleName + " branch Path = " + externalBranchPath + " revision = " + externalRevision + "\n");
 			
-			String branchName = GitBranchUtils.getCanonicalBranchName(externalBranchPath, externalRevision, largeBranchNameProvider);
+			String branchName = external.getBranchName();
 			
-			ObjectId branchHead = branchHeadProvider.getBranchHeadObjectId(branchName);
+			if (branchName == null) {
+				log.warn("branchName is null for module = " + moduleName);
+			}
+			
+			ObjectId branchHead  = external.getBranchHeadId();
+			
+			String subTreePath = external.getSubTreePath();
+			
+			builder.append(moduleName + "::" + branchName + "::" + (branchHead==null?"UNKNOWN":branchHead.name()) + (subTreePath == null? "" : "::" + subTreePath) +"\n");
+			
+		}
+		
+		return builder.toString();
+	}
+	
+	/**
+	 * Create the fusion-maven-plugin.dat file from the externals given.  Uses the branchHeadProvider to lookup and use the latest branch head id for each named branch.
+	 * 
+	 * @param currentRevision
+	 * @param branchHeadProvider
+	 * @param externals
+	 * @param largeBranchNameProvider
+	 * @return
+	 */
+	public static String createFusionMavenPluginDataFileString(long currentRevision, IBranchHeadProvider branchHeadProvider, 
+			List<ExternalModuleInfo> externals, ILargeBranchNameProvider largeBranchNameProvider) {
+		
+		for (ExternalModuleInfo external : externals) {
+			
+			String branchName = external.getBranchName();
+			
+			if (branchName == null) {
+				branchName = GitBranchUtils.getCanonicalBranchName(external.getBranchPath(), external.getRevision(), largeBranchNameProvider);
+				external.setBranchName (branchName);
+			}
+			
+			ObjectId branchHead  = external.getBranchHeadId();
+			
+			if (branchHead == null)
+				branchHead = branchHeadProvider.getBranchHeadObjectId(branchName);
 			
 			if (branchHead != null) {
 				// store the branch head		
 				external.setBranchHeadId(branchHead);
 			}
 			
-			builder.append(externalModule + "::" + branchName + "::" + (branchHead==null?"UNKNOWN":branchHead.name()) + "\n");
 			
 		}
 		
-		return builder.toString();
+		return createFusionMavenPluginDataFileString(externals);
 	}
 	
 	public static List<ExternalModuleInfo> extractFusionMavenPluginData(InputStream input) throws IOException {
@@ -188,9 +232,15 @@ public class ExternalModuleUtils {
 			
 			String branchName = dataParts[1].trim();
 			
-			String branchHeadObjectId = dataParts[2];
+			String branchHeadObjectId = dataParts[2].trim();
 			
-			long revision = 0;
+			String subTreePath = null;
+			
+			if (dataParts.length == 4)
+				subTreePath = dataParts[3].trim();
+			
+			
+			long revision = -1;
 			
 			try {
 				
@@ -200,9 +250,12 @@ public class ExternalModuleUtils {
 				// intentionally do nothing, use revision = 0
 			}
 			
-			String convertedBranchPath = GitBranchUtils.getBranchPath(branchName, revision, new LargeBranchNameProviderMapImpl());
+			ExternalModuleInfo emi = null;
 			
-			ExternalModuleInfo emi = new ExternalModuleInfo(moduleName, convertedBranchPath, revision);
+			if (subTreePath != null)
+				emi = new ExternalModuleInfo(moduleName, branchPath, branchName, revision, subTreePath);
+			else
+				emi = new ExternalModuleInfo(moduleName, branchPath, branchName, revision);
 			
 			if (!branchHeadObjectId.equals("UNKNOWN")) {
 				emi.setBranchHeadId(ObjectId.fromString(branchHeadObjectId));	

@@ -117,8 +117,8 @@ public class TestFusionDataAwareRevSort extends AbstractGitRespositoryTestCase {
 		String aggregate_file_path = "src/main/java/org/kuali/student/enrollment/pom.xml";
 		storeFile (inserter, aggregate, aggregate_file_path, "pom test");
 		
-		ExternalModuleInfo module1 = new ExternalModuleInfo("module1", "branch1", 0);
-		ExternalModuleInfo module2 = new ExternalModuleInfo("module2", "branch2", 0);
+		ExternalModuleInfo module1 = new ExternalModuleInfo("module1", "branch1");
+		ExternalModuleInfo module2 = new ExternalModuleInfo("module2", "branch2");
 
 		module1.setBranchHeadId(b1Id);
 		

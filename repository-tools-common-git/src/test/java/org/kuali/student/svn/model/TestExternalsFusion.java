@@ -147,8 +147,8 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		tw.setRecursive(true);
 		
-		ExternalModuleInfo branch1Externals = new ExternalModuleInfo("branch1", "branch1", 1);
-		ExternalModuleInfo branch2Externals = new ExternalModuleInfo("branch2", "branch2", 1);
+		ExternalModuleInfo branch1Externals = new ExternalModuleInfo("branch1", "branch1");
+		ExternalModuleInfo branch2Externals = new ExternalModuleInfo("branch2", "branch2");
 		
 		Map<String, ObjectId>results = ExternalModuleUtils.splitFusedTree(objectReader, inserter, rw, aggregateId, Arrays.asList(new ExternalModuleInfo[] {branch1Externals, branch2Externals}));
 
@@ -269,8 +269,8 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		inserter.flush();
 		
-		ExternalModuleInfo branch1Externals = new ExternalModuleInfo("branch1", "branch1", 1, b1Id);
-		ExternalModuleInfo branch2Externals = new ExternalModuleInfo("branch2", "branch2", 1, b2Id);
+		ExternalModuleInfo branch1Externals = new ExternalModuleInfo("branch1", "branch1", b1Id);
+		ExternalModuleInfo branch2Externals = new ExternalModuleInfo("branch2", "branch2", b2Id);
 		
 		
 		ObjectReader objectReader = repo.newObjectReader();

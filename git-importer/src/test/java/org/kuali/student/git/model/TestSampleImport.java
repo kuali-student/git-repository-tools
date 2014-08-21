@@ -169,6 +169,10 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 				
 				Assert.assertEquals("branches/branch1", branchPath);
 				
+				String branchName = externalModuleInfo.getBranchName();
+				
+				Assert.assertEquals("branches_branch1", branchName);
+				
 				Ref actualBranchRef = repository.getRef("branches_branch1");
 				
 				Assert.assertEquals("expected branch 1 external head id to match repo head id", branch1ExpectedHeadId, actualBranchRef.getObjectId());
@@ -181,6 +185,10 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 				String branchPath = externalModuleInfo.getBranchPath();
 				
 				Assert.assertEquals("branches/branch2", branchPath);
+				
+				String branchName = externalModuleInfo.getBranchName();
+				
+				Assert.assertEquals("branches_branch2", branchName);
 				
 				Ref actualBranchRef = repository.getRef("branches_branch2");
 				
