@@ -186,9 +186,23 @@ public class ExternalModuleUtils {
 			
 			String moduleName = dataParts[0].trim();
 			
+			String branchName = dataParts[1].trim();
+			
 			String branchHeadObjectId = dataParts[2];
 			
-			ExternalModuleInfo emi = new ExternalModuleInfo(moduleName, branchPath, Long.parseLong(revisionString));
+			long revision = 0;
+			
+			try {
+				
+				revision =Long.parseLong(revisionString);
+			}
+			catch (NumberFormatException e) {
+				// intentionally do nothing, use revision = 0
+			}
+			
+			String convertedBranchPath = GitBranchUtils.getBranchPath(branchName, revision, new LargeBranchNameProviderMapImpl());
+			
+			ExternalModuleInfo emi = new ExternalModuleInfo(moduleName, convertedBranchPath, revision);
 			
 			if (!branchHeadObjectId.equals("UNKNOWN")) {
 				emi.setBranchHeadId(ObjectId.fromString(branchHeadObjectId));	

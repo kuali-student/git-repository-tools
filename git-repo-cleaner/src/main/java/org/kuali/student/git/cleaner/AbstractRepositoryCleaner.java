@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -97,6 +98,8 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 	private List<ReceiveCommand> deferredReferenceCreates;
 
 	private RevWalk walkRepo;
+
+	protected Set<ObjectId> processedCommits;
 	
 	/**
 	 * 
@@ -268,8 +271,6 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 		
 		onBeforeRevWalk();
 		
-		Set<ObjectId> leftSidePreventGCCommits = new HashSet<>();
-
 		walkRepo.sort(RevSort.TOPO, true);
 		walkRepo.sort(RevSort.REVERSE, true);
 
@@ -285,28 +286,23 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 
 		GitTreeProcessor treeProcessor = new GitTreeProcessor(getRepo());
 
+		processedCommits = new HashSet<ObjectId>();
+		
 		while (it.hasNext()) {
 
 			RevCommit commit = it.next();
-
-			boolean recreateCommitByTranslatedParent = false;
-
-			for (RevCommit parentCommit : commit.getParents()) {
-
-				if (originalCommitIdToNewCommitIdMap.containsKey(parentCommit.getId())) {
-					recreateCommitByTranslatedParent = true;
-					break;
-				}
-
-			}
+			
+			boolean recreateCommitByTranslatedParent = determineIfRecreateByTranslatedParent (commit);
 
 			GitTreeData tree = treeProcessor
 					.extractExistingTreeDataFromCommit(commit.getId());
 
 			boolean recreate = processCommitTree(commit, tree);
 
-			if (!(recreateCommitByTranslatedParent || recreate))
+			if (!recreateCommitByTranslatedParent && !recreate) {
+				processedCommits.add(commit.getId());
 				continue;
+			}
 			
 			/*
 			 * Process in reverse order from old to new.
@@ -347,6 +343,8 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 			RevWalk commitWalk = new RevWalk(getRepo());
 
 			RevCommit newCommit = commitWalk.parseCommit(newCommitId);
+			
+			processedCommits.add(newCommitId);
 
 			// check if any tags need to be moved
 			if (commitToTagMap.containsKey(commit.getId())) {
@@ -453,6 +451,30 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 
 	}
 
+
+	/**
+	 * Provides an extension point to alert that the commit should be recreated based on the fact that a parent has changed.
+	 * 
+	 * @param commit
+	 * @return
+	 */
+	protected boolean determineIfRecreateByTranslatedParent(RevCommit commit) {
+		
+		boolean recreateCommitByTranslatedParent = false;
+
+		for (RevCommit parentCommit : commit.getParents()) {
+
+			if (originalCommitIdToNewCommitIdMap.containsKey(parentCommit.getId())) {
+				recreateCommitByTranslatedParent = true;
+				break;
+			}
+
+		}
+		
+		return recreateCommitByTranslatedParent;
+	}
+
+	
 
 	/**
 	 * An extension point where the ordering of the commits can be changed.

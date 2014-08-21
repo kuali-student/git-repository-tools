@@ -70,8 +70,10 @@ public class FusionAwareTopoSortComparator implements
 			
 			if (isCommitAfter (o1, o2)) 
 				return +1;
-			else
+			else if (isCommitAfter(o2, o1))
 				return -1;
+			else
+				return 0; // commits are independent so make them equal
 			
 		} catch (MissingObjectException e) {
 			throw new RuntimeException("FusionAwareTopoSortComparator failed: ", e);

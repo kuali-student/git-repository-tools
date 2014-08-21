@@ -21,6 +21,7 @@ import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
+import org.kuali.student.git.model.branch.large.LargeBranchNameProviderMapImpl;
 import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.svn.model.ExternalModuleInfo;

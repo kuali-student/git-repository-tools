@@ -144,7 +144,185 @@ public class TestFusionDataAwareRevSort extends AbstractGitRespositoryTestCase {
 	}
 
 	@Test
-	public void testComparatorTopoEquivilenceWithMultipleAggregateCommits () throws IOException {
+	public void testComparatorTopoEquivilenceWithThreeAggregateCommitsAndTwoPerModule () throws IOException {
+		
+		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
+		
+		ObjectId initialAggregateHeadId = aggregateHeadRevCommit.getId();
+		
+		GitTreeData tree = treeProcessor.extractExistingTreeDataFromCommit(initialAggregateHeadId);
+		
+		ObjectInserter inserter = repo.newObjectInserter();
+		
+		super.storeFile(inserter, tree, "Readme.txt", "test file content");
+		
+		ObjectId newCommit = commit(repo.newObjectInserter(), tree, "second commit on aggregate branch", initialAggregateHeadId);
+		
+		createBranch(newCommit, "aggregate");
+		
+		aggregateHeadRevCommit = rw.parseCommit(newCommit);
+		
+		// add a third commit
+		
+		ObjectId middleAggregateHeadId = newCommit;
+		
+		tree = treeProcessor.extractExistingTreeDataFromCommit(middleAggregateHeadId);
+		
+		super.storeFile(inserter, tree, "Readme.txt", "third file content");
+		
+		newCommit = commit(repo.newObjectInserter(), tree, "third commit on aggregate branch", middleAggregateHeadId);
+		
+		createBranch(newCommit, "aggregate");
+		
+		aggregateHeadRevCommit = rw.parseCommit(newCommit);
+		
+		// second commit to module1
+		ObjectId existingModule1CommitId = branch1HeadRevCommit.getId();
+		
+		
+		// second commit to module2
+		ObjectId existingModule2CommitId = branch2HeadRevCommit.getId();
+		
+		
+		/*
+		 * Sort the commits using a comparator and make sure the results are the same as with the TopoGenerator
+		 */
+		
+		List<RevCommit>commits = new LinkedList<RevCommit>();
+		
+		RevWalk rw = new RevWalk (repo);
+		
+		rw.markStart(branch1HeadRevCommit);
+		rw.markStart(branch2HeadRevCommit);
+		rw.markStart(aggregateHeadRevCommit);
+		
+		Iterator<RevCommit> iterator = rw.iterator();
+		
+		ObjectIdTranslationMapImpl translator= new ObjectIdTranslationMapImpl();
+		
+		RevCommitBitMapIndex index = new RevCommitBitMapIndex(repo, translator, iterator);
+		
+		commits = new LinkedList<RevCommit>(index.getRevCommitList());
+		
+		Collections.sort(commits, new FusionAwareTopoSortComparator(index));
+		
+		commits = new LinkedList<RevCommit>(index.getRevCommitList());
+		
+		Collections.sort(commits, new FusionAwareTopoSortComparator(index));
+
+		iterator = commits.iterator();
+		
+		RevCommit candidate = null;
+		RevCommit secondLastCandidate = null;
+		RevCommit thirdLastCandidate = null;
+		
+		while (iterator.hasNext()) {
+			
+			if (secondLastCandidate !=  null)
+				thirdLastCandidate = secondLastCandidate;
+			
+			if (candidate != null)
+				secondLastCandidate = candidate;
+			
+			candidate = iterator.next();
+			
+			log.info("candidate = " + candidate.getId().name());
+			
+		}
+		
+		Assert.assertEquals(initialAggregateHeadId, thirdLastCandidate.getId());
+		Assert.assertEquals(middleAggregateHeadId, secondLastCandidate.getId());
+		Assert.assertEquals(aggregateHeadRevCommit.getId(), candidate.getId());
+		
+	}
+	@Test
+	public void testComparatorTopoEquivilenceWithThreeAggregateCommits () throws IOException {
+		
+		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
+		
+		ObjectId initialAggregateHeadId = aggregateHeadRevCommit.getId();
+		
+		GitTreeData tree = treeProcessor.extractExistingTreeDataFromCommit(initialAggregateHeadId);
+		
+		ObjectInserter inserter = repo.newObjectInserter();
+		
+		super.storeFile(inserter, tree, "Readme.txt", "test file content");
+		
+		ObjectId newCommit = commit(repo.newObjectInserter(), tree, "second commit on aggregate branch", initialAggregateHeadId);
+		
+		createBranch(newCommit, "aggregate");
+		
+		aggregateHeadRevCommit = rw.parseCommit(newCommit);
+		
+		// add a third commit
+		
+		ObjectId middleAggregateHeadId = newCommit;
+		
+		tree = treeProcessor.extractExistingTreeDataFromCommit(middleAggregateHeadId);
+		
+		super.storeFile(inserter, tree, "Readme.txt", "third file content");
+		
+		newCommit = commit(repo.newObjectInserter(), tree, "third commit on aggregate branch", middleAggregateHeadId);
+		
+		createBranch(newCommit, "aggregate");
+		
+		aggregateHeadRevCommit = rw.parseCommit(newCommit);
+		
+		
+		/*
+		 * Sort the commits using a comparator and make sure the results are the same as with the TopoGenerator
+		 */
+		
+		List<RevCommit>commits = new LinkedList<RevCommit>();
+		
+		RevWalk rw = new RevWalk (repo);
+		
+		rw.markStart(branch1HeadRevCommit);
+		rw.markStart(branch2HeadRevCommit);
+		rw.markStart(aggregateHeadRevCommit);
+		
+		Iterator<RevCommit> iterator = rw.iterator();
+		
+		ObjectIdTranslationMapImpl translator= new ObjectIdTranslationMapImpl();
+		
+		RevCommitBitMapIndex index = new RevCommitBitMapIndex(repo, translator, iterator);
+		
+		commits = new LinkedList<RevCommit>(index.getRevCommitList());
+		
+		Collections.sort(commits, new FusionAwareTopoSortComparator(index));
+		
+		commits = new LinkedList<RevCommit>(index.getRevCommitList());
+		
+		Collections.sort(commits, new FusionAwareTopoSortComparator(index));
+
+		iterator = commits.iterator();
+		
+		RevCommit candidate = null;
+		RevCommit secondLastCandidate = null;
+		RevCommit thirdLastCandidate = null;
+		
+		while (iterator.hasNext()) {
+			
+			if (secondLastCandidate !=  null)
+				thirdLastCandidate = secondLastCandidate;
+			
+			if (candidate != null)
+				secondLastCandidate = candidate;
+			
+			candidate = iterator.next();
+			
+			log.info("candidate = " + candidate.getId().name());
+			
+		}
+		
+		Assert.assertEquals(initialAggregateHeadId, thirdLastCandidate.getId());
+		Assert.assertEquals(middleAggregateHeadId, secondLastCandidate.getId());
+		Assert.assertEquals(aggregateHeadRevCommit.getId(), candidate.getId());
+		
+	}
+	
+	@Test
+	public void testComparatorTopoEquivilenceWithTwoAggregateCommits () throws IOException {
 		
 		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
 		
@@ -179,6 +357,10 @@ public class TestFusionDataAwareRevSort extends AbstractGitRespositoryTestCase {
 		ObjectIdTranslationMapImpl translator= new ObjectIdTranslationMapImpl();
 		
 		RevCommitBitMapIndex index = new RevCommitBitMapIndex(repo, translator, iterator);
+		
+		commits = new LinkedList<RevCommit>(index.getRevCommitList());
+		
+		Collections.sort(commits, new FusionAwareTopoSortComparator(index));
 		
 		commits = new LinkedList<RevCommit>(index.getRevCommitList());
 		

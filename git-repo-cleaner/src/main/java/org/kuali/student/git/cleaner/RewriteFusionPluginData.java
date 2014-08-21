@@ -16,6 +16,7 @@ package org.kuali.student.git.cleaner;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -179,6 +180,15 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 			
 			Collections.sort(commitList, new FusionAwareTopoSortComparator(index));
 			
+			PrintWriter orderedCommitsFile = new PrintWriter("rewrite-fusion-data-ordered-commits-"+dateString+".txt");
+			
+			for (RevCommit revCommit : commitList) {
+			
+				orderedCommitsFile.println(revCommit.getId().name());
+			}
+			
+			orderedCommitsFile.close();
+			
 			return commitList.iterator();
 		} catch (Exception e) {
 			throw new RuntimeException ("RewriteFusionPluginData.provideRevCommitIterator(): failed ", e);
@@ -199,6 +209,9 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 		boolean changesToBeCommitted = false;
 		
 		if (fusionPluginDataBlobId != null) {
+		
+			if (commit.getFullMessage().contains("@71661")) 
+				log.info("found target commit");
 			
 			ObjectLoader loader = getRepo().newObjectReader().open(fusionPluginDataBlobId, Constants.OBJ_BLOB);
 			
@@ -211,24 +224,39 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 				ObjectId commitId = fusion.getBranchHeadId();
 				
 				if (commitId == null) {
-					log.warn("commit Id: " + commit.getId().name() + " is missing branch head for module: " + fusion.getModuleName());
+					log.warn("commit Id: " + commit.getId().name() + " is missing branch head for module: " + fusion.getModuleName() + " branch: " + fusion.getBranchPath());
 					continue;
 				}
 				
+				if (commitId.name().startsWith("8b608b677a5090080014374d11c0dba909"))
+					log.info("target commit: " + commit.getId() + " refers to external: 8b608b677a5090080014374d11c0dba909");
+				
 				// check where this originates from
 				ObjectId newCommitId = this.translationService.translateObjectId(commitId);
+
+				// will exist if the newCommitId from a previous rewite has been rewritted during the current rewrite
+				ObjectId currentlyChangedId =  this.originalCommitIdToNewCommitIdMap.get(newCommitId);
 				
-				if (this.originalCommitIdToNewCommitIdMap.containsKey(newCommitId)) {
-					// the old commit has been rewritten as part of the fusion rewriting
-					// so use the most recent id instead.
-					newCommitId = this.originalCommitIdToNewCommitIdMap.get(newCommitId);
-				}
+				if (currentlyChangedId != null)
+					newCommitId = currentlyChangedId;
 				
 				if (newCommitId != null && !newCommitId.equals(commitId)) {
 					
 					fusion.setBranchHeadId(newCommitId);
 					
 					changesToBeCommitted = true;
+					
+					if (currentlyChangedId != null && !super.processedCommits.contains(newCommitId)) {
+						log.warn("repo is missing a commit for " + newCommitId);
+					}
+				}
+				else {
+					// make sure that the commitId is still valid if its been changed
+					
+					if (super.originalCommitIdToNewCommitIdMap.keySet().contains(commitId) && !super.processedCommits.contains(commitId)) {
+						log.warn("repo is missing a commit for " + commitId);
+					}
+					
 				}
 				
 				
