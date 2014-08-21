@@ -17,9 +17,13 @@ package org.kuali.student.cleaner;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -32,6 +36,7 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kuali.student.cleaner.model.sort.FusionAwareTopoSortComparator;
+import org.kuali.student.git.cleaner.model.CommitDependency;
 import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
 import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
@@ -157,13 +162,27 @@ public class TestFusionDataAwareRevSort extends AbstractGitRespositoryTestCase {
 		
 		Iterator<RevCommit> iterator = rw.iterator();
 		
+		Map<ObjectId, CommitDependency> dependencyMap = new HashMap<ObjectId, CommitDependency>();
+		
 		while (iterator.hasNext()) {
 			RevCommit revCommit = (RevCommit) iterator.next();
 			
 			commits.add(revCommit); 
+			
+			dependencyMap.put(revCommit.getId(), new CommitDependency(revCommit.getId()));
+			
 		}
 		
-		Collections.sort(commits, new FusionAwareTopoSortComparator(repo, true));
+		CommitDependency aggregateDep = dependencyMap.get(aggregateHeadRevCommit.getId());
+		
+		Set<CommitDependency> aggregateDepDependencies = new HashSet<CommitDependency>();
+		
+		aggregateDepDependencies.add(dependencyMap.get(branch1HeadRevCommit.getId()));
+		aggregateDepDependencies.add(dependencyMap.get(branch2HeadRevCommit.getId()));
+		
+		aggregateDep.setParentDependencies(aggregateDepDependencies);
+		
+		Collections.sort(commits, new FusionAwareTopoSortComparator(dependencyMap));
 
 		iterator = commits.iterator();
 		

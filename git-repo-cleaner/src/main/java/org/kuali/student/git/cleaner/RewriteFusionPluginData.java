@@ -16,15 +16,11 @@ package org.kuali.student.git.cleaner;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,39 +29,18 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
-import org.eclipse.jgit.lib.AnyObjectId;
-import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.NullProgressMonitor;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectInserter;
 import org.eclipse.jgit.lib.ObjectLoader;
-import org.eclipse.jgit.lib.ObjectReader;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.TagBuilder;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevSort;
-import org.eclipse.jgit.revwalk.RevTag;
-import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.transport.ReceiveCommand;
-import org.eclipse.jgit.transport.ReceiveCommand.Type;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.kuali.student.cleaner.model.sort.FusionAwareTopoSortComparator;
+import org.kuali.student.git.cleaner.model.CommitDependency;
 import org.kuali.student.git.cleaner.model.ObjectIdTranslation;
 import org.kuali.student.git.cleaner.model.ObjectIdTranslationService;
 import org.kuali.student.git.cleaner.model.ObjectTranslationDataSource;
-import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.ExternalModuleUtils;
-import org.kuali.student.git.model.graft.GitGraft;
-import org.kuali.student.git.model.ref.utils.GitRefUtils;
+import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
-import org.kuali.student.git.model.tree.GitTreeData.GitTreeDataVisitor;
-import org.kuali.student.git.model.tree.GitTreeNodeInitializerImpl;
-import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
-import org.kuali.student.git.utils.ExternalGitUtils;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,8 +130,34 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 		
 	}
 
-	
-	
+	/*
+	 * If all of the direct dependencies are contained in the aggregated commit map then return true and store the aggregated dependencies  into the set provided.
+	 */
+	private boolean aggregate (Set<ObjectId>aggregateIntoSet, Set<ObjectId>directDependencies, Map<ObjectId, Set<ObjectId>>aggregatedCommitDependenciesMap) {
+
+		boolean aggregateDataExists = true;
+		
+		for (ObjectId objectId : directDependencies) {
+		
+			if (!aggregatedCommitDependenciesMap.containsKey(objectId))
+				aggregateDataExists = false;
+			
+		}
+		
+		if (aggregateDataExists) {
+			
+			// just accumulate
+			for (ObjectId objectId : directDependencies) {
+				
+				aggregateIntoSet.addAll(aggregatedCommitDependenciesMap.get(objectId));
+				
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.kuali.student.git.cleaner.AbstractRepositoryCleaner#provideRevCommitIterator(java.util.Iterator)
@@ -165,17 +166,81 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 	protected Iterator<RevCommit> provideRevCommitIterator(
 			Iterator<RevCommit> iterator) {
 		
-		List<RevCommit>fusionTopoOrderedList = new ArrayList<RevCommit>();
-		
-		while (iterator.hasNext()) {
-			RevCommit revCommit = (RevCommit) iterator.next();
+		try {
+			List<RevCommit>fusionTopoOrderedList = new ArrayList<RevCommit>();
 			
-			fusionTopoOrderedList.add(revCommit);
+			Map<ObjectId, CommitDependency>commitToDependencyMap = new HashMap<ObjectId, CommitDependency>();
+			
+			// holds only the direct parents and fusion parents
+			Map<ObjectId, Set<ObjectId>>commitDependenciesMap = new HashMap<ObjectId, Set<ObjectId>>();
+			
+			while (iterator.hasNext()) {
+				RevCommit revCommit = (RevCommit) iterator.next();
+				
+				commitToDependencyMap.put(revCommit.getId(), new CommitDependency(revCommit.getId()));
+				
+				Set<ObjectId> dependencies = new HashSet<ObjectId>();
+
+				for (RevCommit parentCommit : revCommit.getParents()) {
+					
+					dependencies.add(parentCommit.getId());
+				}
+				
+				List<ExternalModuleInfo> externals = ExternalModuleUtils.findExternalModulesForCommit(getRepo(), revCommit);
+				
+				for (ExternalModuleInfo externalModuleInfo : externals) {
+					
+					ObjectId branchHeadId = externalModuleInfo.getBranchHeadId();
+					
+					// translate the fusion reference
+					if (branchHeadId != null) {
+						ObjectId translatedBranchHeadId = translationService
+								.translateObjectId(branchHeadId);
+
+						dependencies.add(translatedBranchHeadId);
+					}
+				}
+				
+				commitDependenciesMap.put(revCommit.getId(), dependencies);
+				
+				
+				fusionTopoOrderedList.add(revCommit);
+			}
+
+			// link the parents
+			
+			for (RevCommit revCommit : fusionTopoOrderedList) {
+				
+				CommitDependency current = commitToDependencyMap.get(revCommit.getId());
+				
+				Set<CommitDependency>currentDependencies = new HashSet<CommitDependency>();
+				
+				Set<ObjectId> directDependencies = commitDependenciesMap.get(revCommit.getId());
+				
+				for (ObjectId directDependencyId : directDependencies) {
+					
+					CommitDependency parentDependency = commitToDependencyMap.get(directDependencyId);
+					
+					if (parentDependency == null) {
+						log.warn("missing parentDependency");
+					}
+					currentDependencies.add(parentDependency);
+				}
+				
+				current.setParentDependencies(currentDependencies);
+				
+			}
+			
+			
+			// compute the aggregated dependencies
+			log.info("sorting " + fusionTopoOrderedList.size() + " commits"); 
+			
+			Collections.sort(fusionTopoOrderedList, new FusionAwareTopoSortComparator(commitToDependencyMap));
+			
+			return fusionTopoOrderedList.iterator();
+		} catch (Exception e) {
+			throw new RuntimeException ("RewriteFusionPluginData.provideRevCommitIterator(): failed ", e);
 		}
-		
-		Collections.sort(fusionTopoOrderedList, new FusionAwareTopoSortComparator(getRepo(), true));
-		
-		return fusionTopoOrderedList.iterator();
 	}
 
 

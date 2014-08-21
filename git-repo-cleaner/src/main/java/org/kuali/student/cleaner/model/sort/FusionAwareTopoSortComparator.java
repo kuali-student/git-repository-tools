@@ -28,7 +28,9 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.kuali.student.git.cleaner.model.CommitDependency;
 import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 
@@ -44,19 +46,14 @@ public class FusionAwareTopoSortComparator implements
 		Comparator<RevCommit> {
 
 
-	private Map<RevCommit, Set<ObjectId>>commitDependenciesMap = new HashMap<RevCommit, Set<ObjectId>>();
-	private RevWalk revWalk;
-	private boolean fusionAware;
-	private Repository repo;
+	private Map<ObjectId, CommitDependency> commitDependenciesMap;
 	
 	/**
 	 * 
 	 */
-	public FusionAwareTopoSortComparator(Repository repo, boolean fusionAware) {
+	public FusionAwareTopoSortComparator(Map<ObjectId, CommitDependency> commitToDependencyMap) {
 		
-		this.repo = repo;
-		this.fusionAware = fusionAware;
-		this.revWalk = new RevWalk (repo);
+		this.commitDependenciesMap = commitToDependencyMap;
 	}
 
 	/* (non-Javadoc)
@@ -98,7 +95,9 @@ public class FusionAwareTopoSortComparator implements
 	 */
 	private boolean isCommitAfter(RevCommit o1, RevCommit o2) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 
-		Set<ObjectId>o1Dependencies = findDependencies (o1);
+		CommitDependency o1Dependency = this.commitDependenciesMap.get(o1.getId());
+		
+		Set<ObjectId>o1Dependencies = o1Dependency.getAggregateDependencies();
 		
 		if (o1Dependencies.contains(o2))
 			return true;
@@ -106,49 +105,5 @@ public class FusionAwareTopoSortComparator implements
 			return false;
 	}
 
-	private Set<ObjectId> findDependencies(RevCommit o1) throws MissingObjectException, IncorrectObjectTypeException, IOException {
-		
-		Set<ObjectId> dependencies = this.commitDependenciesMap.get(o1);
-		
-		if (dependencies == null) {
-			// compute dependencies
-			
-			dependencies = new HashSet<ObjectId>();
-			
-			revWalk.reset();
-			
-			// in order for the revwalk to work the commit has to have been parsed by our local 'revWalk'
-			revWalk.markStart(revWalk.parseCommit(o1.getId()));
-			
-			Iterator<RevCommit> it = revWalk.iterator();
-			
-			while (it.hasNext()) {
-				
-				RevCommit revCommit = it.next();
-				
-				if (fusionAware) {
-					
-					List<ExternalModuleInfo> externals = ExternalModuleUtils.findExternalModulesForCommit(repo, revCommit);
-					
-					for (ExternalModuleInfo externalModuleInfo : externals) {
-						
-						ObjectId branchHeadId = externalModuleInfo.getBranchHeadId();
-						
-						if (branchHeadId != null)
-							dependencies.add(branchHeadId);
-					}
-				}
-				
-				dependencies.add(revCommit.getId());
-				
-			}
-			
-			this.commitDependenciesMap.put(o1, dependencies);
-		}
-		
-		return dependencies;
-	}
-	
-	
 
 }
