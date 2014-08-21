@@ -17,13 +17,9 @@ package org.kuali.student.cleaner;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -35,11 +31,13 @@ import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.junit.Assert;
 import org.junit.Test;
+import org.kuali.student.cleaner.model.ObjectIdTranslationMapImpl;
+import org.kuali.student.cleaner.model.bitmap.RevCommitBitMapIndex;
 import org.kuali.student.cleaner.model.sort.FusionAwareTopoSortComparator;
-import org.kuali.student.git.cleaner.model.CommitDependency;
 import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
 import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.svn.model.AbstractGitRespositoryTestCase;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
@@ -145,6 +143,67 @@ public class TestFusionDataAwareRevSort extends AbstractGitRespositoryTestCase {
 		aggregateHeadRevCommit = super.rw.parseCommit(aggregateId);
 	}
 
+	@Test
+	public void testComparatorTopoEquivilenceWithMultipleAggregateCommits () throws IOException {
+		
+		GitTreeProcessor treeProcessor = new GitTreeProcessor(repo);
+		
+		ObjectId initialAggregateHeadId = aggregateHeadRevCommit.getId();
+		
+		GitTreeData tree = treeProcessor.extractExistingTreeDataFromCommit(initialAggregateHeadId);
+		
+		ObjectInserter inserter = repo.newObjectInserter();
+		
+		super.storeFile(inserter, tree, "Readme.txt", "test file content");
+		
+		ObjectId newCommit = commit(repo.newObjectInserter(), tree, "second commit on aggregate branch", initialAggregateHeadId);
+		
+		createBranch(newCommit, "aggregate");
+		
+		aggregateHeadRevCommit = rw.parseCommit(newCommit);
+		
+		/*
+		 * Sort the commits using a comparator and make sure the results are the same as with the TopoGenerator
+		 */
+		
+		List<RevCommit>commits = new LinkedList<RevCommit>();
+		
+		RevWalk rw = new RevWalk (repo);
+		
+		rw.markStart(branch1HeadRevCommit);
+		rw.markStart(branch2HeadRevCommit);
+		rw.markStart(aggregateHeadRevCommit);
+		
+		Iterator<RevCommit> iterator = rw.iterator();
+		
+		ObjectIdTranslationMapImpl translator= new ObjectIdTranslationMapImpl();
+		
+		RevCommitBitMapIndex index = new RevCommitBitMapIndex(repo, translator, iterator);
+		
+		commits = new LinkedList<RevCommit>(index.getRevCommitList());
+		
+		Collections.sort(commits, new FusionAwareTopoSortComparator(index));
+
+		iterator = commits.iterator();
+		
+		RevCommit candidate = null;
+		RevCommit secondLastCandidate = null;
+		
+		while (iterator.hasNext()) {
+			
+			if (candidate != null)
+				secondLastCandidate = candidate;
+			
+			candidate = iterator.next();
+			
+			log.info("candidate = " + candidate.getId().name());
+			
+		}
+		
+		Assert.assertEquals(initialAggregateHeadId, secondLastCandidate.getId());
+		Assert.assertEquals(aggregateHeadRevCommit.getId(), candidate.getId());
+		
+	}
 	
 	@Test
 	public void testComparatorTopoEquivilence() throws MissingObjectException, IncorrectObjectTypeException, IOException {
@@ -162,51 +221,29 @@ public class TestFusionDataAwareRevSort extends AbstractGitRespositoryTestCase {
 		
 		Iterator<RevCommit> iterator = rw.iterator();
 		
-		Map<ObjectId, CommitDependency> dependencyMap = new HashMap<ObjectId, CommitDependency>();
+		ObjectIdTranslationMapImpl translator= new ObjectIdTranslationMapImpl();
 		
-		while (iterator.hasNext()) {
-			RevCommit revCommit = (RevCommit) iterator.next();
-			
-			commits.add(revCommit); 
-			
-			dependencyMap.put(revCommit.getId(), new CommitDependency(revCommit.getId()));
-			
-		}
+		RevCommitBitMapIndex index = new RevCommitBitMapIndex(repo, translator, iterator);
 		
-		CommitDependency aggregateDep = dependencyMap.get(aggregateHeadRevCommit.getId());
+		commits = new LinkedList<RevCommit>(index.getRevCommitList());
 		
-		Set<CommitDependency> aggregateDepDependencies = new HashSet<CommitDependency>();
-		
-		aggregateDepDependencies.add(dependencyMap.get(branch1HeadRevCommit.getId()));
-		aggregateDepDependencies.add(dependencyMap.get(branch2HeadRevCommit.getId()));
-		
-		aggregateDep.setParentDependencies(aggregateDepDependencies);
-		
-		Collections.sort(commits, new FusionAwareTopoSortComparator(dependencyMap));
+		Collections.sort(commits, new FusionAwareTopoSortComparator(index));
 
 		iterator = commits.iterator();
 		
-		Assert.assertEquals(true, iterator.hasNext());
+		RevCommit candidate = null;
 		
-		RevCommit candiate = iterator.next();
+		while (iterator.hasNext()) {
+			candidate = iterator.next();
+			
+			log.info("candidate = " + candidate.getId().name());
+			
+		}
 				
-		log.info("candidate = " + candiate.getId().name());
-		
-		Assert.assertEquals(true, iterator.hasNext());
-		
-		candiate = iterator.next();
-		
-		log.info("candidate = " + candiate.getId().name());
-		
-		Assert.assertEquals(true, iterator.hasNext());
-		
-		candiate = iterator.next();
-		
-		log.info("candidate = " + candiate.getId().name());
-				
-		Assert.assertEquals(aggregateHeadRevCommit.getId(), candiate.getId());
+		Assert.assertEquals(aggregateHeadRevCommit.getId(), candidate.getId());
 		
 	}
+	
 	
 	@Test
 	public void testTopoEquivilence() throws MissingObjectException, IncorrectObjectTypeException, IOException {

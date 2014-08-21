@@ -14,12 +14,19 @@
  */
 package org.kuali.student.git.cleaner.model;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jgit.lib.ObjectId;
+import org.kuali.student.cleaner.model.bitmap.Bitmap;
+import org.kuali.student.cleaner.model.bitmap.RevCommitBitMapIndex;
+
+import com.googlecode.javaewah.EWAHCompressedBitmap;
 
 /**
  * @author ocleirig
@@ -31,25 +38,30 @@ public class CommitDependency {
 	
 	private Map<ObjectId, CommitDependency>parentDependencies = new HashMap<ObjectId, CommitDependency>();
 	
-	private Set<ObjectId>aggregatedDependencies = null;
+	private RevCommitBitMapIndex indexer;
 	
 	/**
 	 * 
 	 */
-	public CommitDependency(ObjectId commitId) {
+	public CommitDependency(RevCommitBitMapIndex indexer, ObjectId commitId) {
+		this.indexer = indexer;
 		currentCommitId = commitId;
 	}
 
 	public void setParentDependencies(Set<CommitDependency> currentDependencies) {
 		
+		Set<ObjectId>parentObjectIds = new HashSet<ObjectId>();
+		
 		for (CommitDependency parentDependency : currentDependencies) {
-			if (parentDependency == null) {
-				int x = 1;
-				x = x+1;
-			}
 			
-			this.parentDependencies.put(parentDependency.getCurrentCommitId(), parentDependency);
+			ObjectId parentCommitId = parentDependency.getCurrentCommitId();
+			
+			parentObjectIds.add(parentCommitId);
+			
+			this.parentDependencies.put(parentCommitId, parentDependency);
 		}
+		
+		indexer.computeBitmap(this.currentCommitId, parentObjectIds);
 	}
 
 	/**
@@ -59,22 +71,28 @@ public class CommitDependency {
 		return currentCommitId;
 	}
 	
-	public Set<ObjectId>getAggregateDependencies() {
+	/**
+	 * 
+	 * @param parentCommitId
+	 * @return true if us or our subtree contains the parent commit id given.
+	 */
+	public boolean containsParent(ObjectId parentCommitId) {
 		
-		if (this.aggregatedDependencies == null) {
+		if (this.currentCommitId.equals(parentCommitId))
+			return true;
+		
+		Bitmap aggregate = indexer.getAggregateBitmap (this);
 			
-			this.aggregatedDependencies = new HashSet<ObjectId>();
+		if (aggregate.containsObjectId (parentCommitId))
+			return true;
+		else
+			return false;
 			
-			for (CommitDependency dependency : this.parentDependencies.values()) {
-				
-				this.aggregatedDependencies.add(dependency.getCurrentCommitId());
-				
-				this.aggregatedDependencies.addAll(dependency.getAggregateDependencies());
-			}
-			
-		}		
-		return this.aggregatedDependencies;
 	}
-	
+
+	public Collection<CommitDependency> getParentDependencies() {
+		return this.parentDependencies.values();
+	}
+		
 
 }

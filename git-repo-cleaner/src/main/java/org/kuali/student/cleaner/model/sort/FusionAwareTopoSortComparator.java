@@ -30,6 +30,7 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.kuali.student.cleaner.model.bitmap.RevCommitBitMapIndex;
 import org.kuali.student.git.cleaner.model.CommitDependency;
 import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.svn.model.ExternalModuleInfo;
@@ -46,14 +47,15 @@ public class FusionAwareTopoSortComparator implements
 		Comparator<RevCommit> {
 
 
-	private Map<ObjectId, CommitDependency> commitDependenciesMap;
 	
+	private RevCommitBitMapIndex index;
+
 	/**
 	 * 
 	 */
-	public FusionAwareTopoSortComparator(Map<ObjectId, CommitDependency> commitToDependencyMap) {
-		
-		this.commitDependenciesMap = commitToDependencyMap;
+	public FusionAwareTopoSortComparator(RevCommitBitMapIndex index) {
+		super();
+		this.index = index;
 	}
 
 	/* (non-Javadoc)
@@ -95,11 +97,9 @@ public class FusionAwareTopoSortComparator implements
 	 */
 	private boolean isCommitAfter(RevCommit o1, RevCommit o2) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 
-		CommitDependency o1Dependency = this.commitDependenciesMap.get(o1.getId());
+		CommitDependency o1Dependency = index.getCommitDependency(o1.getId());
 		
-		Set<ObjectId>o1Dependencies = o1Dependency.getAggregateDependencies();
-		
-		if (o1Dependencies.contains(o2))
+		if (o1Dependency.containsParent(o2))
 			return true;
 		else
 			return false;

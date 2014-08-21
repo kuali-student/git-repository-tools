@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,7 @@ import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.kuali.student.cleaner.model.bitmap.RevCommitBitMapIndex;
 import org.kuali.student.cleaner.model.sort.FusionAwareTopoSortComparator;
 import org.kuali.student.git.cleaner.model.CommitDependency;
 import org.kuali.student.git.cleaner.model.ObjectIdTranslation;
@@ -167,77 +169,17 @@ public class RewriteFusionPluginData extends AbstractRepositoryCleaner {
 			Iterator<RevCommit> iterator) {
 		
 		try {
-			List<RevCommit>fusionTopoOrderedList = new ArrayList<RevCommit>();
 			
-			Map<ObjectId, CommitDependency>commitToDependencyMap = new HashMap<ObjectId, CommitDependency>();
+			RevCommitBitMapIndex index = new RevCommitBitMapIndex(getRepo(), translationService, iterator);
 			
-			// holds only the direct parents and fusion parents
-			Map<ObjectId, Set<ObjectId>>commitDependenciesMap = new HashMap<ObjectId, Set<ObjectId>>();
-			
-			while (iterator.hasNext()) {
-				RevCommit revCommit = (RevCommit) iterator.next();
-				
-				commitToDependencyMap.put(revCommit.getId(), new CommitDependency(revCommit.getId()));
-				
-				Set<ObjectId> dependencies = new HashSet<ObjectId>();
-
-				for (RevCommit parentCommit : revCommit.getParents()) {
-					
-					dependencies.add(parentCommit.getId());
-				}
-				
-				List<ExternalModuleInfo> externals = ExternalModuleUtils.findExternalModulesForCommit(getRepo(), revCommit);
-				
-				for (ExternalModuleInfo externalModuleInfo : externals) {
-					
-					ObjectId branchHeadId = externalModuleInfo.getBranchHeadId();
-					
-					// translate the fusion reference
-					if (branchHeadId != null) {
-						ObjectId translatedBranchHeadId = translationService
-								.translateObjectId(branchHeadId);
-
-						dependencies.add(translatedBranchHeadId);
-					}
-				}
-				
-				commitDependenciesMap.put(revCommit.getId(), dependencies);
-				
-				
-				fusionTopoOrderedList.add(revCommit);
-			}
-
-			// link the parents
-			
-			for (RevCommit revCommit : fusionTopoOrderedList) {
-				
-				CommitDependency current = commitToDependencyMap.get(revCommit.getId());
-				
-				Set<CommitDependency>currentDependencies = new HashSet<CommitDependency>();
-				
-				Set<ObjectId> directDependencies = commitDependenciesMap.get(revCommit.getId());
-				
-				for (ObjectId directDependencyId : directDependencies) {
-					
-					CommitDependency parentDependency = commitToDependencyMap.get(directDependencyId);
-					
-					if (parentDependency == null) {
-						log.warn("missing parentDependency");
-					}
-					currentDependencies.add(parentDependency);
-				}
-				
-				current.setParentDependencies(currentDependencies);
-				
-			}
-			
+			List<RevCommit>commitList = new LinkedList<RevCommit>(index.getRevCommitList());
 			
 			// compute the aggregated dependencies
-			log.info("sorting " + fusionTopoOrderedList.size() + " commits"); 
+			log.info("sorting " + commitList.size() + " commits"); 
 			
-			Collections.sort(fusionTopoOrderedList, new FusionAwareTopoSortComparator(commitToDependencyMap));
+			Collections.sort(commitList, new FusionAwareTopoSortComparator(index));
 			
-			return fusionTopoOrderedList.iterator();
+			return commitList.iterator();
 		} catch (Exception e) {
 			throw new RuntimeException ("RewriteFusionPluginData.provideRevCommitIterator(): failed ", e);
 		}
