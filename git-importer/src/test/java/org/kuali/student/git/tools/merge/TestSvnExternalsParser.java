@@ -114,7 +114,7 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 	
 	
 	@Test
-	public void testParseFusionMavenPluginsDat () throws IOException {
+	public void testParseFusionMavenPluginsData () throws IOException {
 		
 		FileInputStream input = new FileInputStream("src/test/resources/fusion-maven-plugin.dat");
 
@@ -122,7 +122,7 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 		
 		Assert.assertNotNull("externals are null", externalsList);
 		
-		Assert.assertEquals(5, externalsList.size());
+		Assert.assertEquals(6, externalsList.size());
 		
 		
 	}

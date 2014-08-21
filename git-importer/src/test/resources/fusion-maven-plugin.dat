@@ -1,10 +1,12 @@
-# module = http://svn.kuali.org/repos/student/enrollment/ks-api/branches/services branch Path = ks-api revision = 35680
-http://svn.kuali.org/repos/student/enrollment/ks-api/branches/services::ks-api::UNKNOWN
-# module = http://svn.kuali.org/repos/student/enrollment/ks-core/branches/services branch Path = ks-core revision = 35680
-http://svn.kuali.org/repos/student/enrollment/ks-core/branches/services::ks-core::UNKNOWN
-# module = http://svn.kuali.org/repos/student/enrollment/ks-lum/branches/services branch Path = ks-lum revision = 35680
-http://svn.kuali.org/repos/student/enrollment/ks-lum/branches/services::ks-lum::UNKNOWN
-# module = http://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/services branch Path = ks-enroll revision = 35680
-http://svn.kuali.org/repos/student/enrollment/ks-enroll/branches/services::ks-enroll::UNKNOWN
-# module = http://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/services branch Path = ks-deployments revision = 35680
-http://svn.kuali.org/repos/student/enrollment/ks-deployments/branches/services::ks-deployments::UNKNOWN
+# module = ks-api branch Path = enrollment/ks-api/branches/2.0.0-Mx revision = 68768
+ks-api::enrollment_ks-api_branches_2.0.0-Mx::a8cfd20224cc829ef8ab01e1003c3ddfb5137371
+# module = ks-core branch Path = enrollment/ks-core/trunk revision = 68768
+ks-core::enrollment_ks-core_trunk::e8cebfa13e84f99187bbda9dbdf88385c5aec5f8
+# module = ks-lum branch Path = enrollment/ks-lum/trunk revision = 68768
+ks-lum::enrollment_ks-lum_trunk::60f372171b342f39e8901e22504aff2b0a7bb3af
+# module = ks-enroll branch Path = enrollment/ks-enroll/trunk revision = 68768
+ks-enroll::enrollment_ks-enroll_trunk::fed61d875424c841c9e8c14eb2f49cf184ae4f73
+# module = ks-ap branch Path = enrollment/ks-ap/trunk revision = 68768
+ks-ap::enrollment_ks-ap_trunk::5b83ea843d6418eae96e50e2090efb9ff0987261
+# module = ks-deployments branch Path = enrollment/ks-deployments/trunk revision = 68768
+ks-deployments::enrollment_ks-deployments_trunk::5beb5fb024f8aa755f287628aac93403b70951ed
