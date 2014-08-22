@@ -15,9 +15,9 @@
 # the external paths
 #
 
-^enrollment/ks-api/branches/2.0.0-Mx ks-api
-^enrollment/ks-core/trunk ks-core
-^enrollment/ks-lum/trunk ks-lum
-^enrollment/ks-enroll/trunk ks-enroll
-^enrollment/ks-deployments/trunk ks-deployments
+^/enrollment/ks-api/branches/2.0.0-Mx ks-api
+^/enrollment/ks-core/trunk ks-core
+^/enrollment/ks-lum/trunk ks-lum
+^/enrollment/ks-enroll/trunk ks-enroll
+^/enrollment/ks-deployments/trunk ks-deployments
 

@@ -16,12 +16,10 @@
 package org.kuali.student.git.tools.merge;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.ObjectId;
 import org.junit.Assert;
 import org.junit.Test;
@@ -100,9 +98,47 @@ public class TestSvnExternalsParser extends AbstractBranchDetectorTest {
 	}
 	
 	@Test
+	public void testKSR27982ExternalsDataFile() throws IOException {
+		
+		FileInputStream input = new FileInputStream("src/test/resources/ks-r27982-externals.txt");
+
+		List<ExternalModuleInfo> externalsList = ExternalModuleUtils.extractExternalModuleInfoFromSvnExternalsInputStream(43000, "https://svn.kuali.org/repos/student", input);
+		
+		Assert.assertNotNull(externalsList);
+		Assert.assertEquals(1, externalsList.size());
+		
+		ExternalModuleInfo external = externalsList.get(0);
+		
+		Assert.assertEquals("ks-api", external.getModuleName());
+		
+		Assert.assertEquals("sandbox/ks-1.3-core-slice-demo/modules/ks-api/trunk", external.getBranchPath());
+		
+		
+		
+	}
+	
+	@Test
+	public void testGroupingPattern () {
+		
+		Assert.assertEquals(false, ExternalModuleUtils.matchesBranchPart("ks-api"));
+		
+		Assert.assertEquals(true, ExternalModuleUtils.matchesBranchPart("https://svn.kuali.org/repos/student/enrollment/ks-api/branches/2.0.0-Mx"));
+		
+		Assert.assertEquals(true, ExternalModuleUtils.matchesBranchPart("http://svn.kuali.org/repos/student/enrollment/ks-api/branches/2.0.0-Mx"));
+		
+		Assert.assertEquals(true, ExternalModuleUtils.matchesBranchPart("^/enrollment/ks-api/branches/2.0.0-Mx"));
+		
+		Assert.assertEquals(false, ExternalModuleUtils.matchesBranchPart("^enrollment/ks-api/branches/2.0.0-Mx"));
+		
+		
+	}
+	
+	@Test
 	public void testParseExternalsInfoDataFile () throws IOException, VetoBranchException {
 		
 		testExternalsDataFile("src/test/resources/ks-externals-for-aggregate-trunk-at-r43000.txt");
+		
+		
 	}
 	
 	@Test

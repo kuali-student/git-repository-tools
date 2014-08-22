@@ -1,0 +1,1 @@
+http://svn.kuali.org/repos/student/sandbox/ks-1.3-core-slice-demo/modules/ks-api/trunk ks-api

@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -301,7 +303,7 @@ public class ExternalModuleUtils {
 			if (parts.length != 2)
 				continue; // skip to the next line
 			
-			int branchPathIndex = determineBranchPathIndex (parts, repositoryPrefixPath, securePrefixPath);
+			int branchPathIndex = determineBranchPathIndex (parts);
 			
 			String moduleName = null;
 			String branchPath = null;
@@ -354,34 +356,36 @@ public class ExternalModuleUtils {
 		return externalsList;
 	}
 
-	/*
+	private static final Pattern detectBranchPartPattern = Pattern.compile("^(\\^|http:|https:)/.*");
+	
+	/**
 	 * Figure out which part is the branch path part.
 	 * 
 	 * It can include the url but since 1.5 it can also be relative.
 	 * 
 	 */
 	
-	private static boolean matchesSvnURL (String part, String repositoryPrefixPath) {
+	public static boolean matchesBranchPart (String part) {
+
+		Matcher m = detectBranchPartPattern.matcher(part);
 		
-		if (part.startsWith(repositoryPrefixPath))
-			return true;
+		if (m == null)
+			return false;
+
+		return m.matches();
 		
-		if (part.startsWith("^"))
-			return true;
-		
-		return false;
 	}
 	
-	private static int determineBranchPathIndex(String[] parts, String repositoryPrefixPath, boolean securePrefixPath) {
+	private static int determineBranchPathIndex(String[] parts) {
 		
 		String firstCandidate = parts[0].trim();
 		
 		String secondCandidate = parts[1].trim();
 		
-		if (matchesSvnURL(firstCandidate, repositoryPrefixPath))
+		if (matchesBranchPart(firstCandidate))
 			return 0;
 		
-		else if (matchesSvnURL(secondCandidate, repositoryPrefixPath))
+		else if (matchesBranchPart(secondCandidate))
 			return 1;
 		else
 			return -1; // neither matched.
