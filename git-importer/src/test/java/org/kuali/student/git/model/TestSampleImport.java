@@ -219,6 +219,23 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		Assert.assertEquals("Expected the fusion-maven-plugin.dat file to stay the same between rev 19 and rev 20", fusionMavenPluginDatAtR19, fusionMavenPluginDatAtR20);
 		
+		ObjectId expectedTrunkCommitId = repository.getRef("trunk").getObjectId();
+		
+		runImporter(repository, 21);
+		
+		// there should not be a commit because all of the changes should be skipped.
+		Assert.assertEquals(expectedTrunkCommitId.name(), repository.getRef("trunk").getObjectId().name());
+		
+		// somne of these files had the property set on them make sure they are not of size zero
+		
+		GitTestUtils.assertFileContentEquals (repository, "trunk", "invalid-branch-name-resource.txt", " test resource file\n");
+		
+		GitTestUtils.assertFileContentEquals (repository, "trunk", "maven/kuali/test.txt", "test file\n");
+		
+		GitTestUtils.assertFileContentEquals (repository, "trunk", "module1/pom.xml", " module pom file\n");
+		
+		// there should be no commit with rev 21
+		
 	}
 
 	

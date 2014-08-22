@@ -629,7 +629,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			if (propContentLengthProperty != null)
 				propContentLength = Long.parseLong(propContentLengthProperty);
 			
-			long textContentLength = 0L;
+			long textContentLength = -1L;
 			
 			if (textContentLengthProperty != null)
 				textContentLength = Long.parseLong(textContentLengthProperty);
