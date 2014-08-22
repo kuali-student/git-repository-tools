@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kuali.student.repository</groupId>
     <artifactId>repository-tools</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
   </parent>
   <artifactId>git-importer</artifactId>
   <name>Git Importer</name>
@@ -138,8 +138,7 @@
 					        </filter>
 					    </filters>
 							<transformers>
-								<transformer
-									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>org.kuali.student.git.importer.GitImporterMain</mainClass>
 								</transformer>
 								<!-- spring schema's and handlers -->
