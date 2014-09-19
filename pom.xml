@@ -7,7 +7,7 @@
     </parent>
 	<groupId>org.kuali.student.repository</groupId>
 	<artifactId>repository-tools</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.3</version>
 	<name>Respository Tools - Parent</name>
 	<description>Subversion and Git Respository Tools</description>
 	<packaging>pom</packaging>
@@ -22,9 +22,9 @@
 	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<scm>
-		<connection>scm:svn:https://svn.kuali.org/repos/student/tools/svn-history-tools/trunk</connection>
-		<developerConnection>scm:svn:https://svn.kuali.org/repos/student/tools/svn-history-tools/trunk</developerConnection>
-		<url>https://svn.kuali.org/repos/student/tools/svn-history-tools/trunk</url>
+		<connection>scm:svn:https://svn.kuali.org/repos/student/tools/svn-history-tools/tags/repository-tools-0.0.3</connection>
+		<developerConnection>scm:svn:https://svn.kuali.org/repos/student/tools/svn-history-tools/tags/repository-tools-0.0.3</developerConnection>
+		<url>https://svn.kuali.org/repos/student/tools/svn-history-tools/tags/repository-tools-0.0.3</url>
 	</scm>
 
 	<developers>
