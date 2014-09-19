@@ -48,6 +48,31 @@ public final class ExternalGitUtils {
 	}
 
 	/**
+	 * Use CGit to fetch all of the remotes.
+	 * 
+	 * @param externalGitCommandPath
+	 * @param repo
+	 * @param redirectStream
+	 * @return
+	 */
+	public static boolean fetchAll (String externalGitCommandPath, Repository repo, OutputStream redirectStream) {
+		
+		try {
+			Process p = runGitCommand(externalGitCommandPath, repo, true, "fetch",  "--all");
+
+			waitFor(p, redirectStream);
+
+			return true;
+
+		} catch (IOException e) {
+			return false;
+		} catch (InterruptedException e) {
+			return false;
+		}
+		
+	}
+	
+	/**
 	 * Checkout the named branch using the branch name provided.
 	 * 
 	 * @param externalGitCommandPath
