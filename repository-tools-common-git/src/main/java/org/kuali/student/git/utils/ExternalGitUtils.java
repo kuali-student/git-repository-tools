@@ -48,17 +48,66 @@ public final class ExternalGitUtils {
 	}
 
 	/**
-	 * Use CGit to fetch all of the remotes.
+	 * Use CGit to fetch the specified remote name from the indicated repository.
 	 * 
 	 * @param externalGitCommandPath
 	 * @param repo
+	 * @param remoteName the name of the remote specified in the repositories git configuration file.
+	 * @param depth if < 1 then apply no limit if >= 1 then specify with the --depth option for a shallow checkout.
 	 * @param redirectStream
+	 * 
 	 * @return
 	 */
-	public static boolean fetchAll (String externalGitCommandPath, Repository repo, OutputStream redirectStream) {
+	public static boolean fetch (String externalCGitCommandPath, Repository repo, String remoteName, int depth, OutputStream redirectStream) {
+
+		try {
+			
+			List<String>commandArgs = new ArrayList<String>();
+			
+			commandArgs.add("fetch");
+			commandArgs.add(remoteName);
+			
+			if (depth >= 1) {
+				commandArgs.add("--depth=" + depth);
+			}
+			
+			Process p = runGitCommand(externalCGitCommandPath, repo, true, commandArgs.toArray(new String[] {}));
+
+			waitFor(p, redirectStream);
+
+			return true;
+
+		} catch (IOException e) {
+			return false;
+		} catch (InterruptedException e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * Use CGit to fetch all of the remotes defined in the projects git configuration.
+	 * 
+	 * @param externalGitCommandPath
+	 * @param repo
+	 * @param depth if < 1 then apply no limit if >= 1 then specify with the --depth option for a shallow checkout.
+	 * @param redirectStream
+	 * 
+	 * @return
+	 */
+	public static boolean fetchAll (String externalGitCommandPath, Repository repo, int depth, OutputStream redirectStream) {
 		
 		try {
-			Process p = runGitCommand(externalGitCommandPath, repo, true, "fetch",  "--all");
+			
+			List<String>commandArgs = new ArrayList<String>();
+			
+			commandArgs.add("fetch");
+			commandArgs.add("--all");
+			
+			if (depth >= 1) {
+				commandArgs.add("--depth=" + depth);
+			}
+			
+			Process p = runGitCommand(externalGitCommandPath, repo, true, commandArgs.toArray(new String[] {}));
 
 			waitFor(p, redirectStream);
 
