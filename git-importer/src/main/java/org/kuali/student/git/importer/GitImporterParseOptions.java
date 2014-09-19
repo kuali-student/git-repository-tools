@@ -354,13 +354,15 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				if (data.getExternals().size() > 0) {
 					ObjectInserter objectInserter = repo.newObjectInserter();
 
+					String fusionPluginDataString = ExternalModuleUtils
+							.createFusionMavenPluginDataFileString(
+									currentRevision, repo,
+									data.getExternals(),
+									revisionMapper);
+					
 					ObjectId id = objectInserter
 							.insert(Constants.OBJ_BLOB,
-									ExternalModuleUtils
-											.createFusionMavenPluginDataFileString(
-													currentRevision, repo,
-													data.getExternals(),
-													revisionMapper).getBytes());
+									fusionPluginDataString.getBytes());
 
 					try {
 						data.addBlob(data.getBranchPath() + "/"

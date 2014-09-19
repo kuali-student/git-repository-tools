@@ -187,13 +187,11 @@ public class ExternalModuleUtils {
 				external.setBranchName (branchName);
 			}
 			
-			ObjectId branchHead  = external.getBranchHeadId();
-			
-			if (branchHead == null)
-				branchHead = branchHeadProvider.getBranchHeadObjectId(branchName);
+			ObjectId branchHead = branchHeadProvider.getBranchHeadObjectId(branchName);
 			
 			if (branchHead != null) {
 				// store the branch head		
+				// this may overwrite the existing value but at is ok since this method is meant to update to the latest version.
 				external.setBranchHeadId(branchHead);
 			}
 			

@@ -236,18 +236,31 @@ public final class GitTestUtils {
 	public static ObjectLoader loadFileContents(Repository repository, String branchName,
 			String filePath) throws IOException {
 		
-		Ref ref = repository.getRef(branchName);
+		return repository.newObjectReader().open(findObjectIdInRefByPath(repository, branchName, filePath));
 		
+	}
+	
+	public static ObjectId findObjectIdInRefByPath (Repository repo, String refName, String path) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+		
+		Ref ref = repo.getRef(refName);
+		
+		ObjectId objectId = findObjectIdInRefByPath(repo, ref, path);
+		
+		return objectId;
+		
+	}
+	
+	public static ObjectId findObjectIdInRefByPath (Repository repo, Ref ref, String path) throws MissingObjectException, IncorrectObjectTypeException, IOException {
+
 		Assert.assertNotNull(ref);
 		
 		ObjectId commitId = ref.getObjectId();
 		
-		ObjectId objectId = GitRepositoryUtils.findInCommit(repository, commitId, filePath);
+		ObjectId objectId = GitRepositoryUtils.findInCommit(repo, commitId, path);
 		
 		Assert.assertNotNull(objectId);
 		
-		return repository.newObjectReader().open(objectId);
-		
+		return objectId;
 	}
 
 }

@@ -31,6 +31,7 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.RefUpdate.Result;
 import org.eclipse.jgit.lib.Repository;
@@ -452,14 +453,33 @@ public class NodeProcessor implements IGitBranchDataProvider {
 				
 				ObjectId parentId = revisionMapper.getRevisionBranchHead((revision-1), data.getBranchName());
 				
-				if (parentId != null)
+				if (parentId != null) {
 					data.setParentId(parentId);
+					
+					/*
+					 * Check for the existense of a fusion-maven-plugin.dat file in the root of this commit load in the externals if they exist.
+					 */
+					GitTreeData parentTree = treeProcessor.extractExistingTreeDataFromCommit(parentId);
+					
+					ObjectId fusionData = parentTree.find(repo, "fusion-maven-plugin.dat");
+					
+					if (fusionData != null) {
+						
+						ObjectReader reader = repo.newObjectReader();
+					
+						List<ExternalModuleInfo> existingExternals = ExternalModuleUtils.extractFusionMavenPluginData(reader.open(fusionData, Constants.OBJ_BLOB).openStream());
+						
+						data.setExternals(existingExternals);
+						
+					}
+				}
 
 			} catch (Exception e) {
 				log.debug("no existing reference for branch = "
 						+ data.getBranchName());
 			}
-
+			
+			
 			knownBranchMap.put(branchName, data);
 		}
 

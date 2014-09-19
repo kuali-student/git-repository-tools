@@ -31,6 +31,8 @@ import org.kuali.student.git.model.tree.GitTreeData;
 import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.model.utils.GitTestUtils;
 import org.kuali.student.svn.model.ExternalModuleInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -44,6 +46,8 @@ import org.kuali.student.svn.model.ExternalModuleInfo;
 @RunWith(BlockJUnit4ClassRunner.class)
 public class TestSampleImport extends AbstractGitImporterMainTestCase {
 
+	private static final Logger log = LoggerFactory.getLogger(TestSampleImport.class);
+	
 	/**
 	 * @param name
 	 */
@@ -235,6 +239,15 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		GitTestUtils.assertFileContentEquals (repository, "trunk", "module1/pom.xml", " module pom file\n");
 		
 		// there should be no commit with rev 21
+		
+		ObjectId preR22FusionData = GitTestUtils.findObjectIdInRefByPath(repository, "aggregate_trunk", "fusion-maven-plugin.dat");
+		
+		runImporter(repository, 22);
+		
+		ObjectId postR22FusionData = GitTestUtils.findObjectIdInRefByPath(repository, "aggregate_trunk", "fusion-maven-plugin.dat");
+		
+		Assert.assertNotEquals("fusion-maven-plugin.dat should change between r21 and r22", preR22FusionData.name(), postR22FusionData.name());
+		
 		
 	}
 
