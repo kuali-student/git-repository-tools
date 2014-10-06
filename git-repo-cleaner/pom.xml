@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kuali.student.repository</groupId>
     <artifactId>repository-tools</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.4</version>
   </parent>
   <artifactId>git-repo-cleaner</artifactId>
   
