@@ -373,5 +373,21 @@ public final class ExternalGitUtils {
 		runGitCommand(externalCGitCommand, repo, false, "config", "--local", "--remove-section", "credential");
 		
 	}
+	
+	
+	/**
+	 * Push the refspec given to the remote given.
+	 * 
+	 * @param externalGitCommandPath
+	 * @param repo
+	 * @param refSpec
+	 * @param remoteName
+	 * @throws IOException
+	 */
+	public static void push (String externalGitCommandPath, Repository repo, String refSpec, String remoteName) throws IOException {
+		
+		runGitCommand(externalGitCommandPath, repo, false, "push", remoteName, refSpec);
+		
+	}
 
 }
