@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.ReceiveCommand.Type;
@@ -344,6 +345,33 @@ public final class ExternalGitUtils {
 			}
 
 		}
+	}
+	
+	/**
+	 * Setup the Credential Helper to point at a file configured with the credentials.
+	 * <p/>
+	 * Each line in the file is in the format of: https://user:pass@example.com
+	 * 
+	 * @param externalCGitCommand
+	 * @param tempFile
+	 * @throws IOException 
+	 */
+	public static void setupLocalCredentialHelper(String externalCGitCommand, Repository repo, File tempFile) throws IOException {
+		
+		// assuming this is a non-bare repo
+		runGitCommand(externalCGitCommand, repo, false, "config", "--local", "credential.helper", "store --file=" + tempFile.getAbsolutePath());
+	}
+	
+	/**
+	 * Remove any configured Credential Helper Section from the local git repository.
+	 * @param externalCGitCommand
+	 * @param repo
+	 * @throws IOException
+	 */
+	public static void cleanupLocalCredentialHelper(String externalCGitCommand, Repository repo) throws IOException {
+		// assuming this is a non-bare repo
+		runGitCommand(externalCGitCommand, repo, false, "config", "--local", "--remove-section", "credential");
+		
 	}
 
 }
