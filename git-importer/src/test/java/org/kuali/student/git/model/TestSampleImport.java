@@ -248,7 +248,15 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		
 		Assert.assertNotEquals("fusion-maven-plugin.dat should change between r21 and r22", preR22FusionData.name(), postR22FusionData.name());
 		
+		runImporter(repository, 23);
 		
+		GitTestUtils.assertRefNotNull(repository, "sandbox_CM", "Expected the sandbox_CM branch to exist");
+		
+		GitTestUtils.assertPathsExist(repository, "sandbox_CM", Arrays.asList(new String[] {"branch1/pom.xml", "branch1/module/pom.xml"}));
+		
+		runImporter(repository, 24);
+		
+		GitTestUtils.assertRefNotNull(repository, "contrib_CM_branch1_trunk", "Expected the contrib_CM_branch1_trunk branch to exist");
 	}
 
 	

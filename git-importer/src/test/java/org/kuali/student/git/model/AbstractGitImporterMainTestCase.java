@@ -64,6 +64,8 @@ public abstract class AbstractGitImporterMainTestCase {
 
 	private boolean enablePlugin;
 
+	private boolean bare = true;
+
 	/**
 	 * @param name
 	 * @param b 
@@ -72,6 +74,10 @@ public abstract class AbstractGitImporterMainTestCase {
 		this.name = name;
 		this.enablePlugin = enablePlugin;
 		
+	}
+	
+	protected void setBare(boolean bare) {
+		this.bare = bare;
 	}
 
 	@Before
@@ -82,7 +88,7 @@ public abstract class AbstractGitImporterMainTestCase {
 		FileUtils.deleteDirectory(gitRepository);
 		
 		repository = GitRepositoryUtils
-				.buildFileRepository(gitRepository, true);
+				.buildFileRepository(gitRepository, true, bare);
 		
 	}
 		

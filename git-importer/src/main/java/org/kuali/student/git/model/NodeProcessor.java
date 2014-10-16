@@ -1080,9 +1080,9 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		}
 	}
 
-	private GitBranchData getBranchData(SvnRevisionMap revMap) {
+	private GitBranchData getBranchData(SvnRevisionMap revMap, long currentRevision) {
 
-		return getBranchData(normalizeBranchName (revMap.getBranchName()), revMap.getRevision());
+		return getBranchData(normalizeBranchName (revMap.getBranchName()), currentRevision);
 	}
 
 	private String normalizeBranchName(String branchName) {
@@ -1105,13 +1105,13 @@ public class NodeProcessor implements IGitBranchDataProvider {
 		return revMaps;
 	}
 
-	private List<GitBranchData> getBranchDataList(List<SvnRevisionMap> revMaps) {
+	private List<GitBranchData> getBranchDataList(List<SvnRevisionMap> revMaps, long currentRevision) {
 
 		List<GitBranchData> gitBranchDataList = new ArrayList<>(revMaps.size());
 
 		for (SvnRevisionMap revMap : revMaps) {
 
-			gitBranchDataList.add(getBranchData(revMap));
+			gitBranchDataList.add(getBranchData(revMap, currentRevision));
 		}
 
 		return gitBranchDataList;
@@ -1142,7 +1142,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			}
 
 			copyOp.setTargetBranches(Arrays
-					.asList(new GitBranchData[] { getBranchData(revMap) }));
+					.asList(new GitBranchData[] { getBranchData(revMap, currentRevision) }));
 
 		} else {
 
@@ -1169,7 +1169,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			} else {
 				copyOp = new CopyFromOperation(OperationType.MULTI);
 
-				copyOp.setTargetBranches(getBranchDataList(getRevMapList(targetBranches)));
+				copyOp.setTargetBranches(getBranchDataList(getRevMapList(targetBranches), currentRevision));
 			}
 		}
 
@@ -1192,7 +1192,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 			
 			if (revisionMapResults.getSubPath().length() > 0) {
 				// delete the path from this branch
-				GitBranchData branchData = getBranchData(revisionMapResults.getRevMap());
+				GitBranchData branchData = getBranchData(revisionMapResults.getRevMap(), currentRevision);
 				
 				if (data != null && data.getBranchName().equals(candidateBranchName)) {
 					processedCurrentBranch = true;

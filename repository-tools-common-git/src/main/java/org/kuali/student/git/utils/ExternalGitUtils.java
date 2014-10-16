@@ -16,6 +16,7 @@ package org.kuali.student.git.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
@@ -85,6 +88,40 @@ public final class ExternalGitUtils {
 		}
 	}
 	
+	public static boolean applyPatch (String externalGitCommandPath, Repository repo, InputStream patchStream, OutputStream redirectStream) {
+		
+		try {
+			
+			/*
+			 * First read the patchStream into a temporary file
+			 */
+			
+			File tempFile = File.createTempFile("patch", "dat");
+			
+			tempFile.deleteOnExit();
+			
+			int totalCopied = IOUtils.copy(patchStream, new FileOutputStream(tempFile));
+			
+			log.debug("copied " + totalCopied + " bytes into " + tempFile.getAbsolutePath());
+			
+			List<String>commandArgs = new ArrayList<String>();
+			
+			commandArgs.add("apply");
+			commandArgs.add(tempFile.getAbsolutePath());
+			
+			Process p = runGitCommand(externalGitCommandPath, repo, false, commandArgs.toArray(new String[] {}));
+
+			waitFor(p, redirectStream);
+
+			return true;
+
+		} catch (IOException e) {
+			return false;
+		} catch (InterruptedException e) {
+			return false;
+		}
+		
+	}
 	/**
 	 * Use CGit to fetch all of the remotes defined in the projects git configuration.
 	 * 

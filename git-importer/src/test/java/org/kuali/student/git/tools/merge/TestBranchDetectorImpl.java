@@ -35,6 +35,17 @@ public class TestBranchDetectorImpl extends AbstractBranchDetectorTest {
 
 	
 	@Test
+	public void testSandboxBranches() throws VetoBranchException {
+		BranchData bd = branchDetector.parseBranch(123456L, "sandbox/ksenroll-xyz/ks-deployments/pom.xml");
+		
+		Assert.assertNotNull(bd);
+		
+		Assert.assertEquals("sandbox/ksenroll-xyz", bd.getBranchPath());
+		Assert.assertEquals("ks-deployments/pom.xml", bd.getPath());
+		Assert.assertEquals(Long.valueOf(123456L), bd.getRevision());	
+	}
+	
+	@Test
 	public void testBranchUtils() throws VetoBranchException {
 		
 		BranchData bd = branchDetector.parseBranch(123456L, "poc/personidentity/personidentity-api/branches/personidentity-api-dev/src/main/java/org/kuali/student/poc/xsd/personidentity/person/dto/AttributeSetDefinition.java");
