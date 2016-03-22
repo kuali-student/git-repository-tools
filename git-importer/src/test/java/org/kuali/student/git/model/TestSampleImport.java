@@ -263,7 +263,7 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 
 	private void runImporter(Repository repository, long importRevision) throws IOException {
 		
-		runImporter(repository, importRevision, "src/test/resources/sample/sample-r"+importRevision+".dump.bz2", "https://svn.sample.org", "fake-uuid");
+		runImporter(repository, importRevision, "src/test/resources/sample/sample-r"+importRevision+".dump.bz2", "https://svn.sample.org", "fake-uuid", "kuali.org");
 		
 	}
 	

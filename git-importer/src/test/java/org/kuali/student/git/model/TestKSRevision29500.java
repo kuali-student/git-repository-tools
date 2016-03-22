@@ -53,7 +53,7 @@ public class TestKSRevision29500 {
 		GitRepositoryUtils
 				.buildFileRepository(gitRepository, true);
 		
-		GitImporterMain.main(new String [] {"src/test/resources/ks-r29500.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r29500-ks-veto.log", "target/ks-r29500-ks-copyFrom-skipped.log", "target/ks-r29500-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid"});
+		GitImporterMain.main(new String [] {"src/test/resources/ks-r29500.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r29500-ks-veto.log", "target/ks-r29500-ks-copyFrom-skipped.log", "target/ks-r29500-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid", "kuali.org"});
 	
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new BZip2CompressorInputStream(new FileInputStream("target/ks-r29500/jsvn/merge.map"))));
 		

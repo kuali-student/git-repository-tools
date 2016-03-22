@@ -148,7 +148,7 @@ public class TestKSRevision65409To65443 extends AbstractGitImporterMainTestCase 
 	}
 
 	private void runImporter(Repository repository, long importRevision) throws IOException {
-		super.runImporter(repository, importRevision, "src/test/resources/ks-r" + importRevision + ".dump.bz2", "https://svn.kuali.org/repos/student", "fake-uuid");
+		super.runImporter(repository, importRevision, "src/test/resources/ks-r" + importRevision + ".dump.bz2", "https://svn.kuali.org/repos/student", "fake-uuid", "kuali.org");
 	}
 	
 

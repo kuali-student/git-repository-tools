@@ -15,11 +15,6 @@
  */
 package org.kuali.student.git.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.lib.Constants;
@@ -37,6 +32,11 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.kuali.student.git.importer.GitImporterMain;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
 import org.kuali.student.svn.model.ExternalModuleInfo;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
@@ -62,7 +62,7 @@ public class TestKSRevision27974 {
 		Repository repository = GitRepositoryUtils
 				.buildFileRepository(gitRepository, true);
 		
-		GitImporterMain.main(new String [] {"src/test/resources/ks-r27974.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r27974-ks-veto.log", "target/ks-r27974-ks-copyFrom-skipped.log", "target/ks-r27974-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid"});
+		GitImporterMain.main(new String [] {"src/test/resources/ks-r27974.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r27974-ks-veto.log", "target/ks-r27974-ks-copyFrom-skipped.log", "target/ks-r27974-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid", "kuali.org"});
 	
 		// get the fusion-maven-plugin.dat file and check its contents are what we expect.
 		
@@ -83,7 +83,14 @@ public class TestKSRevision27974 {
 		RevWalk rw = new RevWalk(repository);
 		
 		RevCommit commit = rw.parseCommit(branchHead);
-				
+
+        org.eclipse.jgit.lib.PersonIdent author = commit.getAuthorIdent();
+
+        org.eclipse.jgit.lib.PersonIdent committer = commit.getCommitterIdent();
+
+        Assert.assertEquals("jcaddel@kuali.org", author.getEmailAddress());
+        Assert.assertEquals("jcaddel@kuali.org", committer.getEmailAddress());
+
 		TreeWalk tw = new TreeWalk(repository);
 		
 		tw.addTree(commit.getTree().getId());

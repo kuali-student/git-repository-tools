@@ -14,19 +14,21 @@
  */
 package org.kuali.student.git.importer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.git.model.GitRepositoryUtils;
+import org.kuali.student.git.model.author.DefaultPersonIdentProviderImpl;
+import org.kuali.student.git.model.author.HostBasedPersonIdentProvider;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.subversion.SvnDumpFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 /**
  * @author Kuali Student Team
@@ -44,14 +46,15 @@ public class GitImporterMain {
 	 */
 	public static void main(final String[] args) {
 
-		if (args.length != 8 && args.length != 9) {
-			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> <gc enabled> <svn repo base url> <repo uuid> [<git command path>]");
+		if (args.length != 9 && args.length != 10) {
+			log.error("USAGE: <svn dump file> <git repository> <veto.log> <skipped-copy-from.log> <blob.log> <gc enabled> <svn repo base url> <repo uuid> <email host part> [<git command path>]");
 			log.error("\t<veto.log> : which paths were veto's as not being a valid branch");
 			log.error("\t<skipped-copy-from.log> : which copy-from-paths were skipped");
 			log.error("\t<blob.log> : issues related to blobs (typically directory copy related)");
 			log.error("\t<gc enabled> : set to 1 (true ever 500 revs) or 0 (false) to disable");
 			log.error("\t<svn repo base url> : the svn repo base url to use in the git-svn-id");
 			log.error("\t<repo uuid> : The svn repository uuid to use in the git-svn-id.\n\tIt you are importing from a clone use this to set the field to the real repositories uuid.");
+            log.error("\t<email host part> : The svn author becomes author@emailHostPart when imported.");
 			log.error("\t<git command path> : the path to a native git to use for gc's which occur every 500 revs");
 			System.exit(-1);
 		}
@@ -105,9 +108,15 @@ public class GitImporterMain {
 			repositoryUUID = args[7].trim();
 			
 			String nativeGitCommandPath = null;
-			
-			if (args.length == 9)
-				nativeGitCommandPath = args[8].trim();
+
+            String emailHostPart = args[8];
+
+            HostBasedPersonIdentProvider personIdentProvider = new DefaultPersonIdentProviderImpl();
+
+            personIdentProvider.setEmailHostPart(emailHostPart);
+
+			if (args.length == 10)
+				nativeGitCommandPath = args[9].trim();
 			
 			final Repository repo = GitRepositoryUtils.buildFileRepository(
 					gitRepository, false);
@@ -116,7 +125,7 @@ public class GitImporterMain {
 			
 			BZip2CompressorInputStream compressedInputStream = new BZip2CompressorInputStream(new FileInputStream (dumpFile));
 			
-			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl, repositoryUUID, branchDetector, gcEnabled, nativeGitCommandPath));
+			filter.parseDumpFile(compressedInputStream, new GitImporterParseOptions(repo, vetoLog, copyFromSkippedLog, blobLog, printGitSvnIds, repositoryBaseUrl, repositoryUUID, branchDetector, personIdentProvider, gcEnabled, nativeGitCommandPath));
 			
 			vetoLog.close();
 			copyFromSkippedLog.close();

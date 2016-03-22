@@ -61,7 +61,7 @@ public class TestKSRevision27975 {
 		Repository repository = GitRepositoryUtils
 				.buildFileRepository(gitRepository, true);
 		
-		GitImporterMain.main(new String [] {"src/test/resources/ks-r27975.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r27975-ks-veto.log", "target/ks-r27975-ks-copyFrom-skipped.log", "target/ks-r27975-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid"});
+		GitImporterMain.main(new String [] {"src/test/resources/ks-r27975.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r27975-ks-veto.log", "target/ks-r27975-ks-copyFrom-skipped.log", "target/ks-r27975-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid", "kuali.org"});
 		
 		RevWalk rw = new RevWalk(repository);
 		

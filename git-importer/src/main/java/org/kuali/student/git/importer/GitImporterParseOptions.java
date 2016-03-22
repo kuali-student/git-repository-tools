@@ -15,21 +15,6 @@
  */
 package org.kuali.student.git.importer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
-
-import javax.management.RuntimeErrorException;
-
 import org.eclipse.jgit.api.GarbageCollectCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -47,14 +32,15 @@ import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.common.io.ReadLineData;
 import org.kuali.student.git.model.BranchMergeInfo;
 import org.kuali.student.git.model.BranchRangeDataProviderImpl;
+import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.ExternalsUtils;
 import org.kuali.student.git.model.GitBranchData;
 import org.kuali.student.git.model.GitCommitData;
 import org.kuali.student.git.model.NodeProcessor;
-import org.kuali.student.git.model.ExternalModuleUtils;
 import org.kuali.student.git.model.SvnMergeInfoUtils;
 import org.kuali.student.git.model.SvnRevisionMapper;
 import org.kuali.student.git.model.SvnRevisionMapper.SvnRevisionMap;
+import org.kuali.student.git.model.author.PersonIdentProvider;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.git.model.branch.exceptions.VetoBranchException;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils;
@@ -66,6 +52,19 @@ import org.kuali.student.subversion.model.INodeFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
+
 /**
  * @author Kuali Student Team
  * 
@@ -75,7 +74,9 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 	private static final Logger log = LoggerFactory
 			.getLogger(GitImporterParseOptions.class);
 
-	private GitCommitData commitData = null;
+    private PersonIdentProvider personIdentProvider;
+
+    private GitCommitData commitData = null;
 
 	private long currentRevision = -1;
 
@@ -118,7 +119,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 	public GitImporterParseOptions(Repository repo, PrintWriter vetoLog,
 			PrintWriter copyFromSkippedLog, PrintWriter blobLog,
 			boolean printGitSvnIds, String repositoryBaseUrl,
-			String repositoryUUID, BranchDetector branchDetector,
+			String repositoryUUID, BranchDetector branchDetector, PersonIdentProvider personIdentProvider,
 			boolean gcEnabled, String nativeGitCommandPath) {
 
 		this.repo = repo;
@@ -129,6 +130,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 		this.repositoryBaseUrl = repositoryBaseUrl;
 		this.repositoryUUID = repositoryUUID;
 		this.branchDetector = branchDetector;
+        this.personIdentProvider = personIdentProvider;
 		this.externalGitCommandPath = nativeGitCommandPath;
 		this.gcEnabled = gcEnabled;
 
@@ -322,8 +324,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 			TimeZone tz = GitImporterDateUtils
 					.extractTimeZone(actualCommitDate);
 
-			commitData = new GitCommitData(new PersonIdent(userName,
-					emailAddress, actualCommitDate, tz), commitMessage);
+			commitData = new GitCommitData(new PersonIdent (personIdentProvider.getPerson(userName), actualCommitDate, tz), commitMessage);
 
 			nodeProcessor.setCommitData(commitData);
 

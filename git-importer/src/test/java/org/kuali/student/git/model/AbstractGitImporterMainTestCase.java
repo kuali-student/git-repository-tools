@@ -92,7 +92,7 @@ public abstract class AbstractGitImporterMainTestCase {
 		
 	}
 		
-	protected void runImporter(Repository repository, long importRevision, String dumpFilePath, String repoURL, String repoUUID) throws IOException {
+	protected void runImporter(Repository repository, long importRevision, String dumpFilePath, String repoURL, String repoUUID, String emailHostPart) throws IOException {
 		
 		SvnRevisionMapper revisionMapper = new SvnRevisionMapper(repository);
 //		
@@ -109,7 +109,7 @@ public abstract class AbstractGitImporterMainTestCase {
 		if (enablePlugin)
 			System.getProperties().setProperty("spring.profiles.active", "configured-plugin");
 		
-		GitImporterMain.main(new String [] {dumpFilePath, repository.getDirectory().getAbsolutePath(), "target/"+name+"-r"+importRevision+"-veto.log", "target/"+name+"-r"+importRevision+"-copyFrom-skipped.log", "target/"+name+"-r"+importRevision+"-blob.log", "0", repoURL, repoUUID});
+		GitImporterMain.main(new String [] {dumpFilePath, repository.getDirectory().getAbsolutePath(), "target/"+name+"-r"+importRevision+"-veto.log", "target/"+name+"-r"+importRevision+"-copyFrom-skipped.log", "target/"+name+"-r"+importRevision+"-blob.log", "0", repoURL, repoUUID, emailHostPart});
 		
 		
 	}
