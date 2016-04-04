@@ -14,20 +14,6 @@
  */
 package org.kuali.student.git.cleaner;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -49,6 +35,7 @@ import org.eclipse.jgit.transport.ReceiveCommand.Type;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.kuali.student.git.cleaner.model.SkipOverCommitException;
 import org.kuali.student.git.model.graft.GitGraft;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
@@ -56,6 +43,20 @@ import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
 import org.kuali.student.git.utils.ExternalGitUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author ocleirig
@@ -297,38 +298,30 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 			GitTreeData tree = treeProcessor
 					.extractExistingTreeDataFromCommit(commit.getId());
 
-			boolean recreate = processCommitTree(commit, tree);
+			try {
+				boolean recreate = processCommitTree(commit, tree);
 
-			if (!recreateCommitByTranslatedParent && !recreate) {
-				processedCommits.add(commit.getId());
-				continue;
+				if (!recreateCommitByTranslatedParent && !recreate) {
+					processedCommits.add(commit.getId());
+					continue;
+				}
+			} catch (SkipOverCommitException e) {
+				log.info("skipped over commit = " + commit.getId());
+				onSkipOverCommit(commit, tree);
+				continue; // skip to the next commit
 			}
 			
 			/*
 			 * Process in reverse order from old to new.
 			 */
-			CommitBuilder builder = new CommitBuilder();
-
-			builder.setAuthor(commit.getAuthorIdent());
-			builder.setMessage(commit.getFullMessage());
-
-			builder.setCommitter(commit.getCommitterIdent());
-			
-			if (tree.isTreeDirty()) {
-				
-				ObjectId newTreeId = tree.buildTree(inserter);
-				
-				builder.setTreeId(newTreeId);
+			CommitBuilder builder;
+			try {
+				builder = createCommitBuilder(commit, tree);
+			} catch (SkipOverCommitException e) {
+				log.info("skipped over commit = " + commit.getId());
+				onSkipOverCommit(commit, tree);
+				continue; // skip to the next commit
 			}
-			else {
-				builder.setTreeId(commit.getTree().getId());
-			}
-			
-			builder.setEncoding("UTF-8");
-
-			Set<ObjectId> newParents = processParents(commit);
-
-			builder.setParentIds(new ArrayList<>(newParents));
 
 			ObjectId newCommitId = inserter.insert(builder);
 			
@@ -451,8 +444,40 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 
 	}
 
+	protected void onSkipOverCommit(RevCommit commit, GitTreeData tree) {
+		
+	}
 
-	/**
+	protected CommitBuilder createCommitBuilder(RevCommit commit, GitTreeData tree) throws SkipOverCommitException, IOException {
+
+        CommitBuilder builder = new CommitBuilder();
+
+        builder.setAuthor(commit.getAuthorIdent());
+        builder.setMessage(commit.getFullMessage());
+
+        builder.setCommitter(commit.getCommitterIdent());
+
+        if (tree.isTreeDirty()) {
+
+            ObjectId newTreeId = tree.buildTree(inserter);
+
+            builder.setTreeId(newTreeId);
+        }
+        else {
+            builder.setTreeId(commit.getTree().getId());
+        }
+
+        builder.setEncoding("UTF-8");
+
+        Set<ObjectId> newParents = processParents(commit);
+
+        builder.setParentIds(new ArrayList<>(newParents));
+
+        return builder;
+    }
+
+
+    /**
 	 * Provides an extension point to alert that the commit should be recreated based on the fact that a parent has changed.
 	 * 
 	 * @param commit
@@ -515,25 +540,42 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 		
 	}
 
+	protected final Set<ObjectId> getParentCommitIds(RevCommit commit) {
+		Set<ObjectId> parentCommitIds = new LinkedHashSet<ObjectId>();
+
+		for (int i = 0; i < commit.getParentCount(); i++) {
+			ObjectId parentCommitId = commit.getParent(i).getId();
+			parentCommitIds.add(parentCommitId);
+		}
+
+		return parentCommitIds;
+	}
+	
 	/**
 	 * Default is to change parents that have been rewritten.
 	 * 
 	 * @param commit
 	 * @return altered list of parents for the commit given.
 	 */
+	
 	protected Set<ObjectId> processParents(RevCommit commit) {
+		
+		return processParents(getParentCommitIds(commit));
+	}
+	
+	protected Set<ObjectId> processParents(Set<ObjectId>originalParentCommitIds) {
 		
 		Set<ObjectId>newParents = new HashSet<ObjectId>();
 		
-		for (RevCommit parentCommit : commit.getParents()) {
+		for (ObjectId parentCommitId : originalParentCommitIds) {
 
 			ObjectId adjustedParentId = originalCommitIdToNewCommitIdMap
-					.get(parentCommit.getId());
+					.get(parentCommitId);
 
 			if (adjustedParentId != null)
 				newParents.add(adjustedParentId);
 			else
-				newParents.add(parentCommit.getId());
+				newParents.add(parentCommitId);
 		}
 		
 		return newParents;
@@ -551,7 +593,7 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 		
 	}
 
-	protected boolean processCommitTree(RevCommit commit, GitTreeData tree) throws MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
+	protected boolean processCommitTree(RevCommit commit, GitTreeData tree) throws SkipOverCommitException, MissingObjectException, IncorrectObjectTypeException, CorruptObjectException, IOException {
 		// default is to not change the commit.
 		
 		// the commit might still be rewritten if its parent has changed.

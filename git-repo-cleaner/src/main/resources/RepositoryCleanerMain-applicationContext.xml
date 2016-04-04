@@ -25,4 +25,8 @@
 	<bean id="repoMPXRewriter" class="org.kuali.student.git.cleaner.RepositoryRemoveMPXRewriter" />
 	
 	<bean id="rewriteFusionPluginData" class="org.kuali.student.git.cleaner.RewriteFusionPluginData " />
+
+    <bean id="splitMultiModule" class="org.kuali.student.git.cleaner.SplitMultiModuleRewriter" />
+    
+    <bean id="pruneEmpty" class="org.kuali.student.git.cleaner.PruneEmptyRewriter" />
  </beans>

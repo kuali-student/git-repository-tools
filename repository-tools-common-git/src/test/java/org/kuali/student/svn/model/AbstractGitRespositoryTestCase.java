@@ -14,10 +14,6 @@
  */
 package org.kuali.student.svn.model;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jgit.errors.CorruptObjectException;
@@ -41,6 +37,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.tree.GitTreeData;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * 
@@ -113,6 +113,20 @@ public abstract class AbstractGitRespositoryTestCase {
 		
 		return lines;
 	}
+
+    protected void assertSmallBlobContents (GitTreeData treeData, String path, String expectedContents) throws java.io.IOException {
+
+        org.eclipse.jgit.lib.ObjectId blobId = treeData.find(repo, path);
+
+        ObjectLoader loader = repo.newObjectReader().open(blobId, Constants.OBJ_BLOB);
+
+        // make sure this is only used for small blobs
+        Assert.assertFalse(loader.isLarge());
+
+        String contents = new String(loader.getBytes());
+
+        Assert.assertEquals(expectedContents, contents);
+    }
 	
 	protected void assertBlobContents (ObjectId blobId, int lineNumber, String expectedContent) throws MissingObjectException, IncorrectObjectTypeException, IOException {
 		
@@ -193,6 +207,7 @@ public abstract class AbstractGitRespositoryTestCase {
 
 		return update.update();
 	}
+	
 
 	protected ObjectId commit(ObjectInserter inserter, GitTreeData branch,
 			String commitMessage) throws IOException {
