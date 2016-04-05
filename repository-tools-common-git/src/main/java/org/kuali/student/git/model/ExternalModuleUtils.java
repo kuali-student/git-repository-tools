@@ -493,7 +493,7 @@ public class ExternalModuleUtils {
 		
 		modules = ExternalModuleUtils.extractFusionMavenPluginData(reader.open(fusionDataBlobId, Constants.OBJ_BLOB).openStream());
 		
-		reader.release();
+		reader.close();
 		
 		return modules;
 		

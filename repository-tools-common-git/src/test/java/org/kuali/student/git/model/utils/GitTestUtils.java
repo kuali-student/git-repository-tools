@@ -93,9 +93,9 @@ public final class GitTestUtils {
 		
 		Assert.assertEquals(0, unmatchedPaths.size());
 		
-		tw.release();
+		tw.close();
 		
-		rw.release();
+		rw.close();
 		
 	}
 	
@@ -150,9 +150,9 @@ public final class GitTestUtils {
 		
 		Assert.assertEquals(originalSize, unmatchedPaths.size());
 		
-		tw.release();
+		tw.close();
 		
-		rw.release();
+		rw.close();
 		
 	}
 
@@ -192,7 +192,7 @@ public final class GitTestUtils {
 		GitRefUtils.createBranch(repository, branchName, commit);
 		
 		inserter.flush();
-		inserter.release();
+		inserter.close();
 	}
 
 	public static void assertRefNotNull(Repository repo, String expectedBranchName, String onNullMessage) throws IOException {

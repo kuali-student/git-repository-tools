@@ -115,9 +115,9 @@ public class TestKSRevision27974 {
 				
 		Assert.assertEquals("ks-api::sandbox_ks-1.3-core-slice-demo_modules_ks-api_trunk::UNKNOWN", secondLine);
 		
-		tw.release();
+		tw.close();
 				
-		rw.release();
+		rw.close();
 		
 		revisionMapper.shutdown();
 		

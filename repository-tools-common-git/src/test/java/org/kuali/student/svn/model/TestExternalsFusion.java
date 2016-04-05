@@ -172,11 +172,11 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		Assert.assertEquals(false, findPath(tw, "branch1"));
 		Assert.assertEquals(false, findPath(tw, "branch2"));
 		
-		rw.release();
+		rw.close();
 		
-		objectReader.release();
+		objectReader.close();
 		
-		inserter.release();
+		inserter.close();
 		
 	}
 	
@@ -216,9 +216,9 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 			
 		}
 		
-		tw.release();
+		tw.close();
 		
-		rw.release();
+		rw.close();
 	}
 
 	@Test
@@ -298,11 +298,11 @@ public class TestExternalsFusion  extends AbstractGitRespositoryTestCase {
 		
 		Assert.assertEquals(true, findPath (tw, aggregate_file_path));
 		
-		tw.release();
+		tw.close();
 		
-		rw.release();
+		rw.close();
 		
-		objectReader.release();
+		objectReader.close();
 		
 	}
 

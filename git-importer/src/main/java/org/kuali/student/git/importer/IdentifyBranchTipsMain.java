@@ -209,7 +209,7 @@ public class IdentifyBranchTipsMain {
 				toDeleteWriter.println(branch);
 			}
 			
-			rw.release();
+			rw.close();
 			
 			tipWriter.close();
 			

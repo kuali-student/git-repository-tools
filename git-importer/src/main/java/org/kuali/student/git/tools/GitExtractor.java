@@ -116,7 +116,7 @@ public class GitExtractor {
 
 		RevTree target = walk.parseTree(tag.getObjectId());
 		
-		walk.release();
+		walk.close();
 
 		return target;
 	}

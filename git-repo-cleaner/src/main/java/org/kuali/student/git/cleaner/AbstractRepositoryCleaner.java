@@ -402,7 +402,7 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 
 			}
 
-			commitWalk.release();
+			commitWalk.close();
 		}
 
 		inserter.flush();
@@ -434,9 +434,9 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 		
 		log.info("Completed.");
 
-		walkRepo.release();
+		walkRepo.close();
 
-		inserter.release();
+		inserter.close();
 		
 		close();
 
@@ -514,7 +514,7 @@ public abstract class AbstractRepositoryCleaner implements RepositoryCleaner {
 		return iterator;
 	}
 
-	private void onBranchRefCreate(String adjustedBranchName,
+	protected void onBranchRefCreate(String adjustedBranchName,
 			ObjectId newCommitId) {
 		// TODO Auto-generated method stub
 		

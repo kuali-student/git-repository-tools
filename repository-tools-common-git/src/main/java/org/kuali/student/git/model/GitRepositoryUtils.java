@@ -83,7 +83,7 @@ public final class GitRepositoryUtils {
 		
 		RevCommit commit = rw.parseCommit(commitId);
 		
-		rw.release();
+		rw.close();
 	
 		return findPathsForBlobInTree(repository, commit.getTree().getId(), blobId);
 		
@@ -108,7 +108,7 @@ public final class GitRepositoryUtils {
 
 		}
 		
-		tw.release();
+		tw.close();
 		
 		
 		return paths;
@@ -121,7 +121,7 @@ public final class GitRepositoryUtils {
 		
 		RevCommit commit = rw.parseCommit(commitId);
 		
-		rw.release();
+		rw.close();
 	
 		return findInTree(repository, commit.getTree().getId(), filePath);
 		
@@ -166,7 +166,7 @@ public final class GitRepositoryUtils {
 
 				if ((currentPartIndex + 1) == parts.length) {
 					// at the end so use the current object id.
-					tw.release();
+					tw.close();
 					return tw.getObjectId(0);
 				} else {
 					if (tw.getFileMode(0).equals(FileMode.TYPE_TREE)) {
@@ -174,7 +174,7 @@ public final class GitRepositoryUtils {
 						currentPartIndex++;
 					}
 					else {
-						tw.release();
+						tw.close();
 						return null;
 					}
 				}
@@ -182,7 +182,7 @@ public final class GitRepositoryUtils {
 			}
 		}
 
-		tw.release();
+		tw.close();
 		return null;
 
 	}

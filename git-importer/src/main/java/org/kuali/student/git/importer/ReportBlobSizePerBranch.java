@@ -146,15 +146,15 @@ public class ReportBlobSizePerBranch {
 				System.out.println(output);
 				outputWriter.println(output);
 				
-				commitHistoryWalk.release();
+				commitHistoryWalk.close();
 				
 				
 				
 			}
 			
-			tw.release();
-			rw.release();
-			objectReader.release();
+			tw.close();
+			rw.close();
+			objectReader.close();
 			
 			outputWriter.close();
 			

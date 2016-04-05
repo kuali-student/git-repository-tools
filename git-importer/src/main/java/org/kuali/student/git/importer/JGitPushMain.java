@@ -185,7 +185,7 @@ public class JGitPushMain {
 
 			push(repo, remoteName, refsToUpdate, null, null);
 
-			rw.release();
+			rw.close();
 
 			repo.close();
 

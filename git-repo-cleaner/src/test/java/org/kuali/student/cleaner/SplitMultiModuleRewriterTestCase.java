@@ -14,14 +14,32 @@
  */
 package org.kuali.student.cleaner;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectInserter;
+import org.eclipse.jgit.lib.ObjectReader;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevSort;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.TreeRevFilter;
+import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
+import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.junit.Test;
-import org.kuali.student.git.cleaner.PruneEmptyRewriter;
+import org.kuali.student.git.cleaner.SplitMultiModuleJGitRewriter;
 import org.kuali.student.git.cleaner.SplitMultiModuleRewriter;
 import org.kuali.student.git.model.DummyGitTreeNodeInitializer;
 import org.kuali.student.git.model.GitRepositoryUtils;
@@ -70,10 +88,20 @@ public class SplitMultiModuleRewriterTestCase extends AbstractGitRespositoryTest
 		// create trunk
 		GitTreeData trunk = new GitTreeData(new DummyGitTreeNodeInitializer());
 		
+		storeFile (inserter, trunk, "readme.txt", "first");
+		
+		ObjectId commitId = commit (inserter, trunk, "initial commit should be skipped over");
+		
+		inserter.flush();
+		
+		assertSmallBlobContents(trunk, "readme.txt", "first");
+		 
+		GitRefUtils.createOrUpdateBranch(repo, Constants.R_HEADS + "trunk", commitId);
+
 		storeFile (inserter, trunk, "src/modules/my-module/example.txt", "test");
 		storeFile (inserter, trunk, "readme.txt", "test");
 		
-		ObjectId commitId = commit (inserter, trunk, "initial trunk commit");
+		commitId = commit (inserter, trunk, "add my-module commit", commitId);
 		
 		inserter.flush();
 
@@ -110,12 +138,22 @@ public class SplitMultiModuleRewriterTestCase extends AbstractGitRespositoryTest
 
         GitRefUtils.createOrUpdateBranch(repo, Constants.R_HEADS + "release", commitId);
 
-        inserter.release();
+        inserter.close();
 
         repo.getRefDatabase().refresh();
 
 
     }
+	
+	@Test
+	public void testRevWalkGeneratorRewriter () throws MissingObjectException, IncorrectObjectTypeException, IOException {
+
+		SplitMultiModuleJGitRewriter rewriter = new SplitMultiModuleJGitRewriter(repo.getDirectory().getAbsolutePath(), true, "src/modules/my-module");
+		
+		rewriter.execute();
+		
+		
+	}
 	
 	@Test
 	public void testSplitMultiModuleRewriterOnRepo() throws Exception {
@@ -135,17 +173,17 @@ public class SplitMultiModuleRewriterTestCase extends AbstractGitRespositoryTest
 
         rewriter.close();
         
-        PruneEmptyRewriter pruner = new PruneEmptyRewriter();
-        
-        List<String>prunerArgs = new ArrayList<String>();
-        
-        prunerArgs.add(repo.getDirectory().getAbsolutePath());
-        
-        pruner.validateArgs(prunerArgs);
-        
-        pruner.execute();
-        
-        pruner.close();
+//        PruneEmptyRewriter pruner = new PruneEmptyRewriter();
+//        
+//        List<String>prunerArgs = new ArrayList<String>();
+//        
+//        prunerArgs.add(repo.getDirectory().getAbsolutePath());
+//        
+//        pruner.validateArgs(prunerArgs);
+//        
+//        pruner.execute();
+//        
+//        pruner.close();
         
 		
 	}

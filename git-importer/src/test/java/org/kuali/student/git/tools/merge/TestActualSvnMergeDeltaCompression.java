@@ -126,7 +126,7 @@ public class TestActualSvnMergeDeltaCompression extends
 		
 		SvnMergeInfoUtils.consolidateConsecutiveRanges(new BranchRangeDataProviderImpl(revisionMapper, revWalk), branchDetector, new LargeBranchNameProviderMapImpl(), deltas);
 		
-		revWalk.release();
+		revWalk.close();
 		
 		assertDeltaRanges (deltas, "trunk", new Long[] {1000L});
 		
@@ -156,7 +156,7 @@ public class TestActualSvnMergeDeltaCompression extends
 		
 		SvnMergeInfoUtils.consolidateConsecutiveRanges(new BranchRangeDataProviderImpl(revisionMapper, revWalk), branchDetector, new LargeBranchNameProviderMapImpl(), deltas);
 		
-		revWalk.release();
+		revWalk.close();
 		
 		assertDeltaRanges (deltas, "trunk", new Long[] {1L, 1998L});
 		

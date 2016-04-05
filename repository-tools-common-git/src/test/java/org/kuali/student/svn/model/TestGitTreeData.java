@@ -148,7 +148,7 @@ public class TestGitTreeData extends AbstractGitRespositoryTestCase {
 			}
 		}
 		
-		tw.release();
+		tw.close();
 
 		Assert.assertArrayEquals(expectedBlobNames.toArray(), actualBlobNames.toArray());
 		

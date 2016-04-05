@@ -376,7 +376,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					}
 
 					objectInserter.flush();
-					objectInserter.release();
+					objectInserter.close();
 				} else {
 					// check for and remove if present.
 					ObjectId blobId = data.findPath(repo,
@@ -481,7 +481,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 				inserter.flush();
 
-				inserter.release();
+				inserter.close();
 
 				// post commit update the branch reference.
 
@@ -535,7 +535,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 			knownBranchMap.clear();
 
-			rw.release();
+			rw.close();
 
 		} catch (IOException e) {
 			throw new RuntimeException(
@@ -580,7 +580,7 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					new BranchRangeDataProviderImpl(revisionMapper, rw),
 					branchDetector, revisionMapper, deltas);
 
-			rw.release();
+			rw.close();
 
 			for (BranchMergeInfo delta : deltas) {
 

@@ -90,14 +90,14 @@ public class ShowTree {
 					currentCommit = currentCommit.getParent(0);
 				}
 				
-				rw.release();
+				rw.close();
 			}
 			else {
 				usage();
 			}
 			
 			
-			tw.release();
+			tw.close();
 			
 			
 			

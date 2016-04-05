@@ -269,9 +269,9 @@ public class ApplyManualBranchCleanup {
 						.setProgressMonitor(new TextProgressMonitor()).call();
 			}
 
-			objectInserter.release();
+			objectInserter.close();
 
-			rw.release();
+			rw.close();
 
 		} catch (Exception e) {
 

@@ -93,7 +93,7 @@ public abstract class AbstractGitRespositoryTestCase {
 	public final void after() throws Exception {
 		onAfter();
 		
-		this.rw.release();
+		this.rw.close();
 		this.repo.close();
 	}
 
@@ -191,7 +191,7 @@ public abstract class AbstractGitRespositoryTestCase {
 
 		}
 
-		walk.release();
+		walk.close();
 		
 		return builder.toString();
 	}

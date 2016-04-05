@@ -143,8 +143,8 @@ public class GitTreeProcessor {
 				return; // stop when the visitor indicates its done.
 		}
 
-		treeWalk.release();
-		walk.release();
+		treeWalk.close();
+		walk.close();
 
 	}
 
@@ -263,7 +263,7 @@ public class GitTreeProcessor {
 		treeData.setInitialized(true);
 		treeData.setDirty(false);
 
-		tw.release();
+		tw.close();
 
 		return treeData;
 
@@ -285,7 +285,7 @@ public class GitTreeProcessor {
 
 		RevCommit parentCommit = rw.parseCommit(parentId);
 
-		rw.release();
+		rw.close();
 
 		String[] subPathParts = branchSubPath.split("/");
 
@@ -331,7 +331,7 @@ public class GitTreeProcessor {
 				}
 			}
 
-			tw.release();
+			tw.close();
 
 			return treeId;
 		}

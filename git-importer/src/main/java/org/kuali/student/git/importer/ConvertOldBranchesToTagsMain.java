@@ -171,10 +171,10 @@ public class ConvertOldBranchesToTagsMain {
 				}
 			}
 			
-			rw.release();
+			rw.close();
 			
 			objectInserter.flush();
-			objectInserter.release();
+			objectInserter.close();
 			
 		} catch (Exception e) {
 			

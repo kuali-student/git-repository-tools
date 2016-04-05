@@ -175,11 +175,11 @@ public class ModuleMergeToolMain {
 				
 				log.info("new commit id = " + commitId);
 				
-				rw.release();
+				rw.close();
 				
-				inserter.release();
+				inserter.close();
 				
-				or.release();
+				or.close();
 			}
 			
 				

@@ -115,7 +115,7 @@ public class JGitTreeUtils {
 			
 		}
 		
-		tw.release();
+		tw.close();
 		
 		return treeData;
 	}

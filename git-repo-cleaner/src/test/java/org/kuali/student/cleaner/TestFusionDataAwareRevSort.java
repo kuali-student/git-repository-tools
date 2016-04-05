@@ -460,7 +460,7 @@ public class TestFusionDataAwareRevSort extends AbstractGitRespositoryTestCase {
 				
 		Assert.assertEquals(branch1HeadRevCommit.getId(), candiate.getId());
 		
-		rw.release();
+		rw.close();
 	}
 	
 	

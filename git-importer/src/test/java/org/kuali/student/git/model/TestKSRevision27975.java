@@ -98,9 +98,9 @@ public class TestKSRevision27975 {
 		
 		Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", lines.get(0));
 		
-		tw.release();
+		tw.close();
 		
-		rw.release();
+		rw.close();
 		repository.close();
 		
 		

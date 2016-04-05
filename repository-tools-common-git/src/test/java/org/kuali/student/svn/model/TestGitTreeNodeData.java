@@ -112,7 +112,7 @@ public class TestGitTreeNodeData extends AbstractGitRespositoryTestCase {
 			counter++;
 		}
 		
-		tw.release();
+		tw.close();
 		
 		/*
 		 * Check that we have merged the two trees togather and there are now 4 files in the tree.
@@ -174,7 +174,7 @@ public class TestGitTreeNodeData extends AbstractGitRespositoryTestCase {
 				blobId = tw.getObjectId(0);
 		}
 		
-		tw.release();
+		tw.close();
 		
 		/*
 		 * Check that we have merged the two trees together and there are now 3 files in the tree.
@@ -259,7 +259,7 @@ public class TestGitTreeNodeData extends AbstractGitRespositoryTestCase {
 			}
 		}
 		
-		tw.release();
+		tw.close();
 		
 	}
 	

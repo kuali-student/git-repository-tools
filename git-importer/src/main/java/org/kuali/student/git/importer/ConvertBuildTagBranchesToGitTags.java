@@ -226,9 +226,9 @@ public class ConvertBuildTagBranchesToGitTags {
 //				continue;
 //			}
 		
-			objectInserter.release();
+			objectInserter.close();
 			
-			rw.release();
+			rw.close();
 			
 			
 		} catch (Exception e) {

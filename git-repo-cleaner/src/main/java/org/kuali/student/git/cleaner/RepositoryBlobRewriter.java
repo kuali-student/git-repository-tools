@@ -154,7 +154,7 @@ public class RepositoryBlobRewriter extends AbstractRepositoryCleaner {
 					tree.addBlob(path, newBlobId);
 				}
 
-				inserter.release();
+				inserter.close();
 			}
 
 		}

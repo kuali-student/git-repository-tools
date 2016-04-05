@@ -1249,7 +1249,7 @@ public class NodeProcessor implements IGitBranchDataProvider {
 							getInputStream(), adjustedContentLength));
 
 			objectInserter.flush();
-			objectInserter.release();
+			objectInserter.close();
 
 			return id;
 

@@ -144,7 +144,7 @@ public class RepositoryRemoveMPXRewriter extends AbstractRepositoryCleaner {
 			
 		}
 		
-		tw.release();
+		tw.close();
 		
 		return recreateCommit;
 	}
