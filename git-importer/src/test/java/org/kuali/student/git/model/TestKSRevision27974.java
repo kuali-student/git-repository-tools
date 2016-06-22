@@ -62,7 +62,7 @@ public class TestKSRevision27974 {
 		Repository repository = GitRepositoryUtils
 				.buildFileRepository(gitRepository, true);
 		
-		GitImporterMain.main(new String [] {"src/test/resources/ks-r27974.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r27974-ks-veto.log", "target/ks-r27974-ks-copyFrom-skipped.log", "target/ks-r27974-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid", "kuali.org"});
+		GitImporterMain.main(new String [] {"src/test/resources/ks-r27974.dump.bz2", gitRepository.getAbsolutePath(), "target/ks-r27974-ks-veto.log", "target/ks-r27974-ks-copyFrom-skipped.log", "target/ks-r27974-blob.log", "0", "https://svn.kuali.org/repos/student", "uuid", "host:kuali.org"});
 	
 		// get the fusion-maven-plugin.dat file and check its contents are what we expect.
 		

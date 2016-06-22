@@ -66,7 +66,7 @@ public class TestKSCMContribImport extends AbstractGitImporterMainTestCase {
 		
 		setupBase();
 		
-		super.runImporter(repository, 53643, "src/test/resources/ks-r53643-to-53644.dump.bz2", "https://svn.kuali.org/repos/student", "fake-uuid", "kuali.org");
+		super.runImporter(repository, 53643, "src/test/resources/ks-r53643-to-53644.dump.bz2", "https://svn.kuali.org/repos/student", "fake-uuid", "host:kuali.org");
 		
 		
 		
@@ -102,7 +102,7 @@ public class TestKSCMContribImport extends AbstractGitImporterMainTestCase {
 	}
 
 	private void runImporter(Repository repository, long importRevision) throws IOException {
-		super.runImporter(repository, importRevision, "src/test/resources/ks-r" + importRevision + ".dump.bz2", "https://svn.kuali.org/repos/student", "fake-uuid", "kuali.org");
+		super.runImporter(repository, importRevision, "src/test/resources/ks-r" + importRevision + ".dump.bz2", "https://svn.kuali.org/repos/student", "fake-uuid", "host:kuali.org");
 	}
 	
 

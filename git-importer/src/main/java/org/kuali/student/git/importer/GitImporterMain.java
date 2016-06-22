@@ -17,8 +17,10 @@ package org.kuali.student.git.importer;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.eclipse.jgit.lib.Repository;
 import org.kuali.student.git.model.GitRepositoryUtils;
+import org.kuali.student.git.model.author.AuthorsFilePersonIdentProvider;
 import org.kuali.student.git.model.author.DefaultPersonIdentProviderImpl;
 import org.kuali.student.git.model.author.HostBasedPersonIdentProvider;
+import org.kuali.student.git.model.author.PersonIdentProvider;
 import org.kuali.student.git.model.branch.BranchDetector;
 import org.kuali.student.subversion.SvnDumpFilter;
 import org.slf4j.Logger;
@@ -54,7 +56,7 @@ public class GitImporterMain {
 			log.error("\t<gc enabled> : set to 1 (true ever 500 revs) or 0 (false) to disable");
 			log.error("\t<svn repo base url> : the svn repo base url to use in the git-svn-id");
 			log.error("\t<repo uuid> : The svn repository uuid to use in the git-svn-id.\n\tIt you are importing from a clone use this to set the field to the real repositories uuid.");
-            log.error("\t<email host part> : The svn author becomes author@emailHostPart when imported.");
+            log.error("\t<host:email host part|authors:authors.txt path> : The svn author becomes author@emailHostPart when imported.");
 			log.error("\t<git command path> : the path to a native git to use for gc's which occur every 500 revs");
 			System.exit(-1);
 		}
@@ -109,11 +111,11 @@ public class GitImporterMain {
 			
 			String nativeGitCommandPath = null;
 
-            String emailHostPart = args[8];
+            String identType = args[8];
 
-            HostBasedPersonIdentProvider personIdentProvider = new DefaultPersonIdentProviderImpl();
 
-            personIdentProvider.setEmailHostPart(emailHostPart);
+
+           PersonIdentProvider personIdentProvider = createIdentProvider(identType);
 
 			if (args.length == 10)
 				nativeGitCommandPath = args[9].trim();
@@ -138,7 +140,41 @@ public class GitImporterMain {
 		}
 
 	}
-	
-	
+
+    private static PersonIdentProvider createIdentProvider(String identType) throws java.io.IOException {
+
+        String parts[] = identType.split(":");
+
+        if (parts.length < 2)
+            throw new IllegalArgumentException("Expected: 'host:email host part|authors:authors.txt:unknown user host part' path not '"+identType+"'");
+
+        if (parts[0].toLowerCase().equals("host")) {
+            String emailHostPart = parts[1];
+
+            HostBasedPersonIdentProvider personIdentProvider = new DefaultPersonIdentProviderImpl();
+
+            personIdentProvider.setEmailHostPart(emailHostPart);
+
+            return personIdentProvider;
+        }
+        else if (parts[0].toLowerCase().equals("authors")) {
+
+            if (parts.length != 3)
+                throw new IllegalArgumentException("Expected: 'authors:authors.txt:unknown user host part' path not '"+identType+"'");
+
+            String authorsFileName = parts[1].trim();
+
+            String unknownEmailHostPart = parts[2].trim();
+
+            return new AuthorsFilePersonIdentProvider(authorsFileName, unknownEmailHostPart);
+
+        }
+        else {
+            throw new IllegalArgumentException("Expected: 'host:email host part|authors:authors.txt:unknown user host part' path not '"+identType+"'");
+        }
+
+
+    }
+
 
 }

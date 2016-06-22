@@ -15,14 +15,12 @@
  */
 package org.kuali.student.git.model;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +31,10 @@ import org.kuali.student.git.model.utils.GitTestUtils;
 import org.kuali.student.svn.model.ExternalModuleInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 
@@ -47,13 +49,31 @@ import org.slf4j.LoggerFactory;
 public class TestSampleImport extends AbstractGitImporterMainTestCase {
 
 	private static final Logger log = LoggerFactory.getLogger(TestSampleImport.class);
-	
+
+
 	/**
 	 * @param name
 	 */
 	public TestSampleImport() {
 		super ("sample", false);
+
+
 	}
+
+    private void assertAuthorEquals (String branch, String author, String email) throws java.io.IOException {
+
+        Ref branchHead = repository.findRef(branch);
+
+        RevCommit commit = rw.parseCommit(branchHead.getObjectId());
+
+        PersonIdent authorIdent = commit.getAuthorIdent();
+        PersonIdent commiterIdent = commit.getCommitterIdent();
+
+        Assert.assertEquals(author, authorIdent.getName());
+        Assert.assertEquals(email, authorIdent.getEmailAddress());
+
+    }
+
 
 	@Test
 	public void testSampleImport () throws IOException {
@@ -61,7 +81,11 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		runImporter(repository, 0);
 		
 		runImporter(repository, 1);
-		
+
+        repository.findRef("trunk");
+
+        assertAuthorEquals("trunk", "Test Mike User", "test@kuali.org");
+
 		GitTestUtils.assertRefNotNull(repository, "trunk", "expected trunk to exist");
 		
 		GitTestUtils.assertPathsExist(repository, "trunk", Arrays.asList(new String [] {"pom.xml", "module/pom.xml", "module/src/main/resources/test.txt"}));
@@ -71,6 +95,8 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		GitTestUtils.assertFileContentEquals (repository, "trunk", "module/src/main/resources/test.txt", " test resource file\n");
 		
 		runImporter(repository, 2);
+
+        assertAuthorEquals("branches_branch1", "Test Mike Slash User", "test-slash@kuali.org");
 		
 		GitTestUtils.assertRefNotNull(repository, "branches_branch1", "expected branch1 to exist");
 		
@@ -263,7 +289,7 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 
 	private void runImporter(Repository repository, long importRevision) throws IOException {
 		
-		runImporter(repository, importRevision, "src/test/resources/sample/sample-r"+importRevision+".dump.bz2", "https://svn.sample.org", "fake-uuid", "kuali.org");
+		runImporter(repository, importRevision, "src/test/resources/sample/sample-r"+importRevision+".dump.bz2", "https://svn.sample.org", "fake-uuid", "authors:src/test/resources/sample/authors.txt:kuali.org");
 		
 	}
 	

@@ -62,6 +62,8 @@ public abstract class AbstractGitImporterMainTestCase {
 	
 	protected Repository repository;
 
+    protected RevWalk rw;
+
 	private boolean enablePlugin;
 
 	private boolean bare = true;
@@ -89,6 +91,11 @@ public abstract class AbstractGitImporterMainTestCase {
 		
 		repository = GitRepositoryUtils
 				.buildFileRepository(gitRepository, true, bare);
+
+        if (rw == null)
+            rw = new org.eclipse.jgit.revwalk.RevWalk(repository);
+        else
+            rw.reset();
 		
 	}
 		
@@ -110,7 +117,7 @@ public abstract class AbstractGitImporterMainTestCase {
 			System.getProperties().setProperty("spring.profiles.active", "configured-plugin");
 		
 		GitImporterMain.main(new String [] {dumpFilePath, repository.getDirectory().getAbsolutePath(), "target/"+name+"-r"+importRevision+"-veto.log", "target/"+name+"-r"+importRevision+"-copyFrom-skipped.log", "target/"+name+"-r"+importRevision+"-blob.log", "0", repoURL, repoUUID, emailHostPart});
-		
+
 		
 	}
 		
