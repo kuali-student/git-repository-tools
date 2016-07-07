@@ -14,6 +14,22 @@
  */
 package org.kuali.student.git.model;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils;
+import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
+import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -31,28 +47,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
-import org.eclipse.jgit.lib.Repository;
-import org.kuali.student.git.model.branch.utils.GitBranchUtils;
-import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
-import org.kuali.student.git.model.tree.utils.GitTreeDataUtils;
-import org.kuali.student.git.model.tree.utils.GitTreeProcessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -197,6 +197,12 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 	private GitTreeProcessor treeProcessor;
 
+    /*
+      For the target branch when loading this will have the most recent List<BranchMergeInfo> of branches that have been
+      already merged into the targetBranch.
+     */
+    private Map<String, Long>branchNameToLatestRevisionMap = new LinkedHashMap<>();
+
 	private static Comparator<? super String> STRING_LONG_VALUE_COMPARATOR = new Comparator<String>() {
 
 		@Override
@@ -308,6 +314,8 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 		revisionBranchMergeDataRandomAccessFile.close();
 
+        branchNameToLatestRevisionMap.clear();
+
 	}
 
 	private void loadRevisionMergeIndexData() throws IOException {
@@ -324,13 +332,15 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 			String parts[] = line.split("::");
 
-			if (parts.length != 3)
+			if (parts.length != 4)
 				continue;
 
 			long revision = Long.parseLong(parts[0]);
 			String targetBranch = parts[1];
 			long byteStartOffset = Long.parseLong(parts[2]);
 			long totalbytes = Long.parseLong(parts[3]);
+
+            branchNameToLatestRevisionMap.put(targetBranch, Long.valueOf(revision));
 
 			Map<String, RevisionMapOffset> targetBranchOffsetMap = getRevisionMergeDataByTargetBranch(
 					parts[0], true);
@@ -973,6 +983,8 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 		endOfRevisionBranchMergeDataFileInBytes += bytesWritten;
 
+        branchNameToLatestRevisionMap.put(targetBranch, Long.valueOf(revision));
+
 	}
 
 	private BranchMergeInfo extractBranchMergeInfoFromLine(String branchName,
@@ -989,7 +1001,24 @@ public class SvnRevisionMapper implements ILargeBranchNameProvider {
 
 	}
 
-	/**
+    /**
+     * Get the latest list of source merged revisions for the targetBranch named.  In some cases there can be gaps in the revision
+     * numbers stored in the merge info file if there are commits that don't update the list of merged results.
+     *
+     */
+    public List<BranchMergeInfo> getLatestMergeBranches(String targetBranch) throws IOException {
+
+        Long latestRevision = this.branchNameToLatestRevisionMap.get(targetBranch);
+
+        if (latestRevision == null)
+            return null;
+
+
+        return getMergeBranches(latestRevision, targetBranch);
+
+    }
+
+    /**
 	 * Get the list of branch merge info for the revision and target branch
 	 * given.
 	 * 

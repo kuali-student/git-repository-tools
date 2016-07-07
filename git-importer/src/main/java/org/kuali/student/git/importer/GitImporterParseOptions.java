@@ -551,11 +551,11 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 
 		try {
 
-			List<BranchMergeInfo> currentMergeInfo = revisionMapper
-					.getMergeBranches(currentRevision, data.getBranchPath());
+			List<BranchMergeInfo> currentMergeInfo = data
+                    .getAccumulatedBranchMergeData();
 
 			List<BranchMergeInfo> sourceMergeInfo = revisionMapper
-					.getMergeBranches(currentRevision - 1, data.getBranchPath());
+					.getLatestMergeBranches(data.getBranchPath());
 
 			if (currentMergeInfo == null
 					|| (sourceMergeInfo == null && currentMergeInfo == null))
@@ -573,6 +573,9 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 				deltas = SvnMergeInfoUtils.computeDifference(sourceMergeInfo,
 						currentMergeInfo);
 			}
+
+            if (deltas.size() == 0)
+                return mergeInfoParentIds;
 
 			RevWalk rw = new RevWalk(repo);
 

@@ -132,7 +132,7 @@ public class TestSvnMergeInfoParser extends AbstractBranchDetectorTest {
 		List<BranchMergeInfo> mergeBmi = SvnMergeInfoUtils.extractBranchMergeInfoFromInputStream(branchDetector, merge);
 		
 		List<BranchMergeInfo> deltas = SvnMergeInfoUtils.computeDifference(sourceBmi, mergeBmi);
-		
+
 		SvnMergeInfoUtils.consolidateConsecutiveRanges(new BranchRangeDataProvider() {
 			
 			@Override
@@ -145,10 +145,10 @@ public class TestSvnMergeInfoParser extends AbstractBranchDetectorTest {
 			}
 			
 		}, branchDetector, new LargeBranchNameProviderMapImpl(), deltas);
-		
+
 		assertDeltaRanges (deltas, "enrollment/ks-lum/branches/2.0.0-m8-api-upgrade", new Long[] {54996L});
 		
-		assertDeltaRanges (deltas, "enrollment/ks-lum/branches/CM-2.0", new Long[] {40608L, 40610L, 40624L, 40652L, 40884L, 40939L, 41045L, 49407L, 49416L});
+		assertDeltaRanges (deltas, "enrollment/ks-lum/branches/CM-2.0", new Long[] {40652L, 40884L, 49407L, 49416L});
 		
 	}
 
