@@ -279,10 +279,22 @@ public class TestSampleImport extends AbstractGitImporterMainTestCase {
 		GitTestUtils.assertRefNotNull(repository, "sandbox_CM", "Expected the sandbox_CM branch to exist");
 		
 		GitTestUtils.assertPathsExist(repository, "sandbox_CM", Arrays.asList(new String[] {"branch1/pom.xml", "branch1/module/pom.xml"}));
-		
+
 		runImporter(repository, 24);
 		
 		GitTestUtils.assertRefNotNull(repository, "contrib_CM_branch1_trunk", "Expected the contrib_CM_branch1_trunk branch to exist");
+
+        runImporter(repository, 25);
+
+        GitTestUtils.assertNumberOfCommitParents(repository, "branches_branch1", 2);
+
+        runImporter(repository, 26);
+
+        GitTestUtils.assertFileContentEquals (repository, "trunk", "README", "Example Readme\n");
+
+        runImporter(repository, 27);
+
+        GitTestUtils.assertNumberOfCommitParents(repository, "branches_branch1", 2);
 	}
 
 	

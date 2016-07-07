@@ -14,14 +14,6 @@
  */
 package org.kuali.student.git.model;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.kuali.student.branch.model.BranchData;
 import org.kuali.student.common.io.IOUtils;
 import org.kuali.student.git.model.branch.BranchDetector;
@@ -30,6 +22,15 @@ import org.kuali.student.git.model.branch.utils.GitBranchUtils;
 import org.kuali.student.git.model.branch.utils.GitBranchUtils.ILargeBranchNameProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Kuali Student Team
@@ -223,6 +224,15 @@ public class SvnMergeInfoUtils {
 				difference.add(targetBmi);
 			}
 			else {
+                BranchMergeInfo differenceBMI = new BranchMergeInfo (targetBmi.getBranchName());
+
+                LinkedHashSet<Long> revsDifference = new LinkedHashSet<Long>(targetBmi.getMergedRevisions());
+
+                revsDifference.removeAll(sourceBmi.getMergedRevisions());
+
+                differenceBMI.setMergedRevisions(revsDifference);
+
+                difference.add(differenceBMI);
 			}
 		}
 		

@@ -14,12 +14,6 @@
  */
 package org.kuali.student.git.model.utils;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.CommitBuilder;
@@ -40,6 +34,12 @@ import org.kuali.student.git.model.GitRepositoryUtils;
 import org.kuali.student.git.model.ref.exception.BranchRefExistsException;
 import org.kuali.student.git.model.ref.utils.GitRefUtils;
 
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author ocleirig
  *
@@ -51,6 +51,22 @@ public final class GitTestUtils {
 	 */
 	private GitTestUtils() {
 	}
+
+    public static void assertNumberOfCommitParents(org.eclipse.jgit.lib.Repository repository, String branchName, int expectedNumberOfParents) throws java.io.IOException {
+        Ref branchRef = repository.findRef(branchName);
+
+        Assert.assertNotNull("Expected a branch to exist for " + branchName, branchRef);
+
+        RevWalk rw = new org.eclipse.jgit.revwalk.RevWalk(repository);
+
+        org.eclipse.jgit.revwalk.RevCommit commit = rw.parseCommit(branchRef.getObjectId());
+
+        Assert.assertEquals("Expected most recent commit on branch: " + branchName + " to have " + expectedNumberOfParents + " parents.", expectedNumberOfParents, commit.getParentCount());
+
+        rw.close();
+
+
+    }
 	
 	public static void assertPathsExist(Repository repository, String branchName,
 			List<String> pathList) throws IOException {
