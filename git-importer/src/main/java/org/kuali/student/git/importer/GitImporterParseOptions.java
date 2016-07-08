@@ -57,6 +57,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -596,30 +597,29 @@ public class GitImporterParseOptions extends AbstractParseOptions {
 					BranchData mergedBranchData = branchDetector.parseBranch(
 							0L, mergedBranchPath);
 
-					for (Long mergedRevision : delta.getMergedRevisions()) {
+                    Long maxMergedRevision = Collections.max(delta.getMergedRevisions());
 
-						ObjectId mergeBranchHeadId = revisionMapper
-								.getRevisionBranchHead(mergedRevision,
-										GitBranchUtils.getCanonicalBranchName(
-												mergedBranchData
-														.getBranchPath(),
-												mergedRevision, revisionMapper));
+                    ObjectId mergeBranchHeadId = revisionMapper
+                            .getRevisionBranchHead(maxMergedRevision,
+                                    GitBranchUtils.getCanonicalBranchName(
+                                            mergedBranchData
+                                                    .getBranchPath(),
+                                            maxMergedRevision, revisionMapper));
 
-						if (mergeBranchHeadId == null) {
-							log.warn(String
-									.format("failed to merge %s into %s at revision %d",
-											mergedBranchPath,
-											data.getBranchName(),
-											mergedRevision));
-						} else {
-							mergeInfoParentIds.add(mergeBranchHeadId);
-							log.info(String.format(
-									"merged %s at revision %d into branch %s",
-									mergedBranchPath, mergedRevision,
-									data.getBranchName()));
-						}
-					}
-				} catch (VetoBranchException e) {
+                    if (mergeBranchHeadId == null) {
+                        log.warn(String
+                                .format("failed to merge %s into %s at revision %d",
+                                        mergedBranchPath,
+                                        data.getBranchName(),
+                                        maxMergedRevision));
+                    } else {
+                        mergeInfoParentIds.add(mergeBranchHeadId);
+                        log.info(String.format(
+                                "merged %s at revision %d into branch %s",
+                                mergedBranchPath, maxMergedRevision,
+                                data.getBranchName()));
+                    }
+                } catch (VetoBranchException e) {
 					// skip over if the path is not a known branch
 					continue;
 				}
